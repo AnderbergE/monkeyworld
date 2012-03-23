@@ -1,11 +1,11 @@
-<project name="FishingGameDeployer" default="upload">
+<project name="FishingGameDeployer" default="compile">
 
     <property name="lib" value="lib" />
 	
 	<!--
 	windows: netsh advfirewall set global StatefulFTP disable
 	-->
-	<target name="upload" depends="compile">
+<!--	<target name="upload" depends="compile">
  		<ftp server="ftp.torsasok.se"
  			port="21"
 			remotedir="/admin.torsasok.se/public_html/e/deploy"
@@ -50,7 +50,7 @@
 			<fileset dir="./res" />
 		</ftp>
 	</target>
-
+-->
   <taskdef name="jscomp" classname="com.google.javascript.jscomp.ant.CompileTask"
            classpath="lib/closure/compiler.jar"/>
 	<target name="compile">
