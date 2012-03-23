@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!--<meta name="viewport" content="width=device-width, initial-scale=0.001, user-scalable=no"/>-->
+
+<script type="text/javascript" src="../lib/kineticjs/kinetic-v3.8.5.min.js"></script>
+<script type="text/javascript" src="../lib/soundmanager2/soundmanager2-jsmin.js"></script>
+<script type="text/javascript">
+soundManager.url = '../lib/soundmanager2/swf/';
+soundManager.debugMode = false;
+
+soundManager.waitForWindowLoad = true;
+soundManager.flashVersion = 9; // optional: shiny features (default = 8)
+soundManager.useFlashBlock = false; // optionally, enable when you're ready to dive in
+/*
+ * read up on HTML5 audio support, if you're feeling adventurous.
+ * iPad/iPhone and devices without flash installed will always attempt to use it.
+*/
+</script>
+<script type="text/javascript" src="utils.js"></script>
+<script type="text/javascript" src="eventManager.js"></script>
+<script type="text/javascript" src="model/start.js"></script>
+<script type="text/javascript" src="model/newplayer.js"></script>
+<script type="text/javascript" src="model/login.js"></script>
+<script type="text/javascript" src="model/intro.js"></script>
+<script type="text/javascript" src="model/fishtank.js"></script>
+<script type="text/javascript" src="model/fish.js"></script>
+<script type="text/javascript" src="model.js"></script>
+<script type="text/javascript" src="view/start_view.js"></script>
+<script type="text/javascript" src="view/newplayer_view.js"></script>
+<script type="text/javascript" src="view/login_view.js"></script>
+<script type="text/javascript" src="view/intro_view.js"></script>
+<script type="text/javascript" src="view/fishing_view.js"></script>
+<script type="text/javascript" src="view.js"></script>
+<script type="text/javascript" src="controller.js"></script>
+<script type="text/javascript" src="game.js"></script>
+
+<title>Fishing Game</title>
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+</head><body>
+<div id="wrapper">
+<div id="container"></div></div></body>
+
+</html>

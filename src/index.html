@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!--<meta name="viewport" content="width=device-width, initial-scale=0.5, user-scalable=no"/>-->
+<!--<meta name="viewport" content="width=device-width"/>-->
+
+<script type="text/javascript" src="../lib/kineticjs/kinetic-v3.8.5.min.js"></script>
+<script type="text/javascript" src="../lib/soundmanager2/soundmanager2-jsmin.js"></script>
+<script type="text/javascript">
+soundManager.url = '../lib/soundmanager2/swf/';
+soundManager.debugMode = false;
+
+
+soundManager.flashVersion = 9; // optional: shiny features (default = 8)
+soundManager.useFlashBlock = false; // optionally, enable when you're ready to dive in
+/*
+ * read up on HTML5 audio support, if you're feeling adventurous.
+ * iPad/iPhone and devices without flash installed will always attempt to use it.
+*/
+soundManager.onready(function() {
+  // Ready to use; soundManager.createSound() etc. can now be called.
+});
+</script>
+<script type="text/javascript" src="file.js"></script>
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+<title>Fishing Game</title>
+
+
+</style>
+</head><body>
+<div id="wrapper">
+<div id="container"></div></div></body>
+</html>

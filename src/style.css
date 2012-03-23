@@ -1,0 +1,29 @@
+body, html {
+	background-color: black;
+	/*background-image: url('../res/img/jungle_scene_background.png');
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-size: 100%;
+	*/
+	height: 100%;
+	padding: 0;
+	margin: 0;
+	position: relative;
+}
+#wrapper {
+	position: relative;
+	min-height: 100%;
+	height: auto;
+	width: 1024px;
+	margin-left: auto;
+	margin-right: auto;
+}
+#container {
+    width: 1024px;
+    height: 768px;
+	position:absolute;
+	top: 0;
+	bottom: 0;
+	margin: auto;
+}
+/*canvas { -webkit-transform: scale3d(2, 2, 0) translate3d(200px, 110px, 0); }*/

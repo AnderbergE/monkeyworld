@@ -1,0 +1,88 @@
+<project name="FishingGameDeployer" default="upload">
+
+    <property name="lib" value="lib" />
+	
+	<!--
+	windows: netsh advfirewall set global StatefulFTP disable
+	-->
+	<target name="upload" depends="compile">
+ 		<ftp server="ftp.torsasok.se"
+ 			port="21"
+			remotedir="/admin.torsasok.se/public_html/e/deploy"
+			userid="torsasok.se"
+			password="oringen2004"
+ 			verbose="yes"
+ 			passive="yes"
+ 			binary="yes"
+			depends="yes">
+			<fileset dir="./js" />
+			<fileset dir="./src">
+				<include name="index.html" />
+				<include name="style.css" />
+			</fileset>
+		</ftp>
+	</target>
+	
+	<target name="upload_lib">
+ 		<ftp server="ftp.torsasok.se"
+ 			port="21"
+			remotedir="/admin.torsasok.se/public_html/e/lib"
+			userid="torsasok.se"
+			password="oringen2004"
+ 			verbose="yes"
+ 			passive="yes"
+ 			binary="yes"
+			depends="yes">
+			<fileset dir="./lib" />
+		</ftp>
+	</target>
+	
+	<target name="upload_res">
+	 	<ftp server="ftp.torsasok.se"
+ 			port="21"
+			remotedir="/admin.torsasok.se/public_html/e/res"
+			userid="torsasok.se"
+			password="oringen2004"
+ 			verbose="yes"
+ 			passive="yes"
+ 			binary="yes"
+			depends="yes">
+			<fileset dir="./res" />
+		</ftp>
+	</target>
+
+  <taskdef name="jscomp" classname="com.google.javascript.jscomp.ant.CompileTask"
+           classpath="lib/closure/compiler.jar"/>
+	<target name="compile">
+		<jscomp compilationLevel="advanced"  
+		            debug="false" output="js/monkeyworld.js" warning="verbose">
+
+			<externs dir="src">
+			<file name="externs.js"/>
+			</externs>
+	
+		      <sources dir="src">
+		        <file name="module.js"/>
+		        <file name="model/start.js"/>
+		        <file name="model/newplayer.js"/>
+		        <file name="model/login.js"/>
+		      	<file name="model/intro.js"/>
+		      	<file name="model/fish.js"/>
+		      	<file name="model/fishtank.js"/>
+		        <file name="controller.js"/>
+		      	<file name="eventManager.js"/>
+		      	<file name="game.js"/>
+		      	<file name="model.js"/>
+		      	<file name="utils.js"/>
+		      	<file name="view/start_view.js"/>
+		      	<file name="view/newplayer_view.js"/>
+		      	<file name="view/login_view.js"/>
+		      	<file name="view/intro_view.js"/>
+		      	<file name="view/fishing_view.js"/>
+		      	<file name="view.js"/>
+		      </sources>
+
+		    </jscomp>
+	</target>
+
+</project>
