@@ -19,12 +19,18 @@ function FishingView(ievm, stage, config_dep) {
 			/** @const */ "sky": "sky.png"
 		},
 		
-		/** @const */ SOUND_FOLDER: "../res/sound",
-		/** @const */ SOUND_SOURCES: {
-			/** @const */ winding: "34968__mike-campbell__f-s-1-fishing-reel.wav",
-			/** @const */ splash: "water_movement_fast_002.wav",
-			/** @const */ swosh: "60009__qubodup__swosh-22.wav"
-		},
+//		/** @const */ SOUND_FOLDER: "../res/sound/",
+//		/** @const */ SOUND_SOURCES: {
+//			/** @const */ winding: "34968__mike-campbell__f-s-1-fishing-reel.wav",
+//			/** @const */ splash: "water_movement_fast_002.wav",
+//			/** @const */ swosh: "60009__qubodup__swosh-22.wav"
+//		},
+		
+		SOUND_SOURCES: [
+		    		{name:"winding", src: "../res/sound/34968__mike-campbell__f-s-1-fishing-reel.wav"},
+		    		{name:"splash", src: "../res/sound/water_movement_fast_002.wav"},
+		    		{name:"swosh", src: "../res/sound/60009__qubodup__swosh-22.wav"}
+		    	],
 		
 		/** @const */ POND: {
 			/** @const */ X: 100,
@@ -101,7 +107,7 @@ function FishingView(ievm, stage, config_dep) {
 				switch (state.state) {
 				case ROD_STATE.INIT_CATCHING:
 					state.playedSplash = false;
-					sounds.swosh.play();
+					SoundJS.play("swosh");//sounds.swosh.play();
 					angle = getGoalAngle(state.catching);
 					var front = getFishFront(state.catching);
 					
@@ -156,7 +162,7 @@ function FishingView(ievm, stage, config_dep) {
 					}
 					fishGroup.centerOffset.y = mouth.y;
 					
-					sounds.winding.play();
+					SoundJS.play("winding");//sounds.winding.play();
 					
 					animator.animateTo
 					(
@@ -184,13 +190,13 @@ function FishingView(ievm, stage, config_dep) {
 								fishGroup.x = state.end.x - config.POND.X - mouth.x;
 								fishGroup.y = state.end.y - config.POND.Y - dir * mouth.y;
 								if (!state.playedSplash && fishGroup.y < config.POND.Y - 100) {
-									sounds.splash.play();
+									SoundJS.play("splash");//sounds.splash.play();
 									state.playedSplash = true;
 								}
 							},
 							onFinish: function()
 							{
-								sounds.winding.stop();
+								SoundJS.stop("winding");//sounds.winding.stop();
 								state.state = ROD_STATE.THROW_FISH_IN_BASKET;
 							}
 						}
@@ -573,7 +579,7 @@ function FishingView(ievm, stage, config_dep) {
 		loadingLayer._text.text = "Hämtar ljud";
 		loadingLayer.draw();
 		evm.log("VIEW: Loading sounds...");
-		var loadedSounds = 0;
+		/*var loadedSounds = 0;
 		var numSounds = Object.size(config.SOUND_SOURCES);
 		for (var source in config.SOUND_SOURCES) {
 			var sound = soundManager.createSound({
@@ -589,9 +595,11 @@ function FishingView(ievm, stage, config_dep) {
 				}
 			});
 			sounds[source] = sound;
-		}
+		}*/
+		SoundJS.addBatch(config.SOUND_SOURCES);
+		SoundJS.onLoadQueueComplete = function() {loadImages(model, modelInit);};
 	}
-
+	
 	function loadImages(model, modelInit) {
 		loadingLayer._text.text = "Hämtar bilder";
 		loadingLayer.draw();
@@ -609,7 +617,6 @@ function FishingView(ievm, stage, config_dep) {
             };
             images[src].src = config.IMAGE_FOLDER + "/" + config.IMAGE_SOURCES[src];
         }
-		console.log(images);
 	}
 	
 	function setupLoadingScreen() {	

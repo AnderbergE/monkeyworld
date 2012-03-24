@@ -308,3 +308,20 @@ SoundObject.prototype.autoPlay = function() {};
 
 function console() {};
 console.log = function(msg) {};
+
+/*============================================================================*/
+function SoundJS() {};
+SoundJS.addBatch = function(list) {};
+/**
+ * @param {string=} name
+ * @param {string=} instance
+ */
+SoundJS.stop = function(name, instance) {};
+/**
+ * @param {string=} name
+ * @param {Number=} interrupt
+ * @param {Number=} volume
+ * @param {Boolean=} loop
+ * @param {Number=} delay
+ */
+SoundJS.play = function(name ,interrupt ,volume ,loop ,delay ) {};
