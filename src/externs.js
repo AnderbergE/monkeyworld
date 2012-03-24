@@ -311,6 +311,10 @@ console.log = function(msg) {};
 
 /*============================================================================*/
 function SoundJS() {};
+
+/**
+ * @param {Array} list
+ */
 SoundJS.addBatch = function(list) {};
 /**
  * @param {string=} name
@@ -321,7 +325,49 @@ SoundJS.stop = function(name, instance) {};
  * @param {string=} name
  * @param {Number=} interrupt
  * @param {Number=} volume
- * @param {Boolean=} loop
+ * @param {boolean=} loop
  * @param {Number=} delay
  */
 SoundJS.play = function(name ,interrupt ,volume ,loop ,delay ) {};
+SoundJS.onLoadQueueComplete = function() {};
+/*============================================================================*/
+/**
+ * @constructor
+ * @static
+ */
+function Ease() {};
+
+
+Ease.sineIn = function(){};
+
+/**
+ * @constructor
+ */
+function Tween() {};
+
+/**
+ * @static
+ * @param {Object} target
+ * @param {Object=} props
+ * @return {Tween}
+ */
+Tween.get = function(target, props) {};
+
+/**
+ * @static
+ * @param {Number} delta The change in time in milliseconds since the last tick. Required unless all tweens have useTicks set to true.
+ * @param {boolean} paused Indicates whether a global pause is in effect. Tweens with ignoreGlobalPause will ignore this, but all others will pause if this is true.
+ */
+Tween.tick = function(delta, paused) {};
+
+/** 
+ * Queues a tween from the current values to the target properties. Set duration to 0 to jump to these value.
+ * Numeric properties will be tweened from their current value in the tween to the target value. Non-numeric
+ * properties will be set at the end of the specified duration.
+ * @param {Object} props An object specifying property target values for this tween (Ex. {x:300} would tween the x property of the target to 300).
+ * @param {Number} duration The duration of the wait in milliseconds (or in ticks if useTicks is true).
+ * @param {Ease} ease The easing function to use for this tween.
+ * @return {Tween} This tween instance (for chaining calls).
+ **/
+Tween.to = function(props, duration, ease) {};
+

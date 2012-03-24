@@ -19,18 +19,11 @@ function FishingView(ievm, stage, config_dep) {
 			/** @const */ "sky": "sky.png"
 		},
 		
-//		/** @const */ SOUND_FOLDER: "../res/sound/",
-//		/** @const */ SOUND_SOURCES: {
-//			/** @const */ winding: "34968__mike-campbell__f-s-1-fishing-reel.wav",
-//			/** @const */ splash: "water_movement_fast_002.wav",
-//			/** @const */ swosh: "60009__qubodup__swosh-22.wav"
-//		},
-		
-		SOUND_SOURCES: [
-		    		{name:"winding", src: "../res/sound/34968__mike-campbell__f-s-1-fishing-reel.wav"},
-		    		{name:"splash", src: "../res/sound/water_movement_fast_002.wav"},
-		    		{name:"swosh", src: "../res/sound/60009__qubodup__swosh-22.wav"}
-		    	],
+		/** @const */ SOUND_SOURCES: [
+			/** @const */ { name:"winding", src: "../res/sound/34968__mike-campbell__f-s-1-fishing-reel.wav" },
+			/** @const */ { name:"splash", src: "../res/sound/water_movement_fast_002.wav" },
+			/** @const */ { name:"swosh", src: "../res/sound/60009__qubodup__swosh-22.wav" }
+		],
 		
 		/** @const */ POND: {
 			/** @const */ X: 100,
@@ -41,7 +34,27 @@ function FishingView(ievm, stage, config_dep) {
 
 		};
 	}();
+	
+	 
+	/** @const */ var BASKET_SLOTS = {
+		/** @const */ 6: { x: 825, y: 0 },
+		/** @const */ 4: { x: 700, y: 25 },
+		/** @const */ 5: { x: 825, y: 25 },
+		/** @const */ 2: { x: 700, y: 153 },
+		/** @const */ 3: { x: 825, y: 153 },
+		/** @const */ 0: { x: 700, y: 281 },
+		/** @const */ 1: { x: 825, y: 281 }
+	};
 
+	/** @type {Object.<string, Image>} */ 
+	var images = {};
+	/** @type {Object.<Fish, Kinetic.Group>} */ 
+	var fishGroups = {};
+	/** @type {Object.<Fish, Kinetic.Text>} */
+	var numberGroups = {};
+	var fishTank = null;
+	var animator = new Animator();
+	
 	/*
 	 * Initiate layers
 	 */
@@ -164,6 +177,8 @@ function FishingView(ievm, stage, config_dep) {
 					
 					SoundJS.play("winding");//sounds.winding.play();
 					
+					Tween.get(fishGroup).to({rotation: -1*direction * Math.PI /2}, 1000, Ease.sineIn());
+					/*
 					animator.animateTo
 					(
 						fishGroup,
@@ -175,7 +190,7 @@ function FishingView(ievm, stage, config_dep) {
 						}
 							
 					);
-					
+					*/
 					animator.animateTo
 					(
 						state,
@@ -210,7 +225,7 @@ function FishingView(ievm, stage, config_dep) {
 						endState.x -= 2*state.catching.getMouthPosition().x;
 						endState.rotation = 2 * Math.PI;
 					}
-					animator.animateTo
+					/*animator.animateTo
 					(
 						fishGroups[state.catching],
 						endState,
@@ -219,7 +234,16 @@ function FishingView(ievm, stage, config_dep) {
 							onFrame: function() {},
 							onFinish: function() { fishTank.putFishInBasket(state.catching); }
 						}
-					);
+					);*/
+					Tween.get(fishGroups[state.catching]).to({x:endState.x},1000).call(function() { });
+					Tween.get(fishGroups[state.catching]).to({y:endState.y},1000).call(function() { });
+					Tween.get(fishGroups[state.catching]).to({rotation:endState.rotation},1000).call(function() { fishTank.putFishInBasket(state.catching);});
+					
+
+					
+					//Tween.get(fishGroups[state.catching]).wait(500)
+					//.to({alpha:0,visible:false},3000).call(function() { fishTank.putFishInBasket(state.catching); });
+
 					animator.animateTo(
 						state,
 						{ length: 200, pendulum: 0, y: 75 },
@@ -268,26 +292,7 @@ function FishingView(ievm, stage, config_dep) {
 
 
 
-	/** @type {Object.<string, Image>} */ 
-	var images = {};
-	/** @type {Object.<string, SoundObject>} */ 
-	var sounds = {};
-	/** @type {Object.<Fish, Kinetic.Group>} */ 
-	var fishGroups = {};
-	/** @type {Object.<Fish, Kinetic.Text>} */
-	var numberGroups = {};
-	var fishTank = null;
-	var animator = new Animator();
- 
-	/** @const */ var BASKET_SLOTS = {
-		/** @const */ 6: { x: 825, y: 0 },
-		/** @const */ 4: { x: 700, y: 25 },
-		/** @const */ 5: { x: 825, y: 25 },
-		/** @const */ 2: { x: 700, y: 153 },
-		/** @const */ 3: { x: 825, y: 153 },
-		/** @const */ 0: { x: 700, y: 281 },
-		/** @const */ 1: { x: 825, y: 281 }
-	};
+
 	
 	this.toString = function() { return "Fish View"; };
 	
@@ -499,7 +504,7 @@ function FishingView(ievm, stage, config_dep) {
 		var bambu9 = new Kinetic.Image({ x: config.POND.X-10, y: 20, rotation: -Math.PI/2, image: images["bambu"] });
 		var bambu10 = new Kinetic.Image({ x: 540, y: 20, rotation: -Math.PI/2, image: images["bambu"] });
 		backgroundLayer.add(background);
-		//backgroundLayer.add(sky);
+		backgroundLayer.add(sky);
 		pondLayer.add(water);
 		pondLayer.add(waterSurface);
 		overlayLayer.add(waterSurface2);
@@ -558,6 +563,7 @@ function FishingView(ievm, stage, config_dep) {
 		evm.post(new FrameEvent(frame)); // Post an event about this frame
 		rod.draw(frame); // Draw the fishing rod
 		animator.tick(frame.timeDiff); // Tell the animator about the frame
+		Tween.tick(frame.timeDiff, false);
 		shapeLayer.draw(); // Draw the shape layer
 	}
 
