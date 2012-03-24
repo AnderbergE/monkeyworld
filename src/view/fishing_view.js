@@ -12,11 +12,11 @@ function FishingView(ievm, stage, config_dep) {
 		return {
 		/** @const */ IMAGE_FOLDER: "../res/img",
 		/** @const */ IMAGE_SOURCES: {
-			/** @const */ fish0: "fish/0.png",
-			/** @const */ fish1: "fish/1.png",
-			/** @const */ bambu: "bambu.png",
-			/** @const */ plant: "plant.png",
-			/** @const */ sky: "sky.png"
+			/** @const */ "fish0": "fish/0.png",
+			/** @const */ "fish1": "fish/1.png",
+			/** @const */ "bambu": "bambu.png",
+			/** @const */ "plant": "plant.png",
+			/** @const */ "sky": "sky.png"
 		},
 		
 		/** @const */ SOUND_FOLDER: "../res/sound",
@@ -431,7 +431,6 @@ function FishingView(ievm, stage, config_dep) {
 		fishTank = model;
     	evm.log('VIEW: Building stage...');
 
-
 		var background = new Kinetic.Rect({
 			x: 0,
 			y: 2,
@@ -480,10 +479,8 @@ function FishingView(ievm, stage, config_dep) {
 			strokeWidth: 0,
 			alpha: 0.5
 		});
-		
 		images["sky"].style.width = "300px";
-		var sky = new Kinetic.Image({ x: config.POND.X, y: 20, image: images["sky"] });
-		
+		var sky = new Kinetic.Image({ x: config.POND.X, y: 20, image: images['sky'] });
 		var bambu0 = new Kinetic.Image({ x: config.POND.X-10, y: 20, image: images["bambu"] });
 		var bambu1 = new Kinetic.Image({ x: config.POND.X+config.POND.WIDTH-10, y: 20, image: images["bambu"] });
 		var bambu2 = new Kinetic.Image({ x: 1024-20, y: 20, image: images["bambu"] });
@@ -495,9 +492,8 @@ function FishingView(ievm, stage, config_dep) {
 		var bambu8 = new Kinetic.Image({ x: 540, y: 760, rotation: -Math.PI/2, image: images["bambu"] });
 		var bambu9 = new Kinetic.Image({ x: config.POND.X-10, y: 20, rotation: -Math.PI/2, image: images["bambu"] });
 		var bambu10 = new Kinetic.Image({ x: 540, y: 20, rotation: -Math.PI/2, image: images["bambu"] });
-		
 		backgroundLayer.add(background);
-		backgroundLayer.add(sky);
+		//backgroundLayer.add(sky);
 		pondLayer.add(water);
 		pondLayer.add(waterSurface);
 		overlayLayer.add(waterSurface2);
@@ -606,12 +602,14 @@ function FishingView(ievm, stage, config_dep) {
             images[src] = new Image();
             images[src].onload = function(){
                 if (++loadedImages >= numImages) {
+                	loadingLayer._text.text = "";
+                	loadingLayer.draw();
                 	modelInit.call(model);
-            		loadingLayer._text.text = "";
                 }
             };
             images[src].src = config.IMAGE_FOLDER + "/" + config.IMAGE_SOURCES[src];
         }
+		console.log(images);
 	}
 	
 	function setupLoadingScreen() {	

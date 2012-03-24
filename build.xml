@@ -55,7 +55,7 @@
            classpath="lib/closure/compiler.jar"/>
 	<target name="compile">
 		<jscomp compilationLevel="advanced"  
-		            debug="false" output="js/monkeyworld.js" warning="verbose">
+		            debug="true" output="html/monkeyworld.js" warning="verbose">
 
 			<externs dir="src">
 			<file name="externs.js"/>
@@ -83,6 +83,9 @@
 		      </sources>
 
 		    </jscomp>
+		
+			<copy todir="html" file="src/index.html" />
+			<copy todir="html" file="src/style.css" />
 	</target>
 
 </project>
