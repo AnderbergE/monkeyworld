@@ -42,6 +42,32 @@ function EventManager() {
 		}
 	};
 	
+	/**
+	 * @type {Object.<string, Array>}
+	 */
+	var listeners2 = {};
+	
+	/**
+	 * @param {string} type
+	 * @param {Function} callback
+	 */
+	this.registerListener2 = function(type, callback) {
+		if (listeners2[type] === undefined)
+			listeners2[type] = new Array();
+		listeners2[type].push(callback);
+	}
+	
+	/**
+	 * @param {string} type
+	 * @param {Object} message
+	 */
+	this.post2 = function(type, message) {
+		for (var i = 0; i < listeners2[type].length; i++) {
+			var callback = listeners2[type][i];
+			callback(message);
+		}
+	}
+	
 	this.log = function(msg) {
 		console.log(msg);
 	};
@@ -52,6 +78,13 @@ function EventInterface() {}
 
 /**
  * @constructor
+ * @implements {EventInterface}
+ */
+function GameEvent(type, config) { this.type = type; this.config = config; };
+
+/**
+ * @constructor
+ * @implements {EventInterface}
  */
 function GameStartedEvent() {}
 

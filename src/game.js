@@ -3,6 +3,8 @@ SoundJS.testAudioStall = function(event) {};
 
 window.onload = function() {
 	new Game();
+	
+	
 };
 
 /**
@@ -10,6 +12,13 @@ window.onload = function() {
  */
 function Game() {
 	var eventManager = new EventManager();
+	
+	var fishingGame = new FishingGame();
+	var monkeyPlayer = new MonkeyPlayer(eventManager);
+	fishingGame.play(monkeyPlayer, eventManager);
+	
+	eventManager.post2("started", null);
+	
 	/** @const */ var WIN_WIDTH = 1024;
 	/** @const */ var WIN_HEIGHT = 768;
 	var stage = new Kinetic.Stage({
@@ -40,7 +49,7 @@ function Game() {
 	
 	
 	if (ONLY_FISHING) {
-		kickInModule(FishingView, FishTank, {maxNumber: 9, numberFishes: 5});
+		//kickInModule(FishingView, FishTank, {maxNumber: 9, numberFishes: 5});
 	} else {
 		kickInModule(StartView, Start, {}, function(config) {
 			if (config == "login") {

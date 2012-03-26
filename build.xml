@@ -69,6 +69,7 @@
 		      	<file name="model/intro.js"/>
 		      	<file name="model/fish.js"/>
 		      	<file name="model/fishtank.js"/>
+		      	<file name="model/fishinggame.js"/>
 		        <file name="controller.js"/>
 		      	<file name="eventManager.js"/>
 		      	<file name="game.js"/>

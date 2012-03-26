@@ -124,8 +124,14 @@ Kinetic.Node = function(){};
 	Kinetic.Node.prototype.getLayer = function() {};
 	Kinetic.Node.prototype.getStage = function() {};
 	Kinetic.Node.prototype.getName = function() {};
-	Kinetic.Node.prototype.transitionTo = function(config) {};
 
+	Kinetic.Node.prototype.callback = function() {};
+	Kinetic.Node.prototype.duration = function() {};
+	Kinetic.Node.prototype.easing = function() {};
+	/**
+	 * @param {Object} config
+	 */
+	Kinetic.Node.prototype.transitionTo = function(config) {};
 	
 
 /**

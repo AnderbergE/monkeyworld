@@ -220,7 +220,7 @@ function FishingView(ievm, stage, config_dep) {
 					endState.x += fishDirection * mouthXPosition;
 					endState.duration = 1;
 					endState.callback = function() {
-						fishTank.putFishInBasket(state.catching);
+						fishTank.putFishInBasket(fish);
 					};
 					console.log(endState);
 					fishGroups[state.catching].transitionTo(endState);
