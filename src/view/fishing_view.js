@@ -34,7 +34,6 @@ function FishingView(ievm, stage, config_dep) {
 
 		};
 	}();
-	
 	 
 	/** @const */ var BASKET_SLOTS = {
 		/** @const */ 6: { x: 825, y: 0 },
@@ -162,35 +161,27 @@ function FishingView(ievm, stage, config_dep) {
 					break;
 				case ROD_STATE.CATCHING: break;
 				case ROD_STATE.WIND_IN_FISH:
+					state.state = ROD_STATE.CATCHING;
 					var fish = state.catching;
 					var fishGroup = fishGroups[state.catching];
 					var mouth = fish.getMouthPosition();
 					var direction = fish.getDirection();
 					fishGroup.centerOffset.y = mouth.y;
 					if (direction > 0) {
+						fishGroup.x = fishGroup.x + mouth.x;
 						fishGroup.centerOffset.x = mouth.x;
 					} else {
-						fishGroup.x = fishGroup.x - 2*mouth.x;
+						fishGroup.x = fishGroup.x - mouth.x;
 						fishGroup.centerOffset.x = mouth.x;
 					}
-					fishGroup.centerOffset.y = mouth.y;
 					
-					SoundJS.play("winding");//sounds.winding.play();
+					SoundJS.play("winding");
 					
-					Tween.get(fishGroup).to({rotation: -1*direction * Math.PI /2}, 1000, Ease.sineIn());
-					/*
-					animator.animateTo
-					(
-						fishGroup,
-						{ rotation: -1 * direction * Math.PI / 2  },
-						{
-							duration: { rotation: 1000 },
-							onFrame: function(){},
-							onFinish: function(){}
-						}
-							
-					);
-					*/
+					fishGroup.transitionTo({
+						rotation: -1*direction * Math.PI /2,
+						duration: 0.5
+					});
+					
 					animator.animateTo
 					(
 						state,
@@ -200,49 +191,42 @@ function FishingView(ievm, stage, config_dep) {
 							onFrame: function()
 							{
 								var fishGroup = fishGroups[state.catching];
-								var mouth = fish.getMouthPosition();
-								var dir = fish.getDirection();
-								fishGroup.x = state.end.x - config.POND.X - mouth.x;
-								fishGroup.y = state.end.y - config.POND.Y - dir * mouth.y;
-								if (!state.playedSplash && fishGroup.y < config.POND.Y - 100) {
-									SoundJS.play("splash");//sounds.splash.play();
+								fishGroup.x = state.end.x - config.POND.X;
+								fishGroup.y = state.end.y - config.POND.Y;
+								var splashed = state.playedSplash;
+								var surface = config.POND.Y - 100;
+								var aboveSurface = fishGroup.y < surface;
+								if (!splashed && aboveSurface) {
+									SoundJS.play("splash");
 									state.playedSplash = true;
 								}
 							},
 							onFinish: function()
 							{
-								SoundJS.stop("winding");//sounds.winding.stop();
+								SoundJS.stop("winding");
 								state.state = ROD_STATE.THROW_FISH_IN_BASKET;
 							}
 						}
 					);
-					state.state = ROD_STATE.CATCHING;
+
 					break;
 				case ROD_STATE.THROW_FISH_IN_BASKET:
+					state.state = ROD_STATE.CATCHING;
 					var endState = BASKET_SLOTS[fishTank.getNextBasketSlot()];
-					endState.rotation = -2 * Math.PI;
-					if (state.catching.getDirection() < 0) {
-						endState.x -= 2*state.catching.getMouthPosition().x;
-						endState.rotation = 2 * Math.PI;
-					}
-					/*animator.animateTo
-					(
-						fishGroups[state.catching],
-						endState,
-						{
-							duration: { x: 1000, y: 1000, rotation: 1000 },
-							onFrame: function() {},
-							onFinish: function() { fishTank.putFishInBasket(state.catching); }
-						}
-					);*/
-					Tween.get(fishGroups[state.catching]).to({x:endState.x},1000).call(function() { });
-					Tween.get(fishGroups[state.catching]).to({y:endState.y},1000).call(function() { });
-					Tween.get(fishGroups[state.catching]).to({rotation:endState.rotation},1000).call(function() { fishTank.putFishInBasket(state.catching);});
-					
-
-					
-					//Tween.get(fishGroups[state.catching]).wait(500)
-					//.to({alpha:0,visible:false},3000).call(function() { fishTank.putFishInBasket(state.catching); });
+					var fish = state.catching;
+					var mouthXPosition = fish.getMouthPosition().x;
+					var fishDirection = fish.getDirection();
+					endState.rotation = fishDirection * 2 * Math.PI;
+					endState.x += fishDirection * mouthXPosition;
+					endState.duration = 1;
+					endState.callback = function() {
+						fishTank.putFishInBasket(state.catching);
+					};
+					console.log(endState);
+					fishGroups[state.catching].transitionTo(endState);
+					//Tween.get(fishGroups[state.catching]).to({x:endState.x},1000).call(function() { });
+					//Tween.get(fishGroups[state.catching]).to({y:endState.y},1000).call(function() { });
+					//Tween.get(fishGroups[state.catching]).to({rotation:endState.rotation},1000).call(function() { fishTank.putFishInBasket(state.catching);});
 
 					animator.animateTo(
 						state,
@@ -255,7 +239,6 @@ function FishingView(ievm, stage, config_dep) {
 							}
 						}
 					);
-					state.state = ROD_STATE.CATCHING;
 					break;
 				default: break;
 				}
@@ -345,14 +328,15 @@ function FishingView(ievm, stage, config_dep) {
 			x: fish.getX(),
 			y: fish.getY(),
 			width: fish.getScale() * fish.getWidth(),
-			height: fish.getScale() * fish.getHeight()
+			height: fish.getScale() * fish.getHeight(),
+			centerOffset: { x: 0, y: 0 }
 		});
 		
 		shapeLayer.add(fishGroup);
 		
 		var image = new Kinetic.Image({
-			x: - fish.getScaledWidth() / 2,
-			y: - fish.getScaledHeight() / 2,
+			x: 0,
+			y: 0,
 			image: images["fish" + fish.getSpecies()],
 			width: fish.getScale() * fish.getWidth(),
 			height: fish.getScale() * fish.getHeight(),
@@ -398,7 +382,7 @@ function FishingView(ievm, stage, config_dep) {
 	 */
 	function createPlant(layer, x, y) {
 		var image = new Kinetic.Image({
-			x: x, y: y, image: images["plant"],
+			x: x+64, y: y+64, image: images["plant"],
 			width: 128, height: 128, centerOffset: { x: 64, y: 64 }
 		});
 		layer.add(image);
@@ -585,23 +569,6 @@ function FishingView(ievm, stage, config_dep) {
 		loadingLayer._text.text = "Hämtar ljud";
 		loadingLayer.draw();
 		evm.log("VIEW: Loading sounds...");
-		/*var loadedSounds = 0;
-		var numSounds = Object.size(config.SOUND_SOURCES);
-		for (var source in config.SOUND_SOURCES) {
-			var sound = soundManager.createSound({
-				id: source,
-				url: config.SOUND_FOLDER + "/" + config.SOUND_SOURCES[source],
-				autoLoad: true,
-				autoPlay: false,
-				onload: function(success) {
-					if (success && ++loadedSounds == numSounds) {
-						loadImages(model, modelInit);
-						loadingLayer._text.text = "";
-	                }
-				}
-			});
-			sounds[source] = sound;
-		}*/
 		SoundJS.addBatch(config.SOUND_SOURCES);
 		SoundJS.onLoadQueueComplete = function() {loadImages(model, modelInit);};
 	}

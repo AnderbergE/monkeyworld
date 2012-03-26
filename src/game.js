@@ -1,7 +1,7 @@
-window.onload = function() {
+// To prevent SoundJS producing error message. Bug in SoundJS compilation?
+SoundJS.testAudioStall = function(event) {};
 
-	
-	
+window.onload = function() {
 	new Game();
 };
 
@@ -12,8 +12,11 @@ function Game() {
 	var eventManager = new EventManager();
 	/** @const */ var WIN_WIDTH = 1024;
 	/** @const */ var WIN_HEIGHT = 768;
-	var stage = new Kinetic.Stage("container", WIN_WIDTH, WIN_HEIGHT);
-
+	var stage = new Kinetic.Stage({
+        container: 'container',
+        width: WIN_WIDTH,
+        height: WIN_HEIGHT
+    });
 	
 	/**
 	 * @param iView

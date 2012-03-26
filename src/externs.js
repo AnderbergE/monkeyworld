@@ -47,12 +47,13 @@ Kinetic.Container = function() {};
  * Instantiates a new Stage object. Parameter container can be a DOM id or a
  * DOM element.
  * @constructor
- * @extends {Kinetic.Container}
- * @param {string} container
- * @param {number} width
- * @param {number} height
+ * @extends {Kinetic.Node}
+ * @param {Object} config
  */
-Kinetic.Stage = function(container, width, height){};
+Kinetic.Stage = function(config){};
+Kinetic.Stage.prototype.width = function() {};
+Kinetic.Stage.prototype.height = function() {};
+Kinetic.Stage.prototype.container = function() {};
 	Kinetic.Stage.prototype.onFrame = function( handler ) {};
 	Kinetic.Stage.prototype.start = function() {};
 	Kinetic.Stage.prototype.stop = function() {};
@@ -330,6 +331,7 @@ SoundJS.stop = function(name, instance) {};
  */
 SoundJS.play = function(name ,interrupt ,volume ,loop ,delay ) {};
 SoundJS.onLoadQueueComplete = function() {};
+
 /*============================================================================*/
 /**
  * @constructor
