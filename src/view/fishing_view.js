@@ -272,11 +272,6 @@ function FishingView(ievm, stage, config_dep) {
 		};
 	}(rodLayer);
 
-
-
-
-
-	
 	this.toString = function() { return "Fish View"; };
 	
 	this.notify = function(event) {
@@ -304,8 +299,25 @@ function FishingView(ievm, stage, config_dep) {
 	evm.registerListener(this);
 
 
-
+	evm.on("fishinggame.catch", function(msg) {
+		rod.initCatch(msg.fish);
+		evm.tell("fishinggame.catched", {fish: msg.fish});
+	});
 	
+	evm.on("fishinggame.turnOnClick", function(msg) {
+		fishGroups[msg.fish].on("mousedown", function() {
+			console.log("FISH: Starting to catch " + msg.fish);
+			rod.initCatch(msg.fish);
+		});
+		fishGroups[msg.fish].on("touchstart", function() {
+			console.log("FISH: Starting to catch " + msg.fish);
+			rod.initCatch(msg.fish);
+		});
+	});
+	
+	evm.on("fishinggame.turnOffClick", function(msg) {
+		fishGroups[msg.fish].off("mousedown touchstart");
+	})
 
 	/**
 	 * Draws the rod
@@ -361,16 +373,6 @@ function FishingView(ievm, stage, config_dep) {
 		});
 		fishGroup.add(numberText);
 		numberText.setScale(fish.getScale());
-
-		var mouseDownAndTouchStartFunction = function() {
-			console.log("FISH: Starting to catch " + fish);
-//			catching = fish;
-			//state = ROD_STATE.INIT_CATCHING;
-			rod.initCatch(fish);
-			callback.call(fish);
-		};
-		fishGroup.on("mousedown", mouseDownAndTouchStartFunction);
-		fishGroup.on("touchstart", mouseDownAndTouchStartFunction);
 
 		fishGroups[fish] = fishGroup;
 		numberGroups[fish] = numberText;
@@ -611,5 +613,6 @@ function FishingView(ievm, stage, config_dep) {
 		evm.log('VIEW: Start rolling view...');
 		stage.onFrame(onFrame);
 		stage.start();
+		evm.tell("fishinggame.started", null);
 	};
 }

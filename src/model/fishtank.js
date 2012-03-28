@@ -4,9 +4,10 @@
  * @param {Object} config 
  * @implements {ModelModule}
  * @implements {GameEventListener}
+ * @extends {GameModule}
  */
-function FishTank(ieventManager, config) {
-		
+function FishingGame(ieventManager, config) {
+	this._name = "FishingGame";
 	this.toString = function() { return "Fish Tank"; };
 	var eventManager = ieventManager;
 	var fishArray = new Array();
@@ -58,6 +59,22 @@ function FishTank(ieventManager, config) {
 		
 	};	
 	
+	eventManager.on("fishinggame.turnOnClicks", function() {
+		for (var i = 0; i < fishArray.length; i++) {
+			eventManager.tell("fishinggame.turnOnClick", {fish:fishArray[i]});	
+		}
+	});
+	
+	eventManager.on("fishinggame.turnOffClicks", function() {
+		for (var i = 0; i < fishArray.length; i++) {
+			eventManager.tell("fishinggame.turnOffClick", {fish:fishArray[i]});	
+		}
+	});
+	
+	this.getAllFish = function() {
+		return fishArray;
+	};
+	
 	this.putFishInBasket = function(fish) {
 		console.log("Put fish " + fish + " in basket.");
 		for (var i = 0; i < fishArray.length; i++) {
@@ -73,4 +90,5 @@ function FishTank(ieventManager, config) {
 		return basketSize;
 	};
 }
+FishingGame.prototype = GameModule.prototype;
 

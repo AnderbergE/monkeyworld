@@ -60,8 +60,11 @@
 			<externs dir="src">
 			<file name="externs.js"/>
 			</externs>
-	
 		      <sources dir="src">
+		        <file name="gamestrategy.js"/>
+		        <file name="strategies/MonkeyStrategy.js"/>
+		        <file name="strategies/AngelStrategy.js"/>
+		        <file name="strategies/GamerStrategy.js"/>
 		        <file name="module.js"/>
 		        <file name="model/start.js"/>
 		        <file name="model/newplayer.js"/>
@@ -69,7 +72,6 @@
 		      	<file name="model/intro.js"/>
 		      	<file name="model/fish.js"/>
 		      	<file name="model/fishtank.js"/>
-		      	<file name="model/fishinggame.js"/>
 		        <file name="controller.js"/>
 		      	<file name="eventManager.js"/>
 		      	<file name="game.js"/>

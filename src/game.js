@@ -13,11 +13,9 @@ window.onload = function() {
 function Game() {
 	var eventManager = new EventManager();
 	
-	var fishingGame = new FishingGame();
-	var monkeyPlayer = new MonkeyPlayer(eventManager);
-	fishingGame.play(monkeyPlayer, eventManager);
+	//var fishingGame = new FishingGame();
 	
-	eventManager.post2("started", null);
+	//fishingGame.play(monkeyPlayer, eventManager);
 	
 	/** @const */ var WIN_WIDTH = 1024;
 	/** @const */ var WIN_HEIGHT = 768;
@@ -33,9 +31,9 @@ function Game() {
 	 * @param config
 	 * @param {Function=} callback
 	 */
-	function kickInModule(iView, iModel, config, callback) {
+	function kickInModule(iView, iModel, player, config, callback) {
 		var view = new iView(eventManager, stage, this, callback);
-		var model = new Model(eventManager, view, view.init, view.start, iModel, config);
+		var model = new Model(eventManager, view, view.init, view.start, iModel, config, player);
 		view.prepare(model, model.init);
 	};
 
@@ -47,19 +45,20 @@ function Game() {
 	 */
 	/** @const */ var ONLY_FISHING = true;
 	
+	var player = new GamerPlayer(eventManager);
 	
 	if (ONLY_FISHING) {
-		//kickInModule(FishingView, FishTank, {maxNumber: 9, numberFishes: 5});
+		kickInModule(FishingView, FishingGame, player, {maxNumber: 9, numberFishes: 5});
 	} else {
 		kickInModule(StartView, Start, {}, function(config) {
 			if (config == "login") {
 				kickInModule(LoginView, Intro, {}, function() {
-					kickInModule(FishingView, FishTank, {maxNumber: 9, numberFishes: 5});
+					kickInModule(FishingView, FishingGame, player, {maxNumber: 9, numberFishes: 5});
 				});	
 			} else {
 				kickInModule(NewPlayerView, NewPlayer, {}, function() {
 					kickInModule(IntroView, Intro, {}, function() {
-						kickInModule(FishingView, FishTank, {maxNumber: 9, numberFishes: 5});	
+						kickInModule(FishingView, FishingGame, player, {maxNumber: 9, numberFishes: 5});	
 					});
 				});	
 			}

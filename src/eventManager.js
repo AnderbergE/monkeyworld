@@ -51,7 +51,7 @@ function EventManager() {
 	 * @param {string} type
 	 * @param {Function} callback
 	 */
-	this.registerListener2 = function(type, callback) {
+	this.on = function(type, callback) {
 		if (listeners2[type] === undefined)
 			listeners2[type] = new Array();
 		listeners2[type].push(callback);
@@ -61,7 +61,9 @@ function EventManager() {
 	 * @param {string} type
 	 * @param {Object} message
 	 */
-	this.post2 = function(type, message) {
+	this.tell = function(type, message) {
+		if (listeners2[type] === undefined)
+			return;
 		for (var i = 0; i < listeners2[type].length; i++) {
 			var callback = listeners2[type][i];
 			callback(message);
