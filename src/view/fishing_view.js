@@ -53,6 +53,7 @@ function FishingView(ievm, stage, config_dep) {
 	var numberGroups = {};
 	var fishTank = null;
 	var animator = new Animator();
+	/** @type {boolean} */ var allowClicks = true; 
 	
 	/*
 	 * Initiate layers
@@ -69,6 +70,54 @@ function FishingView(ievm, stage, config_dep) {
 	stage.add(rodLayer);
 	stage.add(overlayLayer);
 	stage.add(fpsLayer);
+	
+	var evm = ievm;
+	evm.registerListener(this);
+
+	var turnOffClick = function(fish) {
+		fishGroups[fish].off("mousedown touchstart");
+	};
+	
+	var turnOnClick = function(fish) {
+		fishGroups[fish].on("mousedown touchstart", function() {
+			if (allowClicks) {
+				clickFunction(fish);	
+			}
+		});
+	};
+	
+	var clickFunction = function(fish) {
+		if (allowClicks) {
+			if (!fish.isCaptured()) {
+				console.log("FISH: Starting to catch " + fish);
+				rod.initCatch(fish);
+			} else {
+				console.log("FISH: Starting to free " + fish);
+				freeFish(fish);
+			}
+		}
+	};
+
+	evm.on("fishinggame.catch", function(msg) {
+		rod.initCatch(msg.fish);
+		evm.tell("fishinggame.catched", {fish: msg.fish});
+	});
+	
+	evm.on("fishinggame.turnOnClick", function(msg) {
+		turnOnClick(msg.fish);
+	});
+	
+	evm.on("fishinggame.turnOffClick", function(msg) {
+		turnOffClick(msg.fish);
+	})
+	
+	evm.on("fishinggame.allowClicks", function(msg) {
+		allowClicks = true;
+	});
+	
+	evm.on("fishinggame.disallowClicks", function(msg) {
+		allowClicks = false;
+	});
 	
 	var rod = function(rodLayer) {
 		/** @const @enum */ var ROD_STATE =
@@ -118,6 +167,9 @@ function FishingView(ievm, stage, config_dep) {
 				var angle = state.pendulum;
 				switch (state.state) {
 				case ROD_STATE.INIT_CATCHING:
+					if (allowClicks) {
+						evm.tell("fishinggame.turnOffClicks");
+					}
 					state.playedSplash = false;
 					SoundJS.play("swosh");//sounds.swosh.play();
 					angle = getGoalAngle(state.catching);
@@ -176,11 +228,21 @@ function FishingView(ievm, stage, config_dep) {
 					}
 					
 					SoundJS.play("winding");
-					
+					/*
 					fishGroup.transitionTo({
 						rotation: -1*direction * Math.PI /2,
 						duration: 0.5
 					});
+					*/
+					animator.animateTo(
+						fishGroup,
+						{
+							rotation: -1*direction * Math.PI /2
+						},
+						{
+							duration: { rotation: 500 }
+						}
+					);
 					
 					animator.animateTo
 					(
@@ -217,17 +279,33 @@ function FishingView(ievm, stage, config_dep) {
 					var mouthXPosition = fish.getMouthPosition().x;
 					var fishDirection = fish.getDirection();
 					endState.rotation = fishDirection * 2 * Math.PI;
-					endState.x += fishDirection * mouthXPosition;
-					endState.duration = 1;
-					endState.callback = function() {
+					/*endState.callback = function() {
 						fishTank.putFishInBasket(fish);
-					};
-					console.log(endState);
-					fishGroups[state.catching].transitionTo(endState);
-					//Tween.get(fishGroups[state.catching]).to({x:endState.x},1000).call(function() { });
-					//Tween.get(fishGroups[state.catching]).to({y:endState.y},1000).call(function() { });
-					//Tween.get(fishGroups[state.catching]).to({rotation:endState.rotation},1000).call(function() { fishTank.putFishInBasket(state.catching);});
-
+						if (allowClicks) {
+							state.catching.capture();
+							evm.tell("fishinggame.turnOnClicks");
+						}
+					};*/
+					//animator.animateTo(fishGroups[state.catching].centerOffset, {x:0, y:0}, {duration: 1000} );
+					/*console.log("problem...");
+					animator.animateTo(fishGroups[state.catching],endState,{duration:{x:1000,y:1000,rotation:1000},onFinish: function() {
+						console.log("///problem...");
+						fishTank.putFishInBasket(fish);
+						if (allowClicks) {
+							state.catching.capture();
+							evm.tell("fishinggame.turnOnClicks");
+						}
+					}});*/
+					
+					Tween.get(fishGroups[state.catching]).to(endState, 1500).call(function(){
+						fishTank.putFishInBasket(fish);
+						if (allowClicks) {
+							state.catching.capture();
+							evm.tell("fishinggame.turnOnClicks");
+						}}
+					);
+					
+					Tween.get(fishGroups[state.catching].centerOffset).to({x:0,y:0}, 1500);
 					animator.animateTo(
 						state,
 						{ length: 200, pendulum: 0, y: 75 },
@@ -272,6 +350,66 @@ function FishingView(ievm, stage, config_dep) {
 		};
 	}(rodLayer);
 
+	/**
+	 * Animates a fish back to the pond.
+	 * @param {Fish} fish
+	 */
+	var freeFish = function(fish) {
+		/** @type {Kinetic.Group} */ var group = fishGroups[fish];
+				animator.animateTo
+		(
+			group, { x: 400, y: 0, rotation: Math.PI / 2 },
+			{
+				duration: { x: 1000, y: 1000, rotation: 1000 },
+				onFinish: function()
+				{
+					SoundJS.play("splash");
+					group.centerOffset.x = 0;
+					group.centerOffset.y = 0;
+					animator.animateTo(
+						group, { x:fish.getX(), y:fish.getY(), rotation: 0 },
+						{
+							duration: { x: 1000, y: 1000, rotation: 1000 },
+							onFinish: function() {
+
+							//group.x += fish.getDirection() * fish.getMouthPosition().x;
+
+
+								fishTank.removeFishFromBasket(fish);
+								fish.free();
+							}
+						}
+					);
+				}
+			}
+		);
+		/*
+		group.transitionTo({
+			x: 400,
+			y: 0,
+			rotation: Math.PI / 2,
+			duration: 1,
+			callback: function() {
+				group.transitionTo({
+					x: fish.getX(),
+					y: fish.getY(),
+					duration: 0.3,
+					callback: function() {
+						group.transitionTo({
+							rotation: 0,
+							duration: 1,
+							callback: function() {
+								fish.free();
+							}
+						});
+					}
+				});
+			}
+		});
+		*/
+
+	};
+	
 	this.toString = function() { return "Fish View"; };
 	
 	this.notify = function(event) {
@@ -293,39 +431,6 @@ function FishingView(ievm, stage, config_dep) {
 	function moveFish(fish) {
 		fishGroups[fish].x = Math.round(fish.getX());
 		fishGroups[fish].y = Math.round(fish.getY());
-	}
-	
-	var evm = ievm;
-	evm.registerListener(this);
-
-
-	evm.on("fishinggame.catch", function(msg) {
-		rod.initCatch(msg.fish);
-		evm.tell("fishinggame.catched", {fish: msg.fish});
-	});
-	
-	evm.on("fishinggame.turnOnClick", function(msg) {
-		fishGroups[msg.fish].on("mousedown", function() {
-			console.log("FISH: Starting to catch " + msg.fish);
-			rod.initCatch(msg.fish);
-		});
-		fishGroups[msg.fish].on("touchstart", function() {
-			console.log("FISH: Starting to catch " + msg.fish);
-			rod.initCatch(msg.fish);
-		});
-	});
-	
-	evm.on("fishinggame.turnOffClick", function(msg) {
-		fishGroups[msg.fish].off("mousedown touchstart");
-	})
-
-	/**
-	 * Draws the rod
-	 * @param {Kinetic.Layer} rodLayer The layer on which the rod should be
-	 *                                 drawn.
-	 */
-	function drawRod(rodLayer, frame) {
-		
 	}
 
 	/**
@@ -365,7 +470,7 @@ function FishingView(ievm, stage, config_dep) {
 			y: 0,
 			text: fish.getNumber(),
 			fontSize: 48,
-			fontFamily: "Comic Sans MS",
+			fontFamily: "Gloria Hallelujah",
 			textFill: "white",
 			align: "center",
 			verticalAlign: "middle",
@@ -376,6 +481,7 @@ function FishingView(ievm, stage, config_dep) {
 
 		fishGroups[fish] = fishGroup;
 		numberGroups[fish] = numberText;
+		turnOnClick(fish);
 	};
 
 	/**

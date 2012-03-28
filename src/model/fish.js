@@ -93,6 +93,32 @@ function Fish(ieventManager, inumber, ix, iy, ispecies) {
 		eventManager.post(new FishMovedEvent(this));
 	};
 	
+	var captured = false;
+	this.isCaptured = function() {
+		return captured;
+	};
+	
+	this.capture = function() { captured = true; };
+	this.free = function() {
+		captured = false;
+		eventManager.registerListener(this);
+	};
+	
+	var clickable = null;
+	this.isClickable = function() { return clickable; };
+	/** @param {boolean} status */
+	this.setClickable = function(status) {
+		if (clickable != status) {
+			clickable = status;
+			if (clickable) {
+				eventManager.tell("fishinggame.turnOnClick", {fish:this});	
+			} else {
+				eventManager.tell("fishinggame.turnOffClick", {fish:this});
+			}
+		}
+		
+	};
+	
 	this.clicked = function() {
 		//console.log("clicked " + this.toString());
 	};

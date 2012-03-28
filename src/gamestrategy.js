@@ -15,15 +15,12 @@ Player.prototype._name = "Player";
 
 /**
  * @constructor
- * @param {EventManager} eventManager
  */
-function GameModule(eventManager) {
-	/** @private */
-	this._eventManager = eventManager;
+function GameModule() {
 	console.log("WARNING: No extension to GameModule defined.");
 }
 
-GameModule.prototype.getEventManager = function() { return this._eventManager; };
+//GameModule.prototype.getEventManager = function() { return this._eventManager; };
 /**
  * @param {Player} player
  * @param {EventManager} eventManager

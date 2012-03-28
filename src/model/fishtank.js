@@ -15,6 +15,13 @@ function FishingGame(ieventManager, config) {
 	var basketSize = 0;
 	/** @const */ var WIDTH = 625;
 	/** @const */ var HEIGHT = 600;
+	/** @enum {Object} */ var Starts = {
+			0: {x:150, y:200, occ: false },
+			1: {x:400, y:250, occ: false },
+			2: {x:300, y:370, occ: false },
+			3: {x:500, y:490, occ: false },
+			4: {x:200, y:125, occ: false }
+		};
 	
 	eventManager.registerListener(this);
 	
@@ -22,13 +29,6 @@ function FishingGame(ieventManager, config) {
 		var maxNumber = config.maxNumber;
 		var numberFishes = config.numberFishes;
 		/** @const {number} */ var NBR_IMAGES = 2;
-		/** @enum {Object} */ var Starts = {
-			0: {x:150, y:200},
-			1: {x:400, y:250},
-			2: {x:300, y:370},
-			3: {x:500, y:490},
-			4: {x:200, y:125}
-		};
 		
 		for (var i = 0; i < numberFishes; i++) {
 			var pos = Starts[i % 5];
@@ -61,13 +61,15 @@ function FishingGame(ieventManager, config) {
 	
 	eventManager.on("fishinggame.turnOnClicks", function() {
 		for (var i = 0; i < fishArray.length; i++) {
-			eventManager.tell("fishinggame.turnOnClick", {fish:fishArray[i]});	
+			eventManager.tell("fishinggame.turnOnClick", {fish:fishArray[i]});
+			//fishArray[i].setClickable(true);
 		}
 	});
 	
 	eventManager.on("fishinggame.turnOffClicks", function() {
 		for (var i = 0; i < fishArray.length; i++) {
-			eventManager.tell("fishinggame.turnOffClick", {fish:fishArray[i]});	
+			eventManager.tell("fishinggame.turnOffClick", {fish:fishArray[i]});
+			//fishArray[i].setClickable(false);
 		}
 	});
 	
@@ -76,19 +78,39 @@ function FishingGame(ieventManager, config) {
 	};
 	
 	this.putFishInBasket = function(fish) {
-		console.log("Put fish " + fish + " in basket.");
-		for (var i = 0; i < fishArray.length; i++) {
-			if (fishArray[i] === fish) {
-				fishArray.splice(i, 1);
-			}
+		var slot = this.getNextBasketSlot();
+		if (slot == basketArray.length) {
+			basketArray.push(fish);	
+		} else {
+			basketArray[slot] = fish;
 		}
-		basketArray.push(fish);
+		
 		basketSize++;
 	};
 	
+	this.removeFishFromBasket = function(fish) {
+		for (var i = 0; i < basketArray.length; i++) {
+			if (basketArray[i] === fish) {
+				basketArray[i] = undefined;
+			}
+		}
+	}
+	
 	this.getNextBasketSlot = function() {
-		return basketSize;
+		var min = 1000;
+		var foundAny = false;
+		for (var i = 0; i < basketArray.length; i++) {
+			if (basketArray[i] === undefined && i < min) {
+				min = i;
+				foundAny = true;
+			}
+		}
+		if (!foundAny) {
+			return basketArray.length;
+		} else {
+			return min;	
+		}
 	};
 }
-FishingGame.prototype = GameModule.prototype;
+FishingGame.prototype = new GameModule();
 

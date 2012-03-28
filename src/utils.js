@@ -1,11 +1,3 @@
-if (typeof Object.create !== 'function') {
-    Object.create = function (o) {
-        function F() {}
-        F.prototype = o;
-        return new F();
-    };
-}
-
 var _uid = 0;
 function uniqueId() {
 	return _uid++;
@@ -18,6 +10,14 @@ Object.size = function(obj) {
     }
     return size;
 };
+
+var Utils = function() {
+	return {
+		isNumber: function(n) {
+			return ! isNaN (n-0);
+		}
+	}
+}();
 
 /**
  * Handles simple animations.
@@ -45,11 +45,20 @@ function Animator() {
 		var obj = node._animator.values;
 		var done = true;
 		for (var prop in obj) {
+			if (obj[prop]._ticks === undefined)
+				obj[prop]._ticks = 0;
+			else
+				obj[prop]._ticks++;
 			if (obj[prop].timeLeft > 0) {
 				obj[prop].timeLeft -= diff;
 				node[prop] += obj[prop].step * diff;
 				done = false;
 			} else {
+				if (obj[prop]._told === undefined) {
+					obj[prop]._told = true;
+					//console.log("Mean ticks: " + obj[prop]._ticks / obj[prop].duration);
+					console.log("Duration: " + obj[prop].duration + ", Step: " + obj[prop].step);
+				}
 				node[prop] = obj[prop].to;
 			}
 		}
@@ -106,10 +115,17 @@ Animator.prototype.animateTo = function(node, endState, config) {
 	for (var prop in endState) {
 	      obj.values[prop] = {};
 	      obj.values[prop].to = endState[prop];
-	      if (config.duration !== undefined && config.duration[prop] != undefined) {
-	    	  obj.values[prop].duration = config.duration[prop];
+	      if (config.duration != undefined) {
+	    	  var dur = config.duration;
+	    	  if (!Utils.isNumber(config.duration)) {
+	    		  if (config.duration[prop] === undefined)
+	    			  alert('Not defined duration for ' + prop);
+	    		  dur = config.duration[prop];
+	    	  }
+	    	  obj.values[prop].duration = dur;
 		      obj.values[prop].useDuration = true;
 	      } else {
+	    	  console.log("Speed");
 	    	  obj.values[prop].duration = Math.abs(endState[prop] - node[prop]) / config.speed[prop];
 	    	  obj.values[prop].speed = config.speed[prop];
 		      obj.values[prop].useDuration = false;
@@ -117,6 +133,8 @@ Animator.prototype.animateTo = function(node, endState, config) {
 	      obj.values[prop].step = (endState[prop] - node[prop]) / obj.values[prop].duration;
 	      obj.values[prop].timeLeft = obj.values[prop].duration;
 	}
+	obj.doCallbackOnTick = config.onFrame != undefined;
+	obj.doCallbackWhenDone = config.onFinish != undefined;
 	obj.callbackOnTick = config.onFrame;
 	obj.callbackWhenDone = config.onFinish;
 	obj.lastDistance = Number.MAX_VALUE;
@@ -133,14 +151,18 @@ Animator.prototype.animateTo = function(node, endState, config) {
  */
 Animator.prototype.tick = function(timeDiff) {
 	for (var i = 0; i < this.beingAnimated.length; i++) {
-		this.beingAnimated[i]._animator.callbackOnTick();
+		if (this.beingAnimated[i]._animator.doCallbackOnTick) {
+			this.beingAnimated[i]._animator.callbackOnTick();
+		}
 		var done = this._tick(timeDiff, this.beingAnimated[i]);
 		if (done/*this.isDone(this.beingAnimated[i])*/) {
 			var node = this.beingAnimated[i];
 			this.beingAnimated.splice(i, 1);
 			if (!node._animator.doneCallback) {
 				node._animator.doneCallback = true;
-				node._animator.callbackWhenDone();
+				if (node._animator.doCallbackWhenDone) {
+					node._animator.callbackWhenDone();
+				}
 			}
 		}
 	}
