@@ -1,9 +1,7 @@
 /**
  * @constructor
  */
-function Player() {
-	console.log("WARNING: No extension to GameModule defined.");
-}
+function Player() {}
 Player.prototype.strategies = function() {};
 /**
  * @param {FishingGame} game
@@ -16,9 +14,7 @@ Player.prototype._name = "Player";
 /**
  * @constructor
  */
-function GameModule() {
-	console.log("WARNING: No extension to GameModule defined.");
-}
+function GameModule() {}
 
 //GameModule.prototype.getEventManager = function() { return this._eventManager; };
 /**

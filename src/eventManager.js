@@ -11,14 +11,14 @@ function EventManager() {
 	
 	var listeners = new Array();
 	
-	/**
+	/*
 	 * Registers a ordinary listener to the messaging system.
 	 * @param {GameEventListener} listener The listener to register.
 	 */
-	this.registerListener = function(listener) {
+	/*this.registerListener = function(listener) {
 		this.log("EVMAN: Register " + listener);
 		listeners.push(listener);
-	};
+	};*/
 
 	/**
 	 * Unregisters a listener from the messaging system.

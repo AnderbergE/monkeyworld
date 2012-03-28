@@ -1,15 +1,15 @@
 /**
  * @constructor
- * @param {EventManager} ieventManager
+ * @param {EventManager} ievm
  * @param {Object} config 
  * @implements {ModelModule}
  * @implements {GameEventListener}
  * @extends {GameModule}
  */
-function FishingGame(ieventManager, config) {
+function FishingGame(ievm, config) {
 	this._name = "FishingGame";
 	this.toString = function() { return "Fish Tank"; };
-	var eventManager = ieventManager;
+	var evm = ievm;
 	var fishArray = new Array();
 	var basketArray = new Array();
 	var basketSize = 0;
@@ -23,8 +23,11 @@ function FishingGame(ieventManager, config) {
 			4: {x:200, y:125, occ: false }
 		};
 	
-	eventManager.registerListener(this);
+	var catchingNumber = 3;
 	
+	evm.registerListener(this);
+	
+	this.getCatchingNumber = function() { return catchingNumber };
 	this.init = function(config) {
 		var maxNumber = config.maxNumber;
 		var numberFishes = config.numberFishes;
@@ -33,7 +36,7 @@ function FishingGame(ieventManager, config) {
 		for (var i = 0; i < numberFishes; i++) {
 			var pos = Starts[i % 5];
 			fishArray.push(new Fish(
-				eventManager,
+				evm,
 				Math.floor(Math.random() * (maxNumber + 1)),
 				pos.x,
 				pos.y,
@@ -59,19 +62,21 @@ function FishingGame(ieventManager, config) {
 		
 	};	
 	
-	eventManager.on("fishinggame.turnOnClicks", function() {
+	evm.on("fishinggame.turnOnClicks", function() {
 		for (var i = 0; i < fishArray.length; i++) {
-			eventManager.tell("fishinggame.turnOnClick", {fish:fishArray[i]});
+			evm.tell("fishinggame.turnOnClick", {fish:fishArray[i]});
 			//fishArray[i].setClickable(true);
 		}
 	});
 	
-	eventManager.on("fishinggame.turnOffClicks", function() {
+	evm.on("fishinggame.turnOffClicks", function() {
 		for (var i = 0; i < fishArray.length; i++) {
-			eventManager.tell("fishinggame.turnOffClick", {fish:fishArray[i]});
+			evm.tell("fishinggame.turnOffClick", {fish:fishArray[i]});
 			//fishArray[i].setClickable(false);
 		}
 	});
+	
+	
 	
 	this.getAllFish = function() {
 		return fishArray;

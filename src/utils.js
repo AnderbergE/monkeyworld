@@ -45,20 +45,20 @@ function Animator() {
 		var obj = node._animator.values;
 		var done = true;
 		for (var prop in obj) {
-			if (obj[prop]._ticks === undefined)
+			/*if (obj[prop]._ticks === undefined)
 				obj[prop]._ticks = 0;
 			else
-				obj[prop]._ticks++;
+				obj[prop]._ticks++;*/
 			if (obj[prop].timeLeft > 0) {
 				obj[prop].timeLeft -= diff;
 				node[prop] += obj[prop].step * diff;
 				done = false;
 			} else {
-				if (obj[prop]._told === undefined) {
+				/*if (obj[prop]._told === undefined) {
 					obj[prop]._told = true;
 					//console.log("Mean ticks: " + obj[prop]._ticks / obj[prop].duration);
 					console.log("Duration: " + obj[prop].duration + ", Step: " + obj[prop].step);
-				}
+				}*/
 				node[prop] = obj[prop].to;
 			}
 		}
@@ -125,7 +125,6 @@ Animator.prototype.animateTo = function(node, endState, config) {
 	    	  obj.values[prop].duration = dur;
 		      obj.values[prop].useDuration = true;
 	      } else {
-	    	  console.log("Speed");
 	    	  obj.values[prop].duration = Math.abs(endState[prop] - node[prop]) / config.speed[prop];
 	    	  obj.values[prop].speed = config.speed[prop];
 		      obj.values[prop].useDuration = false;

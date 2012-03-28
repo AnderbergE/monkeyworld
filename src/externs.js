@@ -96,6 +96,7 @@ Kinetic.Node = function(){};
 	 */
 	Kinetic.Node.prototype.setScale = function(scale, scaleY) {};
 	Kinetic.Node.prototype.getScale = function() {};
+	Kinetic.Node.prototype.scale = function() {};
 	Kinetic.Node.prototype.setPosition = function( x, y ) {};
 	Kinetic.Node.prototype.getPosition = function() {};
 	Kinetic.Node.prototype.getAbsolutePosition = function() {};
@@ -256,6 +257,8 @@ Kinetic.Text.prototype.textFill = function(){};
 Kinetic.Text.prototype.align = function(){};
 Kinetic.Text.prototype.verticalAlign = function(){};
 Kinetic.Text.prototype.textStroke = function(){};
+Kinetic.Text.prototype.textStrokeWidth = function(){};
+Kinetic.Text.prototype.strokeWidth = function(){};
 
 /**
  * @constructor
@@ -379,3 +382,7 @@ Tween.tick = function(delta, paused) {};
  **/
 Tween.to = function(props, duration, ease) {};
 
+/**
+ * @param {Number} duration The duration of the wait in milliseconds (or in ticks if useTicks is true).
+ */
+Tween.wait = function(duration) {};

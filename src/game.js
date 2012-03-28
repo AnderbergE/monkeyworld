@@ -45,7 +45,7 @@ function Game() {
 	 */
 	/** @const */ var ONLY_FISHING = true;
 	
-	var player = new MonkeyPlayer(eventManager);
+	var player = new GamerPlayer(eventManager);
 	
 	if (ONLY_FISHING) {
 		kickInModule(FishingView, FishingGame, player, {maxNumber: 9, numberFishes: 5});

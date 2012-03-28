@@ -62,6 +62,8 @@ function FishingView(ievm, stage, config_dep) {
 	var rodLayer = new Kinetic.Layer();
 	var backgroundLayer = new Kinetic.Layer();
 	var overlayLayer = new Kinetic.Layer();
+	var dynamicOverlayLayer = new Kinetic.Layer();
+	overlayLayer._drawOnce = false;
 	var pondLayer = new Kinetic.Layer();
 	var fpsLayer = new Kinetic.Layer();
 	stage.add(backgroundLayer);
@@ -69,6 +71,23 @@ function FishingView(ievm, stage, config_dep) {
 	stage.add(shapeLayer);
 	stage.add(rodLayer);
 	stage.add(overlayLayer);
+	stage.add(dynamicOverlayLayer);
+	dynamicOverlayLayer._numberOfNodes = 0;
+	dynamicOverlayLayer._doDraw = false;
+
+	dynamicOverlayLayer.dynamicAdd = function(obj) {
+		if ((++dynamicOverlayLayer._numberOfNodes) > 0)
+			dynamicOverlayLayer._doDraw = true;
+		dynamicOverlayLayer.add(obj);
+	}
+	dynamicOverlayLayer.dynamicRemove = function(obj) {
+		if (dynamicOverlayLayer._numberOfNodes > 0 &&
+			--dynamicOverlayLayer._numberOfNodes == 0) {
+			dynamicOverlayLayer._doDraw = false;
+			dynamicOverlayLayer._drawOnce = true;
+		}		
+		dynamicOverlayLayer.add(obj);
+	}
 	stage.add(fpsLayer);
 	
 	var evm = ievm;
@@ -240,7 +259,9 @@ function FishingView(ievm, stage, config_dep) {
 							rotation: -1*direction * Math.PI /2
 						},
 						{
-							duration: { rotation: 500 }
+							duration: { rotation: 500 },
+							onFrame: function(){},
+							onFinish: function(){}
 						}
 					);
 					
@@ -356,7 +377,7 @@ function FishingView(ievm, stage, config_dep) {
 	 */
 	var freeFish = function(fish) {
 		/** @type {Kinetic.Group} */ var group = fishGroups[fish];
-				animator.animateTo
+		animator.animateTo
 		(
 			group, { x: 400, y: 0, rotation: Math.PI / 2 },
 			{
@@ -370,6 +391,7 @@ function FishingView(ievm, stage, config_dep) {
 						group, { x:fish.getX(), y:fish.getY(), rotation: 0 },
 						{
 							duration: { x: 1000, y: 1000, rotation: 1000 },
+							onFrame: function() {},
 							onFinish: function() {
 
 							//group.x += fish.getDirection() * fish.getMouthPosition().x;
@@ -655,8 +677,17 @@ function FishingView(ievm, stage, config_dep) {
 		evm.post(new FrameEvent(frame)); // Post an event about this frame
 		rod.draw(frame); // Draw the fishing rod
 		animator.tick(frame.timeDiff); // Tell the animator about the frame
+		if (dynamicOverlayLayer._doDraw || dynamicOverlayLayer._drawOnce) {
+			dynamicOverlayLayer.draw();
+			dynamicOverlayLayer._drawOnce = false;
+		}
+		if (overlayLayer._drawOnce) {
+			overlayLayer.draw();
+			overlayLayer._drawOnce = false;
+		}
 		Tween.tick(frame.timeDiff, false);
 		shapeLayer.draw(); // Draw the shape layer
+
 	}
 
 	var loadingLayer;
@@ -708,6 +739,34 @@ function FishingView(ievm, stage, config_dep) {
 		stage.remove(loadingLayer);
 	}
 	
+	function showCatchNumber(number) {
+		  var text = new Kinetic.Text({
+              x: stage.width/2,
+              y: 150,
+              text: "FÅNGA SIFFRAN " + number + "!",
+              fontSize: 26,
+              fontFamily: "Short Stack",
+              textFill: "white",
+              textStroke: "black",
+              align: "center",
+              verticalAlign: "middle",
+              scale: {x:0,y:0},
+              textStrokeWidth: 1
+          });
+		  dynamicOverlayLayer.dynamicAdd(text);
+		  //overlayLayer.add(text);
+
+		//overlayLayer.draw();
+		Tween.get(text.scale).to({x:2, y:2}, 1000).wait(3000).call(function() {
+			Tween.get(text.scale).to({x: 1, y: 1}, 1000);
+			Tween.get(text).to({y: 50}, 1000).call(function(){
+				text.moveTo(overlayLayer);
+				dynamicOverlayLayer.dynamicRemove(text);
+				overlayLayer._drawOnce = true;
+			});
+		});
+	};
+	
 	this.prepare = function(model, modelInit) {
 		setupLoadingScreen();
 		evm.log('VIEW: Preparing view...');
@@ -719,6 +778,7 @@ function FishingView(ievm, stage, config_dep) {
 		evm.log('VIEW: Start rolling view...');
 		stage.onFrame(onFrame);
 		stage.start();
+		showCatchNumber(fishTank.getCatchingNumber());
 		evm.tell("fishinggame.started", null);
 	};
 }
