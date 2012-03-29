@@ -13,10 +13,10 @@ function Model(ieventManager, iview, iviewInit, iviewStart, iModel, iconfig, ipl
 	var stage = istage;
 
 	this.init = function() {
-		evm.log('MODEL: Creating model...');
+		Log.debug("Creating model...", "model");
 		var m = new myModel(evm);
 		m.play(player, evm);
-		evm.log('MODEL: Initiating model...');
+		Log.debug("Initiating model...", "model");
 		var viewConfig = m.init(config);
 		viewInit.call(view, viewConfig, m);
 		evm.tell("view.initiated");

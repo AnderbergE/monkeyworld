@@ -4,7 +4,7 @@
  * @constructor
  */
 function GamerPlayer(eventManager) {
-	console.log("Creating GamerPlayer");
+	Log.debug("Creating GamerPlayer", "player");
 }
 GamerPlayer.prototype = new Player();
 GamerPlayer.prototype.strategies = function() {};
@@ -14,10 +14,10 @@ GamerPlayer.prototype.strategies = function() {};
  * @param {FishingGame} game
  */
 GamerPlayer.prototype.strategies["FishingGame"] = function(game, eventManager) {
-	console.log("Applying GamerPlayer's strategy to the FishingGame");
+	Log.debug("Applying GamerPlayer's strategy to the FishingGame", "player");
 	
 	eventManager.on("fishinggame.started", function(msg) {
-		console.log("Game started");
+		Log.debug("Starting to think", "player");
 	//	eventManager.tell("fishinggame.turnOnClicks");
 		eventManager.tell("fishinggame.allowClicks");
 	});

@@ -11,6 +11,36 @@ Object.size = function(obj) {
     return size;
 };
 
+var Log = new(/** @constructor */ function() {
+	
+	function write(type, msg, tag) {
+		if (tag === undefined) {
+			tag = "";
+		}
+		tag = tag.substr(0,8);
+		tag = tag.toUpperCase();
+		var num = 8-tag.length;
+		for (var i = 0; i < num; i++) {
+			tag = " " + tag;
+		}
+		//tag += " ";
+		console.log(/*type + " " + */tag + " " + msg);
+	};
+	
+	this.debug = function(msg, tag) {
+		write("DEBUG  ", msg, tag);
+	};
+	
+	this.warning = function(msg, tag) {
+		write("WARNING", msg, tag);
+	};
+	
+	this.notify = function(msg, tag) {
+		write("NOTIFY ", msg, tag);
+	};
+	
+});
+
 var Utils = new (/** @constructor */function() {
 	
 	this.isNumber = function(n) {

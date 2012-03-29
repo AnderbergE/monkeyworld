@@ -107,10 +107,9 @@ function FishingView(ievm, stage, config_dep) {
 		fishTank.activity();
 		if (allowClicks) {
 			if (!fish.isCaptured()) {
-				console.log("FISH: Starting to catch " + fish);
+				Log.debug("Starting to catch " + fish, "fish");
 				rod.initCatch(fish);
 			} else {
-				console.log("FISH: Starting to free " + fish);
 				freeFish(fish);
 				fishTank.noactivity();
 			}
@@ -141,6 +140,7 @@ function FishingView(ievm, stage, config_dep) {
 	evm.on("FishingGame.endOfRound", function(msg) {
 		if (!msg.correct) {
 			showBig(Strings.get("FISHING_FREE_WRONG_ONES").toUpperCase());
+			evm.play(Sounds.FISHING_FREE_WRONG_ONES)
 		} else {
 			showBig(Strings.get("YAY").toUpperCase());
 			evm.play(Sounds.YAY);
@@ -391,6 +391,7 @@ function FishingView(ievm, stage, config_dep) {
 	 */
 	var freeFish = function(fish) {
 		if (fish.canFree()) {
+		Log.debug("Starting to free " + fish, "fish");
 		/** @type {Kinetic.Group} */ var group = fishGroups[fish];
 			animator.animateTo
 			(
@@ -554,7 +555,7 @@ function FishingView(ievm, stage, config_dep) {
 	 */
 	this.init = function(viewConfig, model) {
 		fishTank = model;
-    	evm.log('VIEW: Building stage...');
+    	Log.debug("Building stage...", "view");
 
 		var background = new Kinetic.Rect({
 			x: 0,
@@ -707,7 +708,7 @@ function FishingView(ievm, stage, config_dep) {
 	function loadSounds(model, modelInit) {
 		loadingLayer._text.text = "Hämtar ljud";
 		loadingLayer.draw();
-		evm.log("VIEW: Loading sounds...");
+		Log.debug("Loading sounds...", "view");
 		SoundJS.addBatch(config.SOUND_SOURCES);
 		SoundJS.onLoadQueueComplete = function() {loadImages(model, modelInit);};
 	}
@@ -715,7 +716,7 @@ function FishingView(ievm, stage, config_dep) {
 	function loadImages(model, modelInit) {
 		loadingLayer._text.text = "Hämtar bilder";
 		loadingLayer.draw();
-		evm.log("VIEW: Loading images...");
+		Log.debug("Loading images...", "view");
 		var loadedImages = 0;
 		var numImages = Object.size(config.IMAGE_SOURCES);
 		for (var src in config.IMAGE_SOURCES) {
@@ -775,13 +776,13 @@ function FishingView(ievm, stage, config_dep) {
 	
 	this.prepare = function(model, modelInit) {
 		setupLoadingScreen();
-		evm.log('VIEW: Preparing view...');
+		Log.debug("Preparing view...", "view");
 		loadSounds(model, modelInit);
 	};
 
 	this.start = function() {
 		tearDownLoadingScreen();
-		evm.log('VIEW: Start rolling view...');
+		Log.debug("Start rolling view...", "view");
 		stage.onFrame(onFrame);
 		stage.start();
 		showBig(Strings.get("FISHING_CATCH_NUMBER", fishTank.getCatchingNumber()).toUpperCase());

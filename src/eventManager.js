@@ -75,7 +75,7 @@ function EventManager(subtitleLayer) {
 	 * @param {SoundEntry} entry
 	 */
 	this.play = function(entry) {
-		console.log("Sound: \"" + entry.subtitle + "\"");
+		Log.notify("\"" + entry.subtitle + "\"", "sound");
 		var text = new Kinetic.Text({
 			x: subtitleLayer.getParent().width / 2,
 			y: subtitleLayer.getParent().height - 50,

@@ -26,5 +26,4 @@ var Sounds = {
 	
 	FISHING_THERE_ARE_MORE:
 		new SoundEntry(null, Strings.get("FISHING_THERE_ARE_MORE"))
-
 }
