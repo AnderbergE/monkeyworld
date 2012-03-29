@@ -61,8 +61,8 @@
 			<file name="externs.js"/>
 			</externs>
 		      <sources dir="src">
+                <file name="strings.js"/>
 		        <file name="sounds.js"/>
-		        <file name="strings.js"/>
 		        <file name="gamestrategy.js"/>
 		        <file name="strategies/MonkeyStrategy.js"/>
 		        <file name="strategies/AngelStrategy.js"/>
@@ -74,7 +74,6 @@
 		      	<file name="model/intro.js"/>
 		      	<file name="model/fish.js"/>
 		      	<file name="model/fishtank.js"/>
-		        <file name="controller.js"/>
 		      	<file name="eventManager.js"/>
 		      	<file name="game.js"/>
 		      	<file name="model.js"/>

@@ -138,9 +138,9 @@ function FishingView(ievm, stage, config_dep) {
 	
 	evm.on("FishingGame.endOfRound", function(msg) {
 		if (!msg.correct) {
-			showBig("FRIGE FISKARNA SOM ÄR FEL");
+			showBig(Strings.get("FISHING_FREE_WRONG_ONES").toUpperCase());
 		} else {
-			showBig("YAY!");
+			showBig(Strings.get("YAY").toUpperCase());
 			evm.play(Sounds.YAY);
 		}
 		/*var out = "Round ended ";
@@ -418,7 +418,7 @@ function FishingView(ievm, stage, config_dep) {
 				}
 			);
 		} else {
-			showBig("INTE DEN!");
+			showBig(Strings.get("FISHING_NOT_THIS_ONE").toUpperCase());
 		}
 	};
 	
@@ -777,6 +777,7 @@ function FishingView(ievm, stage, config_dep) {
 		stage.onFrame(onFrame);
 		stage.start();
 		showBig(Strings.get("FISHING_CATCH_NUMBER", fishTank.getCatchingNumber()).toUpperCase());
+		evm.play(Sounds.FISHING_CATCH);
 		//showBig("FÅNGA NUMMER " + fishTank.getCatchingNumber());
 		evm.tell("fishinggame.started", null);
 	};

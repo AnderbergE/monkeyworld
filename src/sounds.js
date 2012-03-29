@@ -12,6 +12,13 @@ function SoundEntry(soundFile, subtitle) {
  * @enum {SoundEntry}
  */
 var Sounds = {
-	YAY:          new SoundEntry(null, "Yay!"),
-	FISHING_FREE: new SoundEntry(null, "Frige fiskarna!") 
+	YAY:
+		new SoundEntry(null, Strings.get("YAY")),
+
+	FISHING_FREE_WRONG_ONES:
+		new SoundEntry(null, Strings.get("FISHING_FREE_WRONG_ONES")),
+		
+	FISHING_CATCH:
+		new SoundEntry(null, Strings.get("FISHING_CATCH")),
+
 }

@@ -11,7 +11,6 @@ window.onload = function() {
  * @constructor
  */
 function Game() {
-	var eventManager = new EventManager();
 	
 	//var fishingGame = new FishingGame();
 	
@@ -24,6 +23,16 @@ function Game() {
         width: WIN_WIDTH,
         height: WIN_HEIGHT
     });
+	
+	var subtitleLayer = new Kinetic.Layer({
+        width: WIN_WIDTH,
+        height: WIN_HEIGHT
+	});
+
+	stage._subtitleLayer = subtitleLayer;
+	stage.add(stage._subtitleLayer);
+	
+	var eventManager = new EventManager(subtitleLayer);
 	
 	/**
 	 * @param iView

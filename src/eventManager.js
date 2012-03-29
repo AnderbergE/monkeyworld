@@ -7,7 +7,7 @@ GameEventListener.prototype.notify = function(event) {};
 /**
  * @constructor
  */
-function EventManager() {
+function EventManager(subtitleLayer) {
 	
 	/**
 	 * @type {Object.<string, Array>}
@@ -51,11 +51,64 @@ function EventManager() {
 		}
 	};
 	
+	var subtitles = new Array();
+	
+	var subtitlesX = subtitleLayer.getParent().width / 2;
+	var subtitlesY = subtitleLayer.getParent().height - 50;
+	
+	function addSubtitle(text) {
+		for (var i = 0; i < subtitles.length; i++) {
+			subtitles[i].y -= 30; 
+		}
+		subtitles.push(text);
+	};
+	
+	function removeSubtitle(text) {
+		for (var i = 0; i < subtitles.length; i++) {
+			if (subtitles[i] === text) {
+				subtitles.splice(i, 1);
+			}
+		}
+	};
+	
 	/**
 	 * @param {SoundEntry} entry
 	 */
 	this.play = function(entry) {
-		console.log(entry.subtitle);
+		console.log("Sound: \"" + entry.subtitle + "\"");
+		var text = new Kinetic.Text({
+			x: subtitleLayer.getParent().width / 2,
+			y: subtitleLayer.getParent().height - 50,
+			text: entry.subtitle,
+			fontSize: 26,
+			fontFamily: "Arial",
+			textFill: "white",
+			fill: "gray",
+			textStroke: "black",
+			align: "center",
+			verticalAlign: "middle",
+			textStrokeWidth: 1
+		});
+		addSubtitle(text);
+		text._id = "subtitle" + subtitles.length;
+		subtitleLayer.add(text);
+		subtitleLayer._removeNext = false;
+		var that = this;
+
+		this.on("frame", function() {
+			subtitleLayer.moveToTop();
+			subtitleLayer.draw();
+			if (subtitleLayer._removeNext) {
+				that.off("frame", text._id);
+				subtitleLayer._removeNext = false;
+			}
+		}, "subtitle" + subtitles.length);
+		
+		setTimeout(function() {
+			subtitleLayer.remove(text);
+			subtitleLayer._removeNext = true;
+			removeSubtitle(text);
+		}, 2000);
 	}
 	
 	this.log = function(msg) {
