@@ -136,6 +136,18 @@ function FishingView(ievm, stage, config_dep) {
 		allowClicks = false;
 	});
 	
+	evm.on("FishingGame.endOfRound", function(msg) {
+		if (!msg.correct) {
+			showBig("FRIGE FISKARNA SOM ÄR FEL");
+		} else {
+			showBig("YAY!");
+		}
+		/*var out = "Round ended ";
+		out += (msg.correct ? "correctly!" : "with errors!");
+		showBig("Hej");
+		console.log(out);*/
+	});
+	
 	var rod = function(rodLayer) {
 		/** @const @enum */ var ROD_STATE =
 		{
@@ -714,27 +726,39 @@ function FishingView(ievm, stage, config_dep) {
 		stage.remove(loadingLayer);
 	}
 	
-	function showCatchNumber(number) {
-		var text = new Kinetic.Text({
-			x: stage.width/2,
-			y: 150,
-			text: "FÅNGA SIFFRAN " + number + "!",
-			fontSize: 26,
-			fontFamily: "Short Stack",
-			textFill: "white",
-			textStroke: "black",
-			align: "center",
-			verticalAlign: "middle",
-				scale: {x:0,y:0},
-			textStrokeWidth: 1
-		});
-		dynamicOverlayLayer.dynamicAdd(text);
+	var bigShowing = null;
+	
+	function showBig(text) {
+		if (bigShowing != null) {
+			console.log("Removing");
+			/*overlayLayer.remove(bigShowing);
+			dynamicOverlayLayer.dynamicRemove(bigShowing);
+			overlayLayer._drawOnce = true;*/
+			bigShowing.text = text;
+			bigShowing.x = stage.width/2;
+			bigShowing.y = 150; 
+		} else {
+			bigShowing = new Kinetic.Text({
+				x: stage.width/2,
+				y: 150,
+				text: text,
+				fontSize: 26,
+				fontFamily: "Short Stack",
+				textFill: "white",
+				textStroke: "black",
+				align: "center",
+				verticalAlign: "middle",
+					scale: {x:0,y:0},
+				textStrokeWidth: 1
+			});
+		}
+		dynamicOverlayLayer.dynamicAdd(bigShowing);
 
-		Tween.get(text.scale).to({x:2, y:2}, 1000).wait(3000).call(function() {
-			Tween.get(text.scale).to({x: 1, y: 1}, 1000);
-			Tween.get(text).to({y: 50}, 1000).call(function(){
-				text.moveTo(overlayLayer);
-				dynamicOverlayLayer.dynamicRemove(text);
+		Tween.get(bigShowing.scale).to({x:2, y:2}, 1000).wait(3000).call(function() {
+			Tween.get(bigShowing.scale).to({x: 1, y: 1}, 1000);
+			Tween.get(bigShowing).to({y: 50}, 1000).call(function(){
+				bigShowing.moveTo(overlayLayer);
+				dynamicOverlayLayer.dynamicRemove(bigShowing);
 				overlayLayer._drawOnce = true;
 			});
 		});
@@ -751,7 +775,7 @@ function FishingView(ievm, stage, config_dep) {
 		evm.log('VIEW: Start rolling view...');
 		stage.onFrame(onFrame);
 		stage.start();
-		showCatchNumber(fishTank.getCatchingNumber());
+		showBig("FÅNGA NUMMER " + fishTank.getCatchingNumber());
 		evm.tell("fishinggame.started", null);
 	};
 }

@@ -44,21 +44,22 @@ var Utils = new (/** @constructor */function() {
 	 * randomized in the interval [<code>start</code>, <code>end</code>].
 	 * It is guaranteed that <code>injected</code> will appear in the
 	 * returned array exactly <code>appearances</code> number of times.
-	 * @param {number}   start       - start of interval
-	 * @param {number}   end         - end of interval
-	 * @param {number}   size        - size of returned array
-	 * @param {number}   injected    - injected number
-	 * @param {number}   appearances - number of times <code>injected</code>
-	 *                                 will appear.
-	 * @param {boolean=} exactly     - if set, the injected number may not
-	 *                                 appear at the non-crooked positions.
-	 *                                 Default is false.
+	 * 
+	 * @param  {number}   start       - start of interval
+	 * @param  {number}   end         - end of interval
+	 * @param  {number}   size        - size of returned array
+	 * @param  {number}   injected    - injected number
+	 * @param  {number}   appearances - number of times <code>injected</code>
+	 *                                  will appear.
+	 * @param  {boolean=} exactly     - if set, the injected number may not
+	 *                                  appear at the non-crooked positions.
+	 *                                  Default is false.
 	 *                                 
-	 * @return {Array} An array of size <code>size</code>, with randomized
-	 *                 values in the interval [<code>start</code>,
-	 *                 <code>end</code>] and in which <code>injected</code>
-	 *                 will appear exactly <code>appearances</code> number
-	 *                 of times.
+	 * @return {Array}    An array of size <code>size</code>, with randomized
+	 *                    values in the interval [<code>start</code>,
+	 *                    <code>end</code>] and in which <code>injected</code>
+	 *                    will appear exactly <code>appearances</code> number
+	 *                    of times.
 	 */
 	this.crookedRandoms = function(start, end, size, injected, appearances, exactly) {
 		if (arguments.length == 5)

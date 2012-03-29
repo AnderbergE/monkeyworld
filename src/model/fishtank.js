@@ -12,6 +12,10 @@ function FishingGame(ievm, config) {
 	var fishArray = new Array();
 	var basketArray = new Array();
 	var basketSize = 0;
+	var correctCaptured = 0;
+	var catchingNumber = 3; 
+	var numberCorrect = 3;
+
 	/** @const */ var WIDTH = 625;
 	/** @const */ var HEIGHT = 600;
 	/** @enum {Object} */ var Starts = {
@@ -22,13 +26,11 @@ function FishingGame(ievm, config) {
 			4: {x:200, y:125, occ: false }
 		};
 	
-	var catchingNumber = 3; 
 	
 	this.getCatchingNumber = function() { return catchingNumber };
 	this.init = function(config) {
 		var maxNumber = config.maxNumber;
 		var numberFishes = config.numberFishes;
-		var numberCorrect = 3;
 		/** @const {number} */ var NBR_IMAGES = 2;
 		
 		var numbers = Utils.crookedRandoms(1, maxNumber, numberFishes, catchingNumber, numberCorrect, true);
@@ -85,12 +87,18 @@ function FishingGame(ievm, config) {
 			basketArray[slot] = fish;
 		}
 		basketSize++;
+		if (fish.getNumber() == catchingNumber) {
+			correctCaptured++;
+		} 
 		checkEndOfRound();
 	};
 	
 	var checkEndOfRound = function() {
-		for (var i = 0; i < basketArray[i]; i++) {
-			
+		if (correctCaptured == numberCorrect || basketSize == fishArray.length) {
+			evm.tell(
+				"FishingGame.endOfRound",
+				{ correct: basketSize == numberCorrect }
+			);
 		}
 	};
 	
@@ -100,6 +108,11 @@ function FishingGame(ievm, config) {
 				basketArray[i] = undefined;
 			}
 		}
+		basketSize--;
+		if (fish.getNumber() == catchingNumber) {
+			correctCaptured--;
+		}
+		checkEndOfRound();
 	}
 	
 	this.getNextBasketSlot = function() {
