@@ -30,7 +30,7 @@ function Fish(ieventManager, inumber, ix, iy, ispecies) {
 
 	this.toString = function() { return "Fish " + id; };
 	
-	eventManager.registerListener(this);
+	//eventManager.registerListener(this);
 	
 	/** @type {number}       */ var xSpeed = (Math.random() *
 		                            (MAX_X_SPEED - MIN_X_SPEED)) + MIN_X_SPEED;
@@ -57,13 +57,29 @@ function Fish(ieventManager, inumber, ix, iy, ispecies) {
 		}
 	};
 	this.hooked = function() {
-		eventManager.unregisterListener(this);
+		//eventManager.unregisterListener(this);
+		eventManager.off("frame", this.toString());
 	};
 	
 	this.onFrame = function(frame) {
 		
 	};
 	
+	var that = this;
+	
+	var onFrame = function(msg) {
+		y = y0 + 15*Math.cos(ySpeed * (offset + msg.frame.time * 2 * Math.PI / 3000));
+		if (direction == Direction.RIGHT)
+			x += xSpeed * msg.frame.timeDiff;
+		else
+			x -= xSpeed * msg.frame.timeDiff;
+		
+		//eventManager.post(new FishMovedEvent(this));
+		eventManager.tell("fishinggame.fishmoved", {fish:that});
+	};
+	
+	eventManager.on("frame", onFrame, this.toString());
+	/*
 	this.notify = function(event) {
 		
 		if (event instanceof FrameEvent) {
@@ -78,19 +94,24 @@ function Fish(ieventManager, inumber, ix, iy, ispecies) {
 			eventManager.post(new FishMovedEvent(this));
 		}
 	};
-	
+	*/
 	this.hitRightWall = function(newPos) {
 		direction = Direction.LEFT;
-		eventManager.post(new FishTurnedLeft(this));
+		//eventManager.post(new FishTurnedLeft(this));
+		eventManager.tell("fishinggame.fishturnedleft", {fish:this});
 		x = newPos - (x - newPos);
-		eventManager.post(new FishMovedEvent(this));
+		//eventManager.post(new FishMovedEvent(this));
+		var that = this;
+		eventManager.tell("fishinggame.fishmoved", {fish:that});
 	};
 	
 	this.hitLeftWall = function(newPos) {
 		direction = Direction.RIGHT;
-		eventManager.post(new FishTurnedRight(this));
+		//eventManager.post(new FishTurnedRight(this));
+		eventManager.tell("fishinggame.fishturnedright", {fish:this});
 		x = newPos + (newPos - x);
-		eventManager.post(new FishMovedEvent(this));
+		//eventManager.post(new FishMovedEvent(this));
+		eventManager.tell("fishinggame.fishmoved", {fish:this});
 	};
 	
 	var captured = false;
@@ -101,7 +122,7 @@ function Fish(ieventManager, inumber, ix, iy, ispecies) {
 	this.capture = function() { captured = true; };
 	this.free = function() {
 		captured = false;
-		eventManager.registerListener(this);
+		eventManager.on("frame", onFrame, this.toString());
 	};
 	
 	var clickable = null;
@@ -123,6 +144,7 @@ function Fish(ieventManager, inumber, ix, iy, ispecies) {
 		//console.log("clicked " + this.toString());
 	};
 	
-	eventManager.post(new InitiatedFishEvent({fish:this, callback: this.clicked}));
+	//eventManager.post(new InitiatedFishEvent({fish:this, callback: this.clicked}));
+	eventManager.tell("fishinggame.initiatedfish", {fish:this, callback: this.clicked});
 }
 

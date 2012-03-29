@@ -91,7 +91,7 @@ function FishingView(ievm, stage, config_dep) {
 	stage.add(fpsLayer);
 	
 	var evm = ievm;
-	evm.registerListener(this);
+	//evm.registerListener(this);
 
 	var turnOffClick = function(fish) {
 		fishGroups[fish].off("mousedown touchstart");
@@ -434,8 +434,28 @@ function FishingView(ievm, stage, config_dep) {
 	
 	this.toString = function() { return "Fish View"; };
 	
+	evm.on("fishinggame.initiatedfish", function(msg){
+		createFish(msg.fish, msg.callback);
+	});
+	
+	evm.on("fishinggame.fishmoved", function(msg) {
+		moveFish(msg.fish);
+	});
+	
+	evm.on("fishinggame.fishturnedleft", function(msg) {
+		var scale = fishGroups[msg.fish].getScale();
+		fishGroups[msg.fish].setScale(-1 * scale.x, scale.y);
+		numberGroups[msg.fish].setScale(-1 * msg.fish.getScale(), 1*msg.fish.getScale());
+	});
+	
+	evm.on("fishinggame.fishturnedright", function(msg) {
+		var scale = fishGroups[msg.fish].getScale();
+		fishGroups[msg.fish].setScale(-1 * scale.x, scale.y);
+		numberGroups[msg.fish].setScale(msg.fish.getScale()*1, msg.fish.getScale()*1);
+	});
+	
 	this.notify = function(event) {
-		if (event instanceof InitiatedFishEvent) {
+		/*if (event instanceof InitiatedFishEvent) {
 			createFish(event.config.fish, event.config.callback);
 		} else if (event instanceof FishMovedEvent) {
 			moveFish(event.fish);
@@ -447,7 +467,7 @@ function FishingView(ievm, stage, config_dep) {
 			var scale = fishGroups[event.fish].getScale();
 			fishGroups[event.fish].setScale(-1 * scale.x, scale.y);
 			numberGroups[event.fish].setScale(event.fish.getScale()*1, event.fish.getScale()*1);
-		}
+		}*/
 	};
 	
 	function moveFish(fish) {
@@ -674,7 +694,8 @@ function FishingView(ievm, stage, config_dep) {
 	 */
 	function onFrame(frame) {
 		fps.showFps(frame); // Update FPS display
-		evm.post(new FrameEvent(frame)); // Post an event about this frame
+		//evm.post(new FrameEvent(frame)); // Post an event about this frame
+		evm.tell("frame", {frame:frame});
 		rod.draw(frame); // Draw the fishing rod
 		animator.tick(frame.timeDiff); // Tell the animator about the frame
 		if (dynamicOverlayLayer._doDraw || dynamicOverlayLayer._drawOnce) {

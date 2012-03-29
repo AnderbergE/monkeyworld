@@ -3,7 +3,6 @@
  * @param {EventManager} ievm
  * @param {Object} config 
  * @implements {ModelModule}
- * @implements {GameEventListener}
  * @extends {GameModule}
  */
 function FishingGame(ievm, config) {
@@ -25,7 +24,7 @@ function FishingGame(ievm, config) {
 	
 	var catchingNumber = 3;
 	
-	evm.registerListener(this);
+	//evm.registerListener(this);
 	
 	this.getCatchingNumber = function() { return catchingNumber };
 	this.init = function(config) {
@@ -47,6 +46,18 @@ function FishingGame(ievm, config) {
 		return { width: WIDTH, height: HEIGHT };
 	};
 	
+	evm.on("frame", function(msg) {
+		for (var i = 0; i < fishArray.length; i++) {
+			var fish = fishArray[i];
+			var x = fish.getX();
+			if (fish.getDirection() > 0 && x >= WIDTH - fish.getScaledWidth() / 2) {
+				fish.hitRightWall(WIDTH - fish.getScaledWidth() / 2);
+			} else if (fish.getDirection() < 0 && x <= fish.getScaledWidth() / 2) {
+				fish.hitLeftWall(fish.getScaledWidth() / 2);
+			}
+		}
+	});
+	/*
 	this.notify = function(event) {
 		if (event instanceof FrameEvent) {
 			for (var i = 0; i < fishArray.length; i++) {
@@ -61,7 +72,7 @@ function FishingGame(ievm, config) {
 		}
 		
 	};	
-	
+	*/
 	evm.on("fishinggame.turnOnClicks", function() {
 		for (var i = 0; i < fishArray.length; i++) {
 			evm.tell("fishinggame.turnOnClick", {fish:fishArray[i]});
