@@ -24,6 +24,11 @@ var Strings = {
 	"FISHING_NOT_THIS_ONE": {
 		"sv" :"Inte den!",
 		"en" :"Not this one!"
+	},
+	
+	"FISHING_THERE_ARE_MORE": {
+		"sv": "Det finns mer fiska att fånga. Fortsätt leta!",
+		"en": "There are more fish to catch. Keep looking!"
 	}
 
 };

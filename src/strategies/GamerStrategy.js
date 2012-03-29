@@ -18,7 +18,7 @@ GamerPlayer.prototype.strategies["FishingGame"] = function(game, eventManager) {
 	
 	eventManager.on("fishinggame.started", function(msg) {
 		console.log("Game started");
-		eventManager.tell("fishinggame.turnOnClicks");
+	//	eventManager.tell("fishinggame.turnOnClicks");
 		eventManager.tell("fishinggame.allowClicks");
 	});
 	

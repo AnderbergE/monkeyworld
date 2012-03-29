@@ -104,6 +104,7 @@ function FishingView(ievm, stage, config_dep) {
 	};
 	
 	var clickFunction = function(fish) {
+		fishTank.activity();
 		if (allowClicks) {
 			if (!fish.isCaptured()) {
 				console.log("FISH: Starting to catch " + fish);
@@ -111,6 +112,7 @@ function FishingView(ievm, stage, config_dep) {
 			} else {
 				console.log("FISH: Starting to free " + fish);
 				freeFish(fish);
+				fishTank.noactivity();
 			}
 		}
 	};
@@ -334,8 +336,9 @@ function FishingView(ievm, stage, config_dep) {
 						if (allowClicks) {
 							state.catching.capture();
 							evm.tell("fishinggame.turnOnClicks");
-						}}
-					);
+						}
+						fishTank.noactivity();
+					});
 					
 					Tween.get(fishGroups[state.catching].centerOffset).to({x:0,y:0}, 1500);
 					animator.animateTo(
@@ -418,7 +421,8 @@ function FishingView(ievm, stage, config_dep) {
 				}
 			);
 		} else {
-			showBig(Strings.get("FISHING_NOT_THIS_ONE").toUpperCase());
+			//showBig(Strings.get("FISHING_NOT_THIS_ONE").toUpperCase());
+			evm.play(Sounds.FISHING_NOT_THIS_ONE);
 		}
 	};
 	
@@ -442,6 +446,10 @@ function FishingView(ievm, stage, config_dep) {
 		var scale = fishGroups[msg.fish].getScale();
 		fishGroups[msg.fish].setScale(-1 * scale.x, scale.y);
 		numberGroups[msg.fish].setScale(msg.fish.getScale()*1, msg.fish.getScale()*1);
+	});
+	
+	evm.on("FishingGame.inactivity", function(msg) {
+		evm.play(msg.sound);
 	});
 	
 	function moveFish(fish) {

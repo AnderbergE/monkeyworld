@@ -74,6 +74,37 @@ function FishingGame(ievm, config) {
 			//fishArray[i].setClickable(false);
 		}
 	});
+	
+	function capturedWantedFish() {
+		return correctCaptured == numberCorrect || basketSize == fishArray.length;
+	};
+	
+	function inactivity() {
+		var sound = Sounds.FISHING_THERE_ARE_MORE;
+		evm.tell("FishingGame.inactivity", {sound:sound});
+		restartInactivityTimer();
+	}
+	
+	var timer = null;
+	
+	function restartInactivityTimer() {
+		if (!capturedWantedFish()) {
+			timer = setTimeout(inactivity, 5000);
+		}
+	}
+	
+	this.activity = function() {
+		if (timer != null)
+			clearTimeout(timer);
+	};
+	
+	this.noactivity = function() {
+		restartInactivityTimer();
+	}
+	
+	evm.on("fishinggame.started", function(msg) {
+		restartInactivityTimer();
+	});
 
 	this.getAllFish = function() {
 		return fishArray;
@@ -94,7 +125,7 @@ function FishingGame(ievm, config) {
 	};
 	
 	var checkEndOfRound = function() {
-		if (correctCaptured == numberCorrect || basketSize == fishArray.length) {
+		if (capturedWantedFish()) {
 			for (var i = 0; i < fishArray.length; i++) {
 				if (fishArray[i].getNumber() == catchingNumber) {
 					fishArray[i].setCanFree(false);
