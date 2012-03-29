@@ -248,8 +248,8 @@ Kinetic.Circle.prototype.getRadius = function() {};
  * @extends {Kinetic.Shape}
  */
 Kinetic.Text = function(config){};
-Kinetic.Text.prototype.x = function(){};
-Kinetic.Text.prototype.y = function(){};
+/** @type {number} */ Kinetic.Text.prototype.x;
+/** @type {number} */ Kinetic.Text.prototype.y;
 Kinetic.Text.prototype.text = function(){};
 Kinetic.Text.prototype.fontSize = function(){};
 Kinetic.Text.prototype.fontFamily = function(){};

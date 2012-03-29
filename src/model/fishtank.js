@@ -13,7 +13,7 @@ function FishingGame(ievm, config) {
 	var basketArray = new Array();
 	var basketSize = 0;
 	var correctCaptured = 0;
-	var catchingNumber = 3; 
+	var catchingNumber = 3;
 	var numberCorrect = 3;
 
 	/** @const */ var WIDTH = 625;
@@ -95,6 +95,11 @@ function FishingGame(ievm, config) {
 	
 	var checkEndOfRound = function() {
 		if (correctCaptured == numberCorrect || basketSize == fishArray.length) {
+			for (var i = 0; i < fishArray.length; i++) {
+				if (fishArray[i].getNumber() == catchingNumber) {
+					fishArray[i].setCanFree(false);
+				}
+			}
 			evm.tell(
 				"FishingGame.endOfRound",
 				{ correct: basketSize == numberCorrect }

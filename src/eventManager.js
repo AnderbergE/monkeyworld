@@ -51,6 +51,13 @@ function EventManager() {
 		}
 	};
 	
+	/**
+	 * @param {SoundEntry} entry
+	 */
+	this.play = function(entry) {
+		console.log(entry.subtitle);
+	}
+	
 	this.log = function(msg) {
 		console.log(msg);
 	};

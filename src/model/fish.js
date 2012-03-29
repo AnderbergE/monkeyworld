@@ -32,6 +32,7 @@ function Fish(ieventManager, inumber, ix, iy, ispecies) {
 	/** @const @type {number}*/ var height = 128;
 	/** @type {number}       */ var scaledWidth = scale * width;
 	/** @type {number}       */ var scaledHeight = scale * height;
+	/** @type {boolean}      */ var _canFree = true;
 
 	this.toString = function() { return "Fish " + id; };
 	
@@ -52,6 +53,8 @@ function Fish(ieventManager, inumber, ix, iy, ispecies) {
 	this.getScale = function() { return scale; };
 	this.getSpecies = function() { return species; };
 	this.getDirection = function() { return direction; };
+	this.canFree = function() { return _canFree; };
+	this.setCanFree = function(bool) { _canFree = bool; };
 	this.getMouthPosition = function() {
 		switch (species) {
 		case 0: return { x: 50, y: 0 }; break;

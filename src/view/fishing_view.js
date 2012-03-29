@@ -141,6 +141,7 @@ function FishingView(ievm, stage, config_dep) {
 			showBig("FRIGE FISKARNA SOM ÄR FEL");
 		} else {
 			showBig("YAY!");
+			evm.play(Sounds.YAY);
 		}
 		/*var out = "Round ended ";
 		out += (msg.correct ? "correctly!" : "with errors!");
@@ -386,35 +387,39 @@ function FishingView(ievm, stage, config_dep) {
 	 * @param {Fish} fish
 	 */
 	var freeFish = function(fish) {
+		if (fish.canFree()) {
 		/** @type {Kinetic.Group} */ var group = fishGroups[fish];
-		animator.animateTo
-		(
-			group, { x: 400, y: 0, rotation: Math.PI / 2 },
-			{
-				duration: { x: 1000, y: 1000, rotation: 1000 },
-				onFinish: function()
+			animator.animateTo
+			(
+				group, { x: 400, y: 0, rotation: Math.PI / 2 },
 				{
-					SoundJS.play("splash");
-					group.centerOffset.x = 0;
-					group.centerOffset.y = 0;
-					animator.animateTo(
-						group, { x:fish.getX(), y:fish.getY(), rotation: 0 },
-						{
-							duration: { x: 1000, y: 1000, rotation: 1000 },
-							onFrame: function() {},
-							onFinish: function() {
-
-							//group.x += fish.getDirection() * fish.getMouthPosition().x;
-
-
-								fishTank.removeFishFromBasket(fish);
-								fish.free();
+					duration: { x: 1000, y: 1000, rotation: 1000 },
+					onFinish: function()
+					{
+						SoundJS.play("splash");
+						group.centerOffset.x = 0;
+						group.centerOffset.y = 0;
+						animator.animateTo(
+							group, { x:fish.getX(), y:fish.getY(), rotation: 0 },
+							{
+								duration: { x: 1000, y: 1000, rotation: 1000 },
+								onFrame: function() {},
+								onFinish: function() {
+	
+								//group.x += fish.getDirection() * fish.getMouthPosition().x;
+	
+	
+									fishTank.removeFishFromBasket(fish);
+									fish.free();
+								}
 							}
-						}
-					);
+						);
+					}
 				}
-			}
-		);
+			);
+		} else {
+			showBig("INTE DEN!");
+		}
 	};
 	
 	this.toString = function() { return "Fish View"; };
@@ -730,10 +735,6 @@ function FishingView(ievm, stage, config_dep) {
 	
 	function showBig(text) {
 		if (bigShowing != null) {
-			console.log("Removing");
-			/*overlayLayer.remove(bigShowing);
-			dynamicOverlayLayer.dynamicRemove(bigShowing);
-			overlayLayer._drawOnce = true;*/
 			bigShowing.text = text;
 			bigShowing.x = stage.width/2;
 			bigShowing.y = 150; 
@@ -775,7 +776,8 @@ function FishingView(ievm, stage, config_dep) {
 		evm.log('VIEW: Start rolling view...');
 		stage.onFrame(onFrame);
 		stage.start();
-		showBig("FÅNGA NUMMER " + fishTank.getCatchingNumber());
+		showBig(Strings.get("FISHING_CATCH_NUMBER", fishTank.getCatchingNumber()).toUpperCase());
+		//showBig("FÅNGA NUMMER " + fishTank.getCatchingNumber());
 		evm.tell("fishinggame.started", null);
 	};
 }
