@@ -16,7 +16,6 @@ Player.prototype._name = "Player";
  */
 function GameModule() {}
 
-//GameModule.prototype.getEventManager = function() { return this._eventManager; };
 /**
  * @param {Player} player
  * @param {EventManager} eventManager

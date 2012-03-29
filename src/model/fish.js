@@ -1,6 +1,11 @@
 /**
  * A fish.
  * @constructor
+ * @param {EventManager}  ieventManager  The event manager
+ * @param {number}        inumber        The number on the fish
+ * @param {number}        ix             Starting x position
+ * @param {number}        iy             Starting y position
+ * @param {number}        ispecies       Species number
  */
 function Fish(ieventManager, inumber, ix, iy, ispecies) {
 
@@ -30,8 +35,6 @@ function Fish(ieventManager, inumber, ix, iy, ispecies) {
 
 	this.toString = function() { return "Fish " + id; };
 	
-	//eventManager.registerListener(this);
-	
 	/** @type {number}       */ var xSpeed = (Math.random() *
 		                            (MAX_X_SPEED - MIN_X_SPEED)) + MIN_X_SPEED;
 	/** @type {number}       */ var ySpeed = (Math.random() *
@@ -57,7 +60,6 @@ function Fish(ieventManager, inumber, ix, iy, ispecies) {
 		}
 	};
 	this.hooked = function() {
-		//eventManager.unregisterListener(this);
 		eventManager.off("frame", this.toString());
 	};
 	
@@ -74,43 +76,23 @@ function Fish(ieventManager, inumber, ix, iy, ispecies) {
 		else
 			x -= xSpeed * msg.frame.timeDiff;
 		
-		//eventManager.post(new FishMovedEvent(this));
 		eventManager.tell("fishinggame.fishmoved", {fish:that});
 	};
 	
 	eventManager.on("frame", onFrame, this.toString());
-	/*
-	this.notify = function(event) {
-		
-		if (event instanceof FrameEvent) {
 
-			
-			y = y0 + 15*Math.cos(ySpeed * (offset + event.frame.time * 2 * Math.PI / 3000));
-			if (direction == Direction.RIGHT)
-				x += xSpeed * event.frame.timeDiff;
-			else
-				x -= xSpeed * event.frame.timeDiff;
-			
-			eventManager.post(new FishMovedEvent(this));
-		}
-	};
-	*/
 	this.hitRightWall = function(newPos) {
 		direction = Direction.LEFT;
-		//eventManager.post(new FishTurnedLeft(this));
 		eventManager.tell("fishinggame.fishturnedleft", {fish:this});
 		x = newPos - (x - newPos);
-		//eventManager.post(new FishMovedEvent(this));
 		var that = this;
 		eventManager.tell("fishinggame.fishmoved", {fish:that});
 	};
 	
 	this.hitLeftWall = function(newPos) {
 		direction = Direction.RIGHT;
-		//eventManager.post(new FishTurnedRight(this));
 		eventManager.tell("fishinggame.fishturnedright", {fish:this});
 		x = newPos + (newPos - x);
-		//eventManager.post(new FishMovedEvent(this));
 		eventManager.tell("fishinggame.fishmoved", {fish:this});
 	};
 	
@@ -139,12 +121,7 @@ function Fish(ieventManager, inumber, ix, iy, ispecies) {
 		}
 		
 	};
-	
-	this.clicked = function() {
-		//console.log("clicked " + this.toString());
-	};
-	
-	//eventManager.post(new InitiatedFishEvent({fish:this, callback: this.clicked}));
-	eventManager.tell("fishinggame.initiatedfish", {fish:this, callback: this.clicked});
+
+	eventManager.tell("fishinggame.initiatedfish", {fish:this});
 }
 

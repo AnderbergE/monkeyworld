@@ -11,13 +11,82 @@ Object.size = function(obj) {
     return size;
 };
 
-var Utils = function() {
-	return {
-		isNumber: function(n) {
-			return ! isNaN (n-0);
+var Utils = new (/** @constructor */function() {
+	
+	this.isNumber = function(n) {
+		return ! isNaN (n-0);
+	};
+
+	/**
+	 * @param {number} min
+	 * @param {number} max
+	 * @return {number} A random number in the interval [min, max].
+	 */
+	this.getRandomInt = function(min, max) {
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	};
+	
+	/**
+	 * @param {Array} array
+	 * @param {*} obj
+	 * @return true if obj is in array, othwerwise false
+	 */
+	this.inArray = function(array, obj) {
+		for (var i = 0; i < array.length; i++) {
+			if (array[i] === obj)
+				return true;
 		}
-	}
-}();
+		return false;
+	};
+	
+	/**
+	 * Produces an array of given <code>size</code>, where the values are
+	 * randomized in the interval [<code>start</code>, <code>end</code>].
+	 * It is guaranteed that <code>injected</code> will appear in the
+	 * returned array exactly <code>appearances</code> number of times.
+	 * @param {number}   start       - start of interval
+	 * @param {number}   end         - end of interval
+	 * @param {number}   size        - size of returned array
+	 * @param {number}   injected    - injected number
+	 * @param {number}   appearances - number of times <code>injected</code>
+	 *                                 will appear.
+	 * @param {boolean=} exactly     - if set, the injected number may not
+	 *                                 appear at the non-crooked positions.
+	 *                                 Default is false.
+	 *                                 
+	 * @return {Array} An array of size <code>size</code>, with randomized
+	 *                 values in the interval [<code>start</code>,
+	 *                 <code>end</code>] and in which <code>injected</code>
+	 *                 will appear exactly <code>appearances</code> number
+	 *                 of times.
+	 */
+	this.crookedRandoms = function(start, end, size, injected, appearances, exactly) {
+		if (arguments.length == 5)
+			exactly = false;
+		var array = new Array(size);
+		var crookedPositions = new Array(appearances);
+		var alreadyTaken = new Array();
+		for (var i = 0; i < appearances; i++) {
+			var crookedPosition = this.getRandomInt(0, size - 1);
+			while (this.inArray(crookedPositions, crookedPosition)) {
+				crookedPosition = this.getRandomInt(0, size - 1);
+			}
+			crookedPositions.push(crookedPosition);
+		}
+		for (var i = 0; i < size; i++) {
+			if (this.inArray(crookedPositions, i)) {
+				array[i] = injected;
+			} else {
+				array[i] = this.getRandomInt(start, end);
+				if (exactly) {
+					while (array[i] == injected)
+						array[i] = this.getRandomInt(start, end);
+				}
+			}
+		}
+		return array;
+	};
+});
 
 /**
  * Handles simple animations.

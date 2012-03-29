@@ -22,21 +22,22 @@ function FishingGame(ievm, config) {
 			4: {x:200, y:125, occ: false }
 		};
 	
-	var catchingNumber = 3;
-	
-	//evm.registerListener(this);
+	var catchingNumber = 3; 
 	
 	this.getCatchingNumber = function() { return catchingNumber };
 	this.init = function(config) {
 		var maxNumber = config.maxNumber;
 		var numberFishes = config.numberFishes;
+		var numberCorrect = 3;
 		/** @const {number} */ var NBR_IMAGES = 2;
+		
+		var numbers = Utils.crookedRandoms(1, maxNumber, numberFishes, catchingNumber, numberCorrect, true);
 		
 		for (var i = 0; i < numberFishes; i++) {
 			var pos = Starts[i % 5];
 			fishArray.push(new Fish(
 				evm,
-				Math.floor(Math.random() * (maxNumber + 1)),
+				numbers[i],
 				pos.x,
 				pos.y,
 				Math.floor(Math.random() * NBR_IMAGES)
@@ -57,22 +58,7 @@ function FishingGame(ievm, config) {
 			}
 		}
 	});
-	/*
-	this.notify = function(event) {
-		if (event instanceof FrameEvent) {
-			for (var i = 0; i < fishArray.length; i++) {
-				var fish = fishArray[i];
-				var x = fish.getX();
-				if (fish.getDirection() > 0 && x >= WIDTH - fish.getScaledWidth() / 2) {
-					fish.hitRightWall(WIDTH - fish.getScaledWidth() / 2);
-				} else if (fish.getDirection() < 0 && x <= fish.getScaledWidth() / 2) {
-					fish.hitLeftWall(fish.getScaledWidth() / 2);
-				}
-			}
-		}
-		
-	};	
-	*/
+
 	evm.on("fishinggame.turnOnClicks", function() {
 		for (var i = 0; i < fishArray.length; i++) {
 			evm.tell("fishinggame.turnOnClick", {fish:fishArray[i]});
@@ -86,9 +72,7 @@ function FishingGame(ievm, config) {
 			//fishArray[i].setClickable(false);
 		}
 	});
-	
-	
-	
+
 	this.getAllFish = function() {
 		return fishArray;
 	};
@@ -100,8 +84,14 @@ function FishingGame(ievm, config) {
 		} else {
 			basketArray[slot] = fish;
 		}
-		
 		basketSize++;
+		checkEndOfRound();
+	};
+	
+	var checkEndOfRound = function() {
+		for (var i = 0; i < basketArray[i]; i++) {
+			
+		}
 	};
 	
 	this.removeFishFromBasket = function(fish) {

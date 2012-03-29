@@ -1,7 +1,6 @@
 /**
  * @constructor
  * @implements {ViewModule}
- * @implements {GameEventListener}
  */
 function FishingView(ievm, stage, config_dep) {
 
@@ -91,7 +90,6 @@ function FishingView(ievm, stage, config_dep) {
 	stage.add(fpsLayer);
 	
 	var evm = ievm;
-	//evm.registerListener(this);
 
 	var turnOffClick = function(fish) {
 		fishGroups[fish].off("mousedown touchstart");
@@ -190,7 +188,7 @@ function FishingView(ievm, stage, config_dep) {
 						evm.tell("fishinggame.turnOffClicks");
 					}
 					state.playedSplash = false;
-					SoundJS.play("swosh");//sounds.swosh.play();
+					SoundJS.play("swosh");
 					angle = getGoalAngle(state.catching);
 					var front = getFishFront(state.catching);
 					
@@ -405,37 +403,12 @@ function FishingView(ievm, stage, config_dep) {
 				}
 			}
 		);
-		/*
-		group.transitionTo({
-			x: 400,
-			y: 0,
-			rotation: Math.PI / 2,
-			duration: 1,
-			callback: function() {
-				group.transitionTo({
-					x: fish.getX(),
-					y: fish.getY(),
-					duration: 0.3,
-					callback: function() {
-						group.transitionTo({
-							rotation: 0,
-							duration: 1,
-							callback: function() {
-								fish.free();
-							}
-						});
-					}
-				});
-			}
-		});
-		*/
-
 	};
 	
 	this.toString = function() { return "Fish View"; };
 	
 	evm.on("fishinggame.initiatedfish", function(msg){
-		createFish(msg.fish, msg.callback);
+		createFish(msg.fish);
 	});
 	
 	evm.on("fishinggame.fishmoved", function(msg) {
@@ -454,22 +427,6 @@ function FishingView(ievm, stage, config_dep) {
 		numberGroups[msg.fish].setScale(msg.fish.getScale()*1, msg.fish.getScale()*1);
 	});
 	
-	this.notify = function(event) {
-		/*if (event instanceof InitiatedFishEvent) {
-			createFish(event.config.fish, event.config.callback);
-		} else if (event instanceof FishMovedEvent) {
-			moveFish(event.fish);
-		} else if (event instanceof FishTurnedLeft) {
-			var scale = fishGroups[event.fish].getScale();
-			fishGroups[event.fish].setScale(-1 * scale.x, scale.y);
-			numberGroups[event.fish].setScale(-1 * event.fish.getScale(), 1*event.fish.getScale());
-		} else if (event instanceof FishTurnedRight) {
-			var scale = fishGroups[event.fish].getScale();
-			fishGroups[event.fish].setScale(-1 * scale.x, scale.y);
-			numberGroups[event.fish].setScale(event.fish.getScale()*1, event.fish.getScale()*1);
-		}*/
-	};
-	
 	function moveFish(fish) {
 		fishGroups[fish].x = Math.round(fish.getX());
 		fishGroups[fish].y = Math.round(fish.getY());
@@ -478,10 +435,8 @@ function FishingView(ievm, stage, config_dep) {
 	/**
 	 * Creates a fish
 	 * @param {Fish} fish
-	 * @param {Function} callback Function supposed to be called when the fish
-	 *                            is clicked.
 	 */
-	function createFish(fish, callback) {
+	function createFish(fish) {
 
 		var fishGroup = new Kinetic.Group({
 			x: fish.getX(),
@@ -694,7 +649,6 @@ function FishingView(ievm, stage, config_dep) {
 	 */
 	function onFrame(frame) {
 		fps.showFps(frame); // Update FPS display
-		//evm.post(new FrameEvent(frame)); // Post an event about this frame
 		evm.tell("frame", {frame:frame});
 		rod.draw(frame); // Draw the fishing rod
 		animator.tick(frame.timeDiff); // Tell the animator about the frame
@@ -761,23 +715,21 @@ function FishingView(ievm, stage, config_dep) {
 	}
 	
 	function showCatchNumber(number) {
-		  var text = new Kinetic.Text({
-              x: stage.width/2,
-              y: 150,
-              text: "FÅNGA SIFFRAN " + number + "!",
-              fontSize: 26,
-              fontFamily: "Short Stack",
-              textFill: "white",
-              textStroke: "black",
-              align: "center",
-              verticalAlign: "middle",
-              scale: {x:0,y:0},
-              textStrokeWidth: 1
-          });
-		  dynamicOverlayLayer.dynamicAdd(text);
-		  //overlayLayer.add(text);
+		var text = new Kinetic.Text({
+			x: stage.width/2,
+			y: 150,
+			text: "FÅNGA SIFFRAN " + number + "!",
+			fontSize: 26,
+			fontFamily: "Short Stack",
+			textFill: "white",
+			textStroke: "black",
+			align: "center",
+			verticalAlign: "middle",
+				scale: {x:0,y:0},
+			textStrokeWidth: 1
+		});
+		dynamicOverlayLayer.dynamicAdd(text);
 
-		//overlayLayer.draw();
 		Tween.get(text.scale).to({x:2, y:2}, 1000).wait(3000).call(function() {
 			Tween.get(text.scale).to({x: 1, y: 1}, 1000);
 			Tween.get(text).to({y: 50}, 1000).call(function(){
