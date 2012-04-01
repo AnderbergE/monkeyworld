@@ -54,6 +54,8 @@ function FishingView(ievm, stage, config_dep) {
 	var animator = new Animator();
 	/** @type {boolean} */ var allowClicks = true; 
 	
+	var fishCountingView = new FishCountingView(stage, ievm);
+	
 	/*
 	 * Initiate layers
 	 */
@@ -115,6 +117,24 @@ function FishingView(ievm, stage, config_dep) {
 			}
 		}
 	};
+	
+	var tearDownView = function() {
+		Log.debug("Tearing down FishingView's layers", "view");
+		stage.remove(backgroundLayer);
+		stage.remove(shapeLayer);
+		stage.remove(rodLayer);
+		stage.remove(overlayLayer);
+		stage.remove(pondLayer);
+		stage.remove(dynamicOverlayLayer);
+		stage.onFrame(function(frame){
+			evm.tell("frame", {frame:frame});
+		});
+	};
+	
+	var roundDone = function() {
+		tearDownView();
+		fishCountingView.init(fishTank, fishGroups);
+	};
 
 	evm.on("fishinggame.catch", function(msg) {
 		rod.initCatch(msg.fish);
@@ -142,13 +162,11 @@ function FishingView(ievm, stage, config_dep) {
 			showBig(Strings.get("FISHING_FREE_WRONG_ONES").toUpperCase());
 			evm.play(Sounds.FISHING_FREE_WRONG_ONES)
 		} else {
+			allowClicks = false;
 			showBig(Strings.get("YAY").toUpperCase());
 			evm.play(Sounds.YAY);
+			roundDone();
 		}
-		/*var out = "Round ended ";
-		out += (msg.correct ? "correctly!" : "with errors!");
-		showBig("Hej");
-		console.log(out);*/
 	});
 	
 	var rod = function(rodLayer) {
@@ -193,7 +211,7 @@ function FishingView(ievm, stage, config_dep) {
 				y: fish.getY() + config.POND.Y + dir * fish.getMouthPosition().y
 			};
 		}
-
+		
 		return {
 			draw: function(frame) {
 				var angle = state.pendulum;

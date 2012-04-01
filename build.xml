@@ -55,7 +55,7 @@
            classpath="lib/closure/compiler.jar"/>
 	<target name="compile">
 		<jscomp compilationLevel="advanced"  
-		            debug="true" output="html/monkeyworld.js" warning="verbose">
+		            debug="false" output="html/monkeyworld.js" warning="verbose">
 
 			<externs dir="src">
 			<file name="externs.js"/>
@@ -83,6 +83,7 @@
 		      	<file name="view/login_view.js"/>
 		      	<file name="view/intro_view.js"/>
 		      	<file name="view/fishing_view.js"/>
+		      	<file name="view/fishing_counting_view.js"/>
 		      	<file name="view.js"/>
 		      </sources>
 

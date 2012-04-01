@@ -29,6 +29,16 @@ var Strings = {
 	"FISHING_THERE_ARE_MORE": {
 		"sv": "Det finns mer fiska att fånga. Fortsätt leta!",
 		"en": "There are more fish to catch. Keep looking!"
+	},
+	
+	"FISHING_ARE_YOU_SURE": {
+		"sv": "Är du säker?",
+		"en": "Are you sure?"
+	},
+	
+	"FISHING_COUNT_FISH": {
+		"sv": "Räkna fiskarna!",
+		"en": "Count the fish!"
 	}
 
 };

@@ -166,6 +166,38 @@ function FishingGame(ievm, config) {
 			return min;	
 		}
 	};
+	
+	this.getBasket = function() {
+		return basketArray;
+	};
+	
+	/**
+	 * Gets the choices the player can make when counting the fish in the
+	 * basket.
+	 * @return {Array.<number>} array of choices 
+	 */
+	this.getCountingChoices = function() {
+		return [1, 2, 3, 4, 5];
+	};
+	
+	function numberFishInBasket() {
+		var sum = 0;
+		for (var i = 0; i < basketArray.length; i++) {
+			if (basketArray[i] != undefined)
+				sum++;
+		}
+		return sum;
+	}
+	
+	/**
+	 * Lets the player count the fish in the basket.
+	 */
+	this.countFish = function(number) {
+		evm.tell(
+			"FishingGame.countingResult",
+			{ correct: number == numberFishInBasket() }
+		);
+	}
 }
 FishingGame.prototype = new GameModule();
 

@@ -1,8 +1,8 @@
 /**
  * @constructor
  */
-function Model(ieventManager, iview, iviewInit, iviewStart, iModel, iconfig, iplayer, istage) {
-	
+function Model(ieventManager, iview, iviewInit, iviewStart, iModel, iconfig, iplayer) {
+
 	var myModel = iModel;
 	var view = iview;
 	var viewInit = iviewInit;
@@ -10,7 +10,6 @@ function Model(ieventManager, iview, iviewInit, iviewStart, iModel, iconfig, ipl
 	var evm = ieventManager;
 	var config = iconfig;
 	var player = iplayer;
-	var stage = istage;
 
 	this.init = function() {
 		Log.debug("Creating model...", "model");

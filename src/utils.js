@@ -70,6 +70,28 @@ var Utils = new (/** @constructor */function() {
 	};
 	
 	/**
+	 * @constructor
+	 */
+	var Gridizer = function(startx, starty, stepx, stepy, width) {
+		var gridXPos = 0;
+		var gridYPos = 0;
+		this.next = function() {
+			var xp = startx + gridXPos * stepx;
+			var yp = starty + gridYPos * stepy;
+			gridXPos = (gridXPos + 1) % width;
+			if (gridXPos == 0) {
+				gridYPos++;
+			}
+			return { x: xp, y: yp };
+		};
+	};
+	
+	this.gridizer = function(startx, starty, stepx, stepy, width) {
+		
+		return new Gridizer(startx, starty, stepx, stepy, width);
+	};
+	
+	/**
 	 * Produces an array of given <code>size</code>, where the values are
 	 * randomized in the interval [<code>start</code>, <code>end</code>].
 	 * It is guaranteed that <code>injected</code> will appear in the

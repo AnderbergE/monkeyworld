@@ -29,8 +29,8 @@ function Game() {
         height: WIN_HEIGHT
 	});
 
+	stage.add(subtitleLayer);
 	stage._subtitleLayer = subtitleLayer;
-	stage.add(stage._subtitleLayer);
 	
 	var eventManager = new EventManager(subtitleLayer);
 	

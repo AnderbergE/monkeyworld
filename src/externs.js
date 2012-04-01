@@ -41,6 +41,67 @@ Kinetic.Container = function() {};
 	Kinetic.Container.prototype.remove = function(node) {};
 	Kinetic.Container.prototype.removeChildren = function() {};
 
+	/**
+	 * Node
+	 * v3.8.2
+	 * @constructor
+	 */
+	Kinetic.Node = function(){};
+		/**
+		 * @param {string} eventTypeString
+		 * @param {function(Object)} handler
+		 */
+		Kinetic.Node.prototype.on = function(eventTypeString, handler) {};
+		Kinetic.Node.prototype.off = function( eventTypeString ) {};
+		Kinetic.Node.prototype.show = function() {};
+		Kinetic.Node.prototype.hide = function() {};
+		Kinetic.Node.prototype.getZIndex = function() {};
+		Kinetic.Node.prototype.setAlpha = function( alpha ) {};
+		Kinetic.Node.prototype.getAlpha = function() {};
+		/**
+		 * @param {number} scale
+		 * @param {number=} scaleY
+		 */
+		Kinetic.Node.prototype.setScale = function(scale, scaleY) {};
+		Kinetic.Node.prototype.getScale = function() {};
+		Kinetic.Node.prototype.scale = function() {};
+		Kinetic.Node.prototype.setPosition = function( x, y ) {};
+		Kinetic.Node.prototype.getPosition = function() {};
+		Kinetic.Node.prototype.getAbsolutePosition = function() {};
+		Kinetic.Node.prototype.move = function( x, y ) {};
+		Kinetic.Node.prototype.setRotation = function( theta ) {};
+		Kinetic.Node.prototype.setRotationDeg = function( theta ) {};
+		Kinetic.Node.prototype.setCenterOffset = function(x,y) {};
+		Kinetic.Node.prototype.getCenterOffset = function() {};
+		Kinetic.Node.prototype.centerOffset = function() {};
+		Kinetic.Node.prototype.getRotation = function() {};
+		Kinetic.Node.prototype.getRotationDeg = function() {};
+		Kinetic.Node.prototype.rotate = function( theta ) {};
+		Kinetic.Node.prototype.rotateDeg = function( theta ) {};
+		Kinetic.Node.prototype.listen = function( bool ) {};
+		Kinetic.Node.prototype.moveToTop = function() {};
+		Kinetic.Node.prototype.moveToBottom = function() {};
+		Kinetic.Node.prototype.moveUp = function() {};
+		Kinetic.Node.prototype.moveDown = function() {};
+		Kinetic.Node.prototype.setZIndex = function( zIndex ) {};
+		Kinetic.Node.prototype.draggable = function( bool ) {};
+		Kinetic.Node.prototype.draggableX = function( bool ) {};
+		Kinetic.Node.prototype.draggableY = function( bool ) {};
+		Kinetic.Node.prototype.isDragging = function() {};
+		Kinetic.Node.prototype.moveTo = function( container ) {};
+		Kinetic.Node.prototype.getParent = function() {};
+		Kinetic.Node.prototype.getLayer = function() {};
+		Kinetic.Node.prototype.getStage = function() {};
+		Kinetic.Node.prototype.getName = function() {};
+
+		Kinetic.Node.prototype.callback = function() {};
+		Kinetic.Node.prototype.duration = function() {};
+		Kinetic.Node.prototype.easing = function() {};
+		/**
+		 * @param {Object} config
+		 */
+		Kinetic.Node.prototype.transitionTo = function(config) {};
+	
 /**
  * Stage
  * v3.8.2
@@ -60,6 +121,10 @@ Kinetic.Stage.prototype.container = function() {};
 	Kinetic.Stage.prototype.draw = function() {};
 	Kinetic.Stage.prototype.clear = function() {};
 	Kinetic.Stage.prototype.on = function( eventTypeString, handler ) {};
+	/**
+	 * @param {Kinetic.Layer} layer
+	 */
+	Kinetic.Stage.prototype.add = function(layer) {};
 	Kinetic.Stage.prototype.setSize = function( width, height ) {};
 	/**
 	 * @param {number} scale
@@ -72,68 +137,6 @@ Kinetic.Stage.prototype.container = function() {};
 	Kinetic.Stage.prototype.getTouchPosition = function() {};
 	Kinetic.Stage.prototype.getUserPosition = function() {};
 	Kinetic.Stage.prototype.getContainer = function() {};
-	
-/**
- * Node
- * v3.8.2
- * @constructor
- */
-Kinetic.Node = function(){};
-	/**
-	 * @param {string} eventTypeString
-	 * @param {function(Object)} handler
-	 */
-	Kinetic.Node.prototype.on = function(eventTypeString, handler) {};
-	Kinetic.Node.prototype.off = function( eventTypeString ) {};
-	Kinetic.Node.prototype.show = function() {};
-	Kinetic.Node.prototype.hide = function() {};
-	Kinetic.Node.prototype.getZIndex = function() {};
-	Kinetic.Node.prototype.setAlpha = function( alpha ) {};
-	Kinetic.Node.prototype.getAlpha = function() {};
-	/**
-	 * @param {number} scale
-	 * @param {number=} scaleY
-	 */
-	Kinetic.Node.prototype.setScale = function(scale, scaleY) {};
-	Kinetic.Node.prototype.getScale = function() {};
-	Kinetic.Node.prototype.scale = function() {};
-	Kinetic.Node.prototype.setPosition = function( x, y ) {};
-	Kinetic.Node.prototype.getPosition = function() {};
-	Kinetic.Node.prototype.getAbsolutePosition = function() {};
-	Kinetic.Node.prototype.move = function( x, y ) {};
-	Kinetic.Node.prototype.setRotation = function( theta ) {};
-	Kinetic.Node.prototype.setRotationDeg = function( theta ) {};
-	Kinetic.Node.prototype.setCenterOffset = function(x,y) {};
-	Kinetic.Node.prototype.getCenterOffset = function() {};
-	Kinetic.Node.prototype.centerOffset = function() {};
-	Kinetic.Node.prototype.getRotation = function() {};
-	Kinetic.Node.prototype.getRotationDeg = function() {};
-	Kinetic.Node.prototype.rotate = function( theta ) {};
-	Kinetic.Node.prototype.rotateDeg = function( theta ) {};
-	Kinetic.Node.prototype.listen = function( bool ) {};
-	Kinetic.Node.prototype.moveToTop = function() {};
-	Kinetic.Node.prototype.moveToBottom = function() {};
-	Kinetic.Node.prototype.moveUp = function() {};
-	Kinetic.Node.prototype.moveDown = function() {};
-	Kinetic.Node.prototype.setZIndex = function( zIndex ) {};
-	Kinetic.Node.prototype.draggable = function( bool ) {};
-	Kinetic.Node.prototype.draggableX = function( bool ) {};
-	Kinetic.Node.prototype.draggableY = function( bool ) {};
-	Kinetic.Node.prototype.isDragging = function() {};
-	Kinetic.Node.prototype.moveTo = function( container ) {};
-	Kinetic.Node.prototype.getParent = function() {};
-	Kinetic.Node.prototype.getLayer = function() {};
-	Kinetic.Node.prototype.getStage = function() {};
-	Kinetic.Node.prototype.getName = function() {};
-
-	Kinetic.Node.prototype.callback = function() {};
-	Kinetic.Node.prototype.duration = function() {};
-	Kinetic.Node.prototype.easing = function() {};
-	/**
-	 * @param {Object} config
-	 */
-	Kinetic.Node.prototype.transitionTo = function(config) {};
-	
 
 /**
  * Layer

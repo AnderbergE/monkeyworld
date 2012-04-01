@@ -25,5 +25,11 @@ var Sounds = {
 		new SoundEntry(null, Strings.get("FISHING_NOT_THIS_ONE")),
 	
 	FISHING_THERE_ARE_MORE:
-		new SoundEntry(null, Strings.get("FISHING_THERE_ARE_MORE"))
+		new SoundEntry(null, Strings.get("FISHING_THERE_ARE_MORE")),
+		
+	FISHING_ARE_YOU_SURE:
+		new SoundEntry(null, Strings.get("FISHING_ARE_YOU_SURE")),
+		
+	FISHING_COUNT_FISH:
+		new SoundEntry(null, Strings.get("FISHING_COUNT_FISH"))
 }
