@@ -5,8 +5,10 @@
  * @param {Kinetic.Stage} stage
  * @param {EventManager} evm
  */
-function FishCountingView(stage, evm) {
+function FishCountingView(stage, evm, EVM_TAG) {
 
+	/** @type {FishCountingView} */ var that = this;
+	
 	/** @const */ var GRID_POSITION   = { x: 700 , y: 150 };
 	/** @const */ var GRID_STEP       = { x: 100,  y: 150 };
 	/** @const */ var GRID_WIDTH      = 2;
@@ -30,9 +32,9 @@ function FishCountingView(stage, evm) {
 	/**
 	 * Creates a number button for the user to click on.
 	 * 
-	 * @param {number} x
-	 * @param {number} y
-	 * @param {number} num
+	 * @param x   {number} Position of button on x axis 
+	 * @param y   {number} Position of button on y axis
+	 * @param num {number} Number that the button represents
 	 */
 	function createNumber(x, y, num) {
 		var numGroup = new Kinetic.Group({
@@ -62,8 +64,8 @@ function FishCountingView(stage, evm) {
 	
 	/**
 	 * Sets up the counting view in the Fishing Game.
-	 * @param {FishingGame} ifishTank
-	 * @param {Kinetic.Group} fishGroups
+	 * @param ifishTank  {FishingGame}
+	 * @param fishGroups {Kinetic.Group} 
 	 */
 	this.init = function(ifishTank, fishGroups) {
 		fishTank = ifishTank;
@@ -119,14 +121,24 @@ function FishCountingView(stage, evm) {
 	};
 	
 	/**
+	 * Tears down the view
+	 */
+	this.tearDown = function() {
+		stage.remove(shapeLayer);
+		stage.remove(backgroundLayer);
+		evm.tell("FishingGame.roundDone");
+	};
+	
+	/**
 	 * What to do when the game module has evaluated the user's count. 
 	 */
 	evm.on("FishingGame.countingResult", function(msg) {
 		if (msg.correct) {
 			evm.play(Sounds.YAY);
+			setTimeout(function(){that.tearDown()}, 1500);
 		} else {
 			evm.play(Sounds.FISHING_ARE_YOU_SURE);
 		}
-	});
+	}, EVM_TAG);
 	
 }

@@ -6,6 +6,9 @@
  * @extends {GameModule}
  */
 function FishingGame(ievm, config) {
+	
+	/** @const @type {string} */ var EVM_TAG = "FishingGame";
+	
 	this._name = "FishingGame";
 	this.toString = function() { return "Fish Tank"; };
 	var evm = ievm;
@@ -13,8 +16,8 @@ function FishingGame(ievm, config) {
 	var basketArray = new Array();
 	var basketSize = 0;
 	var correctCaptured = 0;
-	var catchingNumber = 3;
-	var numberCorrect = 3;
+	var catchingNumber = 2;
+	var numberCorrect = 1;
 
 	/** @const */ var WIDTH = 625;
 	/** @const */ var HEIGHT = 600;
@@ -49,9 +52,10 @@ function FishingGame(ievm, config) {
 		return { width: WIDTH, height: HEIGHT };
 	};
 	
-	evm.on("frame", function(msg) {
+	this.onFrame = function(frame) {
 		for (var i = 0; i < fishArray.length; i++) {
 			var fish = fishArray[i];
+			fish.onFrame(frame);
 			var x = fish.getX();
 			if (fish.getDirection() > 0 && x >= WIDTH - fish.getScaledWidth() / 2) {
 				fish.hitRightWall(WIDTH - fish.getScaledWidth() / 2);
@@ -59,21 +63,25 @@ function FishingGame(ievm, config) {
 				fish.hitLeftWall(fish.getScaledWidth() / 2);
 			}
 		}
-	});
+	};
 
-	evm.on("fishinggame.turnOnClicks", function() {
+	this.turnOnClicks = function() {
 		for (var i = 0; i < fishArray.length; i++) {
 			evm.tell("fishinggame.turnOnClick", {fish:fishArray[i]});
 			//fishArray[i].setClickable(true);
-		}
-	});
+		}	
+	};
 	
-	evm.on("fishinggame.turnOffClicks", function() {
+	this.turnOffClicks = function() {
 		for (var i = 0; i < fishArray.length; i++) {
 			evm.tell("fishinggame.turnOffClick", {fish:fishArray[i]});
 			//fishArray[i].setClickable(false);
 		}
-	});
+	};
+
+	/*evm.on("Game.startGame", function(msg) {
+		Log.debug("I'm still alive!");
+	}, EVM_TAG);*/
 	
 	function capturedWantedFish() {
 		return correctCaptured == numberCorrect || basketSize == fishArray.length;
@@ -102,9 +110,9 @@ function FishingGame(ievm, config) {
 		restartInactivityTimer();
 	}
 	
-	evm.on("fishinggame.started", function(msg) {
+	/*evm.on("fishinggame.started", function(msg) {
 		restartInactivityTimer();
-	});
+	});*/
 
 	this.getAllFish = function() {
 		return fishArray;
@@ -198,6 +206,14 @@ function FishingGame(ievm, config) {
 			{ correct: number == numberFishInBasket() }
 		);
 	}
+	
+	this.tearDown = function() {
+		//evm.forget(EVM_TAG);
+	};
+	
+	this.start = function() {
+		restartInactivityTimer();
+	};
 }
 FishingGame.prototype = new GameModule();
 

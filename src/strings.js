@@ -2,32 +2,37 @@
 var Strings = {
 		
 	"YAY": {
-		"sv" :"Hurra!",
-		"en" :"Yay!"
+		"sv": "Hurra!",
+		"en": "Yay!"
+	},
+	
+	"ARE_YOU_READY_TO_TEACH": {
+		"sv": "Är du redo att lära apan?",
+		"en": "Are you ready to teach monkey?"
 	},
 		
 	"FISHING_CATCH_NUMBER": {
-		"sv" :"Fånga nummer %1",
-		"en" :"Catch number %1"
+		"sv": "Fånga nummer %1",
+		"en": "Catch number %1"
 	},
 	
 	"FISHING_CATCH": {
-		"sv" :"Fånga nummer",
-		"en" :"Catch number"
+		"sv": "Fånga nummer",
+		"en": "Catch number"
 	},
 
 	"FISHING_FREE_WRONG_ONES": {
-		"sv" :"Frige fiskarna som är fel",
-		"en" :"Put back the wrong fish"
+		"sv": "Frige fiskarna som är fel",
+		"en": "Put back the wrong fish"
 	},
 	
 	"FISHING_NOT_THIS_ONE": {
-		"sv" :"Inte den!",
-		"en" :"Not this one!"
+		"sv": "Inte den!",
+		"en": "Not this one!"
 	},
 	
 	"FISHING_THERE_ARE_MORE": {
-		"sv": "Det finns mer fiska att fånga. Fortsätt leta!",
+		"sv": "Det finns mer fiskar att fånga. Fortsätt leta!",
 		"en": "There are more fish to catch. Keep looking!"
 	},
 	
@@ -44,7 +49,7 @@ var Strings = {
 };
 
 var GlobalSettings = {
-	language: "en"
+	language: "sv"
 }
 
 /**

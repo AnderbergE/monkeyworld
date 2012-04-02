@@ -53,6 +53,7 @@ function Fish(ieventManager, inumber, ix, iy, ispecies) {
 	this.getScale = function() { return scale; };
 	this.getSpecies = function() { return species; };
 	this.getDirection = function() { return direction; };
+	var hooked = false;
 	this.canFree = function() { return _canFree; };
 	this.setCanFree = function(bool) { _canFree = bool; };
 	this.getMouthPosition = function() {
@@ -63,27 +64,23 @@ function Fish(ieventManager, inumber, ix, iy, ispecies) {
 		}
 	};
 	this.hooked = function() {
-		eventManager.off("frame", this.toString());
-	};
-	
-	this.onFrame = function(frame) {
-		
+		hooked = true;
 	};
 	
 	var that = this;
 	
-	var onFrame = function(msg) {
-		y = y0 + 15*Math.cos(ySpeed * (offset + msg.frame.time * 2 * Math.PI / 3000));
-		if (direction == Direction.RIGHT)
-			x += xSpeed * msg.frame.timeDiff;
-		else
-			x -= xSpeed * msg.frame.timeDiff;
-		
-		eventManager.tell("fishinggame.fishmoved", {fish:that});
+	this.onFrame = function(frame) {
+		if (!hooked) {
+			y = y0 + 15*Math.cos(ySpeed * (offset + frame.time * 2 * Math.PI / 3000));
+			if (direction == Direction.RIGHT)
+				x += xSpeed * frame.timeDiff;
+			else
+				x -= xSpeed * frame.timeDiff;
+			
+			eventManager.tell("fishinggame.fishmoved", {fish:that});
+		}
 	};
 	
-	eventManager.on("frame", onFrame, this.toString());
-
 	this.hitRightWall = function(newPos) {
 		direction = Direction.LEFT;
 		eventManager.tell("fishinggame.fishturnedleft", {fish:this});
@@ -107,7 +104,7 @@ function Fish(ieventManager, inumber, ix, iy, ispecies) {
 	this.capture = function() { captured = true; };
 	this.free = function() {
 		captured = false;
-		eventManager.on("frame", onFrame, this.toString());
+		hooked = false;
 	};
 	
 	var clickable = null;

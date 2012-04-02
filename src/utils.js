@@ -13,18 +13,23 @@ Object.size = function(obj) {
 
 var Log = new(/** @constructor */ function() {
 	
+	var show = "";
+	var not = "evm";
+	
 	function write(type, msg, tag) {
 		if (tag === undefined) {
 			tag = "";
 		}
-		tag = tag.substr(0,8);
-		tag = tag.toUpperCase();
-		var num = 8-tag.length;
-		for (var i = 0; i < num; i++) {
-			tag = " " + tag;
+		if (tag != not) {
+			tag = tag.substr(0,8);
+			tag = tag.toUpperCase();
+			var num = 8-tag.length;
+			for (var i = 0; i < num; i++) {
+				tag = " " + tag;
+			}
+			//tag += " ";
+			console.log(/*type + " " + */tag + " " + msg);
 		}
-		//tag += " ";
-		console.log(/*type + " " + */tag + " " + msg);
 	};
 	
 	this.debug = function(msg, tag) {

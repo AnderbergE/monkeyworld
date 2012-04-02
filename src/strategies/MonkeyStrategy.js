@@ -14,6 +14,7 @@ MonkeyPlayer.prototype.strategies = function() {};
  * @param {FishingGame} game
  */
 MonkeyPlayer.prototype.strategies["FishingGame"] = function(game, eventManager) {
+	var EVM_TAG = "MonkeyPlayer";
 	console.log("Applying MonkeyPlayer's strategy to the FishingGame");
 	
 	eventManager.on("fishinggame.started", function(msg) {
@@ -24,9 +25,9 @@ MonkeyPlayer.prototype.strategies["FishingGame"] = function(game, eventManager) 
 			eventManager.tell("fishinggame.catch", {fish:allFish[0]});
 		}, 2000);
 		
-	});
+	}, EVM_TAG);
 	
 	eventManager.on("catched", function(msg) {
 		/** @type {Fish} */ var fish = msg.fish;
-	});
+	}, EVM_TAG);
 };

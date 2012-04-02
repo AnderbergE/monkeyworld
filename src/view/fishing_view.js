@@ -4,6 +4,8 @@
  */
 function FishingView(ievm, stage, config_dep) {
 
+	/** @const @type {string} */ var EVM_TAG = "FishingView";
+	
 	/**
 	 * Configuration of the view
 	 */
@@ -33,7 +35,7 @@ function FishingView(ievm, stage, config_dep) {
 
 		};
 	}();
-	 
+//	console.log(config.SOUND_SOURCES);
 	/** @const */ var BASKET_SLOTS = {
 		/** @const */ 6: { x: 825, y: 0 },
 		/** @const */ 4: { x: 700, y: 25 },
@@ -54,7 +56,7 @@ function FishingView(ievm, stage, config_dep) {
 	var animator = new Animator();
 	/** @type {boolean} */ var allowClicks = true; 
 	
-	var fishCountingView = new FishCountingView(stage, ievm);
+	var fishCountingView = new FishCountingView(stage, ievm, EVM_TAG);
 	
 	/*
 	 * Initiate layers
@@ -125,37 +127,39 @@ function FishingView(ievm, stage, config_dep) {
 		stage.remove(rodLayer);
 		stage.remove(overlayLayer);
 		stage.remove(pondLayer);
+		stage.remove(fpsLayer);
 		stage.remove(dynamicOverlayLayer);
-		stage.onFrame(function(frame){
+		/*stage.onFrame(function(frame){
 			evm.tell("frame", {frame:frame});
-		});
+		});*/
 	};
 	
 	var roundDone = function() {
 		tearDownView();
+		evm.off("frame", EVM_TAG);
 		fishCountingView.init(fishTank, fishGroups);
 	};
 
 	evm.on("fishinggame.catch", function(msg) {
 		rod.initCatch(msg.fish);
 		evm.tell("fishinggame.catched", {fish: msg.fish});
-	});
+	}, EVM_TAG);
 	
 	evm.on("fishinggame.turnOnClick", function(msg) {
 		turnOnClick(msg.fish);
-	});
+	}, EVM_TAG);
 	
 	evm.on("fishinggame.turnOffClick", function(msg) {
 		turnOffClick(msg.fish);
-	})
+	}, EVM_TAG)
 	
 	evm.on("fishinggame.allowClicks", function(msg) {
 		allowClicks = true;
-	});
+	}, EVM_TAG);
 	
 	evm.on("fishinggame.disallowClicks", function(msg) {
 		allowClicks = false;
-	});
+	}, EVM_TAG);
 	
 	evm.on("FishingGame.endOfRound", function(msg) {
 		if (!msg.correct) {
@@ -167,7 +171,7 @@ function FishingView(ievm, stage, config_dep) {
 			evm.play(Sounds.YAY);
 			roundDone();
 		}
-	});
+	}, EVM_TAG);
 	
 	var rod = function(rodLayer) {
 		/** @const @enum */ var ROD_STATE =
@@ -218,10 +222,10 @@ function FishingView(ievm, stage, config_dep) {
 				switch (state.state) {
 				case ROD_STATE.INIT_CATCHING:
 					if (allowClicks) {
-						evm.tell("fishinggame.turnOffClicks");
+						fishTank.turnOffClicks();
 					}
 					state.playedSplash = false;
-					SoundJS.play("swosh");
+					SoundJS.play("FISHING_SWOSH");
 					angle = getGoalAngle(state.catching);
 					var front = getFishFront(state.catching);
 					
@@ -277,7 +281,7 @@ function FishingView(ievm, stage, config_dep) {
 						fishGroup.centerOffset.x = mouth.x;
 					}
 					
-					SoundJS.play("winding");
+					SoundJS.play("FISHING_WINDING");
 					/*
 					fishGroup.transitionTo({
 						rotation: -1*direction * Math.PI /2,
@@ -311,13 +315,13 @@ function FishingView(ievm, stage, config_dep) {
 								var surface = config.POND.Y - 100;
 								var aboveSurface = fishGroup.y < surface;
 								if (!splashed && aboveSurface) {
-									SoundJS.play("splash");
+									SoundJS.play("FISHING_SPLASH");
 									state.playedSplash = true;
 								}
 							},
 							onFinish: function()
 							{
-								SoundJS.stop("winding");
+								SoundJS.stop("FISHING_WINDING");
 								state.state = ROD_STATE.THROW_FISH_IN_BASKET;
 							}
 						}
@@ -353,12 +357,13 @@ function FishingView(ievm, stage, config_dep) {
 						fishTank.putFishInBasket(fish);
 						if (allowClicks) {
 							state.catching.capture();
-							evm.tell("fishinggame.turnOnClicks");
+							fishTank.turnOnClicks();
 						}
 						fishTank.noactivity();
 					});
 					
-					Tween.get(fishGroups[state.catching].centerOffset).to({x:0,y:0}, 1500);
+					Tween.get(fishGroups[state.catching].centerOffset).to({x:0,y:0}, 1500).call(function() {
+					});
 					animator.animateTo(
 						state,
 						{ length: 200, pendulum: 0, y: 75 },
@@ -418,7 +423,7 @@ function FishingView(ievm, stage, config_dep) {
 					duration: { x: 1000, y: 1000, rotation: 1000 },
 					onFinish: function()
 					{
-						SoundJS.play("splash");
+						SoundJS.play("FISHING_SPLASH");
 						group.centerOffset.x = 0;
 						group.centerOffset.y = 0;
 						animator.animateTo(
@@ -449,27 +454,27 @@ function FishingView(ievm, stage, config_dep) {
 	
 	evm.on("fishinggame.initiatedfish", function(msg){
 		createFish(msg.fish);
-	});
+	}, EVM_TAG);
 	
 	evm.on("fishinggame.fishmoved", function(msg) {
 		moveFish(msg.fish);
-	});
+	}, EVM_TAG);
 	
 	evm.on("fishinggame.fishturnedleft", function(msg) {
 		var scale = fishGroups[msg.fish].getScale();
 		fishGroups[msg.fish].setScale(-1 * scale.x, scale.y);
 		numberGroups[msg.fish].setScale(-1 * msg.fish.getScale(), 1*msg.fish.getScale());
-	});
+	}, EVM_TAG);
 	
 	evm.on("fishinggame.fishturnedright", function(msg) {
 		var scale = fishGroups[msg.fish].getScale();
 		fishGroups[msg.fish].setScale(-1 * scale.x, scale.y);
 		numberGroups[msg.fish].setScale(msg.fish.getScale()*1, msg.fish.getScale()*1);
-	});
+	}, EVM_TAG);
 	
 	evm.on("FishingGame.inactivity", function(msg) {
 		evm.play(msg.sound);
-	});
+	}, EVM_TAG);
 	
 	function moveFish(fish) {
 		fishGroups[fish].x = Math.round(fish.getX());
@@ -665,6 +670,30 @@ function FishingView(ievm, stage, config_dep) {
 		
 		backgroundLayer.draw();
 		overlayLayer.draw();
+		
+		/**
+		 * What to do on each frame.
+		 * @param msg
+		 */
+		evm.on("frame", function(msg) {
+			var frame = msg.frame;
+			fps.showFps(frame); // Update FPS display
+			//evm.tell("frame", {frame:frame});
+			rod.draw(frame); // Draw the fishing rod
+			animator.tick(frame.timeDiff); // Tell the animator about the frame
+			if (dynamicOverlayLayer._doDraw || dynamicOverlayLayer._drawOnce) {
+				dynamicOverlayLayer.draw();
+				dynamicOverlayLayer._drawOnce = false;
+			}
+			if (overlayLayer._drawOnce) {
+				overlayLayer.draw();
+				overlayLayer._drawOnce = false;
+			}
+			fishTank.onFrame(frame);
+			Tween.tick(frame.timeDiff, false);
+			shapeLayer.draw(); // Draw the shape layer
+
+		}, EVM_TAG);
 	};
 
 	/**
@@ -677,7 +706,7 @@ function FishingView(ievm, stage, config_dep) {
 		context.fillStyle = "black";
 		return {
 		showFps: function(frame) {
-			if (lastFps == 0 || frame.time - lastFps > 500) {
+			if (lastFps == 0 || frame.time - lastFps > 10) {
 				fpsLayer.clear();
 				var count = Math.round(1000/frame.timeDiff);
 				context.fillText("FPS: " + count, 10, 25);
@@ -686,28 +715,6 @@ function FishingView(ievm, stage, config_dep) {
 		}
 		};
 	}();
-
-	/**
-	 * What to do on each frame.
-	 * @param frame
-	 */
-	function onFrame(frame) {
-		fps.showFps(frame); // Update FPS display
-		evm.tell("frame", {frame:frame});
-		rod.draw(frame); // Draw the fishing rod
-		animator.tick(frame.timeDiff); // Tell the animator about the frame
-		if (dynamicOverlayLayer._doDraw || dynamicOverlayLayer._drawOnce) {
-			dynamicOverlayLayer.draw();
-			dynamicOverlayLayer._drawOnce = false;
-		}
-		if (overlayLayer._drawOnce) {
-			overlayLayer.draw();
-			overlayLayer._drawOnce = false;
-		}
-		Tween.tick(frame.timeDiff, false);
-		shapeLayer.draw(); // Draw the shape layer
-
-	}
 
 	var loadingLayer;
 	loadingLayer = new Kinetic.Layer();
@@ -724,11 +731,12 @@ function FishingView(ievm, stage, config_dep) {
 	loadingLayer._text = text;
 
 	function loadSounds(model, modelInit) {
-		loadingLayer._text.text = "Hämtar ljud";
-		loadingLayer.draw();
-		Log.debug("Loading sounds...", "view");
-		SoundJS.addBatch(config.SOUND_SOURCES);
-		SoundJS.onLoadQueueComplete = function() {loadImages(model, modelInit);};
+		//loadingLayer._text.text = "Hämtar ljud";
+		//loadingLayer.draw();
+		//Log.debug("Loading sounds...", "view");
+		//SoundJS.addBatch(config.SOUND_SOURCES);
+		//SoundJS.onLoadQueueComplete = function() {loadImages(model, modelInit);};
+		loadImages(model, modelInit);
 	}
 	
 	function loadImages(model, modelInit) {
@@ -783,7 +791,8 @@ function FishingView(ievm, stage, config_dep) {
 		dynamicOverlayLayer.dynamicAdd(bigShowing);
 
 		Tween.get(bigShowing.scale).to({x:2, y:2}, 1000).wait(3000).call(function() {
-			Tween.get(bigShowing.scale).to({x: 1, y: 1}, 1000);
+			Tween.get(bigShowing.scale).to({x: 1, y: 1}, 1000).call(function() {
+			});
 			Tween.get(bigShowing).to({y: 50}, 1000).call(function(){
 				bigShowing.moveTo(overlayLayer);
 				dynamicOverlayLayer.dynamicRemove(bigShowing);
@@ -801,11 +810,15 @@ function FishingView(ievm, stage, config_dep) {
 	this.start = function() {
 		tearDownLoadingScreen();
 		Log.debug("Start rolling view...", "view");
-		stage.onFrame(onFrame);
-		stage.start();
+		//stage.onFrame(onFrame);
+		//stage.start();
 		showBig(Strings.get("FISHING_CATCH_NUMBER", fishTank.getCatchingNumber()).toUpperCase());
 		evm.play(Sounds.FISHING_CATCH);
 		//showBig("FÅNGA NUMMER " + fishTank.getCatchingNumber());
 		evm.tell("fishinggame.started", null);
+	};
+	
+	this.tearDown = function() {
+		evm.forget(EVM_TAG);
 	};
 }

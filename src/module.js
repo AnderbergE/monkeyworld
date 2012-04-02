@@ -14,6 +14,8 @@ ViewModule.prototype.prepare = function(model, modelInit) {};
  */
 ViewModule.prototype.init = function(config, model) {};
 
+ViewModule.prototype.tearDown = function() {};
+
 /**
  * @interface
  */
@@ -23,3 +25,5 @@ function ModelModule() {};
  * @param {Object} config
  */
 ModelModule.prototype.init = function(config) {};
+ModelModule.prototype.start = function() {};
+ModelModule.prototype.tearDown = function(config) {};

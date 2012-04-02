@@ -16,6 +16,10 @@ KineticFrame.timeDiff = function() {};
 */
 Kinetic.Stage.prototype.onFrame = function(frameconfig){};
 Kinetic.Stage.prototype.start = function(){};
+/**
+ * @param {Kinetic.Layer} layer
+ */
+Kinetic.Stage.prototype.remove = function(layer) {};
 
 /**
  * Container
