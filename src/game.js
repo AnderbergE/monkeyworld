@@ -10,9 +10,7 @@ window.onload = function() {
  * @constructor
  */
 function Game() {
-	
-	//var monkeyPlayer = new GamerPlayer(eventManager);
-	//var guardianPlayer = new GamerPlayer(eventManager);
+
 	//var fishingGame = new FishingGame();
 	
 	//fishingGame.play(monkeyPlayer, eventManager);
@@ -35,7 +33,9 @@ function Game() {
 
 
 	var eventManager = new EventManager(subtitleLayer);
-	var player = new GamerPlayer(eventManager);
+	var gamerPlayer = new GamerPlayer(eventManager);
+	var monkeyPlayer = new MonkeyPlayer(eventManager);
+	//var angelPlayer = new AngelPlayer(eventManager);
 
 	stage.onFrame(function(frame) {
 		eventManager.tell("frame", {frame:frame});
@@ -51,15 +51,21 @@ function Game() {
 	 * @param config
 	 * @param {Function=} callback
 	 */
-	function kickInModule(iView, iModel, player, config, callback) {
+	function kickInModule(iView, iModel, mode, config, callback) {
+		console.log("mode: " + mode);
 		if (currentView != null)
 			currentView.tearDown();
 		eventManager.tell("Game.tearDown");
-		//eventManager.forgetAll("game");
-
-		
 		var view = new iView(eventManager, stage, this, callback);
-		var model = new Model(eventManager, view, view.init, view.start, iModel, config, player);
+		var player = null;
+		if (mode === GameMode.CHILD_PLAY || mode === GameMode.MONKEY_SEE) {
+			player = gamerPlayer;
+		} else if (mode === GameMode.MONKEY_DO) {
+			player = gamerPlayer;
+		}/* else if (mode === GameMode.GUARDIAN_ANGEL) {
+			player = angelPlayer;
+		}*/
+		var model = new Model(eventManager, view, view.init, view.start, iModel, config, player, mode);
 		currentView = view;
 		currentModel = model;
 		view.prepare(model, model.init);
@@ -80,21 +86,18 @@ function Game() {
 		
 		
 		if (ONLY_FISHING) {
-			kickInModule(ReadyToTeachView, ReadyToTeach, null, {});
-
-			//kickInModule(FishingView, FishingGame, player, {maxNumber: 9, numberFishes: 5});
-			
-			
+			//kickInModule(ReadyToTeachView, ReadyToTeach, null, {});
+			kickInModule(FishingView, FishingGame, GameMode.CHILD_PLAY, {maxNumber: 9, numberFishes: 5});
 		} else {
 			kickInModule(StartView, Start, {}, function(config) {
 				if (config == "login") {
 					kickInModule(LoginView, Intro, {}, function() {
-						kickInModule(FishingView, FishingGame, player, {maxNumber: 9, numberFishes: 5});
+						kickInModule(FishingView, FishingGame, GameMode.CHILD_PLAY, {maxNumber: 9, numberFishes: 5});
 					});	
 				} else {
 					kickInModule(NewPlayerView, NewPlayer, {}, function() {
 						kickInModule(IntroView, Intro, {}, function() {
-							kickInModule(FishingView, FishingGame, player, {maxNumber: 9, numberFishes: 5});	
+							kickInModule(FishingView, FishingGame, GameMode.CHILD_PLAY, {maxNumber: 9, numberFishes: 5});	
 						});
 					});	
 				}
@@ -113,7 +116,7 @@ function Game() {
 	eventManager.on("Game.startGame", function(msg) {
 		_uid = 0;
 		//kickInModule(msg.view, msg.game, player, {maxNumber: 9, numberFishes: 5});
-		kickInModule(FishingView, FishingGame, player, {maxNumber: 9, numberFishes: 5});
+		kickInModule(msg.view, msg.model, msg.mode, {maxNumber: 9, numberFishes: 5});
 		console.log("Will start some game");
 	}, "GAME");
 }

@@ -14,12 +14,17 @@ function ReadyToTeach(evm, config) {
 		evm.tell("Game.startGame", {
 			view: FishingView,
 			model: FishingGame,
-			player: "child"
+			mode: GameMode.CHILD_PLAY
 		});
 		Log.debug("Not ready to teach!");
 	};
 	
 	var enterMonkeySeeMode = function() {
+		evm.tell("Game.startGame", {
+			view: FishingView,
+			model: FishingGame,
+			mode: GameMode.MONKEY_SEE
+		});
 		console.log("Will enter MonkeySeeMode");
 	};
 	

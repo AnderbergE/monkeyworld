@@ -1,7 +1,6 @@
 /**
  * @constructor
  * @param {EventManager} ievm
- * @param {Object} config
  * @param {Object} mode 
  * @implements {ModelModule}
  * @extends {GameModule}

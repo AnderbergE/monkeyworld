@@ -66,6 +66,12 @@ function ReadyToTeachView(evm, stage) {
 		layer.draw();
 	};
 	
+	evm.on("frame", function(msg) {
+		var frame = msg.frame;
+		//Tween.tick(frame.timeDiff, false);
+		layer.draw();
+	});
+	
 	evm.on("Game.getBanana", function(msg) {
 		console.log("banana");
 		
@@ -77,34 +83,26 @@ function ReadyToTeachView(evm, stage) {
         	y: stage.height / 2
         });
         
-        yesGroup.transitionTo({ x: -300, y: -300, duration: 0.3 });
-        noGroup.transitionTo({ x: stage.width+300, y: stage.height+300, duration: 0.3 });
-        text.transitionTo({ x: 0, y: stage.height+300, duration: 0.3 });
+        //yesGroup.transitionTo({ x: -300, y: -300, duration: 0.3 });
+        Tween.get(yesGroup).to({ x: -300, y: -300}, 600);
+        Tween.get(noGroup).to({ x: stage.width+300, y: stage.height+300}, 600);
+        Tween.get(text).to({ x: 0, y: stage.height+300}, 600);
         
         layer.add(banana);
         SoundJS.play("GET_BANANA");
-        banana.transitionTo({
-        	scale: { x: 2, y: 2 },
-        	rotation: Math.PI * 2,
-        	duration: 0.3,
-        	callback: function() {
-        		setTimeout(function() {
-        			banana.transitionTo({
-        				rotation: -Math.PI / 2,
-        				scale: {x: 0.125, y: 0.125},
-        				x: stage.width - 50,
-        				y: 50,
-        				duration: 0.4,
-        				callback: function() {
-        					banana.image = images["banana-small"];
-        				}
-        			})
-        		}, 1000)
-        	}
-        });
-        layer.draw();
-		
-		msg.callback();
+        Tween.get(banana).to({rotation: Math.PI * 2}, 600).wait(1500)
+        .to({
+        	rotation: -Math.PI / 2,
+        	x: stage.width - 50,
+			y: 50
+        }, 600);
+        
+        Tween.get(banana.scale).to({ x: 2, y: 2 }, 600).wait(1500)
+        .to({
+        	x: 0.125, y: 0.125
+        }, 600).call(function(){
+        	banana.image = images["banana-small"];
+        }).wait(1500).call(function() {msg.callback()});
 	}, EVM_TAG);
 	
 	this.prepare = function(model, modelInit) {

@@ -43,13 +43,13 @@ function EventManager(subtitleLayer) {
 		}
 	};
 	
-	this.forgetAll = function() {
+	/*this.forgetAll = function() {
 		for (key in listeners) {
 			if (key != "frame") {
 				listeners[key] = new Array();
 			}
 		}
-	};
+	};*/
 	
 	this.print = function () {
 		console.log("-------EVENT MANAGER STATE-----------------");

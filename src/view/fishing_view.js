@@ -17,7 +17,8 @@ function FishingView(ievm, stage, config_dep) {
 			/** @const */ "fish1": "fish/1.png",
 			/** @const */ "bambu": "bambu.png",
 			/** @const */ "plant": "plant.png",
-			/** @const */ "sky": "sky.png"
+			/** @const */ "sky": "sky.png",
+			/** @const */ "monkey": "monkey.png"
 		},
 		
 		/** @const */ SOUND_SOURCES: [
@@ -668,6 +669,11 @@ function FishingView(ievm, stage, config_dep) {
 		overlayLayer.add(bambu9);
 		overlayLayer.add(bambu10);
 		
+		if (fishTank.getMode() == GameMode.MONKEY_SEE) {
+			var monkey = new Kinetic.Image({ x: 540, y: 20, image: images["monkey"] });
+			overlayLayer.add(monkey);
+		}
+		
 		backgroundLayer.draw();
 		overlayLayer.draw();
 		
@@ -743,19 +749,11 @@ function FishingView(ievm, stage, config_dep) {
 		loadingLayer._text.text = "Hämtar bilder";
 		loadingLayer.draw();
 		Log.debug("Loading images...", "view");
-		var loadedImages = 0;
-		var numImages = Object.size(config.IMAGE_SOURCES);
-		for (var src in config.IMAGE_SOURCES) {
-            images[src] = new Image();
-            images[src].onload = function(){
-                if (++loadedImages >= numImages) {
-                	loadingLayer._text.text = "";
-                	loadingLayer.draw();
-                	modelInit.call(model);
-                }
-            };
-            images[src].src = config.IMAGE_FOLDER + "/" + config.IMAGE_SOURCES[src];
-        }
+		evm.loadImages(config.IMAGE_SOURCES, images, function() {
+			loadingLayer._text.text = "";
+        	loadingLayer.draw();
+        	modelInit.call(model);
+		});
 	}
 	
 	function setupLoadingScreen() {	

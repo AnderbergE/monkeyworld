@@ -39,3 +39,5 @@ GameModule.prototype._name = "GameModule";
 /** @type {GameMode} */
 GameModule.prototype.mode = GameMode.CHILD_PLAY;
 GameModule.prototype.getMode = function() { return this.mode; };
+/** @param {GameMode} mode */
+GameModule.prototype.setMode = function(mode) { this.mode = mode; };

@@ -1,7 +1,7 @@
 /**
  * @constructor
  */
-function Model(ieventManager, iview, iviewInit, iviewStart, iModel, iconfig, iplayer) {
+function Model(ieventManager, iview, iviewInit, iviewStart, iModel, iconfig, iplayer, mode) {
 
 	var myModel = iModel;
 	var view = iview;
@@ -14,7 +14,9 @@ function Model(ieventManager, iview, iviewInit, iviewStart, iModel, iconfig, ipl
 
 	this.init = function() {
 		Log.debug("Creating model...", "model");
-		model = new myModel(evm, GameMode.MONKEY_SEE);
+		model = new myModel(evm, mode);
+		if (model.setMode != undefined)
+			model.setMode(mode);
 		if (player != null)
 			model.play(player, evm);
 		Log.debug("Initiating model...", "model");
