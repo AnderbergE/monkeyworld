@@ -44,6 +44,9 @@ var Log = new(/** @constructor */ function() {
 		write("NOTIFY ", msg, tag);
 	};
 	
+	this.error = function(msg, tag) {
+		write("ERROR  ", msg, tag);
+	};
 });
 
 var Utils = new (/** @constructor */function() {

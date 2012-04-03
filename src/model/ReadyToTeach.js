@@ -7,7 +7,7 @@
 function ReadyToTeach(evm, config) {
 	
 	this.init = function(config) {
-		
+		console.log("ReadyToTeach init");
 	};
 	
 	this.notReadyToTeach = function() {
@@ -25,14 +25,14 @@ function ReadyToTeach(evm, config) {
 			model: FishingGame,
 			mode: GameMode.MONKEY_SEE
 		});
-		console.log("Will enter MonkeySeeMode");
 	};
 	
 	this.readyToTeach = function() {
+		GameState.addBanana();
+		GameState.setMode(GameMode.MONKEY_SEE);
 		evm.tell("Game.getBanana", {
 			callback: enterMonkeySeeMode
 		});
-		Log.debug("Ready to teach!");
 	};
 	
 	this.tearDown = function() {

@@ -88,7 +88,12 @@ function FishingGame(ievm, mode) {
 	};
 	
 	function inactivity() {
-		var sound = Sounds.FISHING_THERE_ARE_MORE;
+		var sound = null;
+		if (mode == GameMode.CHILD_PLAY) {
+			sound = Sounds.FISHING_THERE_ARE_MORE;
+		} else {
+			sound = Sounds.FISHING_KEEP_GOING;
+		}
 		evm.tell("FishingGame.inactivity", {sound:sound});
 		restartInactivityTimer();
 	}
@@ -109,10 +114,6 @@ function FishingGame(ievm, mode) {
 	this.noactivity = function() {
 		restartInactivityTimer();
 	}
-	
-	/*evm.on("fishinggame.started", function(msg) {
-		restartInactivityTimer();
-	});*/
 
 	this.getAllFish = function() {
 		return fishArray;
@@ -139,10 +140,11 @@ function FishingGame(ievm, mode) {
 					fishArray[i].setCanFree(false);
 				}
 			}
-			evm.tell(
-				"FishingGame.endOfRound",
-				{ correct: basketSize == numberCorrect }
-			);
+			if (basketSize == numberCorrect || mode == GameMode.MONKEY_SEE) {
+				evm.tell("FishingGame.catchingDone");
+			} else {
+				evm.tell("FishingGame.freeWrongOnes");
+			}
 		}
 	};
 	
@@ -171,7 +173,7 @@ function FishingGame(ievm, mode) {
 		if (!foundAny) {
 			return basketArray.length;
 		} else {
-			return min;	
+			return min;
 		}
 	};
 	
@@ -188,27 +190,21 @@ function FishingGame(ievm, mode) {
 		return [1, 2, 3, 4, 5];
 	};
 	
-	function numberFishInBasket() {
-		var sum = 0;
-		for (var i = 0; i < basketArray.length; i++) {
-			if (basketArray[i] != undefined)
-				sum++;
-		}
-		return sum;
-	}
-	
 	/**
 	 * Lets the player count the fish in the basket.
 	 */
 	this.countFish = function(number) {
 		evm.tell(
 			"FishingGame.countingResult",
-			{ correct: number == numberFishInBasket() }
+			{ correct: number == numberCorrect }
 		);
 	}
 	
 	this.tearDown = function() {
-		//evm.forget(EVM_TAG);
+		console.log("here");
+		evm.tell("Game.roundDone");
+		/*if (mode == GameMode.MONKEY_SEE)
+			GameState.seeRoundDone();*/
 	};
 	
 	this.start = function() {

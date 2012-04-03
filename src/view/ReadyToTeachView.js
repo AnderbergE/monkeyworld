@@ -70,11 +70,9 @@ function ReadyToTeachView(evm, stage) {
 		var frame = msg.frame;
 		//Tween.tick(frame.timeDiff, false);
 		layer.draw();
-	});
+	}, EVM_TAG);
 	
 	evm.on("Game.getBanana", function(msg) {
-		console.log("banana");
-		
         var banana = new Kinetic.Image({
         	image: images["banana-big"],
         	scale: { x: 0, y: 0 },
@@ -125,6 +123,7 @@ function ReadyToTeachView(evm, stage) {
 	};
 	
 	this.tearDown = function() {
+		stage.remove(layer);
 		evm.forget(EVM_TAG);
 	};
 }

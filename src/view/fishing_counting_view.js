@@ -117,7 +117,14 @@ function FishCountingView(stage, evm, EVM_TAG) {
 		}
 
 		shapeLayer.draw();
-		evm.play(Sounds.FISHING_COUNT_FISH);
+		if (fishTank.getMode() == GameMode.CHILD_PLAY)
+			evm.play(Sounds.FISHING_COUNT_FISH);
+		else {
+			evm.play(Sounds.FISHING_COUNT_TARGET_FISH);
+			setTimeout(function() {
+				evm.play(Sounds["NUMBER_" + fishTank.getCatchingNumber()]);
+			}, 700);
+		}
 	};
 	
 	/**
@@ -126,7 +133,6 @@ function FishCountingView(stage, evm, EVM_TAG) {
 	this.tearDown = function() {
 		stage.remove(shapeLayer);
 		stage.remove(backgroundLayer);
-		evm.tell("FishingGame.roundDone");
 	};
 	
 	/**
@@ -135,7 +141,7 @@ function FishCountingView(stage, evm, EVM_TAG) {
 	evm.on("FishingGame.countingResult", function(msg) {
 		if (msg.correct) {
 			evm.play(Sounds.YAY);
-			setTimeout(function(){that.tearDown()}, 1500);
+			setTimeout(function(){fishTank.tearDown()}, 1500);
 		} else {
 			evm.play(Sounds.FISHING_ARE_YOU_SURE);
 		}

@@ -4,7 +4,7 @@
  * @constructor
  */
 function MonkeyPlayer(eventManager) {
-	console.log("Creating MonkeyPlayer");
+	Log.debug("Creating MonkeyPlayer", "player");
 }
 MonkeyPlayer.prototype = new Player();
 MonkeyPlayer.prototype.strategies = function() {};
@@ -15,8 +15,8 @@ MonkeyPlayer.prototype.strategies = function() {};
  */
 MonkeyPlayer.prototype.strategies["FishingGame"] = function(game, eventManager) {
 	var EVM_TAG = "MonkeyPlayer";
-	console.log("Applying MonkeyPlayer's strategy to the FishingGame");
-	
+	Log.debug("Applying MonkeyPlayer's strategy to the FishingGame", "player");
+
 	eventManager.on("fishinggame.started", function(msg) {
 		console.log("Game started");
 		var allFish = game.getAllFish();

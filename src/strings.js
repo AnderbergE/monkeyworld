@@ -17,8 +17,8 @@ var Strings = {
 	},
 	
 	"FISHING_CATCH": {
-		"sv": "Fånga nummer",
-		"en": "Catch number"
+		"sv": "Fånga",
+		"en": "Catch"
 	},
 
 	"FISHING_FREE_WRONG_ONES": {
@@ -44,8 +44,68 @@ var Strings = {
 	"FISHING_COUNT_FISH": {
 		"sv": "Räkna fiskarna!",
 		"en": "Count the fish!"
-	}
+	},
+	
+	"FISHING_COUNT_TARGET_FISH": {
+		"sv": "Räkna fiskarna med",
+		"en": "Count the fish with"
+	},
+	
+	"FISHING_KEEP_GOING": {
+		"sv": "Fortsätt!",
+		"en": "Keep going!"
+	},
+	
+	"NUMBER_1": {
+		"sv": "nummer 1",
+		"en": "number 1"
+	},
 
+	"NUMBER_2": {
+		"sv": "nummer 2",
+		"en": "number 2"
+	},
+	
+	"NUMBER_3": {
+		"sv": "nummer 3",
+		"en": "number 3"
+	},
+	
+	"NUMBER_4": {
+		"sv": "nummer 4",
+		"en": "number 4"
+	},
+	
+	"NUMBER_5": {
+		"sv": "nummer 5",
+		"en": "number 5"
+	},
+	
+	"NUMBER_6": {
+		"sv": "nummer 6",
+		"en": "number 6"
+	},
+	
+	"NUMBER_7": {
+		"sv": "nummer 7",
+		"en": "number 7"
+	},
+	
+	"NUMBER_8": {
+		"sv": "nummer 8",
+		"en": "number 8"
+	},
+	
+	"NUMBER_9": {
+		"sv": "nummer 9",
+		"en": "number 9"
+	},
+	
+	"NUMBER_10": {
+		"sv": "nummer 10",
+		"en": "number 10"
+	}
+	
 };
 
 var GlobalSettings = {

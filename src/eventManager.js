@@ -128,10 +128,10 @@ function EventManager(subtitleLayer) {
 	 */
 	this.play = function(entry) {
 		Log.notify("\"" + entry.subtitle + "\"", "sound");
-		var mute = true;
+		var mute = false;
 		if (!mute && entry.soundFile != null)
 			SoundJS.play(entry._key);
-		
+
 		if (entry.subtitle != null) {
 			var text = new Kinetic.Text({
 				x: subtitleLayer.getParent().width / 2,
@@ -165,7 +165,7 @@ function EventManager(subtitleLayer) {
 				subtitleLayer.remove(text);
 				subtitleLayer._removeNext = true;
 				removeSubtitle(text);
-			}, 2000);
+			}, 3000);
 		}
 	};
 	

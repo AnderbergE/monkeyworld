@@ -162,16 +162,16 @@ function FishingView(ievm, stage, config_dep) {
 		allowClicks = false;
 	}, EVM_TAG);
 	
-	evm.on("FishingGame.endOfRound", function(msg) {
-		if (!msg.correct) {
-			showBig(Strings.get("FISHING_FREE_WRONG_ONES").toUpperCase());
-			evm.play(Sounds.FISHING_FREE_WRONG_ONES)
-		} else {
-			allowClicks = false;
-			showBig(Strings.get("YAY").toUpperCase());
-			evm.play(Sounds.YAY);
-			roundDone();
-		}
+	evm.on("FishingGame.freeWrongOnes", function(msg) {
+		showBig(Strings.get("FISHING_FREE_WRONG_ONES").toUpperCase());
+		evm.play(Sounds.FISHING_FREE_WRONG_ONES)
+	}, EVM_TAG);
+	
+	evm.on("FishingGame.catchingDone", function(msg) {
+		allowClicks = false;
+		showBig(Strings.get("YAY").toUpperCase());
+		evm.play(Sounds.YAY);
+		roundDone();
 	}, EVM_TAG);
 	
 	var rod = function(rodLayer) {
@@ -670,7 +670,7 @@ function FishingView(ievm, stage, config_dep) {
 		overlayLayer.add(bambu10);
 		
 		if (fishTank.getMode() == GameMode.MONKEY_SEE) {
-			var monkey = new Kinetic.Image({ x: 540, y: 20, image: images["monkey"] });
+			var monkey = new Kinetic.Image({ x: 30, y: stage.height - 200, image: images["monkey"] });
 			overlayLayer.add(monkey);
 		}
 		
@@ -808,11 +808,11 @@ function FishingView(ievm, stage, config_dep) {
 	this.start = function() {
 		tearDownLoadingScreen();
 		Log.debug("Start rolling view...", "view");
-		//stage.onFrame(onFrame);
-		//stage.start();
 		showBig(Strings.get("FISHING_CATCH_NUMBER", fishTank.getCatchingNumber()).toUpperCase());
 		evm.play(Sounds.FISHING_CATCH);
-		//showBig("FÅNGA NUMMER " + fishTank.getCatchingNumber());
+		setTimeout(function() {
+			evm.play(Sounds["NUMBER_" + fishTank.getCatchingNumber()]);
+		}, 700);
 		evm.tell("fishinggame.started", null);
 	};
 	
