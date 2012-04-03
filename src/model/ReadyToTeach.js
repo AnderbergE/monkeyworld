@@ -19,8 +19,14 @@ function ReadyToTeach(evm, config) {
 		Log.debug("Not ready to teach!");
 	};
 	
+	var enterMonkeySeeMode = function() {
+		console.log("Will enter MonkeySeeMode");
+	};
+	
 	this.readyToTeach = function() {
-		
+		evm.tell("Game.getBanana", {
+			callback: enterMonkeySeeMode
+		});
 		Log.debug("Ready to teach!");
 	};
 	

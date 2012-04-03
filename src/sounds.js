@@ -17,6 +17,9 @@ var Sounds = {
 	
 	ARE_YOU_READY_TO_TEACH:
 		new SoundEntry(null, Strings.get("ARE_YOU_READY_TO_TEACH")),
+		
+	GET_BANANA:
+		new SoundEntry("60443__jobro__tada1.wav", null),
 
 	FISHING_FREE_WRONG_ONES:
 		new SoundEntry(null, Strings.get("FISHING_FREE_WRONG_ONES")),
@@ -43,7 +46,7 @@ var Sounds = {
 		new SoundEntry("water_movement_fast_002.wav", null),
 
 	FISHING_SWOSH:
-		new SoundEntry("60009__qubodup__swosh-22.wav", null)
+		new SoundEntry("60009__qubodup__swosh-22.wav", null),
 }
 
 var soundSources = new Array();

@@ -80,9 +80,9 @@ function Game() {
 		
 		
 		if (ONLY_FISHING) {
-			//kickInModule(ReadyToTeachView, ReadyToTeach, null, {});
+			kickInModule(ReadyToTeachView, ReadyToTeach, null, {});
 
-			kickInModule(FishingView, FishingGame, player, {maxNumber: 9, numberFishes: 5});
+			//kickInModule(FishingView, FishingGame, player, {maxNumber: 9, numberFishes: 5});
 			
 			
 		} else {
