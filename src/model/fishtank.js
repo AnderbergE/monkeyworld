@@ -17,7 +17,7 @@ function FishingGame(ievm, mode) {
 	var basketSize = 0;
 	var correctCaptured = 0;
 	var catchingNumber = 2;
-	var numberCorrect = 1;
+	var numberCorrect = 2;
 
 	/** @const */ var WIDTH = 625;
 	/** @const */ var HEIGHT = 600;

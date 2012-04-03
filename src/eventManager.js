@@ -169,6 +169,13 @@ function EventManager(subtitleLayer) {
 		}
 	};
 	
+	/**
+	 * @param {SoundEntry} entry
+	 */
+	this.stop = function(entry) {
+		SoundJS.stop(entry._key);
+	}
+	
 	this.loadImages = function(imageSources, images, callback) {
 		Log.debug("Loading images...", "view");
 		var loadedImages = 0;

@@ -154,7 +154,6 @@ function Game() {
 	};
 	
 	eventManager.on("Game.roundDone", function(msg) {
-		console.log("Game.roundDone");
 		if (GameState.getMode() == GameMode.CHILD_PLAY) {
 			kickInModule(ReadyToTeachView, ReadyToTeach, null, {});
 		} else if (GameState.getMode() == GameMode.MONKEY_SEE) {
@@ -167,13 +166,11 @@ function Game() {
 					msg: Strings.get("THANK_YOU_FOR_HELPING"),
 					callback: function() {
 						eventManager.tell("Game.getBanana", { callback: function() {
-							console.log("ok");
+							// enter monkey do!
 						}});
 					}
 				});
 			}
-		} else {
-			console.log("noo");
 		}
 	}, "game");
 	eventManager.on("Game.startGame", function(msg) {
@@ -191,7 +188,7 @@ function Game() {
         });
                 
         gameLayer.add(banana);
-        SoundJS.play("GET_BANANA");
+        eventManager.play(Sounds.GET_BANANA);
         Tween.get(banana).to({rotation: Math.PI * 2}, 1000).wait(1500)
         .to({
         	rotation: -Math.PI / 2,

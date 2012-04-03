@@ -226,7 +226,7 @@ function FishingView(ievm, stage, config_dep) {
 						fishTank.turnOffClicks();
 					}
 					state.playedSplash = false;
-					SoundJS.play("FISHING_SWOSH");
+					evm.play(Sounds.FISHING_SWOSH);
 					angle = getGoalAngle(state.catching);
 					var front = getFishFront(state.catching);
 					
@@ -282,7 +282,7 @@ function FishingView(ievm, stage, config_dep) {
 						fishGroup.centerOffset.x = mouth.x;
 					}
 					
-					SoundJS.play("FISHING_WINDING");
+					evm.play(Sounds.FISHING_WINDING);
 					/*
 					fishGroup.transitionTo({
 						rotation: -1*direction * Math.PI /2,
@@ -316,13 +316,13 @@ function FishingView(ievm, stage, config_dep) {
 								var surface = config.POND.Y - 100;
 								var aboveSurface = fishGroup.y < surface;
 								if (!splashed && aboveSurface) {
-									SoundJS.play("FISHING_SPLASH");
+									evm.play(Sounds.FISHING_SPLASH);
 									state.playedSplash = true;
 								}
 							},
 							onFinish: function()
 							{
-								SoundJS.stop("FISHING_WINDING");
+								evm.stop(Sounds.FISHING_WINDING);
 								state.state = ROD_STATE.THROW_FISH_IN_BASKET;
 							}
 						}
@@ -424,7 +424,7 @@ function FishingView(ievm, stage, config_dep) {
 					duration: { x: 1000, y: 1000, rotation: 1000 },
 					onFinish: function()
 					{
-						SoundJS.play("FISHING_SPLASH");
+						evm.play(Sounds.FISHING_SPLASH);
 						group.centerOffset.x = 0;
 						group.centerOffset.y = 0;
 						animator.animateTo(
