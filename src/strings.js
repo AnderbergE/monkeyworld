@@ -51,6 +51,16 @@ var Strings = {
 		"en": "Count the fish with"
 	},
 	
+	"THANK_YOU_FOR_HELPING": {
+		"sv": "Tack för att du hjälpte apan!",
+		"en": "Thank you for helping monkey!"
+	},
+	
+	"NOW_MONKEY_SHOW_YOU": {
+		"sv": "Nu visar apan dig vad den har lärt sig!",
+		"en": "Now monkey show you what it learned!"	
+	},
+	
 	"FISHING_KEEP_GOING": {
 		"sv": "Fortsätt!",
 		"en": "Keep going!"

@@ -696,7 +696,7 @@ function FishingView(ievm, stage, config_dep) {
 				overlayLayer._drawOnce = false;
 			}
 			fishTank.onFrame(frame);
-			Tween.tick(frame.timeDiff, false);
+			//Tween.tick(frame.timeDiff, false);
 			shapeLayer.draw(); // Draw the shape layer
 
 		}, EVM_TAG);
@@ -817,6 +817,7 @@ function FishingView(ievm, stage, config_dep) {
 	};
 	
 	this.tearDown = function() {
+		fishCountingView.tearDown();
 		evm.forget(EVM_TAG);
 	};
 }

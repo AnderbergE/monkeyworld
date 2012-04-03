@@ -201,10 +201,7 @@ function FishingGame(ievm, mode) {
 	}
 	
 	this.tearDown = function() {
-		console.log("here");
 		evm.tell("Game.roundDone");
-		/*if (mode == GameMode.MONKEY_SEE)
-			GameState.seeRoundDone();*/
 	};
 	
 	this.start = function() {

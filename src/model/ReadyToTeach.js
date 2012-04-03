@@ -7,7 +7,6 @@
 function ReadyToTeach(evm, config) {
 	
 	this.init = function(config) {
-		console.log("ReadyToTeach init");
 	};
 	
 	this.notReadyToTeach = function() {
@@ -16,7 +15,6 @@ function ReadyToTeach(evm, config) {
 			model: FishingGame,
 			mode: GameMode.CHILD_PLAY
 		});
-		Log.debug("Not ready to teach!");
 	};
 	
 	var enterMonkeySeeMode = function() {
@@ -28,7 +26,6 @@ function ReadyToTeach(evm, config) {
 	};
 	
 	this.readyToTeach = function() {
-		GameState.addBanana();
 		GameState.setMode(GameMode.MONKEY_SEE);
 		evm.tell("Game.getBanana", {
 			callback: enterMonkeySeeMode

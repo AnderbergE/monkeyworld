@@ -56,7 +56,6 @@ function FishCountingView(stage, evm, EVM_TAG) {
 		numGroup.add(number);
 		numGroup._num = number;
 		numGroup.on("mousedown touchstart", function() {
-			Log.debug("Telling fish count: " + num);
 			fishTank.countFish(num);
 		});
 		shapeLayer.add(numGroup);

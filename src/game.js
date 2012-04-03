@@ -32,6 +32,10 @@ var GameState = new (/** @constructor */function() {
 	this.getMode = function() {
 		return mode;
 	}
+	
+	this.getBananas = function() {
+		return bananas;
+	}
 });
 
 /**
@@ -39,10 +43,6 @@ var GameState = new (/** @constructor */function() {
  */
 function Game() {
 
-	//var fishingGame = new FishingGame();
-	
-	//fishingGame.play(monkeyPlayer, eventManager);
-	
 	/** @const */ var WIN_WIDTH = 1024;
 	/** @const */ var WIN_HEIGHT = 768;
 	var stage = new Kinetic.Stage({
@@ -74,6 +74,8 @@ function Game() {
 	
 	stage.onFrame(function(frame) {
 		eventManager.tell("frame", {frame:frame});
+		gameLayer.draw();
+		Tween.tick(frame.timeDiff, false);
 	});
 	stage.start();
 	
@@ -110,35 +112,44 @@ function Game() {
 	Log.debug("Loading sounds...", "sound");
 	SoundJS.onLoadQueueComplete = function() {
 	
-		/*
-		 * ONLY_FISHING = true will start the fishing game immediately. If it
-		 * is set to false, the game will start from the beginning (i.e. like
-		 * it is supposed to do in a live setting.
-		 */
-		/** @const */ var ONLY_FISHING = true;
-		
-		
-		
-		if (ONLY_FISHING) {
-			kickInModule(ReadyToTeachView, ReadyToTeach, null, {});
-			//kickInModule(FishingView, FishingGame, GameState.getMode(), {maxNumber: 9, numberFishes: 5});
-		} else {
-			kickInModule(StartView, Start, {}, function(config) {
-				if (config == "login") {
-					kickInModule(LoginView, Intro, {}, function() {
-						kickInModule(FishingView, FishingGame, GameMode.CHILD_PLAY, {maxNumber: 9, numberFishes: 5});
-					});	
-				} else {
-					kickInModule(NewPlayerView, NewPlayer, {}, function() {
-						kickInModule(IntroView, Intro, {}, function() {
-							kickInModule(FishingView, FishingGame, GameMode.CHILD_PLAY, {maxNumber: 9, numberFishes: 5});	
-						});
-					});	
-				}
-			});
-		}
+		eventManager.loadImages({
+			"monkey": "Gnome-Face-Monkey-64.png",
+			"green": "1333364667_Circle_Green.png",
+			"red": "1333364683_Circle_Red.png",
+			"person-yes": "Accept-Male-User.png",
+			"person-no": "Remove-Male-User.png",
+			"banana-big": "1333448754_Banana.png",
+			"banana-small": "1333448736_Banana64.png"
+		}, images, function() {
+			/*
+			 * ONLY_FISHING = true will start the fishing game immediately. If it
+			 * is set to false, the game will start from the beginning (i.e. like
+			 * it is supposed to do in a live setting.
+			 */
+			/** @const */ var ONLY_FISHING = true;
+			
+			
+			
+			if (ONLY_FISHING) {
+				//kickInModule(ReadyToTeachView, ReadyToTeach, null, {});
+				kickInModule(FishingView, FishingGame, GameState.getMode(), {maxNumber: 9, numberFishes: 5});
+			} else {
+				kickInModule(StartView, Start, {}, function(config) {
+					if (config == "login") {
+						kickInModule(LoginView, Intro, {}, function() {
+							kickInModule(FishingView, FishingGame, GameMode.CHILD_PLAY, {maxNumber: 9, numberFishes: 5});
+						});	
+					} else {
+						kickInModule(NewPlayerView, NewPlayer, {}, function() {
+							kickInModule(IntroView, Intro, {}, function() {
+								kickInModule(FishingView, FishingGame, GameMode.CHILD_PLAY, {maxNumber: 9, numberFishes: 5});	
+							});
+						});	
+					}
+				});
+			}
 
-		
+		});
 
 	};
 	
@@ -151,15 +162,53 @@ function Game() {
 				GameState.addMonkeySeeRound();
 				kickInModule(FishingView, FishingGame, GameMode.MONKEY_SEE, {maxNumber: 9, numberFishes: 5});
 			} else {
-				console.log("Well done!");
+				eventManager.play(Sounds.THANK_YOU_FOR_HELPING);
+				kickInModule(SystemMessageView, SystemMessage, null,{
+					msg: Strings.get("THANK_YOU_FOR_HELPING"),
+					callback: function() {
+						eventManager.tell("Game.getBanana", { callback: function() {
+							console.log("ok");
+						}});
+					}
+				});
 			}
 		} else {
 			console.log("noo");
 		}
-		eventManager.print();
-	}, "GAME");
+	}, "game");
 	eventManager.on("Game.startGame", function(msg) {
 		kickInModule(msg.view, msg.model, msg.mode, {maxNumber: 9, numberFishes: 5});
-	}, "GAME");
+	}, "game");
+	var images = new Array();
+	eventManager.on("Game.getBanana", function(msg) {
+		GameState.addBanana();
+        var banana = new Kinetic.Image({
+        	image: images["banana-big"],
+        	scale: { x: 0, y: 0 },
+        	centerOffset: { x: 256, y: 256 },
+        	x: stage.width / 2,
+        	y: stage.height / 2
+        });
+                
+        gameLayer.add(banana);
+        SoundJS.play("GET_BANANA");
+        Tween.get(banana).to({rotation: Math.PI * 2}, 1000).wait(1500)
+        .to({
+        	rotation: -Math.PI / 2,
+        	x: stage.width - 50 - (GameState.getBananas()-1)*48,
+			y: 50
+        }, 1000);
+        
+        Tween.get(banana.scale).to({ x: 2, y: 2 }, 1000).wait(1500)
+        .to({
+        	x: 0.125, y: 0.125
+        }, 1000).call(function(){
+        	banana.image = images["banana-small"];
+        }).wait(1500).call(function() {msg.callback()});
+	}, "game");
+	
+	eventManager.on("view.initiated", function(msg) {
+		gameLayer.moveToTop();
+	}, "game");
 }
 

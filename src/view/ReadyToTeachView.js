@@ -13,7 +13,6 @@ function ReadyToTeachView(evm, stage) {
 	stage.add(layer);
 	
 	this.init = function(viewConfig, model) {
-		
 		var backRect = new Kinetic.Rect({
 			width: stage.width,
 			height: stage.height,
@@ -73,34 +72,9 @@ function ReadyToTeachView(evm, stage) {
 	}, EVM_TAG);
 	
 	evm.on("Game.getBanana", function(msg) {
-        var banana = new Kinetic.Image({
-        	image: images["banana-big"],
-        	scale: { x: 0, y: 0 },
-        	centerOffset: { x: 256, y: 256 },
-        	x: stage.width / 2,
-        	y: stage.height / 2
-        });
-        
-        //yesGroup.transitionTo({ x: -300, y: -300, duration: 0.3 });
         Tween.get(yesGroup).to({ x: -300, y: -300}, 600);
         Tween.get(noGroup).to({ x: stage.width+300, y: stage.height+300}, 600);
         Tween.get(text).to({ x: 0, y: stage.height+300}, 600);
-        
-        layer.add(banana);
-        SoundJS.play("GET_BANANA");
-        Tween.get(banana).to({rotation: Math.PI * 2}, 600).wait(1500)
-        .to({
-        	rotation: -Math.PI / 2,
-        	x: stage.width - 50,
-			y: 50
-        }, 600);
-        
-        Tween.get(banana.scale).to({ x: 2, y: 2 }, 600).wait(1500)
-        .to({
-        	x: 0.125, y: 0.125
-        }, 600).call(function(){
-        	banana.image = images["banana-small"];
-        }).wait(1500).call(function() {msg.callback()});
 	}, EVM_TAG);
 	
 	this.prepare = function(model, modelInit) {
@@ -109,9 +83,7 @@ function ReadyToTeachView(evm, stage) {
 			"green": "1333364667_Circle_Green.png",
 			"red": "1333364683_Circle_Red.png",
 			"person-yes": "Accept-Male-User.png",
-			"person-no": "Remove-Male-User.png",
-			"banana-big": "1333448754_Banana.png",
-			"banana-small": "1333448736_Banana64.png"
+			"person-no": "Remove-Male-User.png"
 		}, images, function() {
 			modelInit.call(model);	
 		});
@@ -119,7 +91,6 @@ function ReadyToTeachView(evm, stage) {
 	
 	this.start = function() {
 		evm.play(Sounds.ARE_YOU_READY_TO_TEACH);
-		stage.start();
 	};
 	
 	this.tearDown = function() {
