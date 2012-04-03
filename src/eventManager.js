@@ -20,7 +20,7 @@ function EventManager(subtitleLayer) {
 	 * @param {string} name
 	 */
 	this.on = function(type, callback, name) {
-		if (listeners[type] === undefined)
+		if (!(type in listeners))
 			listeners[type] = new Array();
 		listeners[type].push(callback);
 		callback._caller = name;
@@ -38,6 +38,9 @@ function EventManager(subtitleLayer) {
 				listeners[type].splice(i, 1);
 			}
 		}
+		if (listeners[type].length == 0) {
+			delete listeners[type];
+		}
 	};
 	
 	this.forgetAll = function() {
@@ -48,8 +51,19 @@ function EventManager(subtitleLayer) {
 		}
 	};
 	
+	this.print = function () {
+		console.log("-------EVENT MANAGER STATE-----------------");
+		for (var key in listeners) {
+			console.log("key: " + key);
+			for (var j = 0; j < listeners[key].length; j++) {
+				console.log("   " + listeners[key][j]._caller);
+			}
+		}
+		console.log("-------------------------------------------");
+	};
+	
 	this.who = function(type) {
-		if (listeners[type] === undefined)
+		if (!(type in listeners))
 			return;
 		for (var i = 0; i < listeners[type].length; i++) {
 			Log.debug(listeners[type][i]._caller + " listens to " + type);
@@ -68,6 +82,9 @@ function EventManager(subtitleLayer) {
 					sum++;
 				}
 			}
+			if (listeners[key].length == 0) {
+				delete listeners[key];
+			}
 		}
 		Log.debug("Forgot " + sum + " event registred by " + name, "evm");
 	};
@@ -77,9 +94,10 @@ function EventManager(subtitleLayer) {
 	 * @param {Object=} message
 	 */
 	this.tell = function(type, message) {
-		if (Object.size(listeners) > 0 && listeners[type] != undefined) {
-			for (var i = 0; i < listeners[type].length; i++) {
-				var callback = listeners[type][i];
+		var bucket = listeners[type];
+		if (bucket != undefined) {
+			for (var i = 0; i < bucket.length; i++) {
+				var callback = bucket[i];
 				callback(message);
 			}
 		}
@@ -110,8 +128,8 @@ function EventManager(subtitleLayer) {
 	 */
 	this.play = function(entry) {
 		Log.notify("\"" + entry.subtitle + "\"", "sound");
-		
-		if (entry.soundFile != null)
+		var mute = true;
+		if (!mute && entry.soundFile != null)
 			SoundJS.play(entry._key);
 		
 		if (entry.subtitle != null) {

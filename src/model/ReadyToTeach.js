@@ -13,12 +13,14 @@ function ReadyToTeach(evm, config) {
 	this.notReadyToTeach = function() {
 		evm.tell("Game.startGame", {
 			view: FishingView,
-			model: FishingGame
+			model: FishingGame,
+			player: "child"
 		});
 		Log.debug("Not ready to teach!");
 	};
 	
 	this.readyToTeach = function() {
+		
 		Log.debug("Ready to teach!");
 	};
 	

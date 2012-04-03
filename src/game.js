@@ -3,15 +3,16 @@ SoundJS.testAudioStall = function(event) {};
 
 window.onload = function() {
 	new Game();
-	
-	
 };
+
 
 /**
  * @constructor
  */
 function Game() {
 	
+	//var monkeyPlayer = new GamerPlayer(eventManager);
+	//var guardianPlayer = new GamerPlayer(eventManager);
 	//var fishingGame = new FishingGame();
 	
 	//fishingGame.play(monkeyPlayer, eventManager);
@@ -34,6 +35,7 @@ function Game() {
 
 
 	var eventManager = new EventManager(subtitleLayer);
+	var player = new GamerPlayer(eventManager);
 
 	stage.onFrame(function(frame) {
 		eventManager.tell("frame", {frame:frame});
@@ -53,17 +55,8 @@ function Game() {
 		if (currentView != null)
 			currentView.tearDown();
 		eventManager.tell("Game.tearDown");
-		eventManager.forgetAll();
-		eventManager.on("FishingGame.roundDone", function(msg) {
-			Log.debug("Are you ready to teach monkey?");
-			kickInModule(ReadyToTeachView, ReadyToTeach, null, {});
-		}, "GAME");
-		eventManager.on("Game.startGame", function(msg) {
-			_uid = 0;
-			//kickInModule(msg.view, msg.game, player, {maxNumber: 9, numberFishes: 5});
-			kickInModule(FishingView, FishingGame, player, {maxNumber: 9, numberFishes: 5});
-			console.log("Will start some game");
-		}, "GAME");
+		//eventManager.forgetAll("game");
+
 		
 		var view = new iView(eventManager, stage, this, callback);
 		var model = new Model(eventManager, view, view.init, view.start, iModel, config, player);
@@ -84,7 +77,7 @@ function Game() {
 		 */
 		/** @const */ var ONLY_FISHING = true;
 		
-		var player = new GamerPlayer(eventManager);
+		
 		
 		if (ONLY_FISHING) {
 			//kickInModule(ReadyToTeachView, ReadyToTeach, null, {});
@@ -111,5 +104,17 @@ function Game() {
 		
 
 	};
+	
+	eventManager.on("FishingGame.roundDone", function(msg) {
+		Log.debug("Are you ready to teach monkey?");
+		kickInModule(ReadyToTeachView, ReadyToTeach, null, {});
+		eventManager.print();
+	}, "GAME");
+	eventManager.on("Game.startGame", function(msg) {
+		_uid = 0;
+		//kickInModule(msg.view, msg.game, player, {maxNumber: 9, numberFishes: 5});
+		kickInModule(FishingView, FishingGame, player, {maxNumber: 9, numberFishes: 5});
+		console.log("Will start some game");
+	}, "GAME");
 }
 

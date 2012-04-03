@@ -1,4 +1,4 @@
-<project name="FishingGameDeployer" default="compile">
+<project name="MonkeyWorld" default="compile">
 
     <property name="lib" value="lib" />
 	

@@ -20,7 +20,7 @@ var Log = new(/** @constructor */ function() {
 		if (tag === undefined) {
 			tag = "";
 		}
-		if (tag != not) {
+		if (tag != "evm" && tag != "sound") {
 			tag = tag.substr(0,8);
 			tag = tag.toUpperCase();
 			var num = 8-tag.length;
@@ -28,7 +28,7 @@ var Log = new(/** @constructor */ function() {
 				tag = " " + tag;
 			}
 			//tag += " ";
-			console.log(/*type + " " + */tag + " " + msg);
+			console.log(type + " " + tag + " " + msg);
 		}
 	};
 	

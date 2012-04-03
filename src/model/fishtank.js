@@ -1,12 +1,13 @@
 /**
  * @constructor
  * @param {EventManager} ievm
- * @param {Object} config 
+ * @param {Object} config
+ * @param {Object} mode 
  * @implements {ModelModule}
  * @extends {GameModule}
  */
-function FishingGame(ievm, config) {
-	
+function FishingGame(ievm, mode) {
+	Log.debug("Applying " + mode + " Mode", "model");
 	/** @const @type {string} */ var EVM_TAG = "FishingGame";
 	
 	this._name = "FishingGame";

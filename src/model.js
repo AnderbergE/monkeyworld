@@ -14,7 +14,7 @@ function Model(ieventManager, iview, iviewInit, iviewStart, iModel, iconfig, ipl
 
 	this.init = function() {
 		Log.debug("Creating model...", "model");
-		model = new myModel(evm);
+		model = new myModel(evm, GameMode.MONKEY_SEE);
 		if (player != null)
 			model.play(player, evm);
 		Log.debug("Initiating model...", "model");
