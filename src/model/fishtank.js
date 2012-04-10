@@ -18,6 +18,9 @@ function FishingGame(ievm, mode) {
 	var correctCaptured = 0;
 	var catchingNumber = 2;
 	var numberCorrect = 2;
+	
+	var result = {};
+	result.sequence = new Array();
 
 	/** @const */ var WIDTH = 625;
 	/** @const */ var HEIGHT = 600;
@@ -36,12 +39,14 @@ function FishingGame(ievm, mode) {
 		var numberFishes = config.numberFishes;
 		/** @const {number} */ var NBR_IMAGES = 2;
 		
-		var numbers = Utils.crookedRandoms(1, maxNumber, numberFishes, catchingNumber, numberCorrect, true);
-		
+		var numbers = Utils.crookedRandoms(1, maxNumber, numberFishes,
+				                           catchingNumber, numberCorrect, true);
+		var id = 0;
 		for (var i = 0; i < numberFishes; i++) {
 			var pos = Starts[i % 5];
 			fishArray.push(new Fish(
 				evm,
+				id++,
 				numbers[i],
 				pos.x,
 				pos.y,
@@ -78,13 +83,14 @@ function FishingGame(ievm, mode) {
 			//fishArray[i].setClickable(false);
 		}
 	};
-
-	/*evm.on("Game.startGame", function(msg) {
-		Log.debug("I'm still alive!");
-	}, EVM_TAG);*/
 	
 	function capturedWantedFish() {
 		return correctCaptured == numberCorrect || basketSize == fishArray.length;
+	};
+	
+	var useTimer = true;
+	this.turnOffInactivityTimer = function() {
+		useTimer = false;
 	};
 	
 	function inactivity() {
@@ -101,7 +107,7 @@ function FishingGame(ievm, mode) {
 	var timer = null;
 	
 	function restartInactivityTimer() {
-		if (!capturedWantedFish()) {
+		if (useTimer && !capturedWantedFish()) {
 			timer = setTimeout(inactivity, 5000);
 		}
 	}
@@ -129,7 +135,10 @@ function FishingGame(ievm, mode) {
 		basketSize++;
 		if (fish.getNumber() == catchingNumber) {
 			correctCaptured++;
-		} 
+			result.sequence.push("correct");
+		} else {
+			result.sequence.push("incorrect");
+		}
 		checkEndOfRound();
 	};
 	
@@ -140,7 +149,8 @@ function FishingGame(ievm, mode) {
 					fishArray[i].setCanFree(false);
 				}
 			}
-			if (basketSize == numberCorrect || mode == GameMode.MONKEY_SEE) {
+			if (basketSize == numberCorrect || mode == GameMode.MONKEY_SEE
+				|| mode == GameMode.MONKEY_DO) {
 				evm.tell("FishingGame.catchingDone");
 			} else {
 				evm.tell("FishingGame.freeWrongOnes");
@@ -148,7 +158,7 @@ function FishingGame(ievm, mode) {
 		}
 	};
 	
-	this.removeFishFromBasket = function(fish) {
+	var removeFishFromBasket = function(fish) {
 		for (var i = 0; i < basketArray.length; i++) {
 			if (basketArray[i] === fish) {
 				basketArray[i] = undefined;
@@ -160,6 +170,37 @@ function FishingGame(ievm, mode) {
 		}
 		checkEndOfRound();
 	}
+	
+	/**
+	 * Catch a fish.
+	 * @param {Fish} fish A fish in the pond that should be captured. 
+	 */
+	this.catchFish = function(fish, done) {
+		evm.tell("FishingGame.catch", {
+			fish: fish,
+			done: done
+		});
+	};
+	
+	/**
+	 * Free a fish.
+	 * @param {Fish} fish A fish in the basket that should be free'd.
+	 */
+	this.freeFish = function(fish, done) {
+		if (fish.getNumber() == numberCorrect)
+			result.sequence.push("freeCorrect");
+		else
+			result.sequence.push("freeIncorrect");
+		evm.tell("FishingGame.free", {
+			fish: fish,
+			done: function() {
+				removeFishFromBasket(fish);
+				fish.free();
+				done();
+			}
+		});
+	};
+
 	
 	this.getNextBasketSlot = function() {
 		var min = 1000;
@@ -192,6 +233,7 @@ function FishingGame(ievm, mode) {
 	
 	/**
 	 * Lets the player count the fish in the basket.
+	 * @param {number} number What the player thinks the correct number is.
 	 */
 	this.countFish = function(number) {
 		evm.tell(
@@ -199,13 +241,83 @@ function FishingGame(ievm, mode) {
 			{ correct: number == numberCorrect }
 		);
 	}
-	
+
+	/**
+	 * Called when the game "goes back in the box".
+	 */
 	this.tearDown = function() {
-		evm.tell("Game.roundDone");
+		evm.tell("Game.roundDone", {
+			result: result
+		});
 	};
 	
+	/**
+	 * Called when the game starts.
+	 */
 	this.start = function() {
 		restartInactivityTimer();
+	};
+	
+	/**
+	 * Returns a fish that should be captured. If no such fish exists in the
+	 * pond, null is returned.
+	 * @return {Fish|null} A catchable fish with the correct number, if it
+	 *                     exists. Otherwise null.
+	 */
+	this.getOneCorrectFish = function() {
+		for (var i = 0; i < fishArray.length; i++) {
+			var fish = fishArray[i];
+			if (!fish.isCaptured() && fish.getNumber() == numberCorrect) {
+				return fish;
+			}
+		};
+		return null;
+	};
+	
+	/**
+	 * Returns a fish that should not be captured. If no such fish exists in
+	 * the pond, null i returned.
+	 * @return {Fish|null} A catchable fish with an incorrect number, if it
+	 *                     exists. Otherwise null.
+	 */
+	this.getOneIncorrectFish = function() {
+		for (var i = 0; i < fishArray.length; i++) {
+			var fish = fishArray[i];
+			if (!fish.isCaptured() && fish.getNumber() != numberCorrect) {
+				return fish;
+			}
+		};
+		return null;
+	};
+	
+	/**
+	 * Returns a fish that has been captured, but shouldn't. If no such fish
+	 * exists in the basket, null is returned.
+	 * @return {Fish|null} A captured fish with incorrect number, if it exists.
+	 *                     Otherwise null. 
+	 */
+	this.getOneIncorrectlyCapturedFish = function() {
+		for (var i = 0; i < fishArray.length; i++) {
+			if (fishArray[i].isCaptured() && fishArray[i].getNumber() != numberCorrect) {
+				return fishArray[i];
+			}
+		};
+		return null;
+	};
+	
+	/**
+	 * Returns a fish that has been captured, and should be captured. If no such
+	 * fish exists in the basket, null is returned.
+	 * @return {Fish|null} A captured fish with correct number, if it exists.
+	 *                     Otherwise null. 
+	 */
+	this.getOneCorrectlyCapturedFish = function() {
+		for (var i = 0; i < fishArray.length; i++) {
+			if (fishArray[i].isCaptured() && fishArray[i].getNumber() == numberCorrect) {
+				return fishArray[i];
+			}
+		};
+		return null;
 	};
 }
 FishingGame.prototype = new GameModule();

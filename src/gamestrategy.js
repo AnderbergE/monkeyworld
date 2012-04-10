@@ -27,10 +27,11 @@ function GameModule() {}
 /**
  * @param {Player} player
  * @param {EventManager} eventManager
+ * @param {Object} config
  */
-GameModule.prototype.play = function(player, eventManager) {
+GameModule.prototype.play = function(player, eventManager, config) {
 	this._eventManager = eventManager;
-	player.strategies[this._name](this, eventManager);
+	player.strategies[this._name](this, eventManager, config);
 };
 
 /** @type {string} */

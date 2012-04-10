@@ -2,12 +2,13 @@
  * A fish.
  * @constructor
  * @param {EventManager}  ieventManager  The event manager
+ * @param {number}        id             Unique ID of the fish
  * @param {number}        inumber        The number on the fish
  * @param {number}        ix             Starting x position
  * @param {number}        iy             Starting y position
  * @param {number}        ispecies       Species number
  */
-function Fish(ieventManager, inumber, ix, iy, ispecies) {
+function Fish(ieventManager, id, inumber, ix, iy, ispecies) {
 
 	/** @type {EventManager} */ var eventManager = ieventManager;
 	/** @type {number}       */ var number = inumber;
@@ -19,7 +20,7 @@ function Fish(ieventManager, inumber, ix, iy, ispecies) {
 	/** @const @type{number} */ var MAX_SCALE = 1;
 	/** @type {number}       */ var scale = (Math.random() *
                                     (MAX_SCALE - MIN_SCALE)) + MIN_SCALE;
-	/** @type {number}       */ var id = uniqueId();
+	/** @type {number}       */ var _id = id;
 	/** @enum {number}       */ var Direction = { LEFT: -1, RIGHT: 1 };
 	/** @type {number}       */ var y0 = iy;
 	/** @type {number}       */ var offset = Math.random() * 2 * Math.PI;
@@ -34,7 +35,7 @@ function Fish(ieventManager, inumber, ix, iy, ispecies) {
 	/** @type {number}       */ var scaledHeight = scale * height;
 	/** @type {boolean}      */ var _canFree = true;
 
-	this.toString = function() { return "Fish " + id; };
+	this.toString = function() { return "Fish " + _id; };
 	
 	/** @type {number}       */ var xSpeed = (Math.random() *
 		                            (MAX_X_SPEED - MIN_X_SPEED)) + MIN_X_SPEED;

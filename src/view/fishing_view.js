@@ -113,9 +113,9 @@ function FishingView(ievm, stage, config_dep) {
 		if (allowClicks) {
 			if (!fish.isCaptured()) {
 				Log.debug("Starting to catch " + fish, "fish");
-				rod.initCatch(fish);
+				fishTank.catchFish(fish, function() {});
 			} else {
-				freeFish(fish);
+				fishTank.freeFish(fish, function() {});
 				fishTank.noactivity();
 			}
 		}
@@ -141,10 +141,13 @@ function FishingView(ievm, stage, config_dep) {
 		fishCountingView.init(fishTank, fishGroups);
 	};
 
-	evm.on("fishinggame.catch", function(msg) {
-		rod.initCatch(msg.fish);
-		evm.tell("fishinggame.catched", {fish: msg.fish});
+	evm.on("FishingGame.catch", function(msg) {
+		rod.initCatch(msg.fish, msg.done);
 	}, EVM_TAG);
+	
+	evm.on("FishingGame.free", function(msg) {
+		freeFish(msg.fish, msg.done);
+	});
 	
 	evm.on("fishinggame.turnOnClick", function(msg) {
 		turnOnClick(msg.fish);
@@ -336,23 +339,6 @@ function FishingView(ievm, stage, config_dep) {
 					var mouthXPosition = fish.getMouthPosition().x;
 					var fishDirection = fish.getDirection();
 					endState.rotation = fishDirection * 2 * Math.PI;
-					/*endState.callback = function() {
-						fishTank.putFishInBasket(fish);
-						if (allowClicks) {
-							state.catching.capture();
-							evm.tell("fishinggame.turnOnClicks");
-						}
-					};*/
-					//animator.animateTo(fishGroups[state.catching].centerOffset, {x:0, y:0}, {duration: 1000} );
-					/*console.log("problem...");
-					animator.animateTo(fishGroups[state.catching],endState,{duration:{x:1000,y:1000,rotation:1000},onFinish: function() {
-						console.log("///problem...");
-						fishTank.putFishInBasket(fish);
-						if (allowClicks) {
-							state.catching.capture();
-							evm.tell("fishinggame.turnOnClicks");
-						}
-					}});*/
 					
 					Tween.get(fishGroups[state.catching]).to(endState, 1500).call(function(){
 						fishTank.putFishInBasket(fish);
@@ -373,6 +359,7 @@ function FishingView(ievm, stage, config_dep) {
 							onFrame: function() {},
 							onFinish: function() {
 								state.state = ROD_STATE.PENDULUM;
+								state.done();
 							}
 						}
 					);
@@ -402,8 +389,9 @@ function FishingView(ievm, stage, config_dep) {
 			/**
 			 * @param {Fish} fish
 			 */
-			initCatch: function(fish) {
+			initCatch: function(fish, done) {
 				state.catching = fish;
+				state.done = done;
 				state.state = ROD_STATE.INIT_CATCHING;
 			}
 		};
@@ -413,10 +401,10 @@ function FishingView(ievm, stage, config_dep) {
 	 * Animates a fish back to the pond.
 	 * @param {Fish} fish
 	 */
-	var freeFish = function(fish) {
+	var freeFish = function(fish, done) {
 		if (fish.canFree()) {
-		Log.debug("Starting to free " + fish, "fish");
-		/** @type {Kinetic.Group} */ var group = fishGroups[fish];
+			Log.debug("Starting to free " + fish, "fish");
+			/** @type {Kinetic.Group} */ var group = fishGroups[fish];
 			animator.animateTo
 			(
 				group, { x: 400, y: 0, rotation: Math.PI / 2 },
@@ -433,12 +421,7 @@ function FishingView(ievm, stage, config_dep) {
 								duration: { x: 1000, y: 1000, rotation: 1000 },
 								onFrame: function() {},
 								onFinish: function() {
-	
-								//group.x += fish.getDirection() * fish.getMouthPosition().x;
-	
-	
-									fishTank.removeFishFromBasket(fish);
-									fish.free();
+									done();
 								}
 							}
 						);
@@ -446,7 +429,6 @@ function FishingView(ievm, stage, config_dep) {
 				}
 			);
 		} else {
-			//showBig(Strings.get("FISHING_NOT_THIS_ONE").toUpperCase());
 			evm.play(Sounds.FISHING_NOT_THIS_ONE);
 		}
 	};

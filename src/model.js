@@ -17,8 +17,9 @@ function Model(ieventManager, iview, iviewInit, iviewStart, iModel, iconfig, ipl
 		model = new myModel(evm, mode);
 		if (model.setMode != undefined)
 			model.setMode(mode);
-		if (player != null)
-			model.play(player, evm);
+		if (player != null) {
+			model.play(player, evm, config);
+		}
 		Log.debug("Initiating model...", "model");
 		var viewConfig = model.init(config);
 		viewInit.call(view, viewConfig, model);

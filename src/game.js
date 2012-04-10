@@ -9,33 +9,56 @@ var GameState = new (/** @constructor */function() {
 	
 	var bananas = 0;
 	var currentSeeRound = 1;
+	var currentDoRound = 1;
 	var maxSeeRounds = 3;
-	var mode = GameMode.CHILD_PLAY;
+	var maxDoRounds = 3;
+	var mode = GameMode.MONKEY_SEE;
+	var results = new Array();
+	
+	this.pushResult = function(result) {
+		results.push(result);
+	};
+	
+	this.getResults = function() {
+		return results;
+	};
+	
+	this.clearResults = function() {
+		results = new Array();
+	};
 	
 	this.addBanana = function() {
 		Log.debug("Adding banana", "game");
 		bananas++;
-	}
+	};
 	
 	this.addMonkeySeeRound = function() {
 		currentSeeRound++;
-	}
+	};
 	
 	this.getMonkeySeeRounds = function() {
 		return currentSeeRound;
-	}
+	};
+	
+	this.addMonkeyDoRound = function() {
+		currentDoRound++;
+	};
+	
+	this.getMonkeyDoRounds = function() {
+		return currentDoRound;
+	};
 	
 	this.setMode = function(imode) {
 		mode = imode;
-	}
+	};
 	
 	this.getMode = function() {
 		return mode;
-	}
+	};
 	
 	this.getBananas = function() {
 		return bananas;
-	}
+	};
 });
 
 /**
@@ -85,6 +108,7 @@ function Game() {
 	/**
 	 * @param iView
 	 * @param iModel
+	 * @param {GameMode|null} mode
 	 * @param config
 	 * @param {Function=} callback
 	 */
@@ -97,7 +121,7 @@ function Game() {
 		if (mode === GameMode.CHILD_PLAY || mode === GameMode.MONKEY_SEE) {
 			player = gamerPlayer;
 		} else if (mode === GameMode.MONKEY_DO) {
-			player = gamerPlayer;
+			player = monkeyPlayer;
 		}/* else if (mode === GameMode.GUARDIAN_ANGEL) {
 			player = angelPlayer;
 		}*/
@@ -134,14 +158,14 @@ function Game() {
 				//kickInModule(ReadyToTeachView, ReadyToTeach, null, {});
 				kickInModule(FishingView, FishingGame, GameState.getMode(), {maxNumber: 9, numberFishes: 5});
 			} else {
-				kickInModule(StartView, Start, {}, function(config) {
+				kickInModule(StartView, Start, GameMode.CHILD_PLAY, {}, function(config) {
 					if (config == "login") {
-						kickInModule(LoginView, Intro, {}, function() {
+						kickInModule(LoginView, Intro, null, {}, function() {
 							kickInModule(FishingView, FishingGame, GameMode.CHILD_PLAY, {maxNumber: 9, numberFishes: 5});
 						});	
 					} else {
-						kickInModule(NewPlayerView, NewPlayer, {}, function() {
-							kickInModule(IntroView, Intro, {}, function() {
+						kickInModule(NewPlayerView, NewPlayer, null, {}, function() {
+							kickInModule(IntroView, Intro, null, {}, function() {
 								kickInModule(FishingView, FishingGame, GameMode.CHILD_PLAY, {maxNumber: 9, numberFishes: 5});	
 							});
 						});	
@@ -157,19 +181,30 @@ function Game() {
 		if (GameState.getMode() == GameMode.CHILD_PLAY) {
 			kickInModule(ReadyToTeachView, ReadyToTeach, null, {});
 		} else if (GameState.getMode() == GameMode.MONKEY_SEE) {
+			GameState.pushResult(msg.result);
 			if (GameState.getMonkeySeeRounds() < 3) {
 				GameState.addMonkeySeeRound();
 				kickInModule(FishingView, FishingGame, GameMode.MONKEY_SEE, {maxNumber: 9, numberFishes: 5});
 			} else {
+				GameState.setMode(GameMode.MONKEY_DO);
 				eventManager.play(Sounds.THANK_YOU_FOR_HELPING);
 				kickInModule(SystemMessageView, SystemMessage, null,{
 					msg: Strings.get("THANK_YOU_FOR_HELPING"),
 					callback: function() {
 						eventManager.tell("Game.getBanana", { callback: function() {
-							// enter monkey do!
+							kickInModule(FishingView, FishingGame, GameMode.MONKEY_DO, {result:GameState.getResults()[GameState.getMonkeyDoRounds()-1], maxNumber: 9, numberFishes: 5});
+							//GameState.clearResults();
 						}});
 					}
 				});
+			}
+		} else if (GameState.getMode() == GameMode.MONKEY_DO) {
+			if (GameState.getMonkeyDoRounds() < 3) {
+				GameState.addMonkeyDoRound();
+				kickInModule(FishingView, FishingGame, GameMode.MONKEY_DO, {result:GameState.getResults()[GameState.getMonkeyDoRounds()-1], maxNumber: 9, numberFishes: 5});
+			} else {
+				//GameState.setMode(GameMode.???);
+				// end of 
 			}
 		}
 	}, "game");

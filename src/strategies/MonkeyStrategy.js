@@ -13,19 +13,39 @@ MonkeyPlayer.prototype.strategies = function() {};
  * @constructor
  * @param {FishingGame} game
  */
-MonkeyPlayer.prototype.strategies["FishingGame"] = function(game, eventManager) {
+MonkeyPlayer.prototype.strategies["FishingGame"] = function(game, eventManager, config) {
+	var result = config.result;
 	var EVM_TAG = "MonkeyPlayer";
 	Log.debug("Applying MonkeyPlayer's strategy to the FishingGame", "player");
 
+	var resultPosition = 0;
+	
 	eventManager.on("fishinggame.started", function(msg) {
+		game.turnOffInactivityTimer();
 		console.log("Game started");
-		var allFish = game.getAllFish();
-		this.setTimeout(function() {
-			console.log("Will catch");
-			eventManager.tell("fishinggame.catch", {fish:allFish[0]});
-		}, 2000);
+		handleResults();
 		
 	}, EVM_TAG);
+	
+	function handleResults() {
+		var happening = result.sequence[resultPosition++];
+		var resultLength = result.sequence.length;
+		if (resultPosition <= resultLength) {
+			this.setTimeout(function() {
+				if (happening == "correct") {
+					game.catchFish(game.getOneCorrectFish(), function() {handleResults();});
+				} else if (happening == "incorrect") {
+					game.catchFish(game.getOneIncorrectFish(), function() {handleResults();});
+				} else if (happening == "freeIncorrect") {
+					game.freeFish(game.getOneIncorrectlyCapturedFish(), function() {handleResults();});
+				} else if (happening == "freeCorrect") {
+					game.freeFish(game.getOneCorrectlyCapturedFish(), function() {handleResults();});
+				} else {
+					Log.error("Error when handling happenings (no such happening)", "monkey");
+				}
+			}, 2000);
+		}
+	}
 	
 	eventManager.on("catched", function(msg) {
 		/** @type {Fish} */ var fish = msg.fish;
