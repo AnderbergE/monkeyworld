@@ -28,23 +28,22 @@ function FishingView(ievm, stage, config_dep) {
 		],
 		
 		/** @const */ POND: {
-			/** @const */ X: 100,
+			/** @const */ X: 200,
 			/** @const */ Y: 150,
-			/** @const */ WIDTH: 625,
+			/** @const */ WIDTH: 500,
 			/** @const */ HEIGHT: 600
 		}
 
 		};
 	}();
-//	console.log(config.SOUND_SOURCES);
 	/** @const */ var BASKET_SLOTS = {
-		/** @const */ 6: { x: 825, y: 0 },
-		/** @const */ 4: { x: 700, y: 25 },
-		/** @const */ 5: { x: 825, y: 25 },
-		/** @const */ 2: { x: 700, y: 153 },
-		/** @const */ 3: { x: 825, y: 153 },
-		/** @const */ 0: { x: 700, y: 281 },
-		/** @const */ 1: { x: 825, y: 281 }
+		/** @const */ 6: { x: 725, y: 0 },
+		/** @const */ 4: { x: 600, y: 25 },
+		/** @const */ 5: { x: 725, y: 25 },
+		/** @const */ 2: { x: 600, y: 153 },
+		/** @const */ 3: { x: 725, y: 153 },
+		/** @const */ 0: { x: 600, y: 281 },
+		/** @const */ 1: { x: 725, y: 281 }
 	};
 
 	/** @type {Object.<string, Image>} */ 
@@ -212,8 +211,8 @@ function FishingView(ievm, stage, config_dep) {
 		function getFishFront(fish) {
 			var dir = fish.getDirection();
 			return {
-				x: fish.getX() + config.POND.X + dir * fish.getMouthPosition().x,
-				y: fish.getY() + config.POND.Y + dir * fish.getMouthPosition().y
+				x: fish.getX()*config.POND.WIDTH + config.POND.X + dir * fish.getMouthPosition().x*config.POND.WIDTH,
+				y: fish.getY()*config.POND.HEIGHT + config.POND.Y + dir * fish.getMouthPosition().y*config.POND.HEIGHT
 			};
 		}
 		
@@ -272,6 +271,8 @@ function FishingView(ievm, stage, config_dep) {
 					var fish = state.catching;
 					var fishGroup = fishGroups[state.catching];
 					var mouth = fish.getMouthPosition();
+					mouth.x *= config.POND.WIDTH;
+					mouth.y *= config.POND.HEIGHT;
 					var direction = fish.getDirection();
 					fishGroup.attrs.centerOffset.y = mouth.y;
 					if (direction > 0) {
@@ -283,12 +284,6 @@ function FishingView(ievm, stage, config_dep) {
 					}
 					
 					evm.play(Sounds.FISHING_WINDING);
-					/*
-					fishGroup.transitionTo({
-						rotation: -1*direction * Math.PI /2,
-						duration: 0.5
-					});
-					*/
 					animator.animateTo(
 						fishGroup.attrs,
 						{
@@ -457,8 +452,8 @@ function FishingView(ievm, stage, config_dep) {
 	}, EVM_TAG);
 	
 	function moveFish(fish) {
-		fishGroups[fish].attrs.x = Math.round(fish.getX());
-		fishGroups[fish].attrs.y = Math.round(fish.getY());
+		fishGroups[fish].attrs.x = Math.round(fish.getX()*config.POND.WIDTH);
+		fishGroups[fish].attrs.y = Math.round(fish.getY()*config.POND.HEIGHT);
 	}
 
 	/**
@@ -468,10 +463,10 @@ function FishingView(ievm, stage, config_dep) {
 	function createFish(fish) {
 
 		var fishGroup = new Kinetic.Group({
-			x: fish.getX(),
-			y: fish.getY(),
-			width: fish.getScale() * fish.getWidth(),
-			height: fish.getScale() * fish.getHeight(),
+			x: fish.getX()*config.POND.WIDTH,
+			y: fish.getY()*config.POND.HEIGHT,
+			width: fish.getScale() * fish.getWidth()*config.POND.WIDTH,
+			height: fish.getScale() * fish.getHeight()*config.POND.HEIGHT,
 			centerOffset: { x: 0, y: 0 }
 		});
 		
@@ -481,11 +476,11 @@ function FishingView(ievm, stage, config_dep) {
 			x: 0,
 			y: 0,
 			image: images["fish" + fish.getSpecies()],
-			width: fish.getScale() * fish.getWidth(),
-			height: fish.getScale() * fish.getHeight(),
+			width: fish.getScale() * fish.getWidth()*config.POND.WIDTH,
+			height: fish.getScale() * fish.getHeight()*config.POND.HEIGHT,
 			centerOffset: {
-				x: fish.getScaledWidth() / 2,
-				y: fish.getScaledHeight() / 2
+				x: fish.getScaledWidth()*config.POND.WIDTH / 2,
+				y: fish.getScaledHeight()*config.POND.HEIGHT / 2
 			}
 		});
 		image.setScale(-1,1);
@@ -647,7 +642,6 @@ function FishingView(ievm, stage, config_dep) {
 		overlayLayer.add(bambu8);
 		overlayLayer.add(bambu9);
 		overlayLayer.add(bambu10);
-		
 		if (fishTank.getMode() == GameMode.MONKEY_SEE) {
 			var monkey = new Kinetic.Image({ x: 30, y: stage.attrs.height - 200, image: images["monkey"] });
 			overlayLayer.add(monkey);
@@ -766,7 +760,7 @@ function FishingView(ievm, stage, config_dep) {
 			});
 		}
 		dynamicOverlayLayer.dynamicAdd(bigShowing);
-
+		
 		Tween.get(bigShowing.attrs.scale).to({x:2, y:2}, 1000).wait(3000).call(function() {
 			Tween.get(bigShowing.attrs.scale).to({x: 1, y: 1}, 1000).call(function() {
 			});

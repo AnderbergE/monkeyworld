@@ -25,12 +25,12 @@ function Fish(ieventManager, id, inumber, ix, iy, ispecies) {
 	/** @type {number}       */ var y0 = iy;
 	/** @type {number}       */ var offset = Math.random() * 2 * Math.PI;
 	/** @type {number}       */ var direction = 1;
-	/** @const @type{number} */ var MIN_X_SPEED = 0.030;
-	/** @const @type{number} */ var MAX_X_SPEED = 0.040;
+	/** @const @type{number} */ var MIN_X_SPEED = 0.00006;
+	/** @const @type{number} */ var MAX_X_SPEED = 0.00008;
 	/** @const @type{number} */ var MIN_Y_SPEED = 0.6;
 	/** @const @type{number} */ var MAX_Y_SPEED = 0.5;
-	/** @const @type {number}*/ var width = 128;
-	/** @const @type {number}*/ var height = 128;
+	/** @const @type {number}*/ var width = 0.256;
+	/** @const @type {number}*/ var height = 0.2133;
 	/** @type {number}       */ var scaledWidth = scale * width;
 	/** @type {number}       */ var scaledHeight = scale * height;
 	/** @type {boolean}      */ var _canFree = true;
@@ -59,8 +59,8 @@ function Fish(ieventManager, id, inumber, ix, iy, ispecies) {
 	this.setCanFree = function(bool) { _canFree = bool; };
 	this.getMouthPosition = function() {
 		switch (species) {
-		case 0: return { x: 50, y: 0 }; break;
-		case 1: return { x: 50, y: 0 }; break;
+		case 0: return { x: 0.1, y: 0 }; break;
+		case 1: return { x: 0.1, y: 0 }; break;
 		default: return { x: 0, y: 0 }; break;
 		}
 	};
@@ -72,7 +72,7 @@ function Fish(ieventManager, id, inumber, ix, iy, ispecies) {
 	
 	this.onFrame = function(frame) {
 		if (!hooked) {
-			y = y0 + 15*Math.cos(ySpeed * (offset + frame.time * 2 * Math.PI / 3000));
+			y = y0 + 0.03 * Math.cos(ySpeed * (offset + frame.time * 2 * Math.PI / 3000));
 			if (direction == Direction.RIGHT)
 				x += xSpeed * frame.timeDiff;
 			else

@@ -22,14 +22,14 @@ function FishingGame(ievm, mode) {
 	var result = {};
 	result.sequence = new Array();
 
-	/** @const */ var WIDTH = 625;
-	/** @const */ var HEIGHT = 600;
+	/** @const */ var WIDTH = 1;
+	/** @const */ var HEIGHT = 1;
 	/** @enum {Object} */ var Starts = {
-			0: {x:150, y:200, occ: false },
-			1: {x:400, y:250, occ: false },
-			2: {x:300, y:370, occ: false },
-			3: {x:500, y:490, occ: false },
-			4: {x:200, y:125, occ: false }
+			0: {x:0.3, y:0.3},
+			1: {x:0.8, y:0.4},
+			2: {x:0.6, y:0.6},
+			3: {x:1, y:0.8},
+			4: {x:0.4, y:0.2}
 		};
 	
 	
