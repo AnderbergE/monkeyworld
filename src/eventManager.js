@@ -105,12 +105,12 @@ function EventManager(subtitleLayer) {
 	
 	var subtitles = new Array();
 	
-	var subtitlesX = subtitleLayer.getParent().width / 2;
-	var subtitlesY = subtitleLayer.getParent().height - 50;
+	var subtitlesX = subtitleLayer.getParent().attrs.width / 2;
+	var subtitlesY = subtitleLayer.getParent().attrs.height - 50;
 	
 	function addSubtitle(text) {
 		for (var i = 0; i < subtitles.length; i++) {
-			subtitles[i].y -= 30; 
+			subtitles[i].attrs.y -= 30; 
 		}
 		subtitles.push(text);
 	};
@@ -134,8 +134,8 @@ function EventManager(subtitleLayer) {
 
 		if (entry.subtitle != null) {
 			var text = new Kinetic.Text({
-				x: subtitleLayer.getParent().width / 2,
-				y: subtitleLayer.getParent().height - 50,
+				x: subtitleLayer.getParent().attrs.width / 2,
+				y: subtitleLayer.getParent().attrs.height - 50,
 				text: entry.subtitle,
 				fontSize: 26,
 				fontFamily: "Arial",

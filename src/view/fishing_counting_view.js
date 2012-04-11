@@ -72,7 +72,7 @@ function FishCountingView(stage, evm, EVM_TAG) {
 		
 		var backgroundRect = new Kinetic.Rect({
 			x: 0, y: 0,
-			width: stage.width, height: stage.height,
+			width: stage.attrs.width, height: stage.attrs.height,
 			fill: "white"
 		});
 		backgroundLayer.add(backgroundRect);
@@ -97,8 +97,8 @@ function FishCountingView(stage, evm, EVM_TAG) {
 		for (var i = 0; i < basket.length; i++) { if (basket[i] != undefined) {
 			var fish = basket[i];
 			var pos = fishGrid.next();
-			fishGroups[fish].x = pos.x;
-			fishGroups[fish].y = pos.y;
+			fishGroups[fish].attrs.x = pos.x;
+			fishGroups[fish].attrs.y = pos.y;
 			shapeLayer.add(fishGroups[fish]);
 		}}
 		

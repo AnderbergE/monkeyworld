@@ -130,9 +130,6 @@ function FishingView(ievm, stage, config_dep) {
 		stage.remove(pondLayer);
 		stage.remove(fpsLayer);
 		stage.remove(dynamicOverlayLayer);
-		/*stage.onFrame(function(frame){
-			evm.tell("frame", {frame:frame});
-		});*/
 	};
 	
 	var roundDone = function() {
@@ -276,13 +273,13 @@ function FishingView(ievm, stage, config_dep) {
 					var fishGroup = fishGroups[state.catching];
 					var mouth = fish.getMouthPosition();
 					var direction = fish.getDirection();
-					fishGroup.centerOffset.y = mouth.y;
+					fishGroup.attrs.centerOffset.y = mouth.y;
 					if (direction > 0) {
-						fishGroup.x = fishGroup.x + mouth.x;
-						fishGroup.centerOffset.x = mouth.x;
+						fishGroup.attrs.x = fishGroup.attrs.x + mouth.x;
+						fishGroup.attrs.centerOffset.x = mouth.x;
 					} else {
-						fishGroup.x = fishGroup.x - mouth.x;
-						fishGroup.centerOffset.x = mouth.x;
+						fishGroup.attrs.x = fishGroup.attrs.x - mouth.x;
+						fishGroup.attrs.centerOffset.x = mouth.x;
 					}
 					
 					evm.play(Sounds.FISHING_WINDING);
@@ -293,7 +290,7 @@ function FishingView(ievm, stage, config_dep) {
 					});
 					*/
 					animator.animateTo(
-						fishGroup,
+						fishGroup.attrs,
 						{
 							rotation: -1*direction * Math.PI /2
 						},
@@ -313,11 +310,11 @@ function FishingView(ievm, stage, config_dep) {
 							onFrame: function()
 							{
 								var fishGroup = fishGroups[state.catching];
-								fishGroup.x = state.end.x - config.POND.X;
-								fishGroup.y = state.end.y - config.POND.Y;
+								fishGroup.attrs.x = state.end.x - config.POND.X;
+								fishGroup.attrs.y = state.end.y - config.POND.Y;
 								var splashed = state.playedSplash;
 								var surface = config.POND.Y - 100;
-								var aboveSurface = fishGroup.y < surface;
+								var aboveSurface = fishGroup.attrs.y < surface;
 								if (!splashed && aboveSurface) {
 									evm.play(Sounds.FISHING_SPLASH);
 									state.playedSplash = true;
@@ -340,7 +337,7 @@ function FishingView(ievm, stage, config_dep) {
 					var fishDirection = fish.getDirection();
 					endState.rotation = fishDirection * 2 * Math.PI;
 					
-					Tween.get(fishGroups[state.catching]).to(endState, 1500).call(function(){
+					Tween.get(fishGroups[state.catching].attrs).to(endState, 1500).call(function(){
 						fishTank.putFishInBasket(fish);
 						if (allowClicks) {
 							state.catching.capture();
@@ -349,7 +346,7 @@ function FishingView(ievm, stage, config_dep) {
 						fishTank.noactivity();
 					});
 					
-					Tween.get(fishGroups[state.catching].centerOffset).to({x:0,y:0}, 1500).call(function() {
+					Tween.get(fishGroups[state.catching].attrs.centerOffset).to({x:0,y:0}, 1500).call(function() {
 					});
 					animator.animateTo(
 						state,
@@ -407,16 +404,16 @@ function FishingView(ievm, stage, config_dep) {
 			/** @type {Kinetic.Group} */ var group = fishGroups[fish];
 			animator.animateTo
 			(
-				group, { x: 400, y: 0, rotation: Math.PI / 2 },
+				group.attrs, { x: 400, y: 0, rotation: Math.PI / 2 },
 				{
 					duration: { x: 1000, y: 1000, rotation: 1000 },
 					onFinish: function()
 					{
 						evm.play(Sounds.FISHING_SPLASH);
-						group.centerOffset.x = 0;
-						group.centerOffset.y = 0;
+						group.attrs.centerOffset.x = 0;
+						group.attrs.centerOffset.y = 0;
 						animator.animateTo(
-							group, { x:fish.getX(), y:fish.getY(), rotation: 0 },
+							group.attrs, { x:fish.getX(), y:fish.getY(), rotation: 0 },
 							{
 								duration: { x: 1000, y: 1000, rotation: 1000 },
 								onFrame: function() {},
@@ -460,8 +457,8 @@ function FishingView(ievm, stage, config_dep) {
 	}, EVM_TAG);
 	
 	function moveFish(fish) {
-		fishGroups[fish].x = Math.round(fish.getX());
-		fishGroups[fish].y = Math.round(fish.getY());
+		fishGroups[fish].attrs.x = Math.round(fish.getX());
+		fishGroups[fish].attrs.y = Math.round(fish.getY());
 	}
 
 	/**
@@ -566,8 +563,8 @@ function FishingView(ievm, stage, config_dep) {
 		var background = new Kinetic.Rect({
 			x: 0,
 			y: 2,
-			width: stage.width,
-			height: stage.height,
+			width: stage.attrs.width,
+			height: stage.attrs.height,
 			fill: "white"
 		});
 		var water = new Kinetic.Rect({
@@ -652,7 +649,7 @@ function FishingView(ievm, stage, config_dep) {
 		overlayLayer.add(bambu10);
 		
 		if (fishTank.getMode() == GameMode.MONKEY_SEE) {
-			var monkey = new Kinetic.Image({ x: 30, y: stage.height - 200, image: images["monkey"] });
+			var monkey = new Kinetic.Image({ x: 30, y: stage.attrs.height - 200, image: images["monkey"] });
 			overlayLayer.add(monkey);
 		}
 		
@@ -711,8 +708,8 @@ function FishingView(ievm, stage, config_dep) {
     	fontSize: 36,
     	fontFamily: "Arial",
     	textFill: "white",
-    	x: stage.width / 2,
-    	y: stage.height / 2,
+    	x: stage.attrs.width / 2,
+    	y: stage.attrs.height / 2,
         align: "center"
 	});
 	loadingLayer.add(text);
@@ -750,12 +747,12 @@ function FishingView(ievm, stage, config_dep) {
 	
 	function showBig(text) {
 		if (bigShowing != null) {
-			bigShowing.text = text;
-			bigShowing.x = stage.width/2;
-			bigShowing.y = 150; 
+			bigShowing.attrs.text = text;
+			bigShowing.attrs.x = stage.attrs.width/2;
+			bigShowing.attrs.y = 150; 
 		} else {
 			bigShowing = new Kinetic.Text({
-				x: stage.width/2,
+				x: stage.attrs.width/2,
 				y: 150,
 				text: text,
 				fontSize: 26,
@@ -770,10 +767,10 @@ function FishingView(ievm, stage, config_dep) {
 		}
 		dynamicOverlayLayer.dynamicAdd(bigShowing);
 
-		Tween.get(bigShowing.scale).to({x:2, y:2}, 1000).wait(3000).call(function() {
-			Tween.get(bigShowing.scale).to({x: 1, y: 1}, 1000).call(function() {
+		Tween.get(bigShowing.attrs.scale).to({x:2, y:2}, 1000).wait(3000).call(function() {
+			Tween.get(bigShowing.attrs.scale).to({x: 1, y: 1}, 1000).call(function() {
 			});
-			Tween.get(bigShowing).to({y: 50}, 1000).call(function(){
+			Tween.get(bigShowing.attrs).to({y: 50}, 1000).call(function(){
 				bigShowing.moveTo(overlayLayer);
 				dynamicOverlayLayer.dynamicRemove(bigShowing);
 				overlayLayer._drawOnce = true;
