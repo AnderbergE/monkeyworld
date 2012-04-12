@@ -18,7 +18,8 @@ function FishingView(ievm, stage, config_dep) {
 			/** @const */ "bambu": "bambu.png",
 			/** @const */ "plant": "plant.png",
 			/** @const */ "sky": "sky.png",
-			/** @const */ "monkey": "monkey.png"
+			/** @const */ "monkey": "monkey.png",
+			/** @const */ "wood": "tileable_wood_texture_by_ftIsis_Stock.jpg"
 		},
 		
 		/** @const */ SOUND_SOURCES: [
@@ -615,6 +616,8 @@ function FishingView(ievm, stage, config_dep) {
 			alpha: 0.5
 		});
 		images["sky"].style.width = "300px";
+		var wood = new Kinetic.Image({ x: 695, y: 20, width: 320, height: 475, image: images["wood"] });
+		
 		var sky = new Kinetic.Image({ x: config.POND.X, y: 20, image: images['sky'] });
 		var bambu0 = new Kinetic.Image({ x: config.POND.X-10, y: 20, image: images["bambu"] });
 		var bambu1 = new Kinetic.Image({ x: config.POND.X+config.POND.WIDTH-10, y: 20, image: images["bambu"] });
@@ -629,6 +632,7 @@ function FishingView(ievm, stage, config_dep) {
 		var bambu10 = new Kinetic.Image({ x: 540, y: 20, rotation: -Math.PI/2, image: images["bambu"] });
 		backgroundLayer.add(background);
 		backgroundLayer.add(sky);
+		backgroundLayer.add(wood);
 		pondLayer.add(waterSurface);
 		overlayLayer.add(waterSurface2);
 		overlayLayer.add(bambu0);
