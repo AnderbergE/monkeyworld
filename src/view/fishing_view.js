@@ -169,13 +169,13 @@ function FishingView(ievm, stage, config_dep) {
 	}, EVM_TAG);
 	
 	evm.on("FishingGame.freeWrongOnes", function(msg) {
-		showBig(Strings.get("FISHING_FREE_WRONG_ONES").toUpperCase());
+		//showBig(Strings.get("FISHING_FREE_WRONG_ONES").toUpperCase());
 		evm.play(Sounds.FISHING_FREE_WRONG_ONES)
 	}, EVM_TAG);
 	
 	evm.on("FishingGame.catchingDone", function(msg) {
 		allowClicks = false;
-		showBig(Strings.get("YAY").toUpperCase());
+		//showBig(Strings.get("YAY").toUpperCase());
 		evm.play(Sounds.YAY);
 		roundDone();
 	}, EVM_TAG);
