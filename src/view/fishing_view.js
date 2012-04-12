@@ -19,7 +19,8 @@ function FishingView(ievm, stage, config_dep) {
 			/** @const */ "plant": "plant.png",
 			/** @const */ "sky": "sky.png",
 			/** @const */ "monkey": "monkey.png",
-			/** @const */ "wood": "tileable_wood_texture_by_ftIsis_Stock.jpg"
+			/** @const */ "wood": "tileable_wood_texture_by_ftIsis_Stock.jpg",
+			/** @const */ "avatar": "cartoon_asian_girl_stick_figure_0515-1001-2620-2509_SMU.jpg"
 		},
 		
 		/** @const */ SOUND_SOURCES: [
@@ -66,6 +67,10 @@ function FishingView(ievm, stage, config_dep) {
 	var backgroundLayer = new Kinetic.Layer();
 	var overlayLayer = new Kinetic.Layer();
 	var dynamicOverlayLayer = new Kinetic.Layer();
+	var outGroup = new Kinetic.Group({
+		x: 0, y:0
+	});
+	var monkey = null;
 	overlayLayer._drawOnce = false;
 	var pondLayer = backgroundLayer;
 	//var pondLayer = new Kinetic.Layer();
@@ -104,6 +109,23 @@ function FishingView(ievm, stage, config_dep) {
 				clickFunction(fish);	
 			}
 		});
+	};
+	
+	function switchToMonkey() {
+		outGroup.moveTo(shapeLayer);
+		monkey.moveTo(stage._gameLayer);
+		shapeLayer.attrs.centerOffset = {x: config.POND.WIDTH + config.POND.X, y: 0};
+		shapeLayer.attrs.x = config.POND.WIDTH + config.POND.X;
+		outGroup.moveToBottom();
+		backgroundLayer.draw();
+		Tween.get(shapeLayer.attrs.scale).to({x:0.5}, 2000).call(function(){
+			shapeLayer.attrs.centerOffset.x = 0;
+			shapeLayer.attrs.x = -170;
+			shapeLayer.attrs.scale.x = 0.5;
+			Tween.get(shapeLayer.attrs.scale).to({x:1}, 2000);
+		});
+		Tween.get(monkey.attrs).to({x:config.POND.WIDTH + 40}, 2000);
+		rod.moveToMonkey(2000);
 	};
 	
 	function translateFish(fish) {
@@ -200,6 +222,7 @@ function FishingView(ievm, stage, config_dep) {
 			speed: 0.0001,
 			catching: null,
 			state: ROD_STATE.PENDULUM,
+			begin: {x:config.POND.X, y:125},
 			hook: { x: (2*config.POND.X + config.POND.WIDTH) / 2, y: 375 },
 			end: {
 				x: (2*config.POND.X + config.POND.WIDTH) / 2,
@@ -226,6 +249,13 @@ function FishingView(ievm, stage, config_dep) {
 		}
 		
 		return {
+			moveToMonkey: function(time) {
+				var diff=100;
+				Tween.get(state.begin).to({x:state.begin.x-diff}, time);
+				Tween.get(state.tip).to({x:state.tip.x-diff}, time);
+				Tween.get(state.end).to({x:state.end.x-diff}, time);
+			},
+			
 			draw: function(frame) {
 				var angle = state.pendulum;
 				switch (state.state) {
@@ -374,7 +404,7 @@ function FishingView(ievm, stage, config_dep) {
 				rodLayer.clear();
 				context.beginPath();
 				context.strokeStyle = "black";
-				context.moveTo(config.POND.X, 125);
+				context.moveTo(state.begin.x, state.begin.y);
 				context.lineTo(state.tip.x, state.tip.y);
 				context.stroke();
 				context.closePath();
@@ -527,7 +557,6 @@ function FishingView(ievm, stage, config_dep) {
 			width: 128, height: 128, centerOffset: { x: 64, y: 64 }
 		});
 		layer.add(image);
-		layer.draw();
 	};
 
 	/**
@@ -567,6 +596,8 @@ function FishingView(ievm, stage, config_dep) {
 		fishTank = model;
     	Log.debug("Building stage...", "view");
 
+
+    	
 		var background = new Kinetic.Rect({
 			x: 0,
 			y: 2,
@@ -617,50 +648,54 @@ function FishingView(ievm, stage, config_dep) {
 		});
 		images["sky"].style.width = "300px";
 		var wood = new Kinetic.Image({ x: 695, y: 20, width: 320, height: 475, image: images["wood"] });
-		
-		var sky = new Kinetic.Image({ x: config.POND.X, y: 20, image: images['sky'] });
+		var avatar = new Kinetic.Image({ x: 735, y: 500, scale:{x:0.8,y:0.8}, image: images["avatar"] });
+		var sky = new Kinetic.Image({ x: config.POND.X, y: 20, width: config.POND.WIDTH, image: images['sky'] });
 		var bambu0 = new Kinetic.Image({ x: config.POND.X-10, y: 20, image: images["bambu"] });
-		var bambu1 = new Kinetic.Image({ x: config.POND.X+config.POND.WIDTH-10, y: 20, image: images["bambu"] });
+		var bambu1 = new Kinetic.Image({ x: config.POND.X+config.POND.WIDTH-10, y: 4, image: images["bambu"] });
 		var bambu2 = new Kinetic.Image({ x: 1024-20, y: 20, image: images["bambu"] });
 		var bambu3 = new Kinetic.Image({ x: config.POND.X-10, y: 285, image: images["bambu"] });
 		var bambu4 = new Kinetic.Image({ x: config.POND.X+config.POND.WIDTH-10, y: 285, image: images["bambu"] });
 		var bambu5 = new Kinetic.Image({ x: 1024-20, y: 285, image: images["bambu"] });
-		var bambu6 = new Kinetic.Image({ x: 540, y: 500, rotation: -Math.PI/2, image: images["bambu"] });
-		var bambu7 = new Kinetic.Image({ x: config.POND.X-10, y: 760, rotation: -Math.PI/2, image: images["bambu"] });
-		var bambu8 = new Kinetic.Image({ x: 540, y: 760, rotation: -Math.PI/2, image: images["bambu"] });
-		var bambu9 = new Kinetic.Image({ x: config.POND.X-10, y: 20, rotation: -Math.PI/2, image: images["bambu"] });
-		var bambu10 = new Kinetic.Image({ x: 540, y: 20, rotation: -Math.PI/2, image: images["bambu"] });
+		var bambu6 = new Kinetic.Image({ x: config.POND.X+config.POND.WIDTH, y: 500, height:320, rotation: -Math.PI/2, image: images["bambu"] });
+		var bambu7 = new Kinetic.Image({ x: config.POND.X-10, y: 760, height: config.POND.WIDTH,rotation: -Math.PI/2, image: images["bambu"] });
+		var bambu8 = new Kinetic.Image({ x: config.POND.X+config.POND.WIDTH, y: 760, height:320,rotation: -Math.PI/2, image: images["bambu"] });
+		var bambu9 = new Kinetic.Image({ x: config.POND.X-10, y: 20, height:config.POND.WIDTH, rotation: -Math.PI/2, image: images["bambu"] });
+		var bambu10 = new Kinetic.Image({ x: config.POND.X+config.POND.WIDTH, y: 20,  height:320, rotation: -Math.PI/2, image: images["bambu"] });
 		backgroundLayer.add(background);
-		backgroundLayer.add(sky);
+		backgroundLayer.add(avatar);
+		outGroup.add(sky);
 		backgroundLayer.add(wood);
-		pondLayer.add(waterSurface);
-		overlayLayer.add(waterSurface2);
-		overlayLayer.add(bambu0);
-		overlayLayer.add(bambu1);
-		overlayLayer.add(bambu2);
-		backgroundLayer.add(bambu6);
-		overlayLayer.add(bambu3);
-		overlayLayer.add(bambu4);
-		overlayLayer.add(bambu5);
-		overlayLayer.add(bambu7);
-		overlayLayer.add(bambu8);
-		overlayLayer.add(bambu9);
-		overlayLayer.add(bambu10);
-		pondLayer.add(water);
-		createBottom(pondLayer,
+		
+		outGroup.add(water);
+		outGroup.add(waterSurface);
+		outGroup.add(waterSurface2);
+		createBottom(outGroup,
 				 config.POND.X,
 				 config.POND.X + config.POND.WIDTH,
 				 config.POND.Y + config.POND.HEIGHT,
 				 50,
 				 80);
-		createPlant(pondLayer, 500, config.POND.Y + config.POND.HEIGHT - 150);
-		createPlant(pondLayer, 400, config.POND.Y + config.POND.HEIGHT - 160);
-		createPlant(pondLayer, 200, config.POND.Y + config.POND.HEIGHT - 140);
-		if (fishTank.getMode() == GameMode.MONKEY_SEE) {
-			var monkey = new Kinetic.Image({ x: 30, y: stage.attrs.height - 200, image: images["monkey"] });
-			overlayLayer.add(monkey);
-		}
+		outGroup.add(bambu0);
+		overlayLayer.add(bambu1);
+		overlayLayer.add(bambu2);
+		backgroundLayer.add(bambu6);
+		outGroup.add(bambu3);
+		overlayLayer.add(bambu4);
+		overlayLayer.add(bambu5);
+		outGroup.add(bambu7);
+		overlayLayer.add(bambu8);
+		outGroup.add(bambu9);
+		overlayLayer.add(bambu10);
+
 		
+		createPlant(outGroup, 500, config.POND.Y + config.POND.HEIGHT - 150);
+		createPlant(outGroup, 400, config.POND.Y + config.POND.HEIGHT - 160);
+		createPlant(outGroup, 200, config.POND.Y + config.POND.HEIGHT - 140);
+		if (fishTank.getMode() == GameMode.MONKEY_SEE || fishTank.getMode() == GameMode.MONKEY_DO) {
+			monkey = new Kinetic.Image({ x: 30, y: stage.attrs.height - 200, image: images["monkey"] });
+			backgroundLayer.add(monkey);
+		}
+		backgroundLayer.add(outGroup);
 		backgroundLayer.draw();
 		overlayLayer.draw();
 		
@@ -744,6 +779,9 @@ function FishingView(ievm, stage, config_dep) {
 			evm.play(Sounds["NUMBER_" + fishTank.getCatchingNumber()]);
 		}, 700);
 		evm.tell("fishinggame.started", null);
+		if (fishTank.getMode() == GameMode.MONKEY_DO) {
+			switchToMonkey();
+		}
 	};
 	
 	this.tearDown = function() {
