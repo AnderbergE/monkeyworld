@@ -38,7 +38,7 @@ function Game(gameState) {
 		stage._drawOverlayLayer = true;	
 	}
 
-	var eventManager = new EventManager(stage);
+	var eventManager = new GameEventManager(stage);
 	var gamerPlayer = new GamerPlayer(eventManager);
 	var monkeyPlayer = new MonkeyPlayer(eventManager);
 	//var angelPlayer = new AngelPlayer(eventManager);

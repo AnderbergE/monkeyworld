@@ -5,9 +5,21 @@ function GameEventListener() {};
 GameEventListener.prototype.notify = function(event) {};
 
 /**
- * @constructor
+ * @interface
  */
-function EventManager(stage) {
+function EventManager() {}
+/**
+ * @param {string} type
+ * @param {Function} callback
+ * @param {string} name
+ */
+EventManager.prototype.on = function(type, callback, name) {};
+
+/**
+ * @constructor
+ * @implements {EventManager}
+ */
+function GameEventManager(stage) {
 	
 	var subtitleLayer = stage._subtitleLayer;
 	/**
@@ -180,3 +192,16 @@ function EventManager(stage) {
         }
 	};
 }
+
+/**
+ * @constructor
+ * @implements {EventManager}
+ */
+function NoEventManager() {
+	/**
+	 * @param {string} type
+	 * @param {Function} callback
+	 * @param {string} name
+	 */
+	this.on = function(type, callback, name) {};
+};

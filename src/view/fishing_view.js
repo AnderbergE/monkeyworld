@@ -6,7 +6,6 @@
 function FishingView(ievm, stage, config_dep) {
 
 	/** @const @type {string} */ var EVM_TAG = "FishingView";
-	
 	/**
 	 * Configuration of the view
 	 */
@@ -66,38 +65,17 @@ function FishingView(ievm, stage, config_dep) {
 	var shapeLayer = new Kinetic.Layer();
 	var rodLayer = new Kinetic.Layer();
 	var backgroundLayer = new Kinetic.Layer();
-	var overlayLayer = new Kinetic.Layer();
-	var dynamicOverlayLayer = new Kinetic.Layer();
 	var outGroup = new Kinetic.Group({
 		x: 0, y:0
 	});
 	var monkey = null;
-	overlayLayer._drawOnce = false;
 	var pondLayer = backgroundLayer;
 	//var pondLayer = new Kinetic.Layer();
 	stage.add(backgroundLayer);
 	stage.add(pondLayer);
 	stage.add(shapeLayer);
 	stage.add(rodLayer);
-	stage.add(overlayLayer);
-	stage.add(dynamicOverlayLayer);
-	dynamicOverlayLayer._numberOfNodes = 0;
-	dynamicOverlayLayer._doDraw = false;
 
-	dynamicOverlayLayer.dynamicAdd = function(obj) {
-		if ((++dynamicOverlayLayer._numberOfNodes) > 0)
-			dynamicOverlayLayer._doDraw = true;
-		dynamicOverlayLayer.add(obj);
-	}
-	dynamicOverlayLayer.dynamicRemove = function(obj) {
-		if (dynamicOverlayLayer._numberOfNodes > 0 &&
-			--dynamicOverlayLayer._numberOfNodes == 0) {
-			dynamicOverlayLayer._doDraw = false;
-			dynamicOverlayLayer._drawOnce = true;
-		}		
-		dynamicOverlayLayer.add(obj);
-	}
-	
 	var evm = ievm;
 
 	var turnOffClick = function(fish) {
@@ -107,6 +85,7 @@ function FishingView(ievm, stage, config_dep) {
 	var turnOnClick = function(fish) {
 		fishGroups[fish].on("mousedown touchstart", function() {
 			if (allowClicks) {
+				
 				switchToMonkey();
 				clickFunction(fish);	
 			}
@@ -114,27 +93,27 @@ function FishingView(ievm, stage, config_dep) {
 	};
 	
 	function switchToMonkey() {
-		outGroup.moveTo(shapeLayer);
-		monkey.moveTo(stage._gameLayer);
-		shapeLayer.attrs.centerOffset = {x: config.POND.WIDTH + config.POND.X, y: 0};
-		shapeLayer.attrs.x = config.POND.WIDTH + config.POND.X;
-		outGroup.moveToBottom();
-		backgroundLayer.draw();
-		Tween.get(shapeLayer.attrs.scale).to({x:0}, 2000).call(function(){
-			shapeLayer.attrs.centerOffset.x = 0;
-			shapeLayer.attrs.x = -170;
-			/* ============================================================== */
-			/*   Firefox zero scale bug work-around                           */
-			/*   https://bugzilla.mozilla.org/show_bug.cgi?id=661452          */
-			/*   Added 2012-04-12 by <bjorn.norrliden@gmail.com>              */
-			/* ============================================================== */
-			shapeLayer.attrs.scale.x = 0.1;
-			/* ============================================================== */
-			Tween.get(shapeLayer.attrs.scale).to({x:1}, 2000);
-		});
-		Tween.get(monkey.attrs).to({x:config.POND.WIDTH + 40}, 2000);
-		
-		rod.moveToMonkey(2000, -170);
+//		outGroup.moveTo(shapeLayer);
+//		monkey.moveTo(stage._gameLayer);
+//		shapeLayer.attrs.centerOffset = {x: config.POND.WIDTH + config.POND.X, y: 0};
+//		shapeLayer.attrs.x = config.POND.WIDTH + config.POND.X;
+//		outGroup.moveToBottom();
+//		backgroundLayer.draw();
+//		Tween.get(shapeLayer.attrs.scale).to({x:0}, 2000).call(function(){
+//			shapeLayer.attrs.centerOffset.x = 0;
+//			shapeLayer.attrs.x = -170;
+//			/* ============================================================== */
+//			/*   Firefox zero scale bug work-around                           */
+//			/*   https://bugzilla.mozilla.org/show_bug.cgi?id=661452          */
+//			/*   Added 2012-04-12 by <bjorn.norrliden@gmail.com>              */
+//			/* ============================================================== */
+//			shapeLayer.attrs.scale.x = 0.1;
+//			/* ============================================================== */
+//			Tween.get(shapeLayer.attrs.scale).to({x:1}, 2000);
+//		});
+//		Tween.get(monkey.attrs).to({x:config.POND.WIDTH + 40}, 2000);
+//		
+//		rod.moveToMonkey(2000, -170);
 	};
 	
 	function translateFish(fish) {
@@ -163,9 +142,7 @@ function FishingView(ievm, stage, config_dep) {
 		stage.remove(backgroundLayer);
 		stage.remove(shapeLayer);
 		stage.remove(rodLayer);
-		stage.remove(overlayLayer);
 		stage.remove(pondLayer);
-		stage.remove(dynamicOverlayLayer);
 	};
 	
 	var roundDone = function() {
@@ -595,13 +572,23 @@ function FishingView(ievm, stage, config_dep) {
 		});
 		layer.add(triangle);
 	};
-
+	
 	/**
 	 * Initiates the Fishing View
 	 * @param viewConfig
 	 */
 	this.init = function(viewConfig, model) {
 		fishTank = model;
+		var that = this;
+		evm.on("FishingGame.catch", function(msg) {
+			that.moveToMonkey(function() {
+				
+			});
+		}, EVM_TAG);
+		this.setStaticLayer(backgroundLayer);
+		this.setDynamicLayer(shapeLayer);
+		this.basicInit(fishTank.getMode());
+		
     	Log.debug("Building stage...", "view");
 
 
@@ -669,8 +656,9 @@ function FishingView(ievm, stage, config_dep) {
 		var bambu8 = new Kinetic.Image({ x: config.POND.X+config.POND.WIDTH, y: 760, height:320,rotation: -Math.PI/2, image: images["bambu"] });
 		var bambu9 = new Kinetic.Image({ x: config.POND.X-10, y: 20, height:config.POND.WIDTH, rotation: -Math.PI/2, image: images["bambu"] });
 		var bambu10 = new Kinetic.Image({ x: config.POND.X+config.POND.WIDTH, y: 20,  height:320, rotation: -Math.PI/2, image: images["bambu"] });
-		backgroundLayer.add(background);
-		backgroundLayer.add(avatar);
+		//backgroundLayer.add(background);
+
+		//backgroundLayer.add(avatar);
 		outGroup.add(sky);
 		backgroundLayer.add(wood);
 		
@@ -684,16 +672,16 @@ function FishingView(ievm, stage, config_dep) {
 				 50,
 				 80);
 		outGroup.add(bambu0);
-		overlayLayer.add(bambu1);
-		overlayLayer.add(bambu2);
+		outGroup.add(bambu1);
+		backgroundLayer.add(bambu2);
 		backgroundLayer.add(bambu6);
 		outGroup.add(bambu3);
-		overlayLayer.add(bambu4);
-		overlayLayer.add(bambu5);
+		outGroup.add(bambu4);
+		backgroundLayer.add(bambu5);
 		outGroup.add(bambu7);
-		overlayLayer.add(bambu8);
+		backgroundLayer.add(bambu8);
 		outGroup.add(bambu9);
-		overlayLayer.add(bambu10);
+		backgroundLayer.add(bambu10);
 
 		
 		createPlant(outGroup, 500, config.POND.Y + config.POND.HEIGHT - 150);
@@ -701,11 +689,10 @@ function FishingView(ievm, stage, config_dep) {
 		createPlant(outGroup, 200, config.POND.Y + config.POND.HEIGHT - 140);
 		if (fishTank.getMode() == GameMode.MONKEY_SEE || fishTank.getMode() == GameMode.MONKEY_DO) {
 			monkey = new Kinetic.Image({ x: 30, y: stage.attrs.height - 200, image: images["monkey"] });
-			backgroundLayer.add(monkey);
+			//backgroundLayer.add(monkey);
 		}
 		backgroundLayer.add(outGroup);
 		backgroundLayer.draw();
-		overlayLayer.draw();
 		
 		/**
 		 * What to do on each frame.
@@ -715,14 +702,7 @@ function FishingView(ievm, stage, config_dep) {
 			var frame = msg.frame;
 			rod.draw(frame); // Draw the fishing rod
 			animator.tick(frame.timeDiff); // Tell the animator about the frame
-			if (dynamicOverlayLayer._doDraw || dynamicOverlayLayer._drawOnce) {
-				dynamicOverlayLayer.draw();
-				dynamicOverlayLayer._drawOnce = false;
-			}
-			if (overlayLayer._drawOnce) {
-				overlayLayer.draw();
-				overlayLayer._drawOnce = false;
-			}
+
 			fishTank.onFrame(frame);
 			shapeLayer.draw(); // Draw the shape layer
 
@@ -772,11 +752,14 @@ function FishingView(ievm, stage, config_dep) {
 	}
 	
 	this.prepare = function(model, modelInit) {
-		setupLoadingScreen();
-		Log.debug("Preparing view...", "view");
-		loadSounds(model, modelInit);
+		this.setEventManager(evm);
+		this.basicPrepare(function() {
+			setupLoadingScreen();
+			Log.debug("Preparing view...", "view");
+			loadSounds(model, modelInit);
+		});
 	};
-
+	
 	this.start = function() {
 		tearDownLoadingScreen();
 		Log.debug("Start rolling view...", "view");
@@ -795,6 +778,6 @@ function FishingView(ievm, stage, config_dep) {
 	this.tearDown = function() {
 		fishCountingView.tearDown();
 		evm.forget(EVM_TAG);
-	};
+	};	
 }
 FishingView.prototype = new GameView();

@@ -54,7 +54,7 @@ var Utils = new (/** @constructor */function() {
 	this.isNumber = function(n) {
 		return ! isNaN (n-0);
 	};
-
+	
 	/**
 	 * @param {number} min
 	 * @param {number} max
@@ -147,6 +147,7 @@ var Utils = new (/** @constructor */function() {
 		}
 		return array;
 	};
+
 });
 
 /**
