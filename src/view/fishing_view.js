@@ -127,6 +127,7 @@ function FishingView(ievm, stage, config_dep) {
 	
 	var tearDownView = function() {
 		Log.debug("Tearing down FishingView's layers", "view");
+		evm.tell("Game.hideBig");
 		stage.remove(backgroundLayer);
 		stage.remove(shapeLayer);
 		stage.remove(rodLayer);
@@ -166,15 +167,17 @@ function FishingView(ievm, stage, config_dep) {
 	}, EVM_TAG);
 	
 	evm.on("FishingGame.freeWrongOnes", function(msg) {
-		//showBig(Strings.get("FISHING_FREE_WRONG_ONES").toUpperCase());
+		evm.tell("Game.showBig", {text:Strings.get("FISHING_FREE_WRONG_ONES").toUpperCase()});
 		evm.play(Sounds.FISHING_FREE_WRONG_ONES)
 	}, EVM_TAG);
 	
 	evm.on("FishingGame.catchingDone", function(msg) {
 		allowClicks = false;
-		//showBig(Strings.get("YAY").toUpperCase());
+		evm.tell("Game.showBig", {text:Strings.get("YAY").toUpperCase()});
 		evm.play(Sounds.YAY);
-		roundDone();
+		setTimeout(function() {
+			roundDone();
+		}, 2000);
 	}, EVM_TAG);
 	
 	var rod = function(rodLayer) {
@@ -720,41 +723,6 @@ function FishingView(ievm, stage, config_dep) {
 		stage.remove(loadingLayer);
 	}
 	
-	var bigShowing = null;
-	
-	function showBig(text) {
-		if (bigShowing != null) {
-			bigShowing.attrs.text = text;
-			bigShowing.attrs.x = stage.attrs.width/2;
-			bigShowing.attrs.y = 150; 
-		} else {
-			bigShowing = new Kinetic.Text({
-				x: stage.attrs.width/2,
-				y: 150,
-				text: text,
-				fontSize: 26,
-				fontFamily: "Short Stack",
-				textFill: "white",
-				textStroke: "black",
-				align: "center",
-				verticalAlign: "middle",
-					scale: {x:0,y:0},
-				textStrokeWidth: 1
-			});
-		}
-		dynamicOverlayLayer.dynamicAdd(bigShowing);
-		
-		Tween.get(bigShowing.attrs.scale).to({x:2, y:2}, 1000).wait(3000).call(function() {
-			Tween.get(bigShowing.attrs.scale).to({x: 1, y: 1}, 1000).call(function() {
-			});
-			Tween.get(bigShowing.attrs).to({y: 50}, 1000).call(function(){
-				bigShowing.moveTo(overlayLayer);
-				dynamicOverlayLayer.dynamicRemove(bigShowing);
-				overlayLayer._drawOnce = true;
-			});
-		});
-	};
-	
 	this.prepare = function(model, modelInit) {
 		setupLoadingScreen();
 		Log.debug("Preparing view...", "view");
@@ -765,6 +733,7 @@ function FishingView(ievm, stage, config_dep) {
 		tearDownLoadingScreen();
 		Log.debug("Start rolling view...", "view");
 		//showBig(Strings.get("FISHING_CATCH_NUMBER", fishTank.getCatchingNumber()).toUpperCase());
+		evm.tell("Game.showBig", {text:Strings.get("FISHING_CATCH_NUMBER", fishTank.getCatchingNumber()).toUpperCase()});
 		evm.play(Sounds.FISHING_CATCH);
 		setTimeout(function() {
 			evm.play(Sounds["NUMBER_" + fishTank.getCatchingNumber()]);

@@ -24,6 +24,11 @@ function Game(gameState) {
         height: WIN_HEIGHT
 	});
 	
+	var overlayLayer = new Kinetic.Layer({
+        width: WIN_WIDTH,
+        height: WIN_HEIGHT
+	});
+	
 	var gameLayer = new Kinetic.Layer({
 		width: WIN_WIDTH,
         height: WIN_HEIGHT
@@ -31,9 +36,13 @@ function Game(gameState) {
 
 	stage.add(subtitleLayer);
 	stage.add(gameLayer);
+	stage.add(overlayLayer);
 	stage._subtitleLayer = subtitleLayer;
 	stage._gameLayer = gameLayer;
-
+	stage._drawOverlayLayer = false;
+	stage.pleaseDrawOverlayLayer = function() {
+		stage._drawOverlayLayer = true;	
+	}
 
 	var eventManager = new EventManager(subtitleLayer);
 	var gamerPlayer = new GamerPlayer(eventManager);
@@ -68,10 +77,77 @@ function Game(gameState) {
 		};
 	}();
 	
+	/**
+	 * Big Text module
+	 */
+	var bigText = function() {
+		
+		var bigShowing = null;
+
+		
+		return {
+			
+		hide: function() {
+			bigShowing.setText("");
+			stage.pleaseDrawOverlayLayer();
+		},
+			
+		/**
+		 * @param {string} text
+		 */
+		show: function(text) {
+			if (bigShowing != null) {
+				bigShowing.moveTo(gameLayer);
+				stage.pleaseDrawOverlayLayer();
+				bigShowing.setText(text);
+				bigShowing.setPosition(stage.attrs.width/2, 150); 
+			} else {
+				bigShowing = new Kinetic.Text({
+					x: stage.attrs.width/2,
+					y: 150,
+					text: text,
+					fontSize: 26,
+					fontFamily: "Short Stack",
+					textFill: "white",
+					textStroke: "black",
+					align: "center",
+					verticalAlign: "middle",
+						scale: {x:0.001,y:0.001},
+					textStrokeWidth: 1
+				});
+			}
+			gameLayer.add(bigShowing);
+			
+			Tween.get(bigShowing.attrs.scale).to({x:2, y:2}, 1000).wait(3000).call(function() {
+				Tween.get(bigShowing.attrs.scale).to({x: 1, y: 1}, 1000).call(function() {
+				});
+				Tween.get(bigShowing.attrs).to({y: 50}, 1000).call(function(){
+					bigShowing.moveTo(overlayLayer);
+					stage.pleaseDrawOverlayLayer();
+					//overlayLayer.moveToTop();
+					//dynamicOverlayLayer.dynamicRemove(bigShowing);
+					//overlayLayer._drawOnce = true;
+				});
+			});
+		}
+		};
+	}();
+	eventManager.on("Game.showBig", function(msg) {
+		bigText.show(msg.text);
+	}, "game");
+	
+	eventManager.on("Game.hideBig", function(msg) {
+		bigText.hide();
+	}, "game");
+	
 	stage.onFrame(function(frame) {
 		fps.showFps(frame); // Update FPS display
 		eventManager.tell("frame", {frame:frame});
 		gameLayer.draw();
+		if (stage._drawOverlayLayer) {
+			overlayLayer.draw();
+			stage._drawOverlayLayer = false;
+		}
 		Tween.tick(frame.timeDiff, false);
 	});
 	stage.start();
@@ -194,14 +270,13 @@ function Game(gameState) {
 		gameState.addBanana();
         var banana = new Kinetic.Image({
         	image: images["banana-big"],
-        	scale: { x: 0.3, y: 0.3 },
+        	scale: { x: 0.001, y: 0.001 },
         	centerOffset: { x: 256, y: 256 },
         	x: stage.attrs.width / 2,
         	y: stage.attrs.height / 2
         });
 
         gameLayer.add(banana);
-        gameLayer.moveToTop();
         eventManager.play(Sounds.GET_BANANA);
         /*banana.transitionTo({
         	rotation: -Math.PI / 2,
@@ -225,6 +300,7 @@ function Game(gameState) {
 	
 	eventManager.on("view.initiated", function(msg) {
 		gameLayer.moveToTop();
+		overlayLayer.moveToTop();
 	}, "game");
 }
 
