@@ -36,16 +36,15 @@ function FishingView(ievm, stage, config_dep) {
 
 		};
 	}();
-	/** @const */ var BASKET_SLOTS = {
-		/** @const */ 6: { x: 725, y: 0 },
-		/** @const */ 4: { x: 600, y: 25 },
-		/** @const */ 5: { x: 725, y: 25 },
-		/** @const */ 2: { x: 600, y: 153 },
-		/** @const */ 3: { x: 725, y: 153 },
-		/** @const */ 0: { x: 600, y: 281 },
-		/** @const */ 1: { x: 725, y: 281 }
-	};
-
+	var BASKET_SLOTS = {};
+	var basketGrid = Utils.gridizer(
+		800, 431,
+		125, -128, 2
+	);
+	for (var i = 0; i < 8; i++) {
+		BASKET_SLOTS[i] = basketGrid.next();
+	}
+	
 	/** @type {Object.<string, Image>} */ 
 	var images = {};
 	/** @type {Object.<Fish, Kinetic.Group>} */ 
@@ -627,7 +626,6 @@ function FishingView(ievm, stage, config_dep) {
 		var bambu8 = new Kinetic.Image({ x: 540, y: 760, rotation: -Math.PI/2, image: images["bambu"] });
 		var bambu9 = new Kinetic.Image({ x: config.POND.X-10, y: 20, rotation: -Math.PI/2, image: images["bambu"] });
 		var bambu10 = new Kinetic.Image({ x: 540, y: 20, rotation: -Math.PI/2, image: images["bambu"] });
-		//overlayLayer.add(water2);
 		backgroundLayer.add(background);
 		createPlant(pondLayer, 500, config.POND.Y + config.POND.HEIGHT - 150);
 		createPlant(pondLayer, 400, config.POND.Y + config.POND.HEIGHT - 160);
