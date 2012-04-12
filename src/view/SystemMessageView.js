@@ -19,8 +19,8 @@ function SystemMessageView(evm, stage) {
 			textStrokeFill: "black",
 			text: model.getMessage(),
 			align: "center",
-			y: stage.height/2,
-			x: stage.width/2
+			y: stage.getHeight()/2,
+			x: stage.getWidth()/2
 		});
 		layer.add(text);
 		layer.draw();
@@ -37,6 +37,7 @@ function SystemMessageView(evm, stage) {
 	};
 	
 	this.tearDown = function() {
+		stage.remove(layer);
 		evm.forget(EVM_TAG);
 	};
 }

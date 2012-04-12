@@ -61,13 +61,14 @@ function FishingView(ievm, stage, config_dep) {
 	/*
 	 * Initiate layers
 	 */
-	var shapeLayer = new Kinetic.Layer({x: config.POND.X, y: config.POND.Y});
+	var shapeLayer = new Kinetic.Layer();
 	var rodLayer = new Kinetic.Layer();
 	var backgroundLayer = new Kinetic.Layer();
 	var overlayLayer = new Kinetic.Layer();
 	var dynamicOverlayLayer = new Kinetic.Layer();
 	overlayLayer._drawOnce = false;
-	var pondLayer = new Kinetic.Layer();
+	var pondLayer = backgroundLayer;
+	//var pondLayer = new Kinetic.Layer();
 	var fpsLayer = new Kinetic.Layer();
 	stage.add(backgroundLayer);
 	stage.add(pondLayer);
@@ -105,6 +106,13 @@ function FishingView(ievm, stage, config_dep) {
 				clickFunction(fish);	
 			}
 		});
+	};
+	
+	function translateFish(fish) {
+		var pos = {};
+		pos.x = fish.getX() * config.POND.WIDTH + config.POND.X;
+		pos.y = fish.getY() * config.POND.HEIGHT + config.POND.Y;
+		return pos;
 	};
 	
 	var clickFunction = function(fish) {
@@ -210,9 +218,10 @@ function FishingView(ievm, stage, config_dep) {
 
 		function getFishFront(fish) {
 			var dir = fish.getDirection();
+			var pos = translateFish(fish);
 			return {
-				x: fish.getX()*config.POND.WIDTH + config.POND.X + dir * fish.getMouthPosition().x*config.POND.WIDTH,
-				y: fish.getY()*config.POND.HEIGHT + config.POND.Y + dir * fish.getMouthPosition().y*config.POND.HEIGHT
+				x: pos.x + dir * fish.getMouthPosition().x*config.POND.WIDTH,
+				y: pos.y + dir * fish.getMouthPosition().y*config.POND.HEIGHT
 			};
 		}
 		
@@ -305,8 +314,8 @@ function FishingView(ievm, stage, config_dep) {
 							onFrame: function()
 							{
 								var fishGroup = fishGroups[state.catching];
-								fishGroup.attrs.x = state.end.x - config.POND.X;
-								fishGroup.attrs.y = state.end.y - config.POND.Y;
+								fishGroup.attrs.x = state.end.x;
+								fishGroup.attrs.y = state.end.y;
 								var splashed = state.playedSplash;
 								var surface = config.POND.Y - 100;
 								var aboveSurface = fishGroup.attrs.y < surface;
@@ -452,8 +461,9 @@ function FishingView(ievm, stage, config_dep) {
 	}, EVM_TAG);
 	
 	function moveFish(fish) {
-		fishGroups[fish].attrs.x = Math.round(fish.getX()*config.POND.WIDTH);
-		fishGroups[fish].attrs.y = Math.round(fish.getY()*config.POND.HEIGHT);
+		var pos = translateFish(fish);
+		fishGroups[fish].attrs.x = Math.round(pos.x);
+		fishGroups[fish].attrs.y = Math.round(pos.y);
 	}
 
 	/**
@@ -462,9 +472,10 @@ function FishingView(ievm, stage, config_dep) {
 	 */
 	function createFish(fish) {
 
+		var pos = translateFish(fish);
 		var fishGroup = new Kinetic.Group({
-			x: fish.getX()*config.POND.WIDTH,
-			y: fish.getY()*config.POND.HEIGHT,
+			x: pos.x,
+			y: pos.y,
 			width: fish.getScale() * fish.getWidth()*config.POND.WIDTH,
 			height: fish.getScale() * fish.getHeight()*config.POND.HEIGHT,
 			centerOffset: { x: 0, y: 0 }
@@ -781,7 +792,7 @@ function FishingView(ievm, stage, config_dep) {
 	this.start = function() {
 		tearDownLoadingScreen();
 		Log.debug("Start rolling view...", "view");
-		showBig(Strings.get("FISHING_CATCH_NUMBER", fishTank.getCatchingNumber()).toUpperCase());
+		//showBig(Strings.get("FISHING_CATCH_NUMBER", fishTank.getCatchingNumber()).toUpperCase());
 		evm.play(Sounds.FISHING_CATCH);
 		setTimeout(function() {
 			evm.play(Sounds["NUMBER_" + fishTank.getCatchingNumber()]);

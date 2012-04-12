@@ -10,10 +10,18 @@ var GameState = new (/** @constructor */function() {
 	var bananas = 0;
 	var currentSeeRound = 1;
 	var currentDoRound = 1;
-	var maxSeeRounds = 3;
-	var maxDoRounds = 3;
+	var maxSeeRounds = 1;
+	var maxDoRounds = maxSeeRounds ;
 	var mode = GameMode.MONKEY_SEE;
 	var results = new Array();
+	
+	this.getMaxMonkeySeeRounds = function() {
+		return maxSeeRounds;
+	};
+	
+	this.getMaxMonkeyDoRounds = function() {
+		return maxDoRounds;
+	};
 	
 	this.pushResult = function(result) {
 		results.push(result);
@@ -182,7 +190,7 @@ function Game() {
 			kickInModule(ReadyToTeachView, ReadyToTeach, null, {});
 		} else if (GameState.getMode() == GameMode.MONKEY_SEE) {
 			GameState.pushResult(msg.result);
-			if (GameState.getMonkeySeeRounds() < 3) {
+			if (GameState.getMonkeySeeRounds() < GameState.getMaxMonkeySeeRounds()) {
 				GameState.addMonkeySeeRound();
 				kickInModule(FishingView, FishingGame, GameMode.MONKEY_SEE, {maxNumber: 9, numberFishes: 5});
 			} else {
@@ -199,7 +207,7 @@ function Game() {
 				});
 			}
 		} else if (GameState.getMode() == GameMode.MONKEY_DO) {
-			if (GameState.getMonkeyDoRounds() < 3) {
+			if (GameState.getMonkeyDoRounds() < GameState.getMaxMonkeyDoRounds()) {
 				GameState.addMonkeyDoRound();
 				kickInModule(FishingView, FishingGame, GameMode.MONKEY_DO, {result:GameState.getResults()[GameState.getMonkeyDoRounds()-1], maxNumber: 9, numberFishes: 5});
 			} else {
@@ -216,26 +224,32 @@ function Game() {
 		GameState.addBanana();
         var banana = new Kinetic.Image({
         	image: images["banana-big"],
-        	scale: { x: 0, y: 0 },
+        	scale: { x: 0.3, y: 0.3 },
         	centerOffset: { x: 256, y: 256 },
-        	x: stage.width / 2,
-        	y: stage.height / 2
+        	x: stage.attrs.width / 2,
+        	y: stage.attrs.height / 2
         });
-                
+
         gameLayer.add(banana);
+        gameLayer.moveToTop();
         eventManager.play(Sounds.GET_BANANA);
-        Tween.get(banana).to({rotation: Math.PI * 2}, 1000).wait(1500)
+        /*banana.transitionTo({
+        	rotation: -Math.PI / 2,
+			scale: {x: 2, y: 2},
+			duration: 1
+        });*/
+        Tween.get(banana.attrs).to({rotation: Math.PI * 2}, 1000).wait(1500)
         .to({
         	rotation: -Math.PI / 2,
-        	x: stage.width - 50 - (GameState.getBananas()-1)*48,
+        	x: stage.attrs.width - 50 - (GameState.getBananas()-1)*48,
 			y: 50
         }, 1000);
         
-        Tween.get(banana.scale).to({ x: 2, y: 2 }, 1000).wait(1500)
+        Tween.get(banana.attrs.scale).to({ x: 2, y: 2 }, 1000).wait(1500)
         .to({
         	x: 0.125, y: 0.125
         }, 1000).call(function(){
-        	banana.image = images["banana-small"];
+        	banana.attrs.image = images["banana-small"];
         }).wait(1500).call(function() {msg.callback()});
 	}, "game");
 	

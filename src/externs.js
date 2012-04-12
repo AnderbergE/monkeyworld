@@ -68,7 +68,9 @@ Kinetic.Container = function() {};
 		 */
 		Kinetic.Node.prototype.setScale = function(scale, scaleY) {};
 		Kinetic.Node.prototype.getScale = function() {};
-		Kinetic.Node.prototype.scale = function() {};
+		Kinetic.Node.prototype.attrs = function() {};
+		Kinetic.Node.prototype.attrs.scale = function() {};
+		Kinetic.Node.prototype.attrs.centerOffset = function() {};
 		Kinetic.Node.prototype.setPosition = function( x, y ) {};
 		Kinetic.Node.prototype.getPosition = function() {};
 		Kinetic.Node.prototype.getAbsolutePosition = function() {};
