@@ -63,6 +63,7 @@
 		      <sources dir="src">
                 <file name="strings.js"/>
 		        <file name="sounds.js"/>
+		      	<file name="GameState.js"/>
 		        <file name="gamestrategy.js"/>
 		        <file name="strategies/MonkeyStrategy.js"/>
 		        <file name="strategies/AngelStrategy.js"/>

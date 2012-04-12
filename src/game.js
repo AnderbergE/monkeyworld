@@ -2,77 +2,14 @@
 SoundJS.testAudioStall = function(event) {};
 
 window.onload = function() {
-	new Game();
+	new Game(new GameState());
 };
 
-var GameState = new (/** @constructor */function() {
-	
-	var bananas = 0;
-	var currentSeeRound = 1;
-	var currentDoRound = 1;
-	var maxSeeRounds = 1;
-	var maxDoRounds = maxSeeRounds ;
-	var mode = GameMode.MONKEY_SEE;
-	var results = new Array();
-	
-	this.getMaxMonkeySeeRounds = function() {
-		return maxSeeRounds;
-	};
-	
-	this.getMaxMonkeyDoRounds = function() {
-		return maxDoRounds;
-	};
-	
-	this.pushResult = function(result) {
-		results.push(result);
-	};
-	
-	this.getResults = function() {
-		return results;
-	};
-	
-	this.clearResults = function() {
-		results = new Array();
-	};
-	
-	this.addBanana = function() {
-		Log.debug("Adding banana", "game");
-		bananas++;
-	};
-	
-	this.addMonkeySeeRound = function() {
-		currentSeeRound++;
-	};
-	
-	this.getMonkeySeeRounds = function() {
-		return currentSeeRound;
-	};
-	
-	this.addMonkeyDoRound = function() {
-		currentDoRound++;
-	};
-	
-	this.getMonkeyDoRounds = function() {
-		return currentDoRound;
-	};
-	
-	this.setMode = function(imode) {
-		mode = imode;
-	};
-	
-	this.getMode = function() {
-		return mode;
-	};
-	
-	this.getBananas = function() {
-		return bananas;
-	};
-});
 
 /**
  * @constructor
  */
-function Game() {
+function Game(gameState) {
 
 	/** @const */ var WIN_WIDTH = 1024;
 	/** @const */ var WIN_HEIGHT = 768;
@@ -164,7 +101,7 @@ function Game() {
 			
 			if (ONLY_FISHING) {
 				//kickInModule(ReadyToTeachView, ReadyToTeach, null, {});
-				kickInModule(FishingView, FishingGame, GameState.getMode(), {maxNumber: 9, numberFishes: 5});
+				kickInModule(FishingView, FishingGame, gameState.getMode(), {maxNumber: 9, numberFishes: 5});
 			} else {
 				kickInModule(StartView, Start, GameMode.CHILD_PLAY, {}, function(config) {
 					if (config == "login") {
@@ -185,33 +122,37 @@ function Game() {
 
 	};
 	
+	eventManager.on("Game.setMode", function(msg) {
+		gameState.setMode(msg.mode);
+	}, "game");
+	
 	eventManager.on("Game.roundDone", function(msg) {
-		if (GameState.getMode() == GameMode.CHILD_PLAY) {
+		if (gameState.getMode() == GameMode.CHILD_PLAY) {
 			kickInModule(ReadyToTeachView, ReadyToTeach, null, {});
-		} else if (GameState.getMode() == GameMode.MONKEY_SEE) {
-			GameState.pushResult(msg.result);
-			if (GameState.getMonkeySeeRounds() < GameState.getMaxMonkeySeeRounds()) {
-				GameState.addMonkeySeeRound();
+		} else if (gameState.getMode() == GameMode.MONKEY_SEE) {
+			gameState.pushResult(msg.result);
+			if (gameState.getMonkeySeeRounds() < gameState.getMaxMonkeySeeRounds()) {
+				gameState.addMonkeySeeRound();
 				kickInModule(FishingView, FishingGame, GameMode.MONKEY_SEE, {maxNumber: 9, numberFishes: 5});
 			} else {
-				GameState.setMode(GameMode.MONKEY_DO);
+				gameState.setMode(GameMode.MONKEY_DO);
 				eventManager.play(Sounds.THANK_YOU_FOR_HELPING);
 				kickInModule(SystemMessageView, SystemMessage, null,{
 					msg: Strings.get("THANK_YOU_FOR_HELPING"),
 					callback: function() {
 						eventManager.tell("Game.getBanana", { callback: function() {
-							kickInModule(FishingView, FishingGame, GameMode.MONKEY_DO, {result:GameState.getResults()[GameState.getMonkeyDoRounds()-1], maxNumber: 9, numberFishes: 5});
-							//GameState.clearResults();
+							kickInModule(FishingView, FishingGame, GameMode.MONKEY_DO, {result:gameState.getResults()[gameState.getMonkeyDoRounds()-1], maxNumber: 9, numberFishes: 5});
+							//gameState.clearResults();
 						}});
 					}
 				});
 			}
-		} else if (GameState.getMode() == GameMode.MONKEY_DO) {
-			if (GameState.getMonkeyDoRounds() < GameState.getMaxMonkeyDoRounds()) {
-				GameState.addMonkeyDoRound();
-				kickInModule(FishingView, FishingGame, GameMode.MONKEY_DO, {result:GameState.getResults()[GameState.getMonkeyDoRounds()-1], maxNumber: 9, numberFishes: 5});
+		} else if (gameState.getMode() == GameMode.MONKEY_DO) {
+			if (gameState.getMonkeyDoRounds() < gameState.getMaxMonkeyDoRounds()) {
+				gameState.addMonkeyDoRound();
+				kickInModule(FishingView, FishingGame, GameMode.MONKEY_DO, {result:gameState.getResults()[gameState.getMonkeyDoRounds()-1], maxNumber: 9, numberFishes: 5});
 			} else {
-				//GameState.setMode(GameMode.???);
+				//gameState.setMode(GameMode.???);
 				// end of 
 			}
 		}
@@ -221,7 +162,7 @@ function Game() {
 	}, "game");
 	var images = new Array();
 	eventManager.on("Game.getBanana", function(msg) {
-		GameState.addBanana();
+		gameState.addBanana();
         var banana = new Kinetic.Image({
         	image: images["banana-big"],
         	scale: { x: 0.3, y: 0.3 },
@@ -241,7 +182,7 @@ function Game() {
         Tween.get(banana.attrs).to({rotation: Math.PI * 2}, 1000).wait(1500)
         .to({
         	rotation: -Math.PI / 2,
-        	x: stage.attrs.width - 50 - (GameState.getBananas()-1)*48,
+        	x: stage.attrs.width - 50 - (gameState.getBananas()-1)*48,
 			y: 50
         }, 1000);
         

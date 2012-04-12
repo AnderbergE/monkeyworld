@@ -26,7 +26,7 @@ function ReadyToTeach(evm, config) {
 	};
 	
 	this.readyToTeach = function() {
-		GameState.setMode(GameMode.MONKEY_SEE);
+		evm.tell("Game.setMode", {mode: GameMode.MONKEY_SEE});
 		evm.tell("Game.getBanana", {
 			callback: enterMonkeySeeMode
 		});
