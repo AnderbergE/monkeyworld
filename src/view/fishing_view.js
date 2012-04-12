@@ -1,6 +1,7 @@
 /**
  * @constructor
  * @implements {ViewModule}
+ * @extends {GameView}
  */
 function FishingView(ievm, stage, config_dep) {
 
@@ -106,6 +107,7 @@ function FishingView(ievm, stage, config_dep) {
 	var turnOnClick = function(fish) {
 		fishGroups[fish].on("mousedown touchstart", function() {
 			if (allowClicks) {
+				switchToMonkey();
 				clickFunction(fish);	
 			}
 		});
@@ -118,14 +120,21 @@ function FishingView(ievm, stage, config_dep) {
 		shapeLayer.attrs.x = config.POND.WIDTH + config.POND.X;
 		outGroup.moveToBottom();
 		backgroundLayer.draw();
-		Tween.get(shapeLayer.attrs.scale).to({x:0.5}, 2000).call(function(){
+		Tween.get(shapeLayer.attrs.scale).to({x:0}, 2000).call(function(){
 			shapeLayer.attrs.centerOffset.x = 0;
 			shapeLayer.attrs.x = -170;
-			shapeLayer.attrs.scale.x = 0.5;
+			/* ============================================================== */
+			/*   Firefox zero scale bug work-around                           */
+			/*   https://bugzilla.mozilla.org/show_bug.cgi?id=661452          */
+			/*   Added 2012-04-12 by <bjorn.norrliden@gmail.com>              */
+			/* ============================================================== */
+			shapeLayer.attrs.scale.x = 0.1;
+			/* ============================================================== */
 			Tween.get(shapeLayer.attrs.scale).to({x:1}, 2000);
 		});
 		Tween.get(monkey.attrs).to({x:config.POND.WIDTH + 40}, 2000);
-		rod.moveToMonkey(2000);
+		
+		rod.moveToMonkey(2000, -170);
 	};
 	
 	function translateFish(fish) {
@@ -249,11 +258,8 @@ function FishingView(ievm, stage, config_dep) {
 		}
 		
 		return {
-			moveToMonkey: function(time) {
-				var diff=100;
-				Tween.get(state.begin).to({x:state.begin.x-diff}, time);
-				Tween.get(state.tip).to({x:state.tip.x-diff}, time);
-				Tween.get(state.end).to({x:state.end.x-diff}, time);
+			moveToMonkey: function(time, diff) {
+				Tween.get(rodLayer.attrs).to({x:rodLayer.attrs.x+diff}, time);
 			},
 			
 			draw: function(frame) {
@@ -401,16 +407,18 @@ function FishingView(ievm, stage, config_dep) {
 				state.end.x = state.tip.x + state.length * Math.sin(angle);
 				state.end.y = state.tip.y + state.length * Math.cos(angle);
 				var context = rodLayer.getContext();
+				var rx = rodLayer.attrs.x;
+				var ry = rodLayer.attrs.y;
 				rodLayer.clear();
 				context.beginPath();
 				context.strokeStyle = "black";
-				context.moveTo(state.begin.x, state.begin.y);
-				context.lineTo(state.tip.x, state.tip.y);
+				context.moveTo(rx + state.begin.x, ry + state.begin.y);
+				context.lineTo(rx + state.tip.x, ry + state.tip.y);
 				context.stroke();
 				context.closePath();
 				context.beginPath();
-				context.moveTo(state.tip.x, state.tip.y);
-		        context.lineTo(state.end.x, state.end.y);
+				context.moveTo(rx + state.tip.x, ry + state.tip.y);
+		        context.lineTo(rx + state.end.x, ry + state.end.y);
 		        context.strokeStyle = "brown";
 		        context.lineWidth = 2;
 		        context.stroke();
@@ -549,7 +557,7 @@ function FishingView(ievm, stage, config_dep) {
 
 	/**
 	 * Adds a plant to the specified layer.
-	 * @param {Kinetic.Layer} layer
+	 * @param {Kinetic.Container} layer
 	 */
 	function createPlant(layer, x, y) {
 		var image = new Kinetic.Image({
@@ -561,7 +569,7 @@ function FishingView(ievm, stage, config_dep) {
 
 	/**
 	 * Adds a bottom to the pond.
-	 * @param {Kinetic.Layer} layer
+	 * @param {Kinetic.Container} layer
 	 * @param {number} x1
 	 * @param {number} x2
 	 * @param {number} y
@@ -789,3 +797,4 @@ function FishingView(ievm, stage, config_dep) {
 		evm.forget(EVM_TAG);
 	};
 }
+FishingView.prototype = new GameView();
