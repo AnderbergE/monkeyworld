@@ -14,13 +14,13 @@ function ReadyToTeachView(evm, stage) {
 	
 	this.init = function(viewConfig, model) {
 		var backRect = new Kinetic.Rect({
-			width: stage.width,
-			height: stage.height,
+			width: stage.getWidth(),
+			height: stage.getHeight(),
 			fill: "white"
 		});
 		layer.add(backRect);
-		noGroup = new Kinetic.Group({x: stage.width/2 - 200 - 128, y: 300 });
-		yesGroup = new Kinetic.Group({x: stage.width/2 + 200 - 128, y: 300 });
+		noGroup = new Kinetic.Group({x: stage.getWidth()/2 - 200 - 128, y: 300 });
+		yesGroup = new Kinetic.Group({x: stage.getWidth()/2 + 200 - 128, y: 300 });
 	
         
         var green = new Kinetic.Image({image: images["green"]});
@@ -58,7 +58,7 @@ function ReadyToTeachView(evm, stage) {
 			textFill: "black",
 			align: "center",
 			y: 100,
-			x: stage.width/2
+			x: stage.getWidth()/2
 		})
 		layer.add(text);
 		
@@ -73,8 +73,8 @@ function ReadyToTeachView(evm, stage) {
 	
 	evm.on("Game.getBanana", function(msg) {
         Tween.get(yesGroup).to({ x: -300, y: -300}, 600);
-        Tween.get(noGroup).to({ x: stage.width+300, y: stage.height+300}, 600);
-        Tween.get(text).to({ x: 0, y: stage.height+300}, 600);
+        Tween.get(noGroup).to({ x: stage.getWidth()+300, y: stage.getHeight()+300}, 600);
+        Tween.get(text).to({ x: 0, y: stage.getHeight()+300}, 600);
 	}, EVM_TAG);
 	
 	this.prepare = function(model, modelInit) {
