@@ -19,11 +19,6 @@ function Game(gameState) {
         height: WIN_HEIGHT
     });
 	
-	var subtitleLayer = new Kinetic.Layer({
-        width: WIN_WIDTH,
-        height: WIN_HEIGHT
-	});
-	
 	var overlayLayer = new Kinetic.Layer({
         width: WIN_WIDTH,
         height: WIN_HEIGHT
@@ -34,17 +29,16 @@ function Game(gameState) {
         height: WIN_HEIGHT
 	});
 
-	stage.add(subtitleLayer);
 	stage.add(gameLayer);
 	stage.add(overlayLayer);
-	stage._subtitleLayer = subtitleLayer;
+	stage._subtitleLayer = overlayLayer;
 	stage._gameLayer = gameLayer;
 	stage._drawOverlayLayer = false;
 	stage.pleaseDrawOverlayLayer = function() {
 		stage._drawOverlayLayer = true;	
 	}
 
-	var eventManager = new EventManager(subtitleLayer);
+	var eventManager = new EventManager(stage);
 	var gamerPlayer = new GamerPlayer(eventManager);
 	var monkeyPlayer = new MonkeyPlayer(eventManager);
 	//var angelPlayer = new AngelPlayer(eventManager);

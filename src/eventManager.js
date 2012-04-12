@@ -7,8 +7,9 @@ GameEventListener.prototype.notify = function(event) {};
 /**
  * @constructor
  */
-function EventManager(subtitleLayer) {
+function EventManager(stage) {
 	
+	var subtitleLayer = stage._subtitleLayer;
 	/**
 	 * @type {Object.<string, Array>}
 	 */
@@ -147,23 +148,11 @@ function EventManager(subtitleLayer) {
 				textStrokeWidth: 1
 			});
 			addSubtitle(text);
-			text._id = "subtitle" + subtitles.length;
 			subtitleLayer.add(text);
-			subtitleLayer._removeNext = false;
-			var that = this;
-	
-			this.on("frame", function() {
-				subtitleLayer.moveToTop();
-				subtitleLayer.draw();
-				if (subtitleLayer._removeNext) {
-					that.off("frame", text._id);
-					subtitleLayer._removeNext = false;
-				}
-			}, "subtitle" + subtitles.length);
-			
+			stage.pleaseDrawOverlayLayer();
 			setTimeout(function() {
 				subtitleLayer.remove(text);
-				subtitleLayer._removeNext = true;
+				stage.pleaseDrawOverlayLayer();
 				removeSubtitle(text);
 			}, 3000);
 		}
