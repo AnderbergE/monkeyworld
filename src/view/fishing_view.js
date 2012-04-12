@@ -407,7 +407,7 @@ function FishingView(ievm, stage, config_dep) {
 			/** @type {Kinetic.Group} */ var group = fishGroups[fish];
 			animator.animateTo
 			(
-				group.attrs, { x: 400, y: 0, rotation: Math.PI / 2 },
+				group.attrs, { x: config.POND.X + config.POND.WIDTH/2, y: config.POND.Y, rotation: Math.PI / 2 },
 				{
 					duration: { x: 1000, y: 1000, rotation: 1000 },
 					onFinish: function()
@@ -415,8 +415,9 @@ function FishingView(ievm, stage, config_dep) {
 						evm.play(Sounds.FISHING_SPLASH);
 						group.attrs.centerOffset.x = 0;
 						group.attrs.centerOffset.y = 0;
+						var pos = translateFish(fish);
 						animator.animateTo(
-							group.attrs, { x:fish.getX(), y:fish.getY(), rotation: 0 },
+							group.attrs, { x:pos.x, y:pos.y, rotation: 0 },
 							{
 								duration: { x: 1000, y: 1000, rotation: 1000 },
 								onFrame: function() {},
