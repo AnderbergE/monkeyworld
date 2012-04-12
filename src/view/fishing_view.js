@@ -628,9 +628,6 @@ function FishingView(ievm, stage, config_dep) {
 		var bambu9 = new Kinetic.Image({ x: config.POND.X-10, y: 20, rotation: -Math.PI/2, image: images["bambu"] });
 		var bambu10 = new Kinetic.Image({ x: 540, y: 20, rotation: -Math.PI/2, image: images["bambu"] });
 		backgroundLayer.add(background);
-		createPlant(pondLayer, 500, config.POND.Y + config.POND.HEIGHT - 150);
-		createPlant(pondLayer, 400, config.POND.Y + config.POND.HEIGHT - 160);
-		createPlant(pondLayer, 200, config.POND.Y + config.POND.HEIGHT - 140);
 		overlayLayer.add(bambu0);
 		overlayLayer.add(bambu1);
 		overlayLayer.add(bambu2);
@@ -652,6 +649,9 @@ function FishingView(ievm, stage, config_dep) {
 				 config.POND.Y + config.POND.HEIGHT,
 				 50,
 				 80);
+		createPlant(pondLayer, 500, config.POND.Y + config.POND.HEIGHT - 150);
+		createPlant(pondLayer, 400, config.POND.Y + config.POND.HEIGHT - 160);
+		createPlant(pondLayer, 200, config.POND.Y + config.POND.HEIGHT - 140);
 		if (fishTank.getMode() == GameMode.MONKEY_SEE) {
 			var monkey = new Kinetic.Image({ x: 30, y: stage.attrs.height - 200, image: images["monkey"] });
 			overlayLayer.add(monkey);
