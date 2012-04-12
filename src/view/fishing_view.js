@@ -316,7 +316,7 @@ function FishingView(ievm, stage, config_dep) {
 								fishGroup.attrs.x = state.end.x;
 								fishGroup.attrs.y = state.end.y;
 								var splashed = state.playedSplash;
-								var surface = config.POND.Y - 100;
+								var surface = config.POND.Y;
 								var aboveSurface = fishGroup.attrs.y < surface;
 								if (!splashed && aboveSurface) {
 									evm.play(Sounds.FISHING_SPLASH);
