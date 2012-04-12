@@ -628,6 +628,9 @@ function FishingView(ievm, stage, config_dep) {
 		var bambu9 = new Kinetic.Image({ x: config.POND.X-10, y: 20, rotation: -Math.PI/2, image: images["bambu"] });
 		var bambu10 = new Kinetic.Image({ x: 540, y: 20, rotation: -Math.PI/2, image: images["bambu"] });
 		backgroundLayer.add(background);
+		backgroundLayer.add(sky);
+		pondLayer.add(waterSurface);
+		overlayLayer.add(waterSurface2);
 		overlayLayer.add(bambu0);
 		overlayLayer.add(bambu1);
 		overlayLayer.add(bambu2);
@@ -639,10 +642,7 @@ function FishingView(ievm, stage, config_dep) {
 		overlayLayer.add(bambu8);
 		overlayLayer.add(bambu9);
 		overlayLayer.add(bambu10);
-		backgroundLayer.add(sky);
 		pondLayer.add(water);
-		pondLayer.add(waterSurface);
-		overlayLayer.add(waterSurface2);
 		createBottom(pondLayer,
 				 config.POND.X,
 				 config.POND.X + config.POND.WIDTH,
