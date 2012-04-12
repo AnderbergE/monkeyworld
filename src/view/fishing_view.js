@@ -68,7 +68,6 @@ function FishingView(ievm, stage, config_dep) {
 	overlayLayer._drawOnce = false;
 	var pondLayer = backgroundLayer;
 	//var pondLayer = new Kinetic.Layer();
-	var fpsLayer = new Kinetic.Layer();
 	stage.add(backgroundLayer);
 	stage.add(pondLayer);
 	stage.add(shapeLayer);
@@ -91,7 +90,6 @@ function FishingView(ievm, stage, config_dep) {
 		}		
 		dynamicOverlayLayer.add(obj);
 	}
-	stage.add(fpsLayer);
 	
 	var evm = ievm;
 
@@ -134,7 +132,6 @@ function FishingView(ievm, stage, config_dep) {
 		stage.remove(rodLayer);
 		stage.remove(overlayLayer);
 		stage.remove(pondLayer);
-		stage.remove(fpsLayer);
 		stage.remove(dynamicOverlayLayer);
 	};
 	
@@ -665,8 +662,6 @@ function FishingView(ievm, stage, config_dep) {
 		 */
 		evm.on("frame", function(msg) {
 			var frame = msg.frame;
-			fps.showFps(frame); // Update FPS display
-			//evm.tell("frame", {frame:frame});
 			rod.draw(frame); // Draw the fishing rod
 			animator.tick(frame.timeDiff); // Tell the animator about the frame
 			if (dynamicOverlayLayer._doDraw || dynamicOverlayLayer._drawOnce) {
@@ -678,31 +673,10 @@ function FishingView(ievm, stage, config_dep) {
 				overlayLayer._drawOnce = false;
 			}
 			fishTank.onFrame(frame);
-			//Tween.tick(frame.timeDiff, false);
 			shapeLayer.draw(); // Draw the shape layer
 
 		}, EVM_TAG);
 	};
-
-	/**
-	 * FPS counter module
-	 */
-	var fps = function() {
-		var lastFps = 0;
-		var context = fpsLayer.getContext();
-		context.font = "18pt Arial";
-		context.fillStyle = "black";
-		return {
-		showFps: function(frame) {
-			if (lastFps == 0 || frame.time - lastFps > 10) {
-				fpsLayer.clear();
-				var count = Math.round(1000/frame.timeDiff);
-				context.fillText("FPS: " + count, 10, 25);
-				lastFps = frame.time;
-			}
-		}
-		};
-	}();
 
 	var loadingLayer;
 	loadingLayer = new Kinetic.Layer();

@@ -40,7 +40,36 @@ function Game(gameState) {
 	var monkeyPlayer = new MonkeyPlayer(eventManager);
 	//var angelPlayer = new AngelPlayer(eventManager);
 	
+
+	/**
+	 * FPS counter module
+	 */
+	var fps = function() {
+		var lastFps = 0;
+		var fpsText = new Kinetic.Text({
+			text: "",
+			fontFamily: "Arial",
+			textFill: "black",
+			textStroke: "white",
+			textStrokeWidth: 1,
+			fontSize: 18,
+			x: 20,
+			y: 20
+		});
+		gameLayer.add(fpsText);
+		return {
+		showFps: function(frame) {
+			if (lastFps == 0 || frame.time - lastFps > 10) {
+				var count = Math.round(1000/frame.timeDiff);
+				fpsText.setText("FPS: " + count); 
+				lastFps = frame.time;
+			}
+		}
+		};
+	}();
+	
 	stage.onFrame(function(frame) {
+		fps.showFps(frame); // Update FPS display
 		eventManager.tell("frame", {frame:frame});
 		gameLayer.draw();
 		Tween.tick(frame.timeDiff, false);
