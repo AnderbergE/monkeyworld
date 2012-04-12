@@ -627,18 +627,8 @@ function FishingView(ievm, stage, config_dep) {
 		var bambu8 = new Kinetic.Image({ x: 540, y: 760, rotation: -Math.PI/2, image: images["bambu"] });
 		var bambu9 = new Kinetic.Image({ x: config.POND.X-10, y: 20, rotation: -Math.PI/2, image: images["bambu"] });
 		var bambu10 = new Kinetic.Image({ x: 540, y: 20, rotation: -Math.PI/2, image: images["bambu"] });
-		backgroundLayer.add(background);
-		backgroundLayer.add(sky);
-		pondLayer.add(water);
-		pondLayer.add(waterSurface);
-		overlayLayer.add(waterSurface2);
 		//overlayLayer.add(water2);
-		createBottom(pondLayer,
-					 config.POND.X,
-					 config.POND.X + config.POND.WIDTH,
-					 config.POND.Y + config.POND.HEIGHT,
-					 50,
-					 80);
+		backgroundLayer.add(background);
 		createPlant(pondLayer, 500, config.POND.Y + config.POND.HEIGHT - 150);
 		createPlant(pondLayer, 400, config.POND.Y + config.POND.HEIGHT - 160);
 		createPlant(pondLayer, 200, config.POND.Y + config.POND.HEIGHT - 140);
@@ -653,6 +643,16 @@ function FishingView(ievm, stage, config_dep) {
 		overlayLayer.add(bambu8);
 		overlayLayer.add(bambu9);
 		overlayLayer.add(bambu10);
+		backgroundLayer.add(sky);
+		pondLayer.add(water);
+		pondLayer.add(waterSurface);
+		overlayLayer.add(waterSurface2);
+		createBottom(pondLayer,
+				 config.POND.X,
+				 config.POND.X + config.POND.WIDTH,
+				 config.POND.Y + config.POND.HEIGHT,
+				 50,
+				 80);
 		if (fishTank.getMode() == GameMode.MONKEY_SEE) {
 			var monkey = new Kinetic.Image({ x: 30, y: stage.attrs.height - 200, image: images["monkey"] });
 			overlayLayer.add(monkey);
