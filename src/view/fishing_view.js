@@ -29,7 +29,6 @@ function FishingView(ievm, stage, config_dep) {
 			/** @const */ { name:"swosh", src: "../res/sound/60009__qubodup__swosh-22.wav" }
 		],
 		
-		
 		/** @const */ SKY: {
 			/** @const */ Y: 50
 		},
@@ -39,6 +38,13 @@ function FishingView(ievm, stage, config_dep) {
 			/** @const */ Y: 150,
 			/** @const */ WIDTH: 400,
 			/** @const */ HEIGHT: 580
+		},
+		
+		/** @const */ BASKET: {
+			/** @const */ X: 710,
+			/** @const */ Y: 50,
+			/** @const */ WIDTH: 270,
+			/** @const */ HEIGHT: 400
 		}
 
 		};
@@ -48,7 +54,7 @@ function FishingView(ievm, stage, config_dep) {
 	
 	var BASKET_SLOTS = {};
 	var basketGrid = Utils.gridizer(
-		800, 431,
+		config.BASKET.X + 64, config.BASKET.Y + config.BASKET.HEIGHT - 64,
 		125, -128, 2
 	);
 	for (var i = 0; i < 8; i++) {
@@ -129,6 +135,13 @@ function FishingView(ievm, stage, config_dep) {
 		pos.x = fish.getX() * config.POND.WIDTH + config.POND.X;
 		pos.y = fish.getY() * config.POND.HEIGHT + config.POND.Y;
 		return pos;
+	};
+	
+	function scaleFish(fish) {
+		var dim = {};
+		dim.width = fish.getWidth() * config.POND.WIDTH;
+		dim.height = fish.getHeight() * config.POND.HEIGHT;
+		return dim;
 	};
 	
 	var clickFunction = function(fish) {
@@ -651,7 +664,7 @@ function FishingView(ievm, stage, config_dep) {
 		});
 		images["sky"].style.width = "300px";
 		
-		var wood = new Kinetic.Image({ x: 695, y: 20, width: 320, height: 475, image: images["wood"] });
+		var wood = new Kinetic.Image({ x: config.BASKET.X, y: config.BASKET.Y, width: config.BASKET.WIDTH, height: config.BASKET.HEIGHT, image: images["wood"] });
 		var sky = new Kinetic.Image({ x: config.POND.X, y: config.SKY.Y, width: config.POND.WIDTH, image: images['sky'] });
 		
 		// TOP LEFT
