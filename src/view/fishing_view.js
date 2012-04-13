@@ -178,7 +178,7 @@ function FishingView(ievm, stage, gameState) {
 	
 	evm.on("FishingGame.free", function(msg) {
 		freeFish(msg.fish, msg.done);
-	});
+	}, EVM_TAG);
 	
 	evm.on("fishinggame.turnOnClick", function(msg) {
 		turnOnClick(msg.fish);
