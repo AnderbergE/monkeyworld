@@ -29,7 +29,7 @@ function Fish(ieventManager, id, inumber, ix, iy, ispecies) {
 	/** @const @type{number} */ var MAX_X_SPEED = 0.00008;
 	/** @const @type{number} */ var MIN_Y_SPEED = 0.6;
 	/** @const @type{number} */ var MAX_Y_SPEED = 0.5;
-	/** @const @type {number}*/ var width = 0.256;
+	/** @const @type {number}*/ var width = 0.256*1.2;
 	/** @const @type {number}*/ var height = 0.2133;
 	/** @type {number}       */ var scaledWidth = scale * width;
 	/** @type {number}       */ var scaledHeight = scale * height;
