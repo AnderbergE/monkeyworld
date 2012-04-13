@@ -84,7 +84,7 @@ function Game(gameState) {
 		showFps: function(frame) {
 			if (lastFps == 0 || frame.time - lastFps > 10) {
 				var count = Math.round(1000/frame.timeDiff);
-				fpsText.setText("FPS: " + count); 
+				fpsText.setText("FPS: " + count);
 				lastFps = frame.time;
 			}
 		}
@@ -161,17 +161,6 @@ function Game(gameState) {
 		if (stage._drawOverlayLayer) {
 			overlayLayer.draw();
 			stage._drawOverlayLayer = false;
-		}
-		if (stage._drawBackgroundLayer) {
-			backgroundLayer.draw();
-			if (stage._drawBackgroundLayerStop) {
-				stage._drawBackgroundLayer = false;
-				stage._backgroundLayerDrawn = 0;
-			}
-			stage._backgroundLayerDrawn++;
-			if (stage._backgroundLayerDrawn == 400) {
-				Log.warning("Background is being drawn a lot. On purpose?", "game");
-			}
 		}
 		Tween.tick(frame.timeDiff, false);
 	});

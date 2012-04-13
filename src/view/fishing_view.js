@@ -47,9 +47,7 @@ function FishingView(ievm, stage, gameState) {
 
 		};
 	}();
-	
-	
-	
+	var ROLL_DIFF = -230;
 	var BASKET_SLOTS = {};
 	var basketGrid = Utils.gridizer(
 		config.BASKET.X + 64, config.BASKET.Y + config.BASKET.HEIGHT - 64,
@@ -112,7 +110,7 @@ function FishingView(ievm, stage, gameState) {
 		backgroundLayer.draw();
 		Tween.get(shapeLayer.attrs.scale).to({x:0}, 2000).call(function(){
 			shapeLayer.attrs.centerOffset.x = 0;
-			shapeLayer.attrs.x = -230;
+			shapeLayer.attrs.x = ROLL_DIFF;
 			/* ============================================================== */
 			/*   Firefox zero scale bug work-around                           */
 			/*   https://bugzilla.mozilla.org/show_bug.cgi?id=661452          */
@@ -128,7 +126,7 @@ function FishingView(ievm, stage, gameState) {
 			basket.moveTo(backgroundLayer);
 			backgroundLayer.draw();
 		});
-		rod.moveToMonkey(2000, -230);
+		rod.moveToMonkey(2000, ROLL_DIFF);
 	};
 	
 	function translateFish(fish) {
@@ -666,6 +664,7 @@ function FishingView(ievm, stage, gameState) {
 		images["sky"].style.width = "300px";
 		
 		basket = new Kinetic.Image({ x: config.BASKET.X, y: config.BASKET.Y, width: config.BASKET.WIDTH, height: config.BASKET.HEIGHT, image: images["basket"] });
+
 		var sky = new Kinetic.Image({ x: config.POND.X, y: config.SKY.Y, width: config.POND.WIDTH, image: images['sky'] });
 		
 		// TOP LEFT
@@ -719,9 +718,19 @@ function FishingView(ievm, stage, gameState) {
 //		backgroundLayer.add(bamboo10);
 
 		
+		
+		
 		createPlant(outGroup, config.POND.X + 20, config.POND.Y + config.POND.HEIGHT - 150);
 		createPlant(outGroup, config.POND.X + 100, config.POND.Y + config.POND.HEIGHT - 160);
 		createPlant(outGroup, config.POND.X + config.POND.WIDTH - 130, config.POND.Y + config.POND.HEIGHT - 140);
+		
+		if (gameState.getMode() == GameMode.MONKEY_DO && gameState.getMonkeyDoRounds() > 1) {
+			basket.attrs.x += ROLL_DIFF;
+			outGroup.attrs.x += ROLL_DIFF;
+			shapeLayer.attrs.x += ROLL_DIFF;
+			rodLayer.attrs.x += ROLL_DIFF;
+		}
+		
 		backgroundLayer.add(outGroup);
 		backgroundLayer.draw();
 		
@@ -796,21 +805,25 @@ function FishingView(ievm, stage, gameState) {
 		Log.debug("Start rolling view...", "view");
 		//showBig(Strings.get("FISHING_CATCH_NUMBER", fishTank.getCatchingNumber()).toUpperCase());
 		var that = this;
-		if (fishTank.getMode() == GameMode.MONKEY_DO) {
+		if (fishTank.getMode() == GameMode.MONKEY_DO && gameState.getMonkeyDoRounds() == 1) {
 			evm.tell("Game.showBig", {text:Strings.get("MONKEYS_TURN").toUpperCase()});
 			evm.play(Sounds.NOW_MONKEY_SHOW_YOU);
 			setTimeout(function() {
-				that.moveToMonkey(function() {
-					evm.tell("Game.showBig", {text:Strings.get("FISHING_CATCH_NUMBER", fishTank.getCatchingNumber()).toUpperCase()});
-					evm.play(Sounds.FISHING_CATCH);
-					setTimeout(function() {
-						evm.play(Sounds["NUMBER_" + fishTank.getCatchingNumber()]);
-					}, 700);
-					evm.tell("fishinggame.started", null);
-				});
+				that.moveToMonkey(startGame);
 				switchToMonkey();
 			}, 3000);
+		} else {
+			startGame();
 		}
+	};
+	
+	var startGame = function() {
+		evm.tell("Game.showBig", {text:Strings.get("FISHING_CATCH_NUMBER", fishTank.getCatchingNumber()).toUpperCase()});
+		evm.play(Sounds.FISHING_CATCH);
+		setTimeout(function() {
+			evm.play(Sounds["NUMBER_" + fishTank.getCatchingNumber()]);
+		}, 700);
+		evm.tell("fishinggame.started", null);
 	};
 	
 	this.tearDown = function() {
