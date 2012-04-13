@@ -15,7 +15,7 @@ function FishingView(ievm, stage, config_dep) {
 		/** @const */ IMAGE_SOURCES: {
 			/** @const */ "fish0": "fish/0.png",
 			/** @const */ "fish1": "fish/1.png",
-			/** @const */ "bambu": "bambu.png",
+			/** @const */ "bamboo": "bambu.png",
 			/** @const */ "plant": "plant.png",
 			/** @const */ "sky": "sky.png",
 			/** @const */ "monkey": "monkey.png",
@@ -29,15 +29,23 @@ function FishingView(ievm, stage, config_dep) {
 			/** @const */ { name:"swosh", src: "../res/sound/60009__qubodup__swosh-22.wav" }
 		],
 		
+		
+		/** @const */ SKY: {
+			/** @const */ Y: 50
+		},
+		
 		/** @const */ POND: {
-			/** @const */ X: 200,
+			/** @const */ X: 265,
 			/** @const */ Y: 150,
-			/** @const */ WIDTH: 500,
-			/** @const */ HEIGHT: 600
+			/** @const */ WIDTH: 400,
+			/** @const */ HEIGHT: 580
 		}
 
 		};
 	}();
+	
+	
+	
 	var BASKET_SLOTS = {};
 	var basketGrid = Utils.gridizer(
 		800, 431,
@@ -642,20 +650,33 @@ function FishingView(ievm, stage, config_dep) {
 			alpha: 0.5
 		});
 		images["sky"].style.width = "300px";
+		
 		var wood = new Kinetic.Image({ x: 695, y: 20, width: 320, height: 475, image: images["wood"] });
-		var avatar = new Kinetic.Image({ x: 735, y: 500, scale:{x:0.8,y:0.8}, image: images["avatar"] });
-		var sky = new Kinetic.Image({ x: config.POND.X, y: 20, width: config.POND.WIDTH, image: images['sky'] });
-		var bambu0 = new Kinetic.Image({ x: config.POND.X-10, y: 20, image: images["bambu"] });
-		var bambu1 = new Kinetic.Image({ x: config.POND.X+config.POND.WIDTH-10, y: 4, image: images["bambu"] });
-		var bambu2 = new Kinetic.Image({ x: 1024-20, y: 20, image: images["bambu"] });
-		var bambu3 = new Kinetic.Image({ x: config.POND.X-10, y: 285, image: images["bambu"] });
-		var bambu4 = new Kinetic.Image({ x: config.POND.X+config.POND.WIDTH-10, y: 285, image: images["bambu"] });
-		var bambu5 = new Kinetic.Image({ x: 1024-20, y: 285, image: images["bambu"] });
-		var bambu6 = new Kinetic.Image({ x: config.POND.X+config.POND.WIDTH, y: 500, height:320, rotation: -Math.PI/2, image: images["bambu"] });
-		var bambu7 = new Kinetic.Image({ x: config.POND.X-10, y: 760, height: config.POND.WIDTH,rotation: -Math.PI/2, image: images["bambu"] });
-		var bambu8 = new Kinetic.Image({ x: config.POND.X+config.POND.WIDTH, y: 760, height:320,rotation: -Math.PI/2, image: images["bambu"] });
-		var bambu9 = new Kinetic.Image({ x: config.POND.X-10, y: 20, height:config.POND.WIDTH, rotation: -Math.PI/2, image: images["bambu"] });
-		var bambu10 = new Kinetic.Image({ x: config.POND.X+config.POND.WIDTH, y: 20,  height:320, rotation: -Math.PI/2, image: images["bambu"] });
+		var sky = new Kinetic.Image({ x: config.POND.X, y: config.SKY.Y, width: config.POND.WIDTH, image: images['sky'] });
+		
+		// TOP LEFT
+		var bamboo0 = new Kinetic.Image({ x: config.POND.X-10, y: config.SKY.Y-15, image: images["bamboo"] });
+		
+		// TOP RIGHT
+		var bamboo1 = new Kinetic.Image({ x: config.POND.X+config.POND.WIDTH-10, y: config.SKY.Y-15, image: images["bamboo"] });
+		
+		// BOTTOM LEFT
+		var bamboo3 = new Kinetic.Image({ x: config.POND.X-10, y: 255, image: images["bamboo"] });
+		
+		// BOTTOM RIGHT
+		var bamboo4 = new Kinetic.Image({ x: config.POND.X+config.POND.WIDTH-10, y: 255, image: images["bamboo"] });
+		
+		// BOTTOM
+		var bamboo7 = new Kinetic.Image({ x: config.POND.X-10, y: config.POND.Y + config.POND.HEIGHT+5, height: config.POND.WIDTH,rotation: -Math.PI/2, image: images["bamboo"] });
+		
+		// TOP
+		var bamboo9 = new Kinetic.Image({ x: config.POND.X, y: config.SKY.Y, height:config.POND.WIDTH, rotation: -Math.PI/2, image: images["bamboo"] });
+
+//		var bamboo2 = new Kinetic.Image({ x: 1024-20, y: 20, image: images["bamboo"] });
+//		var bamboo5 = new Kinetic.Image({ x: 1024-20, y: 285, image: images["bamboo"] });
+//		var bamboo6 = new Kinetic.Image({ x: config.POND.X+config.POND.WIDTH, y: 500, height:320, rotation: -Math.PI/2, image: images["bamboo"] });
+//		var bamboo8 = new Kinetic.Image({ x: config.POND.X+config.POND.WIDTH, y: 760, height:320,rotation: -Math.PI/2, image: images["bamboo"] });
+//		var bamboo10 = new Kinetic.Image({ x: config.POND.X+config.POND.WIDTH, y: 20,  height:320, rotation: -Math.PI/2, image: images["bamboo"] });
 		//backgroundLayer.add(background);
 
 		//backgroundLayer.add(avatar);
@@ -671,22 +692,22 @@ function FishingView(ievm, stage, config_dep) {
 				 config.POND.Y + config.POND.HEIGHT,
 				 50,
 				 80);
-		outGroup.add(bambu0);
-		outGroup.add(bambu1);
-		backgroundLayer.add(bambu2);
-		backgroundLayer.add(bambu6);
-		outGroup.add(bambu3);
-		outGroup.add(bambu4);
-		backgroundLayer.add(bambu5);
-		outGroup.add(bambu7);
-		backgroundLayer.add(bambu8);
-		outGroup.add(bambu9);
-		backgroundLayer.add(bambu10);
+		outGroup.add(bamboo0);
+		outGroup.add(bamboo1);
+//		backgroundLayer.add(bamboo2);
+//		backgroundLayer.add(bamboo6);
+		outGroup.add(bamboo3);
+		outGroup.add(bamboo4);
+//		backgroundLayer.add(bamboo5);
+		outGroup.add(bamboo7);
+//		backgroundLayer.add(bamboo8);
+		outGroup.add(bamboo9);
+//		backgroundLayer.add(bamboo10);
 
 		
-		createPlant(outGroup, 500, config.POND.Y + config.POND.HEIGHT - 150);
-		createPlant(outGroup, 400, config.POND.Y + config.POND.HEIGHT - 160);
-		createPlant(outGroup, 200, config.POND.Y + config.POND.HEIGHT - 140);
+		createPlant(outGroup, config.POND.X + 20, config.POND.Y + config.POND.HEIGHT - 150);
+		createPlant(outGroup, config.POND.X + 100, config.POND.Y + config.POND.HEIGHT - 160);
+		createPlant(outGroup, config.POND.X + config.POND.WIDTH - 130, config.POND.Y + config.POND.HEIGHT - 140);
 		if (fishTank.getMode() == GameMode.MONKEY_SEE || fishTank.getMode() == GameMode.MONKEY_DO) {
 			monkey = new Kinetic.Image({ x: 30, y: stage.attrs.height - 200, image: images["monkey"] });
 			//backgroundLayer.add(monkey);
