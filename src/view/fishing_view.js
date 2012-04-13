@@ -19,7 +19,7 @@ function FishingView(ievm, stage, config_dep) {
 			/** @const */ "plant": "plant.png",
 			/** @const */ "sky": "sky.png",
 			/** @const */ "monkey": "monkey.png",
-			/** @const */ "wood": "tileable_wood_texture_by_ftIsis_Stock.jpg",
+			/** @const */ "basket": "01-tileable-basket-weave-textures-preview-003.jpg",
 			/** @const */ "avatar": "cartoon_asian_girl_stick_figure_0515-1001-2620-2509_SMU.jpg"
 		},
 		
@@ -664,7 +664,7 @@ function FishingView(ievm, stage, config_dep) {
 		});
 		images["sky"].style.width = "300px";
 		
-		var wood = new Kinetic.Image({ x: config.BASKET.X, y: config.BASKET.Y, width: config.BASKET.WIDTH, height: config.BASKET.HEIGHT, image: images["wood"] });
+		var basket = new Kinetic.Image({ x: config.BASKET.X, y: config.BASKET.Y, width: config.BASKET.WIDTH, height: config.BASKET.HEIGHT, image: images["basket"] });
 		var sky = new Kinetic.Image({ x: config.POND.X, y: config.SKY.Y, width: config.POND.WIDTH, image: images['sky'] });
 		
 		// TOP LEFT
@@ -694,7 +694,7 @@ function FishingView(ievm, stage, config_dep) {
 
 		//backgroundLayer.add(avatar);
 		outGroup.add(sky);
-		backgroundLayer.add(wood);
+		backgroundLayer.add(basket);
 		
 		outGroup.add(water);
 		outGroup.add(waterSurface);
