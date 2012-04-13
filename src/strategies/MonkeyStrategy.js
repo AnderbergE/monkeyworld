@@ -64,4 +64,8 @@ MonkeyPlayer.prototype.strategies["FishingGame"] = function(game, eventManager, 
 	eventManager.on("catched", function(msg) {
 		/** @type {Fish} */ var fish = msg.fish;
 	}, EVM_TAG);
+	
+	eventManager.on("Game.tearDown", function(msg) {
+		eventManager.forget(EVM_TAG);
+	}, EVM_TAG);
 };

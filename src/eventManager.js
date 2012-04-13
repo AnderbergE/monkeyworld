@@ -145,7 +145,7 @@ function GameEventManager(stage) {
 	 */
 	this.play = function(entry) {
 		Log.notify("\"" + entry.subtitle + "\"", "sound");
-		var mute = true;
+		var mute = false;
 		if (!mute && entry.soundFile != null)
 			SoundJS.play(entry._key);
 

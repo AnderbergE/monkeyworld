@@ -180,6 +180,7 @@ function Game(gameState) {
 		if (currentView != null)
 			currentView.tearDown();
 		eventManager.tell("Game.tearDown");
+		eventManager.print();
 		var view = new iView(eventManager, stage, gameState);
 		var player = null;
 		if (mode === GameMode.CHILD_PLAY || mode === GameMode.MONKEY_SEE) {
