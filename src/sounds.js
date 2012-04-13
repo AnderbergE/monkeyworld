@@ -59,6 +59,9 @@ var Sounds = {
 		
 	NOW_MONKEY_SHOW_YOU:
 		new SoundEntry(null, Strings.get("NOW_MONKEY_SHOW_YOU")),
+		
+	MONKEY_HMM:
+		new SoundEntry(null, Strings.get("MONKEY_HMM")),
 	
 	"NUMBER_1":
 		new SoundEntry(null, Strings.get("NUMBER_1")),

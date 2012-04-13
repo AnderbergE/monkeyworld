@@ -66,6 +66,11 @@ var Strings = {
 		"en": "Monkey's turn!"
 	},
 	
+	"MONKEY_HMM": {
+		"sv": "Apan: Hmmm...",
+		"en": "Monkey: Hmm..."
+	},
+	
 	"FISHING_KEEP_GOING": {
 		"sv": "Fortsätt!",
 		"en": "Keep going!"

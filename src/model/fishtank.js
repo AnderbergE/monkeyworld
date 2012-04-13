@@ -151,6 +151,7 @@ function FishingGame(ievm, mode) {
 			}
 			if (basketSize == numberCorrect || mode == GameMode.MONKEY_SEE
 				|| mode == GameMode.MONKEY_DO) {
+				result.sequence.push("FishingGame.catchingDone");
 				evm.tell("FishingGame.catchingDone");
 			} else {
 				evm.tell("FishingGame.freeWrongOnes");
@@ -236,6 +237,8 @@ function FishingGame(ievm, mode) {
 	 * @param {number} number What the player thinks the correct number is.
 	 */
 	this.countFish = function(number) {
+		result.sequence.push(number);
+		evm.tell("FishingGame.counted", { number: number });
 		evm.tell(
 			"FishingGame.countingResult",
 			{ correct: number == numberCorrect }
@@ -318,6 +321,10 @@ function FishingGame(ievm, mode) {
 			}
 		};
 		return null;
+	};
+	
+	this.readyToCount = function() {
+		evm.tell("FishingGame.countingStarted", {});
 	};
 }
 FishingGame.prototype = new GameModule();

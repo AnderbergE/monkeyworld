@@ -169,6 +169,7 @@ function FishingView(ievm, stage, gameState) {
 		tearDownView();
 		evm.off("frame", EVM_TAG);
 		fishCountingView.init(fishTank, fishGroups);
+		fishTank.readyToCount();
 	};
 
 	evm.on("FishingGame.catch", function(msg) {

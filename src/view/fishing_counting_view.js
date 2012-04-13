@@ -28,6 +28,7 @@ function FishCountingView(stage, evm, EVM_TAG) {
 	/** @type {Kinetic.Layer} */ var shapeLayer = new Kinetic.Layer();
 	stage.add(backgroundLayer);
 	stage.add(shapeLayer);
+	var numGroups = {};
 	
 	/**
 	 * Creates a number button for the user to click on.
@@ -55,10 +56,12 @@ function FishCountingView(stage, evm, EVM_TAG) {
 		numGroup.add(rect);
 		numGroup.add(number);
 		numGroup._num = number;
+		numGroup._text = number;
 		numGroup.on("mousedown touchstart", function() {
 			fishTank.countFish(num);
 		});
 		shapeLayer.add(numGroup);
+		numGroups[num] = numGroup;
 	};
 	
 	/**
@@ -146,4 +149,9 @@ function FishCountingView(stage, evm, EVM_TAG) {
 		}
 	}, EVM_TAG);
 	
+	evm.on("FishingGame.counted", function(msg) {
+		numGroups[msg.number]._text.attrs.textFill = "yellow";
+		numGroups[msg.number]._text.attrs.scale = 1.2;
+		shapeLayer.draw();
+	}, EVM_TAG);
 }

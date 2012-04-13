@@ -22,15 +22,29 @@ MonkeyPlayer.prototype.strategies["FishingGame"] = function(game, eventManager, 
 	
 	eventManager.on("fishinggame.started", function(msg) {
 		game.turnOffInactivityTimer();
-		console.log("Game started");
 		handleResults();
 		
 	}, EVM_TAG);
 	
+	eventManager.on("FishingGame.countingStarted", function(msg) {
+		handleCountingResults();
+	}, EVM_TAG);
+	
+	function handleCountingResults() {
+		eventManager.play(Sounds.MONKEY_HMM);
+		setTimeout(function() {
+			var guess = result.sequence[resultPosition++];
+			game.countFish(guess);
+			if (resultPosition < result.sequence.length) {
+				handleCountingResults();
+			}
+		}, 2000);		
+	};
+	
 	function handleResults() {
 		var happening = result.sequence[resultPosition++];
 		var resultLength = result.sequence.length;
-		if (resultPosition <= resultLength) {
+		if (resultPosition <= resultLength && happening != "FishingGame.catchingDone") {
 			this.setTimeout(function() {
 				if (happening == "correct") {
 					game.catchFish(game.getOneCorrectFish(), function() {handleResults();});
@@ -41,7 +55,7 @@ MonkeyPlayer.prototype.strategies["FishingGame"] = function(game, eventManager, 
 				} else if (happening == "freeCorrect") {
 					game.freeFish(game.getOneCorrectlyCapturedFish(), function() {handleResults();});
 				} else {
-					Log.error("Error when handling happenings (no such happening)", "monkey");
+					Log.error("Error when handling happenings (no such happening: " + happening + ")", "monkey");
 				}
 			}, 2000);
 		}
