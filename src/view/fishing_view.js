@@ -18,9 +18,7 @@ function FishingView(ievm, stage, config_dep) {
 			/** @const */ "bamboo": "bambu.png",
 			/** @const */ "plant": "plant.png",
 			/** @const */ "sky": "sky.png",
-			/** @const */ "monkey": "monkey.png",
 			/** @const */ "basket": "01-tileable-basket-weave-textures-preview-003.jpg",
-			/** @const */ "avatar": "cartoon_asian_girl_stick_figure_0515-1001-2620-2509_SMU.jpg"
 		},
 		
 		/** @const */ SOUND_SOURCES: [
@@ -34,7 +32,7 @@ function FishingView(ievm, stage, config_dep) {
 		},
 		
 		/** @const */ POND: {
-			/** @const */ X: 265,
+			/** @const */ X: 285,
 			/** @const */ Y: 150,
 			/** @const */ WIDTH: 400,
 			/** @const */ HEIGHT: 580
@@ -82,7 +80,6 @@ function FishingView(ievm, stage, config_dep) {
 	var outGroup = new Kinetic.Group({
 		x: 0, y:0
 	});
-	var monkey = null;
 	var pondLayer = backgroundLayer;
 	//var pondLayer = new Kinetic.Layer();
 	stage.add(backgroundLayer);
