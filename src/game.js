@@ -29,14 +29,34 @@ function Game(gameState) {
         height: WIN_HEIGHT
 	});
 
+	var backgroundLayer = new Kinetic.Layer({
+		width: WIN_WIDTH,
+        height: WIN_HEIGHT
+	});
+	stage.add(backgroundLayer);
 	stage.add(gameLayer);
 	stage.add(overlayLayer);
 	stage._subtitleLayer = overlayLayer;
 	stage._gameLayer = gameLayer;
+	stage._backgroundLayer = backgroundLayer;
 	stage._drawOverlayLayer = false;
+	stage._overlayLayerDrawn = 0;
+	stage._backgroundLayerDrawn = 0;
 	stage.pleaseDrawOverlayLayer = function() {
 		stage._drawOverlayLayer = true;	
-	}
+	};
+	stage._drawBackgroundLayer = false;
+	stage.pleaseDrawBackgroundLayer = function() {
+		stage._drawBackgroundLayer = true;	
+	};
+	stage._drawBackgroundLayerStop = true;
+	stage.pleaseDrawBackgroundLayerUntilStop = function() {
+		stage._drawBackgroundLayer = true;
+		stage._drawBackgroundLayerStop = false;
+	};
+	stage.pleaseStopDrawBackgroundLayer = function() {
+		stage._drawBackgroundLayerStop = true;
+	};
 
 	var eventManager = new GameEventManager(stage);
 	var gamerPlayer = new GamerPlayer(eventManager);
@@ -142,6 +162,17 @@ function Game(gameState) {
 			overlayLayer.draw();
 			stage._drawOverlayLayer = false;
 		}
+		if (stage._drawBackgroundLayer) {
+			backgroundLayer.draw();
+			if (stage._drawBackgroundLayerStop) {
+				stage._drawBackgroundLayer = false;
+				stage._backgroundLayerDrawn = 0;
+			}
+			stage._backgroundLayerDrawn++;
+			if (stage._backgroundLayerDrawn == 400) {
+				Log.warning("Background is being drawn a lot. On purpose?", "game");
+			}
+		}
 		Tween.tick(frame.timeDiff, false);
 	});
 	stage.start();
@@ -160,7 +191,7 @@ function Game(gameState) {
 		if (currentView != null)
 			currentView.tearDown();
 		eventManager.tell("Game.tearDown");
-		var view = new iView(eventManager, stage, this, callback);
+		var view = new iView(eventManager, stage, gameState);
 		var player = null;
 		if (mode === GameMode.CHILD_PLAY || mode === GameMode.MONKEY_SEE) {
 			player = gamerPlayer;

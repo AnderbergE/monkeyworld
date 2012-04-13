@@ -3,7 +3,7 @@
  * @implements {ViewModule}
  * @extends {GameView}
  */
-function FishingView(ievm, stage, config_dep) {
+function FishingView(ievm, stage, gameState) {
 
 	/** @const @type {string} */ var EVM_TAG = "FishingView";
 	/**
@@ -18,7 +18,7 @@ function FishingView(ievm, stage, config_dep) {
 			/** @const */ "bamboo": "bambu.png",
 			/** @const */ "plant": "plant.png",
 			/** @const */ "sky": "sky.png",
-			/** @const */ "basket": "01-tileable-basket-weave-textures-preview-003.jpg",
+			/** @const */ "basket": "01-tileable-basket-weave-textures-preview-003.jpg"
 		},
 		
 		/** @const */ SOUND_SOURCES: [
@@ -80,6 +80,7 @@ function FishingView(ievm, stage, config_dep) {
 	var outGroup = new Kinetic.Group({
 		x: 0, y:0
 	});
+	var basket = null;
 	var pondLayer = backgroundLayer;
 	//var pondLayer = new Kinetic.Layer();
 	stage.add(backgroundLayer);
@@ -97,34 +98,37 @@ function FishingView(ievm, stage, config_dep) {
 		fishGroups[fish].on("mousedown touchstart", function() {
 			if (allowClicks) {
 				
-				switchToMonkey();
+				//switchToMonkey();
 				clickFunction(fish);	
 			}
 		});
 	};
 	
 	function switchToMonkey() {
-//		outGroup.moveTo(shapeLayer);
-//		monkey.moveTo(stage._gameLayer);
-//		shapeLayer.attrs.centerOffset = {x: config.POND.WIDTH + config.POND.X, y: 0};
-//		shapeLayer.attrs.x = config.POND.WIDTH + config.POND.X;
-//		outGroup.moveToBottom();
-//		backgroundLayer.draw();
-//		Tween.get(shapeLayer.attrs.scale).to({x:0}, 2000).call(function(){
-//			shapeLayer.attrs.centerOffset.x = 0;
-//			shapeLayer.attrs.x = -170;
-//			/* ============================================================== */
-//			/*   Firefox zero scale bug work-around                           */
-//			/*   https://bugzilla.mozilla.org/show_bug.cgi?id=661452          */
-//			/*   Added 2012-04-12 by <bjorn.norrliden@gmail.com>              */
-//			/* ============================================================== */
-//			shapeLayer.attrs.scale.x = 0.1;
-//			/* ============================================================== */
-//			Tween.get(shapeLayer.attrs.scale).to({x:1}, 2000);
-//		});
-//		Tween.get(monkey.attrs).to({x:config.POND.WIDTH + 40}, 2000);
-//		
-//		rod.moveToMonkey(2000, -170);
+		outGroup.moveTo(shapeLayer);
+		shapeLayer.attrs.centerOffset = {x: config.POND.WIDTH + config.POND.X, y: 0};
+		shapeLayer.attrs.x = config.POND.WIDTH + config.POND.X;
+		outGroup.moveToBottom();
+		backgroundLayer.draw();
+		Tween.get(shapeLayer.attrs.scale).to({x:0}, 2000).call(function(){
+			shapeLayer.attrs.centerOffset.x = 0;
+			shapeLayer.attrs.x = -230;
+			/* ============================================================== */
+			/*   Firefox zero scale bug work-around                           */
+			/*   https://bugzilla.mozilla.org/show_bug.cgi?id=661452          */
+			/*   Added 2012-04-12 by <bjorn.norrliden@gmail.com>              */
+			/* ============================================================== */
+			shapeLayer.attrs.scale.x = 0.1;
+			/* ============================================================== */
+			Tween.get(shapeLayer.attrs.scale).to({x:1}, 2000);
+		});
+		basket.moveTo(stage._gameLayer);
+		backgroundLayer.draw();
+		Tween.get(basket.attrs).to({x: basket.attrs.x - 230}, 2000).call(function() {
+			basket.moveTo(backgroundLayer);
+			backgroundLayer.draw();
+		});
+		rod.moveToMonkey(2000, -230);
 	};
 	
 	function translateFish(fish) {
@@ -598,14 +602,14 @@ function FishingView(ievm, stage, config_dep) {
 	this.init = function(viewConfig, model) {
 		fishTank = model;
 		var that = this;
-		evm.on("FishingGame.catch", function(msg) {
+		/*evm.on("FishingGame.catch", function(msg) {
 			that.moveToMonkey(function() {
 				
 			});
-		}, EVM_TAG);
+		}, EVM_TAG);*/
 		this.setStaticLayer(backgroundLayer);
 		this.setDynamicLayer(shapeLayer);
-		this.basicInit(fishTank.getMode());
+		this.basicInit(gameState);
 		
     	Log.debug("Building stage...", "view");
 
@@ -661,7 +665,7 @@ function FishingView(ievm, stage, config_dep) {
 		});
 		images["sky"].style.width = "300px";
 		
-		var basket = new Kinetic.Image({ x: config.BASKET.X, y: config.BASKET.Y, width: config.BASKET.WIDTH, height: config.BASKET.HEIGHT, image: images["basket"] });
+		basket = new Kinetic.Image({ x: config.BASKET.X, y: config.BASKET.Y, width: config.BASKET.WIDTH, height: config.BASKET.HEIGHT, image: images["basket"] });
 		var sky = new Kinetic.Image({ x: config.POND.X, y: config.SKY.Y, width: config.POND.WIDTH, image: images['sky'] });
 		
 		// TOP LEFT
@@ -718,10 +722,6 @@ function FishingView(ievm, stage, config_dep) {
 		createPlant(outGroup, config.POND.X + 20, config.POND.Y + config.POND.HEIGHT - 150);
 		createPlant(outGroup, config.POND.X + 100, config.POND.Y + config.POND.HEIGHT - 160);
 		createPlant(outGroup, config.POND.X + config.POND.WIDTH - 130, config.POND.Y + config.POND.HEIGHT - 140);
-		if (fishTank.getMode() == GameMode.MONKEY_SEE || fishTank.getMode() == GameMode.MONKEY_DO) {
-			monkey = new Kinetic.Image({ x: 30, y: stage.attrs.height - 200, image: images["monkey"] });
-			//backgroundLayer.add(monkey);
-		}
 		backgroundLayer.add(outGroup);
 		backgroundLayer.draw();
 		
@@ -795,14 +795,21 @@ function FishingView(ievm, stage, config_dep) {
 		tearDownLoadingScreen();
 		Log.debug("Start rolling view...", "view");
 		//showBig(Strings.get("FISHING_CATCH_NUMBER", fishTank.getCatchingNumber()).toUpperCase());
-		evm.tell("Game.showBig", {text:Strings.get("FISHING_CATCH_NUMBER", fishTank.getCatchingNumber()).toUpperCase()});
-		evm.play(Sounds.FISHING_CATCH);
-		setTimeout(function() {
-			evm.play(Sounds["NUMBER_" + fishTank.getCatchingNumber()]);
-		}, 700);
-		evm.tell("fishinggame.started", null);
+		var that = this;
 		if (fishTank.getMode() == GameMode.MONKEY_DO) {
-			switchToMonkey();
+			evm.tell("Game.showBig", {text:Strings.get("MONKEYS_TURN").toUpperCase()});
+			evm.play(Sounds.NOW_MONKEY_SHOW_YOU);
+			setTimeout(function() {
+				that.moveToMonkey(function() {
+					evm.tell("Game.showBig", {text:Strings.get("FISHING_CATCH_NUMBER", fishTank.getCatchingNumber()).toUpperCase()});
+					evm.play(Sounds.FISHING_CATCH);
+					setTimeout(function() {
+						evm.play(Sounds["NUMBER_" + fishTank.getCatchingNumber()]);
+					}, 700);
+					evm.tell("fishinggame.started", null);
+				});
+				switchToMonkey();
+			}, 3000);
 		}
 	};
 	
