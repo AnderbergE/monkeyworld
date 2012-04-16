@@ -62,6 +62,9 @@ var Sounds = {
 		
 	MONKEY_HMM:
 		new SoundEntry(null, Strings.get("MONKEY_HMM")),
+		
+	MAGIC_CHIMES:
+		new SoundEntry("51710__bristolstories__u-chimes3_short.wav", null),
 	
 	"NUMBER_1":
 		new SoundEntry(null, Strings.get("NUMBER_1")),

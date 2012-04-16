@@ -2,7 +2,7 @@
  * @constructor
  * @implements {ViewModule}
  */
-function ReadyToTeachView(evm, stage) {
+function ReadyToTeachView(evm, stage, gameState, model) {
 
 	var layer = new Kinetic.Layer();
 	var images = new Array();
@@ -12,7 +12,7 @@ function ReadyToTeachView(evm, stage) {
 	var text;
 	stage.add(layer);
 	
-	this.init = function(viewConfig, model) {
+	this.init = function() {
 		var backRect = new Kinetic.Rect({
 			width: stage.getWidth(),
 			height: stage.getHeight(),

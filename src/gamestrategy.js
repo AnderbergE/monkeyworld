@@ -23,7 +23,7 @@ var GameMode = {
  * @constructor
  */
 function GameModule() {}
-
+GameModule.prototype = new GameView();
 /**
  * @param {Player} player
  * @param {EventManager} eventManager

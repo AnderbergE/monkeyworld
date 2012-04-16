@@ -99,31 +99,25 @@ function GameView() {
 	};
 	
 	var moved = 0;
-	var moveDone = function() {
+	var moveDone = function(done) {
 		moved++;
+		console.log("moved: " + moved);
 		if (moved == 3) {
-			//staticLayer.getStage().pleaseStopDrawBackgroundLayer();
+			done();
 			staticLayer.draw();
 			evm.forget("GameView");
 		}
 	};
 	function moveToMonkey(done) {
-		//var monkeyConfig = MONKEY_FRAME_CONFIG_INACTIVE;
 		console.log("switch to monkey");
+		evm.play(Sounds.MAGIC_CHIMES);
 		var stage = staticLayer.getStage();
-		//monkey.transitionTo({ x:ACTIVE_FRAME_WIDTH + MONKEY_FRAME_CONFIG.x - 175, duration: 2});
 		evm.on("frame", function() {
 			staticLayer.draw();
 		}, "GameView");
-		//stage.pleaseDrawBackgroundLayerUntilStop();
-		Tween.get(monkey.attrs).to(MONKEY_CONFIG_ACTIVE, 2000).call(moveDone);
-		Tween.get(monkeyFrame.attrs).to(MONKEY_FRAME_CONFIG_ACTIVE, 2000).call(moveDone);
-		Tween.get(gamerFrame.attrs).to(GAMER_FRAME_CONFIG_INACTIVE, 2000).call(moveDone);
-		//monkeyFrame.transitionTo({alpha: ACTIVE_FRAME_ALPHA, width: ACTIVE_FRAME_WIDTH, duration: 2});
-		//gamerFrame.transitionTo({alpha: INACTIVE_FRAME_ALPHA, x: GAMER_FRAME_CONFIG.x + (ACTIVE_FRAME_WIDTH - INACTIVE_FRAME_WIDTH), width: INACTIVE_FRAME_WIDTH, duration: 2});
-		setTimeout(function() {
-			done();
-		}, 2000);
+		Tween.get(monkey.attrs).to(MONKEY_CONFIG_ACTIVE, 2000).call(function() { moveDone(done); });
+		Tween.get(monkeyFrame.attrs).to(MONKEY_FRAME_CONFIG_ACTIVE, 2000).call(function() { moveDone(done); });
+		Tween.get(gamerFrame.attrs).to(GAMER_FRAME_CONFIG_INACTIVE, 2000).call(function() { moveDone(done); });
 	};
 	
 	var test = function() {console.log("test");};

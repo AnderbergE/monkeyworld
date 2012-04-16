@@ -2,7 +2,7 @@
  * @constructor
  * @param {EventManager} evm
  * @param {Object} config 
- * @implements {ModelModule}
+ * @extends {ModelModule}
  */
 function ReadyToTeach(evm, config) {
 	
@@ -42,3 +42,4 @@ function ReadyToTeach(evm, config) {
 		
 	};
 }
+ReadyToTeach.prototype = new ModelModule();

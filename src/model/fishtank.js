@@ -1,17 +1,15 @@
 /**
  * @constructor
- * @param {EventManager} ievm
+ * @param {EventManager} evm
  * @param {Object} mode 
- * @implements {ModelModule}
  * @extends {GameModule}
  */
-function FishingGame(ievm, mode) {
+function FishingGame(evm, mode) {
 	Log.debug("Applying " + mode + " Mode", "model");
 	/** @const @type {string} */ var EVM_TAG = "FishingGame";
 	
 	this._name = "FishingGame";
 	this.toString = function() { return "Fish Tank"; };
-	var evm = ievm;
 	var fishArray = new Array();
 	var basketArray = new Array();
 	var basketSize = 0;
@@ -258,7 +256,6 @@ function FishingGame(ievm, mode) {
 	 * Called when the game starts.
 	 */
 	this.start = function() {
-		evm.tell("Game.start");
 		restartInactivityTimer();
 	};
 	

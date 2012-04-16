@@ -63,6 +63,7 @@
 		      <sources dir="src">
                 <file name="strings.js"/>
 		        <file name="sounds.js"/>
+		      	<file name="images.js"/>
 		      	<file name="GameState.js"/>
 		        <file name="gamestrategy.js"/>
 		        <file name="strategies/MonkeyStrategy.js"/>
@@ -70,7 +71,6 @@
 		        <file name="strategies/GamerStrategy.js"/>
 		        <file name="module.js"/>
 		        <file name="model/start.js"/>
-		        <file name="model/SystemMessage.js"/>
 		        <file name="model/ReadyToTeach.js"/>
 		        <file name="model/newplayer.js"/>
 		        <file name="model/login.js"/>
@@ -82,10 +82,10 @@
 		      	<file name="model.js"/>
 		      	<file name="utils.js"/>
 		      	<file name="view/start_view.js"/>
+		      	<file name="view/GeneralGameView.js"/>
 		      	<file name="view/ReadyToTeachView.js"/>
 		      	<file name="view/newplayer_view.js"/>
 		      	<file name="view/login_view.js"/>
-		      	<file name="view/SystemMessageView.js"/>
 		      	<file name="view/intro_view.js"/>
 		      	<file name="view/fishing_view.js"/>
 		      	<file name="view/fishing_counting_view.js"/>

@@ -3,7 +3,7 @@
  * @implements {ViewModule}
  * @extends {GameView}
  */
-function FishingView(ievm, stage, gameState) {
+function FishingView(evm, stage, gameState, model) {
 
 	/** @const @type {string} */ var EVM_TAG = "FishingView";
 	/**
@@ -60,7 +60,7 @@ function FishingView(ievm, stage, gameState) {
 	var animator = new Animator();
 	/** @type {boolean} */ var allowClicks = true; 
 	
-	var fishCountingView = new FishCountingView(stage, ievm, EVM_TAG);
+	var fishCountingView = new FishCountingView(stage, evm, EVM_TAG);
 	
 	/*
 	 * Initiate layers
@@ -78,8 +78,6 @@ function FishingView(ievm, stage, gameState) {
 	stage.add(pondLayer);
 	stage.add(shapeLayer);
 	stage.add(rodLayer);
-
-	var evm = ievm;
 
 	var turnOffClick = function(fish) {
 		fishGroups[fish].off("mousedown touchstart");
@@ -301,9 +299,9 @@ function FishingView(ievm, stage, gameState) {
 					break;
 				case ROD_STATE.CATCHING: break;
 				case ROD_STATE.WIND_IN_FISH:
-					state.state = ROD_STATE.THROW_FISH_IN_BASKET;
+					//state.state = ROD_STATE.THROW_FISH_IN_BASKET;
 
-					/*state.state = ROD_STATE.CATCHING;
+					state.state = ROD_STATE.CATCHING;
 					
 					var fish = state.catching;
 					var fishGroup = fishGroups[state.catching];
@@ -358,7 +356,7 @@ function FishingView(ievm, stage, gameState) {
 								state.state = ROD_STATE.THROW_FISH_IN_BASKET;
 							}
 						}
-					);*/
+					);
 
 					break;
 				case ROD_STATE.THROW_FISH_IN_BASKET:
@@ -467,10 +465,12 @@ function FishingView(ievm, stage, gameState) {
 	
 	this.toString = function() { return "Fish View"; };
 	
-	evm.on("fishinggame.initiatedfish", function(msg){
+	/*evm.on("fishinggame.initiatedfish", function(msg){
+		console.log("created");
 		createFish(msg.fish);
+		
 	}, EVM_TAG);
-	
+	*/
 	evm.on("fishinggame.fishmoved", function(msg) {
 		moveFish(msg.fish);
 	}, EVM_TAG);
@@ -588,19 +588,17 @@ function FishingView(ievm, stage, gameState) {
 		layer.add(triangle);
 	};
 	
-	/**
-	 * Initiates the Fishing View
-	 * @param viewConfig
-	 */
-	this.init = function(viewConfig, model) {
+	this.init = function() {
 		this.setEventManager(evm);
 		fishTank = model;
+		
+		var fishArray = fishTank.getAllFish();
+		for (var i = 0; i < fishArray.length; i++) {
+			createFish(fishArray[i]);
+		}
+		
 		var that = this;
-		/*evm.on("FishingGame.catch", function(msg) {
-			that.moveToMonkey(function() {
-				
-			});
-		}, EVM_TAG);*/
+
 		this.setStaticLayer(backgroundLayer);
 		this.setDynamicLayer(shapeLayer);
 		this.basicInit(gameState);
@@ -720,12 +718,12 @@ function FishingView(ievm, stage, gameState) {
 		createPlant(outGroup, config.POND.X + 100, config.POND.Y + config.POND.HEIGHT - 160);
 		createPlant(outGroup, config.POND.X + config.POND.WIDTH - 130, config.POND.Y + config.POND.HEIGHT - 140);
 		
-		/*if (gameState.getMode() == GameMode.MONKEY_DO && gameState.getMonkeyDoRounds() > 1) {
+		if (gameState.getMode() == GameMode.MONKEY_DO && gameState.getMonkeyDoRounds() > 1) {
 			basket.attrs.x += ROLL_DIFF;
 			outGroup.attrs.x += ROLL_DIFF;
 			shapeLayer.attrs.x += ROLL_DIFF;
 			rodLayer.attrs.x += ROLL_DIFF;
-		}*/
+		}
 		
 		backgroundLayer.add(outGroup);
 		backgroundLayer.draw();
@@ -738,8 +736,6 @@ function FishingView(ievm, stage, gameState) {
 			var frame = msg.frame;
 			rod.draw(frame); // Draw the fishing rod
 			animator.tick(frame.timeDiff); // Tell the animator about the frame
-
-			fishTank.onFrame(frame);
 			shapeLayer.draw(); // Draw the shape layer
 
 		}, EVM_TAG);
@@ -758,39 +754,12 @@ function FishingView(ievm, stage, gameState) {
 	});
 	loadingLayer.add(text);
 	loadingLayer._text = text;
+	
+	var that = this;
 
-	function loadSounds(model, modelInit) {
-		//loadingLayer._text.text = "Hämtar ljud";
-		//loadingLayer.draw();
-		//Log.debug("Loading sounds...", "view");
-		//SoundJS.addBatch(config.SOUND_SOURCES);
-		//SoundJS.onLoadQueueComplete = function() {loadImages(model, modelInit);};
-		loadImages(model, modelInit);
-	}
-	
-	function loadImages(model, modelInit) {
-		loadingLayer._text.text = "Hämtar bilder";
-		loadingLayer.draw();
-		Log.debug("Loading images...", "view");
-		evm.loadImages(config.IMAGE_SOURCES, images, function() {
-			loadingLayer._text.text = "";
-        	loadingLayer.draw();
-        	modelInit.call(model);
-		});
-	}
-	
-	function setupLoadingScreen() {	
-		stage.add(loadingLayer);
-	}
-	
-	this.prepare = function(model, modelInit) {
-		modelInit.call(model);
-	};
-	
 	evm.on("Game.start", function(msg) {
+		console.log("Game.start");
 		Log.debug("Start rolling view...", "view");
-		//showBig(Strings.get("FISHING_CATCH_NUMBER", fishTank.getCatchingNumber()).toUpperCase());
-		var that = this;
 		if (fishTank.getMode() == GameMode.MONKEY_DO && gameState.getMonkeyDoRounds() == 1) {
 			evm.tell("Game.showBig", {text:Strings.get("MONKEYS_TURN").toUpperCase()});
 			evm.play(Sounds.NOW_MONKEY_SHOW_YOU);
@@ -801,15 +770,16 @@ function FishingView(ievm, stage, gameState) {
 		} else {
 			startGame();
 		}
-	});
+	}, EVM_TAG);
 	
 	var startGame = function() {
+		console.log("startGame");
 		evm.tell("Game.showBig", {text:Strings.get("FISHING_CATCH_NUMBER", fishTank.getCatchingNumber()).toUpperCase()});
 		evm.play(Sounds.FISHING_CATCH);
 		setTimeout(function() {
 			evm.play(Sounds["NUMBER_" + fishTank.getCatchingNumber()]);
+			evm.tell("FishingGame.started", null);
 		}, 700);
-		evm.tell("fishinggame.started", null);
 	};
 	
 	this.tearDown = function() {

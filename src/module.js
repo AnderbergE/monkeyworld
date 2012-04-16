@@ -3,14 +3,11 @@
  */
 function ViewModule() {};
 
-/**
- * @param {Object} config
- */
-ViewModule.prototype.init = function(config, model) {};
+ViewModule.prototype.init = function() {};
 ViewModule.prototype.tearDown = function() {};
 
 /**
- * @interface
+ * @constructor
  */
 function ModelModule() {};
 
@@ -19,14 +16,15 @@ function ModelModule() {};
  */
 ModelModule.prototype.init = function(config) {};
 ModelModule.prototype.start = function() {};
-ModelModule.prototype.tearDown = function(config) {};
-ModelModule.prototype.onFrame = function(config) {};
+ModelModule.prototype.tearDown = function() {};
+ModelModule.prototype.onFrame = function() {};
+ModelModule.prototype.play = function() {};
 
 /**
  * @constructor
- * @implements {ModelModule}
+ * @extends {ModelModule}
  */
-var NoModule = function() {
+function NoModule() {
 	this.init = function() {};
 	this.start = function() {};
 	this.tearDown = function() {};

@@ -14,7 +14,9 @@ var IMAGE_SOURCES = {
 /** @const */ "person-yes": "Accept-Male-User.png",
 /** @const */ "person-no": "Remove-Male-User.png",
 /** @const */ "banana-big": "1333448754_Banana.png",
-/** @const */ "banana-small": "1333448736_Banana64.png"
+/** @const */ "banana-small": "1333448736_Banana64.png",
+/** @const */ "happy-face": "Positive.png",
+/** @const */ "sad-face": "Negative.png"
 };
 
 var images = {};

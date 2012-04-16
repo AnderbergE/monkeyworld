@@ -58,16 +58,16 @@ function Game(gameState) {
 		stage._drawBackgroundLayerStop = true;
 	};
 
-	var eventManager = new GameEventManager(stage);
-	var gamerPlayer = new GamerPlayer(eventManager);
-	var monkeyPlayer = new MonkeyPlayer(eventManager);
-	var angelPlayer = new AngelPlayer(eventManager);
+	var evm = new GameEventManager(stage);
+	var gamerPlayer = new GamerPlayer(evm);
+	var monkeyPlayer = new MonkeyPlayer(evm);
+	var angelPlayer = new AngelPlayer(evm);
 
-	var ggv = new GeneralGameView(eventManager, stage, gameState);
+	var ggv = new GeneralGameView(evm, stage, gameState);
 	ggv.init();
 
-
-	var currentModule = null;
+	var noModule = new NoModule();
+	var modelModule = noModule;
 	
 	/**
 	 * FPS counter module
@@ -150,17 +150,18 @@ function Game(gameState) {
 		}
 		};
 	}();
-	eventManager.on("Game.showBig", function(msg) {
+	evm.on("Game.showBig", function(msg) {
 		bigText.show(msg.text);
 	}, "game");
 	
-	eventManager.on("Game.hideBig", function(msg) {
+	evm.on("Game.hideBig", function(msg) {
 		bigText.hide();
 	}, "game");
 	
 	stage.onFrame(function(frame) {
 		fps.showFps(frame); // Update FPS display
-		eventManager.tell("frame", {frame:frame});
+		evm.tell("frame", {frame:frame});
+		modelModule.onFrame(frame);
 		gameLayer.draw();
 		if (stage._drawOverlayLayer) {
 			overlayLayer.draw();
@@ -190,29 +191,30 @@ function Game(gameState) {
 
 		
 		Log.debug("Creating model...", "model");
-		var model = new iModel(eventManager, gameState.getMode());
-		if (model.setMode != undefined)
-			model.setMode(gameState.getMode());
+		var l_model = new iModel(evm, gameState.getMode());
+		if (l_model.setMode != undefined)
+			l_model.setMode(gameState.getMode());
 		if (player != null) {
-			model.play(player, eventManager, config);
+			l_model.play(player, evm, config);
 		}
 		Log.debug("Initiating model...", "model");
-		var viewConfig = model.init(config);
+		var viewConfig = l_model.init(config);
 		
-		var view = new iView(eventManager, stage, gameState);
+		var view = new iView(evm, stage, gameState, l_model);
 		currentView = view;
-		view.init(viewConfig, model);
-		eventManager.tell("view.initiated");
-		//view.start();
-		paused = false;
-		model.start();
+		view.init(viewConfig);
+		evm.tell("view.initiated");
+		l_model.start();
+		modelModule = l_model;
+		evm.tell("Game.start");
 	};
 	
 	function killActiveModule() {
 		if (currentView != null)
 			currentView.tearDown();
-		eventManager.tell("Game.tearDown");
-		//eventManager.print();
+		modelModule = noModule;
+		evm.tell("Game.tearDown");
+		//evm.print();
 	};
 	
 	SoundJS.addBatch(soundSources);
@@ -250,11 +252,11 @@ function Game(gameState) {
 		};
 	});
 	
-	eventManager.on("Game.setMode", function(msg) {
+	evm.on("Game.setMode", function(msg) {
 		gameState.setMode(msg.mode);
 	}, "game");
 	
-	eventManager.on("Game.roundDone", function(msg) {
+	evm.on("Game.roundDone", function(msg) {
 		if (gameState.getMode() == GameMode.CHILD_PLAY) {
 			kickInModule(ReadyToTeachView, ReadyToTeach, {});
 		} else if (gameState.getMode() == GameMode.MONKEY_SEE) {
@@ -263,19 +265,25 @@ function Game(gameState) {
 				gameState.addMonkeySeeRound();
 				kickInModule(FishingView, FishingGame, {maxNumber: 9, numberFishes: 5});
 			} else {
+				killActiveModule();
 				gameState.setMode(GameMode.MONKEY_DO);
-				eventManager.play(Sounds.THANK_YOU_FOR_HELPING);
-				kickInModule(SystemMessageView, SystemMessage, {
+				evm.play(Sounds.THANK_YOU_FOR_HELPING);
+				evm.tell("Game.thankYouForHelpingMonkey", { callback: function() {
+					evm.tell("Game.getBanana", { callback: function() {
+						kickInModule(FishingView, FishingGame, {result:gameState.getResults()[gameState.getMonkeyDoRounds()-1], maxNumber: 9, numberFishes: 5});
+					}});
+				}});
+				/*kickInModule(SystemMessageView, SystemMessage, {
 					msg: Strings.get("THANK_YOU_FOR_HELPING"),
 					callback: function() {
-						eventManager.tell("Game.getBanana", { callback: function() {
+						evm.tell("Game.getBanana", { callback: function() {
 							console.log("results");
 							console.log(gameState.getResults());
 							kickInModule(FishingView, FishingGame, {result:gameState.getResults()[gameState.getMonkeyDoRounds()-1], maxNumber: 9, numberFishes: 5});
 							//gameState.clearResults();
 						}});
 					}
-				});
+				});*/
 			}
 		} else if (gameState.getMode() == GameMode.MONKEY_DO) {
 			if (gameState.getMonkeyDoRounds() < gameState.getMaxMonkeyDoRounds()) {
@@ -283,18 +291,17 @@ function Game(gameState) {
 				kickInModule(FishingView, FishingGame, {result:gameState.getResults()[gameState.getMonkeyDoRounds()-1], maxNumber: 9, numberFishes: 5});
 			} else {
 				killActiveModule();
-				eventManager.tell("Game.showSystemConfirmation");
+				evm.tell("Game.showSystemConfirmation");
 				//gameState.setMode(GameMode.???);
 				// end of 
 			}
 		}
 	}, "game");
-	eventManager.on("Game.startGame", function(msg) {
+	evm.on("Game.startGame", function(msg) {
 		//set mode to msg.mode?
 		kickInModule(msg.view, msg.model, {maxNumber: 9, numberFishes: 5});
 	}, "game");
-	var images = new Array();
-	eventManager.on("Game.getBanana", function(msg) {
+	evm.on("Game.getBanana", function(msg) {
 		gameState.addBanana();
         var banana = new Kinetic.Image({
         	image: images["banana-big"],
@@ -305,12 +312,7 @@ function Game(gameState) {
         });
 
         gameLayer.add(banana);
-        eventManager.play(Sounds.GET_BANANA);
-        /*banana.transitionTo({
-        	rotation: -Math.PI / 2,
-			scale: {x: 2, y: 2},
-			duration: 1
-        });*/
+        evm.play(Sounds.GET_BANANA);
         Tween.get(banana.attrs).to({rotation: Math.PI * 2}, 1000).wait(1500)
         .to({
         	rotation: -Math.PI / 2,
@@ -326,7 +328,7 @@ function Game(gameState) {
         }).wait(1500).call(function() {msg.callback()});
 	}, "game");
 	
-	eventManager.on("view.initiated", function(msg) {
+	evm.on("view.initiated", function(msg) {
 		gameLayer.moveToTop();
 		overlayLayer.moveToTop();
 	}, "game");
