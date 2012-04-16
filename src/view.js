@@ -4,7 +4,6 @@
 function GameView() {
 	
 	/** @type {EventManager} */ var evm = new NoEventManager(); 
-	/** @type {Object.<string, Image>} */ var images = new Array();
 	/** @type {Kinetic.Layer} */ var staticLayer = new Kinetic.Layer();
 	/** @type {Kinetic.Layer} */ var dynamicLayer = new Kinetic.Layer();
 
@@ -128,31 +127,9 @@ function GameView() {
 	};
 	
 	var test = function() {console.log("test");};
-
-	/**
-	 * Prepare the view
-	 * @param {Function} done
-	 */
-	function prepare(done) {
-		loadImages(done);
-	};
-
 	
 	/**
-	 * Load images
-	 * @param {Function} done
-	 */
-	function loadImages(done) {
-		evm.loadImages({
-			/** @const */ "monkey": "monkey.png",
-			/** @const */ "avatar": "Boo-icon.png"
-		}, images, function() {
-			done();
-		});
-	};
-	
-	/**
-	 * Initiate the prepared view
+	 * Initiate the view
 	 * @param {GameState} gameState
 	 */
 	function init(gameState) {
@@ -198,13 +175,6 @@ function GameView() {
 	 */
 	this.basicInit = function(gameState) {
 		init(gameState);
-	};
-	
-	/**
-	 * @param {Function} done
-	 */
-	this.basicPrepare = function(done) {
-		prepare(done);
 	};
 
 }

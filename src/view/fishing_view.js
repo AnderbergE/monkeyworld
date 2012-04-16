@@ -12,14 +12,7 @@ function FishingView(ievm, stage, gameState) {
 	var config = function() {
 		return {
 		/** @const */ IMAGE_FOLDER: "../res/img",
-		/** @const */ IMAGE_SOURCES: {
-			/** @const */ "fish0": "fish/0.png",
-			/** @const */ "fish1": "fish/1.png",
-			/** @const */ "bamboo": "bambu.png",
-			/** @const */ "plant": "plant.png",
-			/** @const */ "sky": "sky.png",
-			/** @const */ "basket": "01-tileable-basket-weave-textures-preview-003.jpg"
-		},
+		/** @const */ IMAGE_SOURCES: images,
 		
 		/** @const */ SOUND_SOURCES: [
 			/** @const */ { name:"winding", src: "../res/sound/34968__mike-campbell__f-s-1-fishing-reel.wav" },
@@ -58,7 +51,7 @@ function FishingView(ievm, stage, gameState) {
 	}
 	
 	/** @type {Object.<string, Image>} */ 
-	var images = {};
+	//var images = {};
 	/** @type {Object.<Fish, Kinetic.Group>} */ 
 	var fishGroups = {};
 	/** @type {Object.<Fish, Kinetic.Text>} */
@@ -600,6 +593,7 @@ function FishingView(ievm, stage, gameState) {
 	 * @param viewConfig
 	 */
 	this.init = function(viewConfig, model) {
+		this.setEventManager(evm);
 		fishTank = model;
 		var that = this;
 		/*evm.on("FishingGame.catch", function(msg) {
@@ -789,21 +783,11 @@ function FishingView(ievm, stage, gameState) {
 		stage.add(loadingLayer);
 	}
 	
-	function tearDownLoadingScreen() {
-		stage.remove(loadingLayer);
-	}
-	
 	this.prepare = function(model, modelInit) {
-		this.setEventManager(evm);
-		this.basicPrepare(function() {
-			setupLoadingScreen();
-			Log.debug("Preparing view...", "view");
-			loadSounds(model, modelInit);
-		});
+		modelInit.call(model);
 	};
 	
-	this.start = function() {
-		tearDownLoadingScreen();
+	evm.on("Game.start", function(msg) {
 		Log.debug("Start rolling view...", "view");
 		//showBig(Strings.get("FISHING_CATCH_NUMBER", fishTank.getCatchingNumber()).toUpperCase());
 		var that = this;
@@ -817,7 +801,7 @@ function FishingView(ievm, stage, gameState) {
 		} else {
 			startGame();
 		}
-	};
+	});
 	
 	var startGame = function() {
 		evm.tell("Game.showBig", {text:Strings.get("FISHING_CATCH_NUMBER", fishTank.getCatchingNumber()).toUpperCase()});

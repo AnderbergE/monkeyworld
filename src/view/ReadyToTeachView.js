@@ -25,7 +25,7 @@ function ReadyToTeachView(evm, stage) {
         
         var green = new Kinetic.Image({image: images["green"]});
         var red = new Kinetic.Image({image: images["red"]});
-        var monkey = new Kinetic.Image({image: images["monkey"], scale: {x:2,y:2},x: 100, y:100});
+        var monkey = new Kinetic.Image({image: images["monkey_icon"], scale: {x:2,y:2},x: 100, y:100});
         var personYes = new Kinetic.Image({image: images["person-yes"], x: 20, y: 25});
         var personNo = new Kinetic.Image({image: images["person-no"], x: 60, y: 55});
 		

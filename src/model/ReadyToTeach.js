@@ -36,6 +36,8 @@ function ReadyToTeach(evm, config) {
 		
 	};
 	
+	this.onFrame = function() {};
+	
 	this.start = function() {
 		
 	};

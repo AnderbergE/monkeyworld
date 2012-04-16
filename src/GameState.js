@@ -4,7 +4,7 @@ function GameState() {
 	var bananas = 0;
 	var currentSeeRound = 1;
 	var currentDoRound = 1;
-	var maxSeeRounds = 3;
+	var maxSeeRounds = 1;
 	var maxDoRounds = maxSeeRounds ;
 	var mode = GameMode.MONKEY_SEE;
 	var results = new Array();

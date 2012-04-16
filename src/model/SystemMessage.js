@@ -11,6 +11,8 @@ function SystemMessage(evm) {
 		config = _config;
 	};
 	
+	this.onFrame = function() {};
+	
 	this.tearDown = function() {
 		
 	};

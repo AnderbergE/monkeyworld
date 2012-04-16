@@ -4,16 +4,9 @@
 function ViewModule() {};
 
 /**
- * @param {Model} model
- * @param {Function} modelInit
- */
-ViewModule.prototype.prepare = function(model, modelInit) {};
-
-/**
  * @param {Object} config
  */
 ViewModule.prototype.init = function(config, model) {};
-
 ViewModule.prototype.tearDown = function() {};
 
 /**
@@ -27,3 +20,15 @@ function ModelModule() {};
 ModelModule.prototype.init = function(config) {};
 ModelModule.prototype.start = function() {};
 ModelModule.prototype.tearDown = function(config) {};
+ModelModule.prototype.onFrame = function(config) {};
+
+/**
+ * @constructor
+ * @implements {ModelModule}
+ */
+var NoModule = function() {
+	this.init = function() {};
+	this.start = function() {};
+	this.tearDown = function() {};
+	this.onFrame = function() {};
+}

@@ -258,6 +258,7 @@ function FishingGame(ievm, mode) {
 	 * Called when the game starts.
 	 */
 	this.start = function() {
+		evm.tell("Game.start");
 		restartInactivityTimer();
 	};
 	
