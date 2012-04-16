@@ -20,7 +20,7 @@ function GeneralGameView(evm, stage, gameState) {
 		evm.forget(EVM_TAG);
 	};
 	
-	evm.on("Game.showSystemConfirmation", function(msg) {
+	evm.on("Game.showHappySystemConfirmation", function(msg) {
 		Log.debug("Game.showSystemConfirmation", "GGV");
 		var happyFace = new Kinetic.Image({
 			image: images['happy-face'],

@@ -273,17 +273,6 @@ function Game(gameState) {
 						kickInModule(FishingView, FishingGame, {result:gameState.getResults()[gameState.getMonkeyDoRounds()-1], maxNumber: 9, numberFishes: 5});
 					}});
 				}});
-				/*kickInModule(SystemMessageView, SystemMessage, {
-					msg: Strings.get("THANK_YOU_FOR_HELPING"),
-					callback: function() {
-						evm.tell("Game.getBanana", { callback: function() {
-							console.log("results");
-							console.log(gameState.getResults());
-							kickInModule(FishingView, FishingGame, {result:gameState.getResults()[gameState.getMonkeyDoRounds()-1], maxNumber: 9, numberFishes: 5});
-							//gameState.clearResults();
-						}});
-					}
-				});*/
 			}
 		} else if (gameState.getMode() == GameMode.MONKEY_DO) {
 			if (gameState.getMonkeyDoRounds() < gameState.getMaxMonkeyDoRounds()) {
@@ -291,9 +280,20 @@ function Game(gameState) {
 				kickInModule(FishingView, FishingGame, {result:gameState.getResults()[gameState.getMonkeyDoRounds()-1], maxNumber: 9, numberFishes: 5});
 			} else {
 				killActiveModule();
-				evm.tell("Game.showSystemConfirmation");
-				//gameState.setMode(GameMode.???);
-				// end of 
+				// if (no mistakes) {
+					evm.tell("Game.showHappySystemConfirmation");
+					setTimeout(function() {
+						evm.tell("Game.getBanana", { callback: function() {
+							setTimeout(function() {
+								evm.tell("Game.getBanana", callback: function() {
+									// after getting bananas ==> eat them
+								});
+							}, 200);	
+						}});
+					}, 1000);
+				// } else {
+					//	evm.tell("Game.showSadSystemConfirmation");
+				//}
 			}
 		}
 	}, "game");
