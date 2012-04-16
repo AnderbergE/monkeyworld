@@ -36,7 +36,7 @@ function Game(gameState) {
 	stage.add(backgroundLayer);
 	stage.add(gameLayer);
 	stage.add(overlayLayer);
-	stage._subtitleLayer = overlayLayer;
+	stage._subtitleLayer = gameLayer;
 	stage._gameLayer = gameLayer;
 	stage._backgroundLayer = backgroundLayer;
 	stage._drawOverlayLayer = false;
@@ -76,8 +76,8 @@ function Game(gameState) {
 			textStroke: "white",
 			textStrokeWidth: 1,
 			fontSize: 18,
-			x: 20,
-			y: 20
+			x: 0,
+			y: 0
 		});
 		gameLayer.add(fpsText);
 		return {
@@ -221,7 +221,7 @@ function Game(gameState) {
 			
 			if (ONLY_FISHING) {
 				//kickInModule(ReadyToTeachView, ReadyToTeach, null, {});
-				kickInModule(FishingView, FishingGame, gameState.getMode(), {maxNumber: 9, numberFishes: 5});
+				kickInModule(FishingView, FishingGame, gameState.getMode(), {result: gameState.getResults(), maxNumber: 9, numberFishes: 5});
 			} else {
 				kickInModule(StartView, Start, GameMode.CHILD_PLAY, {}, function(config) {
 					if (config == "login") {
@@ -261,6 +261,8 @@ function Game(gameState) {
 					msg: Strings.get("THANK_YOU_FOR_HELPING"),
 					callback: function() {
 						eventManager.tell("Game.getBanana", { callback: function() {
+							console.log("results");
+							console.log(gameState.getResults());
 							kickInModule(FishingView, FishingGame, GameMode.MONKEY_DO, {result:gameState.getResults()[gameState.getMonkeyDoRounds()-1], maxNumber: 9, numberFishes: 5});
 							//gameState.clearResults();
 						}});

@@ -95,8 +95,6 @@ function FishingView(ievm, stage, gameState) {
 	var turnOnClick = function(fish) {
 		fishGroups[fish].on("mousedown touchstart", function() {
 			if (allowClicks) {
-				
-				//switchToMonkey();
 				clickFunction(fish);	
 			}
 		});
@@ -310,7 +308,10 @@ function FishingView(ievm, stage, gameState) {
 					break;
 				case ROD_STATE.CATCHING: break;
 				case ROD_STATE.WIND_IN_FISH:
-					state.state = ROD_STATE.CATCHING;
+					state.state = ROD_STATE.THROW_FISH_IN_BASKET;
+
+					/*state.state = ROD_STATE.CATCHING;
+					
 					var fish = state.catching;
 					var fishGroup = fishGroups[state.catching];
 					var mouth = fish.getMouthPosition();
@@ -364,7 +365,7 @@ function FishingView(ievm, stage, gameState) {
 								state.state = ROD_STATE.THROW_FISH_IN_BASKET;
 							}
 						}
-					);
+					);*/
 
 					break;
 				case ROD_STATE.THROW_FISH_IN_BASKET:
@@ -725,12 +726,12 @@ function FishingView(ievm, stage, gameState) {
 		createPlant(outGroup, config.POND.X + 100, config.POND.Y + config.POND.HEIGHT - 160);
 		createPlant(outGroup, config.POND.X + config.POND.WIDTH - 130, config.POND.Y + config.POND.HEIGHT - 140);
 		
-		if (gameState.getMode() == GameMode.MONKEY_DO && gameState.getMonkeyDoRounds() > 1) {
+		/*if (gameState.getMode() == GameMode.MONKEY_DO && gameState.getMonkeyDoRounds() > 1) {
 			basket.attrs.x += ROLL_DIFF;
 			outGroup.attrs.x += ROLL_DIFF;
 			shapeLayer.attrs.x += ROLL_DIFF;
 			rodLayer.attrs.x += ROLL_DIFF;
-		}
+		}*/
 		
 		backgroundLayer.add(outGroup);
 		backgroundLayer.draw();

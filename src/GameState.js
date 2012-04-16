@@ -6,8 +6,20 @@ function GameState() {
 	var currentDoRound = 1;
 	var maxSeeRounds = 3;
 	var maxDoRounds = maxSeeRounds ;
-	var mode = GameMode.CHILD_PLAY;
+	var mode = GameMode.MONKEY_SEE;
 	var results = new Array();
+	
+	/*var result = {};
+	result.sequence = new Array();
+	result.sequence.push("correct");
+	result.sequence.push(1);result.sequence.push(1);
+	results.push(result);
+	var result2 = {};
+	result2.sequence = new Array();
+	result2.sequence.push("correct");
+	result2.sequence.push(1);result2.sequence.push(1);
+	results.push(result2);
+	*/
 	
 	this.getMaxMonkeySeeRounds = function() {
 		return maxSeeRounds;

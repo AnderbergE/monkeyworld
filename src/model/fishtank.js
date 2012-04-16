@@ -17,7 +17,7 @@ function FishingGame(ievm, mode) {
 	var basketSize = 0;
 	var correctCaptured = 0;
 	var catchingNumber = 2;
-	var numberCorrect = 2;
+	var numberCorrect = 1;
 	
 	var result = {};
 	result.sequence = new Array();
@@ -270,7 +270,8 @@ function FishingGame(ievm, mode) {
 	this.getOneCorrectFish = function() {
 		for (var i = 0; i < fishArray.length; i++) {
 			var fish = fishArray[i];
-			if (!fish.isCaptured() && fish.getNumber() == numberCorrect) {
+			console.log("fish with number " + fish.getNumber());
+			if (!fish.isCaptured() && fish.getNumber() == catchingNumber) {
 				return fish;
 			}
 		};
@@ -286,7 +287,7 @@ function FishingGame(ievm, mode) {
 	this.getOneIncorrectFish = function() {
 		for (var i = 0; i < fishArray.length; i++) {
 			var fish = fishArray[i];
-			if (!fish.isCaptured() && fish.getNumber() != numberCorrect) {
+			if (!fish.isCaptured() && fish.getNumber() != catchingNumber) {
 				return fish;
 			}
 		};
@@ -301,7 +302,7 @@ function FishingGame(ievm, mode) {
 	 */
 	this.getOneIncorrectlyCapturedFish = function() {
 		for (var i = 0; i < fishArray.length; i++) {
-			if (fishArray[i].isCaptured() && fishArray[i].getNumber() != numberCorrect) {
+			if (fishArray[i].isCaptured() && fishArray[i].getNumber() != catchingNumber) {
 				return fishArray[i];
 			}
 		};
@@ -316,7 +317,7 @@ function FishingGame(ievm, mode) {
 	 */
 	this.getOneCorrectlyCapturedFish = function() {
 		for (var i = 0; i < fishArray.length; i++) {
-			if (fishArray[i].isCaptured() && fishArray[i].getNumber() == numberCorrect) {
+			if (fishArray[i].isCaptured() && fishArray[i].getNumber() == catchingNumber) {
 				return fishArray[i];
 			}
 		};
