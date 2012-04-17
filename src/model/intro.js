@@ -1,3 +1,0 @@
-function Intro(ievm, config) {
-	
-}

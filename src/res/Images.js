@@ -1,4 +1,9 @@
-/** @const */
+/**
+ * Definition of all the images that the application will use. They can be
+ * loaded before the game starts.
+ * 
+ * @const
+ */
 var IMAGE_SOURCES = {
 /** @const */ "fish0": "fish/0.png",
 /** @const */ "fish1": "fish/1.png",
@@ -35,12 +40,3 @@ function loadImages(callback) {
         images[src].src = "../res/img/" + IMAGE_SOURCES[src];
     }
 };
-
-/**
- * 
- * @param {string} id
- * @returns {Kinetic.Image}
- */
-function getImage(id) {
-	return new Kinetic.Image({image:images[id]});
-}

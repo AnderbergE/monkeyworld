@@ -229,25 +229,11 @@ function Game(gameState) {
 			 */
 			/** @const */ var ONLY_FISHING = true;
 			
-			
-			
 			if (ONLY_FISHING) {
 				//kickInModule(ReadyToTeachView, ReadyToTeach, null, {});
 				kickInModule(FishingView, FishingGame, {result: gameState.getResults(), maxNumber: 9, numberFishes: 5});
 			} else {
-				kickInModule(StartView, Start, {}, function(config) {
-					if (config == "login") {
-						kickInModule(LoginView, Intro, {}, function() {
-							kickInModule(FishingView, FishingGame, {maxNumber: 9, numberFishes: 5});
-						});	
-					} else {
-						kickInModule(NewPlayerView, NewPlayer, {}, function() {
-							kickInModule(IntroView, Intro, {}, function() {
-								kickInModule(FishingView, FishingGame, {maxNumber: 9, numberFishes: 5});	
-							});
-						});	
-					}
-				});
+				
 			}
 		};
 	});

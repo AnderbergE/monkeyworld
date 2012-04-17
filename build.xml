@@ -57,45 +57,38 @@
 		<jscomp compilationLevel="advanced"  
 		            debug="false" output="html/monkeyworld.js" warning="verbose">
 
-			<externs dir="src">
+			<externs dir=".">
 			<file name="externs.js"/>
 			</externs>
 		      <sources dir="src">
-                <file name="strings.js"/>
-		        <file name="sounds.js"/>
-		      	<file name="images.js"/>
+                <file name="res/Strings.js"/>
+		        <file name="res/Sounds.js"/>
+		      	<file name="res/Images.js"/>
 		      	<file name="GameState.js"/>
-		        <file name="gamestrategy.js"/>
+		      	<file name="Player.js"/>
+		        <file name="GameModule.js"/>
 		        <file name="strategies/MonkeyStrategy.js"/>
 		        <file name="strategies/AngelStrategy.js"/>
 		        <file name="strategies/GamerStrategy.js"/>
-		        <file name="module.js"/>
-		        <file name="model/start.js"/>
+		        <file name="ViewModule.js"/>
 		        <file name="model/ReadyToTeach.js"/>
-		        <file name="model/newplayer.js"/>
-		        <file name="model/login.js"/>
-		      	<file name="model/intro.js"/>
-		      	<file name="model/fish.js"/>
-		      	<file name="model/fishtank.js"/>
-		      	<file name="eventManager.js"/>
-		      	<file name="game.js"/>
-		      	<file name="model.js"/>
-		      	<file name="utils.js"/>
-		      	<file name="view/start_view.js"/>
+		      	<file name="model/FishingGame/Fish.js"/>
+		      	<file name="model/FishingGame/FishingGame.js"/>
+		      	<file name="EventManager.js"/>
+		      	<file name="MonkeyWorld.js"/>
+		      	<file name="ModelModule.js"/>
+		      	<file name="Utils.js"/>
 		      	<file name="view/GeneralGameView.js"/>
 		      	<file name="view/ReadyToTeachView.js"/>
-		      	<file name="view/newplayer_view.js"/>
-		      	<file name="view/login_view.js"/>
-		      	<file name="view/intro_view.js"/>
-		      	<file name="view/fishing_view.js"/>
-		      	<file name="view/fishing_counting_view.js"/>
+		      	<file name="view/FishingGame/FishingGameView.js"/>
+		      	<file name="view/FishingGame/FishingGameCountingView.js"/>
 		      	<file name="GameView.js"/>
 		      </sources>
 
 		    </jscomp>
 		
-			<copy todir="html" file="src/index.html" />
-			<copy todir="html" file="src/style.css" />
+			<copy todir="html" file="src/html/index.html" />
+			<copy todir="html" file="src/html/style.css" />
 	</target>
 
 </project>
