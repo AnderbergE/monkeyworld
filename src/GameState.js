@@ -6,7 +6,7 @@ function GameState() {
 	var currentDoRound = 1;
 	var maxSeeRounds = 1;
 	var maxDoRounds = maxSeeRounds ;
-	var mode = GameMode.MONKEY_SEE;
+	var mode = GameMode.CHILD_PLAY;
 	var results = new Array();
 	
 	/*var result = {};

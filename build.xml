@@ -89,7 +89,7 @@
 		      	<file name="view/intro_view.js"/>
 		      	<file name="view/fishing_view.js"/>
 		      	<file name="view/fishing_counting_view.js"/>
-		      	<file name="view.js"/>
+		      	<file name="GameView.js"/>
 		      </sources>
 
 		    </jscomp>

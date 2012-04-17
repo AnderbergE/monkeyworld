@@ -5,7 +5,6 @@
 function ReadyToTeachView(evm, stage, gameState, model) {
 
 	var layer = new Kinetic.Layer();
-	var images = new Array();
 	var EVM_TAG = "ReadyToTeachView";
 	var yesGroup;
 	var noGroup;
@@ -76,18 +75,6 @@ function ReadyToTeachView(evm, stage, gameState, model) {
         Tween.get(noGroup).to({ x: stage.getWidth()+300, y: stage.getHeight()+300}, 600);
         Tween.get(text).to({ x: 0, y: stage.getHeight()+300}, 600);
 	}, EVM_TAG);
-	
-	this.prepare = function(model, modelInit) {
-		evm.loadImages({
-			"monkey": "Gnome-Face-Monkey-64.png",
-			"green": "1333364667_Circle_Green.png",
-			"red": "1333364683_Circle_Red.png",
-			"person-yes": "Accept-Male-User.png",
-			"person-no": "Remove-Male-User.png"
-		}, images, function() {
-			modelInit.call(model);	
-		});
-	};
 	
 	this.start = function() {
 		evm.play(Sounds.ARE_YOU_READY_TO_TEACH);
