@@ -21,4 +21,6 @@ function NoModule() {
 	this.start = function() {};
 	this.tearDown = function() {};
 	this.onFrame = function() {};
+	this.getActions = function() {}; // shouldnt be here
+	this.resetActions = function() {}; // -''-
 }

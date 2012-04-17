@@ -4,10 +4,11 @@ function GameState() {
 	var bananas = 0;
 	var currentSeeRound = 1;
 	var currentDoRound = 1;
-	var maxSeeRounds = 1;
+	var maxSeeRounds = 2;
 	var maxDoRounds = maxSeeRounds ;
-	var mode = GameMode.CHILD_PLAY;
+	var mode = GameMode.MONKEY_SEE;
 	var results = new Array();
+	var _madeMistake = false;
 	
 	/*var result = {};
 	result.sequence = new Array();
@@ -72,5 +73,22 @@ function GameState() {
 	
 	this.getBananas = function() {
 		return bananas;
+	};
+	
+	/**
+	 * Tells the system that the player has done a mistake during the game play.
+	 */
+	this.reportMistake = function() {
+		_madeMistake = true;
+	};
+	
+	/**
+	 * Checks if the player has done something considered a mistake during
+	 * the game play.
+	 * 
+	 * @return {boolean} true if a mistake was made by the player
+	 */
+	this.madeMistake = function() {
+		return _madeMistake;
 	};
 }

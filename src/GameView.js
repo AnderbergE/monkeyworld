@@ -51,7 +51,6 @@ function GameView() {
 	 */
 	function setupMainFrame(gameState) {
 		var mode = gameState.getMode();
-		console.log("setup mainframe");
 		var stage = staticLayer.getStage();
 		mainFrame = new Kinetic.Rect({
 			x: 0,
@@ -69,7 +68,6 @@ function GameView() {
 	 */
 	function setupMonkey(gameState) {
 		var mode = gameState.getMode();
-		console.log("setup monkey");
 		var config = (mode == GameMode.MONKEY_DO && gameState.getMonkeyDoRounds() > 1) ?
 				MONKEY_FRAME_CONFIG_ACTIVE : MONKEY_FRAME_CONFIG_INACTIVE;
 		var monkeyConfig = (mode == GameMode.MONKEY_DO && gameState.getMonkeyDoRounds() > 1) ?
@@ -89,7 +87,6 @@ function GameView() {
 		var mode = gameState.getMode();
 		var config = (mode == GameMode.MONKEY_DO && gameState.getMonkeyDoRounds() > 1) ?
 				GAMER_FRAME_CONFIG_INACTIVE : GAMER_FRAME_CONFIG_ACTIVE;
-		console.log("setup avatar");
 		//GAMER_FRAME_CONFIG_ACTIVE.height = staticLayer.getStage().getHeight()-40;
 		//GAMER_FRAME_CONFIG.width = staticLayer.getStage().getWidth() - GAMER_FRAME_CONFIG.x - 20;
 		gamerFrame = new Kinetic.Rect(config);
@@ -101,7 +98,6 @@ function GameView() {
 	var moved = 0;
 	var moveDone = function(done) {
 		moved++;
-		console.log("moved: " + moved);
 		if (moved == 3) {
 			done();
 			staticLayer.draw();
@@ -109,7 +105,6 @@ function GameView() {
 		}
 	};
 	function moveToMonkey(done) {
-		console.log("switch to monkey");
 		evm.play(Sounds.MAGIC_CHIMES);
 		var stage = staticLayer.getStage();
 		evm.on("frame", function() {
@@ -119,8 +114,6 @@ function GameView() {
 		Tween.get(monkeyFrame.attrs).to(MONKEY_FRAME_CONFIG_ACTIVE, 2000).call(function() { moveDone(done); });
 		Tween.get(gamerFrame.attrs).to(GAMER_FRAME_CONFIG_INACTIVE, 2000).call(function() { moveDone(done); });
 	};
-	
-	var test = function() {console.log("test");};
 	
 	/**
 	 * Initiate the view

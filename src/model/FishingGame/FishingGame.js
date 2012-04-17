@@ -1,10 +1,11 @@
 /**
  * @constructor
  * @param {EventManager} evm
- * @param {Object} mode 
+ * @param {Object} gameState 
  * @extends {GameModule}
  */
-function FishingGame(evm, mode) {
+function FishingGame(evm, gameState, config) {
+	var mode = gameState.getMode();
 	Log.debug("Applying " + mode + " Mode", "model");
 	/** @const @type {string} */ var EVM_TAG = "FishingGame";
 	
@@ -17,9 +18,6 @@ function FishingGame(evm, mode) {
 	var catchingNumber = 2;
 	var numberCorrect = 1;
 	
-	var result = {};
-	result.sequence = new Array();
-
 	/** @const */ var WIDTH = 1;
 	/** @const */ var HEIGHT = 1;
 	/** @enum {Object} */ var Starts = {
@@ -30,9 +28,8 @@ function FishingGame(evm, mode) {
 			4: {x:0.4, y:0.2}
 		};
 	
-	
 	this.getCatchingNumber = function() { return catchingNumber };
-	this.init = function(config) {
+	this.init = function() {
 		var maxNumber = config.maxNumber;
 		var numberFishes = config.numberFishes;
 		/** @const {number} */ var NBR_IMAGES = 2;
@@ -71,14 +68,13 @@ function FishingGame(evm, mode) {
 	this.turnOnClicks = function() {
 		for (var i = 0; i < fishArray.length; i++) {
 			evm.tell("fishinggame.turnOnClick", {fish:fishArray[i]});
-			//fishArray[i].setClickable(true);
 		}	
 	};
 	
 	this.turnOffClicks = function() {
+		Log.debug("Turning off clicks", "FishingGame");
 		for (var i = 0; i < fishArray.length; i++) {
 			evm.tell("fishinggame.turnOffClick", {fish:fishArray[i]});
-			//fishArray[i].setClickable(false);
 		}
 	};
 	
@@ -133,13 +129,14 @@ function FishingGame(evm, mode) {
 		basketSize++;
 		if (fish.getNumber() == catchingNumber) {
 			correctCaptured++;
-			result.sequence.push("correct");
+			this.addAction("correct");
 		} else {
-			result.sequence.push("incorrect");
+			this.addAction("incorrect");
+			this.reportMistake();
 		}
 		checkEndOfRound();
 	};
-	
+	var that = this;
 	var checkEndOfRound = function() {
 		if (capturedWantedFish()) {
 			for (var i = 0; i < fishArray.length; i++) {
@@ -149,7 +146,7 @@ function FishingGame(evm, mode) {
 			}
 			if (basketSize == numberCorrect || mode == GameMode.MONKEY_SEE
 				|| mode == GameMode.MONKEY_DO) {
-				result.sequence.push("FishingGame.catchingDone");
+				that.addAction("FishingGame.catchingDone");
 				evm.tell("FishingGame.catchingDone");
 			} else {
 				evm.tell("FishingGame.freeWrongOnes");
@@ -187,9 +184,9 @@ function FishingGame(evm, mode) {
 	 */
 	this.freeFish = function(fish, done) {
 		if (fish.getNumber() == numberCorrect)
-			result.sequence.push("freeCorrect");
+			this.addAction("freeCorrect");
 		else
-			result.sequence.push("freeIncorrect");
+			this.addAction("freeIncorrect");
 		evm.tell("FishingGame.free", {
 			fish: fish,
 			done: function() {
@@ -227,7 +224,7 @@ function FishingGame(evm, mode) {
 	 * @return {Array.<number>} array of choices 
 	 */
 	this.getCountingChoices = function() {
-		return [1, 2, 3, 4, 5];
+		return [1, 2, 3, 4];
 	};
 	
 	/**
@@ -235,22 +232,16 @@ function FishingGame(evm, mode) {
 	 * @param {number} number What the player thinks the correct number is.
 	 */
 	this.countFish = function(number) {
-		result.sequence.push(number);
+		this.addAction(number);
+		var correct = number == numberCorrect;
+		if (!correct)
+			this.reportMistake();
 		evm.tell("FishingGame.counted", { number: number });
 		evm.tell(
 			"FishingGame.countingResult",
-			{ correct: number == numberCorrect }
+			{ correct: correct }
 		);
 	}
-
-	/**
-	 * Called when the game "goes back in the box".
-	 */
-	this.tearDown = function() {
-		evm.tell("Game.roundDone", {
-			result: result
-		});
-	};
 	
 	/**
 	 * Called when the game starts.
@@ -268,7 +259,6 @@ function FishingGame(evm, mode) {
 	this.getOneCorrectFish = function() {
 		for (var i = 0; i < fishArray.length; i++) {
 			var fish = fishArray[i];
-			console.log("fish with number " + fish.getNumber());
 			if (!fish.isCaptured() && fish.getNumber() == catchingNumber) {
 				return fish;
 			}
@@ -324,6 +314,14 @@ function FishingGame(evm, mode) {
 	
 	this.readyToCount = function() {
 		evm.tell("FishingGame.countingStarted", {});
+	};
+	
+	/**
+	 * Tell the game that the result of the fish counting part has been
+	 * understood.
+	 */
+	this.acceptedCountingResult = function() {
+		this.roundDone();
 	};
 }
 FishingGame.prototype = new GameModule();

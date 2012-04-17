@@ -143,7 +143,7 @@ function FishCountingView(stage, evm, EVM_TAG) {
 	evm.on("FishingGame.countingResult", function(msg) {
 		if (msg.correct) {
 			evm.play(Sounds.YAY);
-			setTimeout(function(){fishTank.tearDown()}, 1500);
+			setTimeout(function(){fishTank.acceptedCountingResult()}, 1500);
 		} else {
 			evm.play(Sounds.FISHING_ARE_YOU_SURE);
 		}

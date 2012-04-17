@@ -3,5 +3,5 @@
  */
 function ViewModule() {};
 
-ViewModule.prototype.init = function() {};
-ViewModule.prototype.tearDown = function() {};
+//ViewModule.prototype.init = function() {};
+//ViewModule.prototype.tearDown = function() {};

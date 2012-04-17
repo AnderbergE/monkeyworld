@@ -20,6 +20,10 @@ MonkeyPlayer.prototype.strategies["FishingGame"] = function(game, eventManager, 
 
 	var resultPosition = 0;
 	
+	eventManager.on("Game.start", function(msg) {
+		game.turnOffClicks();
+	}, EVM_TAG);
+	
 	eventManager.on("FishingGame.started", function(msg) {
 		game.turnOffInactivityTimer();
 		handleResults();
@@ -32,17 +36,17 @@ MonkeyPlayer.prototype.strategies["FishingGame"] = function(game, eventManager, 
 	function handleCountingResults() {
 		eventManager.play(Sounds.MONKEY_HMM);
 		setTimeout(function() {
-			var guess = result.sequence[resultPosition++];
+			var guess = result[resultPosition++];
 			game.countFish(guess);
-			if (resultPosition < result.sequence.length) {
+			if (resultPosition < result.length) {
 				handleCountingResults();
 			}
 		}, 2000);		
 	};
 	
 	function handleResults() {
-		var happening = result.sequence[resultPosition++];
-		var resultLength = result.sequence.length;
+		var happening = result[resultPosition++];
+		var resultLength = result.length;
 		if (resultPosition <= resultLength && happening != "FishingGame.catchingDone") {
 			this.setTimeout(function() {
 				if (happening == "correct") {

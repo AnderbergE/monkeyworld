@@ -142,9 +142,6 @@ function Game(gameState) {
 				Tween.get(bigShowing.attrs).to({y: 50}, 1000).call(function(){
 					bigShowing.moveTo(overlayLayer);
 					stage.pleaseDrawOverlayLayer();
-					//overlayLayer.moveToTop();
-					//dynamicOverlayLayer.dynamicRemove(bigShowing);
-					//overlayLayer._drawOnce = true;
 				});
 			});
 		}
@@ -191,30 +188,31 @@ function Game(gameState) {
 
 		
 		Log.debug("Creating model...", "model");
-		var l_model = new iModel(evm, gameState.getMode());
-		if (l_model.setMode != undefined)
-			l_model.setMode(gameState.getMode());
+		var l_model = new iModel(evm, gameState, config);
+		/*if (l_model.setMode != undefined)
+			l_model.setMode(gameState.getMode());*/
 		if (player != null) {
 			l_model.play(player, evm, config);
 		}
 		Log.debug("Initiating model...", "model");
 		var viewConfig = l_model.init(config);
-		
+
 		var view = new iView(evm, stage, gameState, l_model);
 		currentView = view;
-		view.init(viewConfig);
+		//view.init(viewConfig);
+		evm.tell("Game.initiate");
 		evm.tell("view.initiated");
 		l_model.start();
 		modelModule = l_model;
 		evm.tell("Game.start");
+		gameLayer.moveToTop();
+		overlayLayer.moveToTop();
 	};
 	
 	function killActiveModule() {
-		if (currentView != null)
-			currentView.tearDown();
 		modelModule = noModule;
 		evm.tell("Game.tearDown");
-		//evm.print();
+		evm.print();
 	};
 	
 	SoundJS.addBatch(soundSources);
@@ -230,7 +228,6 @@ function Game(gameState) {
 			/** @const */ var ONLY_FISHING = true;
 			
 			if (ONLY_FISHING) {
-				//kickInModule(ReadyToTeachView, ReadyToTeach, null, {});
 				kickInModule(FishingView, FishingGame, {result: gameState.getResults(), maxNumber: 9, numberFishes: 5});
 			} else {
 				
@@ -242,11 +239,22 @@ function Game(gameState) {
 		gameState.setMode(msg.mode);
 	}, "game");
 	
-	evm.on("Game.roundDone", function(msg) {
+	evm.on("Game.nextRound", function(msg) {
 		if (gameState.getMode() == GameMode.CHILD_PLAY) {
-			kickInModule(ReadyToTeachView, ReadyToTeach, {});
+			var done = function() {
+				kickInModule(FishingView, FishingGame, {maxNumber: 9, numberFishes: 5});
+			};
+			var readyToTeach = function() {
+				gameState.setMode(GameMode.MONKEY_SEE);
+				evm.tell("Game.getBanana", { callback: done });
+			};
+			var notReadyToTeach = function() {
+				done();
+			};
+			evm.tell("Game.readyToTeach", { yes: readyToTeach, no: notReadyToTeach });
 		} else if (gameState.getMode() == GameMode.MONKEY_SEE) {
-			gameState.pushResult(msg.result);
+			gameState.pushResult(modelModule.getActions());
+			modelModule.resetActions();
 			if (gameState.getMonkeySeeRounds() < gameState.getMaxMonkeySeeRounds()) {
 				gameState.addMonkeySeeRound();
 				kickInModule(FishingView, FishingGame, {maxNumber: 9, numberFishes: 5});
@@ -314,7 +322,7 @@ function Game(gameState) {
         }).wait(1500).call(function() {msg.callback()});
 	}, "game");
 	
-	evm.on("view.initiated", function(msg) {
+	evm.on("Game.initiatedView", function(msg) {
 		gameLayer.moveToTop();
 		overlayLayer.moveToTop();
 	}, "game");

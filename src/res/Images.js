@@ -21,7 +21,8 @@ var IMAGE_SOURCES = {
 /** @const */ "banana-big": "1333448754_Banana.png",
 /** @const */ "banana-small": "1333448736_Banana64.png",
 /** @const */ "happy-face": "Positive.png",
-/** @const */ "sad-face": "Negative.png"
+/** @const */ "sad-face": "Negative.png",
+/** @const */ "rafiki": "Rafiki.png"
 };
 
 var images = {};

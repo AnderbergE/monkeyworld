@@ -588,8 +588,14 @@ function FishingView(evm, stage, gameState, model) {
 		layer.add(triangle);
 	};
 	
-	this.init = function() {
-		this.setEventManager(evm);
+	evm.on("Game.initiate", function(msg) {
+		init();
+	}, EVM_TAG);
+	
+	var that = this;
+	var init = function() {
+		
+		that.setEventManager(evm);
 		fishTank = model;
 		
 		var fishArray = fishTank.getAllFish();
@@ -597,11 +603,11 @@ function FishingView(evm, stage, gameState, model) {
 			createFish(fishArray[i]);
 		}
 		
-		var that = this;
+		
 
-		this.setStaticLayer(backgroundLayer);
-		this.setDynamicLayer(shapeLayer);
-		this.basicInit(gameState);
+		that.setStaticLayer(backgroundLayer);
+		that.setDynamicLayer(shapeLayer);
+		that.basicInit(gameState);
 		
     	Log.debug("Building stage...", "view");
 
@@ -755,12 +761,19 @@ function FishingView(evm, stage, gameState, model) {
 	loadingLayer.add(text);
 	loadingLayer._text = text;
 	
-	var that = this;
-
+	evm.on("Game.roundDone", function(msg) {
+		Log.debug("Tearing down view", "view");
+		fishCountingView.tearDown();
+		forget();
+	}, EVM_TAG);
+	
+	var forget = function() {
+		evm.forget(EVM_TAG);
+	};
+	
 	evm.on("Game.start", function(msg) {
-		console.log("Game.start");
 		Log.debug("Start rolling view...", "view");
-		if (fishTank.getMode() == GameMode.MONKEY_DO && gameState.getMonkeyDoRounds() == 1) {
+		if (gameState.getMode() == GameMode.MONKEY_DO && gameState.getMonkeyDoRounds() == 1) {
 			evm.tell("Game.showBig", {text:Strings.get("MONKEYS_TURN").toUpperCase()});
 			evm.play(Sounds.NOW_MONKEY_SHOW_YOU);
 			setTimeout(function() {
@@ -773,18 +786,14 @@ function FishingView(evm, stage, gameState, model) {
 	}, EVM_TAG);
 	
 	var startGame = function() {
-		console.log("startGame");
 		evm.tell("Game.showBig", {text:Strings.get("FISHING_CATCH_NUMBER", fishTank.getCatchingNumber()).toUpperCase()});
 		evm.play(Sounds.FISHING_CATCH);
 		setTimeout(function() {
+			Log.debug("Ready to play", "view");
 			evm.play(Sounds["NUMBER_" + fishTank.getCatchingNumber()]);
 			evm.tell("FishingGame.started", null);
 		}, 700);
 	};
 	
-	this.tearDown = function() {
-		fishCountingView.tearDown();
-		evm.forget(EVM_TAG);
-	};	
 }
 FishingView.prototype = new GameView();
