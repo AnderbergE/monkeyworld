@@ -4,7 +4,7 @@ function GameState() {
 	var bananas = 0;
 	var currentSeeRound = 1;
 	var currentDoRound = 1;
-	var maxSeeRounds = 3;
+	var maxSeeRounds = 2;
 	var maxDoRounds = maxSeeRounds;
 	
 	var maxBeforeHelp = 3;
