@@ -22,10 +22,10 @@ MonkeyPlayer.prototype.strategies["FishingGame"] = function(game, eventManager, 
 	
 	eventManager.on("Game.start", function(msg) {
 		game.turnOffClicks();
+		game.turnOffInactivityTimer();
 	}, EVM_TAG);
 	
 	eventManager.on("FishingGame.started", function(msg) {
-		game.turnOffInactivityTimer();
 		handleResults();
 	}, EVM_TAG);
 	

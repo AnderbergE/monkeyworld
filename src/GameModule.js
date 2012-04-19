@@ -36,6 +36,7 @@ function GameModule() {
 	this.reportMistake = function() { _madeMistake = true; };
 	/** @return {boolean} */
 	this.madeMistake = function() { return _madeMistake; };
+	this.resetMistake = function() { _madeMistake = false; };
 	
 	/**
 	 * Returns the actions performed by the player during game play.

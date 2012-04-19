@@ -724,7 +724,7 @@ function FishingView(evm, stage, gameState, model) {
 		createPlant(outGroup, config.POND.X + 100, config.POND.Y + config.POND.HEIGHT - 160);
 		createPlant(outGroup, config.POND.X + config.POND.WIDTH - 130, config.POND.Y + config.POND.HEIGHT - 140);
 		
-		if (gameState.getMode() == GameMode.MONKEY_DO && gameState.getMonkeyDoRounds() > 1) {
+		if (gameState.getMode() == GameMode.MONKEY_DO && gameState.getMonkeyDoRounds() > 1 || gameState.getMode() == GameMode.GUARDIAN_ANGEL) {
 			basket.attrs.x += ROLL_DIFF;
 			outGroup.attrs.x += ROLL_DIFF;
 			shapeLayer.attrs.x += ROLL_DIFF;

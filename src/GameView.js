@@ -80,12 +80,23 @@ function GameView() {
 		staticLayer.add(monkey);
 	};
 	
+	function setupAngel(gameState) {
+		var config = MONKEY_FRAME_CONFIG_ACTIVE;
+		var monkeyConfig = MONKEY_CONFIG_ACTIVE;
+		var stage = staticLayer.getStage();
+		//MONKEY_FRAME_CONFIG.height = staticLayer.getStage().getHeight()-40;
+		var angelFrame = new Kinetic.Rect(config);
+		var angel = new Kinetic.Image({x:500, y:450, image: images["rafiki"], width: 200, height: 280 });
+		staticLayer.add(angelFrame);
+		staticLayer.add(angel);
+	};
+	
 	/**
 	 * @param {GameState} gameState
 	 */
 	function setupAvatar(gameState) {
 		var mode = gameState.getMode();
-		var config = (mode == GameMode.MONKEY_DO && gameState.getMonkeyDoRounds() > 1) ?
+		var config = (mode == GameMode.MONKEY_DO && gameState.getMonkeyDoRounds() > 1 || mode == GameMode.GUARDIAN_ANGEL) ?
 				GAMER_FRAME_CONFIG_INACTIVE : GAMER_FRAME_CONFIG_ACTIVE;
 		//GAMER_FRAME_CONFIG_ACTIVE.height = staticLayer.getStage().getHeight()-40;
 		//GAMER_FRAME_CONFIG.width = staticLayer.getStage().getWidth() - GAMER_FRAME_CONFIG.x - 20;
@@ -98,6 +109,7 @@ function GameView() {
 	var moved = 0;
 	var moveDone = function(done) {
 		moved++;
+		console.log("moved: " + moved);
 		if (moved == 3) {
 			done();
 			staticLayer.draw();
@@ -120,9 +132,13 @@ function GameView() {
 	 * @param {GameState} gameState
 	 */
 	function init(gameState) {
+		moved = 0;
 		setupMainFrame(gameState);
 		if (gameState.getMode() == GameMode.MONKEY_SEE || gameState.getMode() == GameMode.MONKEY_DO) {
 			setupMonkey(gameState);
+		}
+		if (gameState.getMode() == GameMode.GUARDIAN_ANGEL) {
+			setupAngel(gameState);
 		}
 		setupAvatar(gameState);
 	};

@@ -210,6 +210,8 @@ function Game(gameState) {
 	};
 	
 	function killActiveModule() {
+		modelModule.resetMistake();
+		modelModule.resetActions();
 		modelModule = noModule;
 		evm.tell("Game.tearDown");
 		evm.print();
@@ -254,6 +256,9 @@ function Game(gameState) {
 			evm.tell("Game.readyToTeach", { yes: readyToTeach, no: notReadyToTeach });
 		} else if (gameState.getMode() == GameMode.MONKEY_SEE) {
 			gameState.pushResult(modelModule.getActions());
+			if (modelModule.madeMistake()) {
+				gameState.reportMistake();
+			}
 			modelModule.resetActions();
 			if (gameState.getMonkeySeeRounds() < gameState.getMaxMonkeySeeRounds()) {
 				gameState.addMonkeySeeRound();
@@ -274,9 +279,8 @@ function Game(gameState) {
 				kickInModule(FishingView, FishingGame, {result:gameState.getResults()[gameState.getMonkeyDoRounds()-1], maxNumber: 9, numberFishes: 5});
 			} else {
 				killActiveModule();
-				// if (no mistakes) {
-					evm.tell("Game.showHappySystemConfirmation");
-					setTimeout(function() {
+				if (!gameState.madeMistake()) {
+					evm.tell("Game.showHappySystemConfirmation", { callback: function() {
 						evm.tell("Game.getBanana", { callback: function() {
 							setTimeout(function() {
 								evm.tell("Game.getBanana", { callback: function() {
@@ -284,11 +288,26 @@ function Game(gameState) {
 								}});
 							}, 200);	
 						}});
-					}, 1000);
-				// } else {
-					//	evm.tell("Game.showSadSystemConfirmation");
-				//}
+					}});
+				} else {
+					evm.tell("Game.showSadSystemConfirmation", { callback: function() {
+						if (gameState.timeForHelp()) {
+							gameState.setMode(GameMode.GUARDIAN_ANGEL);
+							kickInModule(FishingView, FishingGame, {maxNumber: 9, numberFishes: 5});
+						} else {
+							gameState.addNoHelpRound();
+							gameState.setMode(GameMode.MONKEY_SEE);
+							gameState.resetMonekyRounds();
+							kickInModule(FishingView, FishingGame, {maxNumber: 9, numberFishes: 5});
+						}
+					}});
+				}
 			}
+		} else if (gameState.getMode() == GameMode.GUARDIAN_ANGEL) {
+			gameState.resetMonekyRounds();
+			gameState.resetHelpRounds();
+			gameState.setMode(GameMode.MONKEY_SEE);
+			kickInModule(FishingView, FishingGame, {maxNumber: 9, numberFishes: 5});
 		}
 	}, "game");
 	evm.on("Game.startGame", function(msg) {
@@ -320,11 +339,6 @@ function Game(gameState) {
         }, 1000).call(function(){
         	banana.attrs.image = images["banana-small"];
         }).wait(1500).call(function() {msg.callback()});
-	}, "game");
-	
-	evm.on("Game.initiatedView", function(msg) {
-		gameLayer.moveToTop();
-		overlayLayer.moveToTop();
 	}, "game");
 }
 

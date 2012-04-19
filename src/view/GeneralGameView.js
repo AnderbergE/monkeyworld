@@ -20,16 +20,29 @@ function GeneralGameView(evm, stage, gameState) {
 		evm.forget(EVM_TAG);
 	};
 	
-	evm.on("Game.showHappySystemConfirmation", function(msg) {
+	var systemConfirmation = function(happy, callback) {
 		Log.debug("Game.showSystemConfirmation", "GGV");
-		var happyFace = new Kinetic.Image({
-			image: images['happy-face'],
+		var faceImg = happy ? images['happy-face'] : images['sad-face'];
+		var face = new Kinetic.Image({
+			image: faceImg,
 			x: stage.getWidth() / 2,
 			y: stage.getHeight() / 2,
-			centerOffset: { x: images['happy-face'].width / 2, y: images['happy-face'].height / 2 }
+			centerOffset: { x: faceImg.width / 2, y: faceImg.height / 2 }
 		});
-		layer.add(happyFace);
+		layer.add(face);
+		setTimeout(function() {
+			layer.remove(face);
+			callback();
+		}, 2000);
+	};
+	
+	evm.on("Game.showHappySystemConfirmation", function(msg) {
+		systemConfirmation(true, msg.callback);
 	}, EVM_TAG);
+	
+	evm.on("Game.showSadSystemConfirmation", function(msg) {
+		systemConfirmation(false, msg.callback);
+	}, EVM_TAG);	
 	
 	evm.on("Game.thankYouForHelpingMonkey", function(msg) {
 		var text = new Kinetic.Text({

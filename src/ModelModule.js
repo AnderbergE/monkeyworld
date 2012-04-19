@@ -23,4 +23,5 @@ function NoModule() {
 	this.onFrame = function() {};
 	this.getActions = function() {}; // shouldnt be here
 	this.resetActions = function() {}; // -''-
+	this.resetMistake = function() {};
 }

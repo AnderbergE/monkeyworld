@@ -4,23 +4,33 @@ function GameState() {
 	var bananas = 0;
 	var currentSeeRound = 1;
 	var currentDoRound = 1;
-	var maxSeeRounds = 2;
-	var maxDoRounds = maxSeeRounds ;
-	var mode = GameMode.MONKEY_SEE;
+	var maxSeeRounds = 3;
+	var maxDoRounds = maxSeeRounds;
+	
+	var maxBeforeHelp = 3;
+	var currentRoundWithoutHelp = 1;
+	
+	var mode = GameMode.CHILD_PLAY;
 	var results = new Array();
 	var _madeMistake = false;
 	
-	/*var result = {};
-	result.sequence = new Array();
-	result.sequence.push("correct");
-	result.sequence.push(1);result.sequence.push(1);
-	results.push(result);
-	var result2 = {};
-	result2.sequence = new Array();
-	result2.sequence.push("correct");
-	result2.sequence.push(1);result2.sequence.push(1);
-	results.push(result2);
-	*/
+	this.resetHelpRounds = function() {
+		currentRoundWithoutHelp = 1;
+	};
+	
+	this.resetMonekyRounds = function() {
+		results = new Array();
+		currentSeeRound = 1;
+		currentDoRound = 1;
+	};
+	
+	this.addNoHelpRound = function() {
+		currentRoundWithoutHelp++;
+	};
+	
+	this.timeForHelp = function() {
+		return currentRoundWithoutHelp >= maxBeforeHelp;
+	};
 	
 	this.getMaxMonkeySeeRounds = function() {
 		return maxSeeRounds;

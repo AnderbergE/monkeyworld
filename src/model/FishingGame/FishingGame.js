@@ -16,7 +16,7 @@ function FishingGame(evm, gameState, config) {
 	var basketSize = 0;
 	var correctCaptured = 0;
 	var catchingNumber = 2;
-	var numberCorrect = 1;
+	var numberCorrect = 2;
 	
 	/** @const */ var WIDTH = 1;
 	/** @const */ var HEIGHT = 1;
@@ -69,6 +69,10 @@ function FishingGame(evm, gameState, config) {
 		for (var i = 0; i < fishArray.length; i++) {
 			evm.tell("fishinggame.turnOnClick", {fish:fishArray[i]});
 		}	
+	};
+	
+	this.getNumberOfCorrectFish = function() {
+		return numberCorrect;
 	};
 	
 	this.turnOffClicks = function() {
