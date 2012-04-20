@@ -150,8 +150,14 @@ function FishCountingView(stage, evm, EVM_TAG) {
 	}, EVM_TAG);
 	
 	evm.on("FishingGame.counted", function(msg) {
+		for (var num in numGroups) {
+			numGroups[num]._text.attrs.textFill = "red";
+		}
 		numGroups[msg.number]._text.attrs.textFill = "yellow";
-		numGroups[msg.number]._text.attrs.scale = 1.2;
+		setTimeout(function() {
+			numGroups[msg.number]._text.attrs.textFill = "red";
+			shapeLayer.draw();
+		}, 1500);
 		shapeLayer.draw();
 	}, EVM_TAG);
 }
