@@ -16,7 +16,7 @@ function FishingGame(evm, gameState, config) {
 	var basketSize = 0;
 	var correctCaptured = 0;
 	var catchingNumber = 2;
-	var numberCorrect = 2;
+	var numberCorrect = 1;
 	
 	/** @const */ var WIDTH = 1;
 	/** @const */ var HEIGHT = 1;
@@ -136,7 +136,6 @@ function FishingGame(evm, gameState, config) {
 			this.addAction("correct");
 		} else {
 			this.addAction("incorrect");
-			this.reportMistake();
 		}
 		checkEndOfRound();
 	};
@@ -148,8 +147,10 @@ function FishingGame(evm, gameState, config) {
 					fishArray[i].setCanFree(false);
 				}
 			}
-			if (basketSize == numberCorrect || mode == GameMode.MONKEY_SEE
-				|| mode == GameMode.MONKEY_DO) {
+			if (basketSize == numberCorrect || mode == GameMode.MONKEY_SEE || mode == GameMode.MONKEY_DO) {
+				if (basketSize != numberCorrect) {
+					that.reportMistake();
+				}
 				that.addAction("FishingGame.catchingDone");
 				evm.tell("FishingGame.catchingDone");
 			} else {

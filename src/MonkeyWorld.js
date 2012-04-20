@@ -284,7 +284,9 @@ function Game(gameState) {
 						evm.tell("Game.getBanana", { callback: function() {
 							setTimeout(function() {
 								evm.tell("Game.getBanana", { callback: function() {
-									// after getting bananas ==> eat them
+									setTimeout(function() {
+										evm.tell("Game.eatBananas");
+									}, 1500);
 								}});
 							}, 200);	
 						}});

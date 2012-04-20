@@ -11,14 +11,6 @@ function FishingView(evm, stage, gameState, model) {
 	 */
 	var config = function() {
 		return {
-		/** @const */ IMAGE_FOLDER: "../res/img",
-		/** @const */ IMAGE_SOURCES: images,
-		
-		/** @const */ SOUND_SOURCES: [
-			/** @const */ { name:"winding", src: "../res/sound/34968__mike-campbell__f-s-1-fishing-reel.wav" },
-			/** @const */ { name:"splash", src: "../res/sound/water_movement_fast_002.wav" },
-			/** @const */ { name:"swosh", src: "../res/sound/60009__qubodup__swosh-22.wav" }
-		],
 		
 		/** @const */ SKY: {
 			/** @const */ Y: 50
@@ -49,9 +41,7 @@ function FishingView(evm, stage, gameState, model) {
 	for (var i = 0; i < 8; i++) {
 		BASKET_SLOTS[i] = basketGrid.next();
 	}
-	
-	/** @type {Object.<string, Image>} */ 
-	//var images = {};
+
 	/** @type {Object.<Fish, Kinetic.Group>} */ 
 	var fishGroups = {};
 	/** @type {Object.<Fish, Kinetic.Text>} */

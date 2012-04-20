@@ -64,6 +64,31 @@ function GeneralGameView(evm, stage, gameState) {
 		}, 1500);
 	}, EVM_TAG);
 	
+	evm.on("Game.eatBananas", function(msg) {
+		var text1 = new Kinetic.Text({
+			fontFamily: "Arial",
+			fontSize: 36,
+			textFill: "white",
+			textStrokeFill: "black",
+			text: "Here the monkey will eat the bananas and grow.",
+			align: "center",
+			y: stage.getHeight()/2 - 20,
+			x: stage.getWidth()/2
+		});
+		var text2 = new Kinetic.Text({
+			fontFamily: "Arial",
+			fontSize: 36,
+			textFill: "white",
+			textStrokeFill: "black",
+			text: "The player can then play another game.",
+			align: "center",
+			y: stage.getHeight()/2 + 20,
+			x: stage.getWidth()/2
+		});
+		layer.add(text1);
+		layer.add(text2);
+	});
+	
 	evm.on("Game.readyToTeach", function(msg) {
 		var noGroup = new Kinetic.Group({x: stage.getWidth()/2 - 200 - 128, y: 300 });
 		var yesGroup = new Kinetic.Group({x: stage.getWidth()/2 + 200 - 128, y: 300 });

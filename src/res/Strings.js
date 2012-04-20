@@ -129,7 +129,7 @@ var Strings = {
 };
 
 var GlobalSettings = {
-	language: "sv"
+	language: "en"
 }
 
 /**
