@@ -50,7 +50,7 @@ function FishingView(evm, stage, gameState, model) {
 	var animator = new Animator();
 	/** @type {boolean} */ var allowClicks = true; 
 	
-	var fishCountingView = new FishCountingView(stage, evm, EVM_TAG);
+	var fishCountingView = new FishCountingView(evm, stage, gameState, model, EVM_TAG);
 	
 	/*
 	 * Initiate layers

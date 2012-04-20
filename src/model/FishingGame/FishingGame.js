@@ -29,6 +29,7 @@ function FishingGame(evm, gameState, config) {
 		};
 	
 	this.getCatchingNumber = function() { return catchingNumber };
+	this.getNumberCorrect = function() { return numberCorrect };
 	this.init = function() {
 		var maxNumber = config.maxNumber;
 		var numberFishes = config.numberFishes;
@@ -95,11 +96,13 @@ function FishingGame(evm, gameState, config) {
 		var sound = null;
 		if (mode == GameMode.CHILD_PLAY) {
 			sound = Sounds.FISHING_THERE_ARE_MORE;
-		} else {
+			evm.tell("FishingGame.inactivity", {sound:sound});
+			restartInactivityTimer();
+		} else if (mode == GameMode.MONKEY_SEE){
 			sound = Sounds.FISHING_KEEP_GOING;
+			evm.tell("FishingGame.inactivity", {sound:sound});
+			restartInactivityTimer();
 		}
-		evm.tell("FishingGame.inactivity", {sound:sound});
-		restartInactivityTimer();
 	}
 	
 	var timer = null;
@@ -232,20 +235,26 @@ function FishingGame(evm, gameState, config) {
 		return [1, 2, 3, 4];
 	};
 	
+	var countTimes = 0;
 	/**
 	 * Lets the player count the fish in the basket.
 	 * @param {number} number What the player thinks the correct number is.
 	 */
 	this.countFish = function(number) {
-		this.addAction(number);
-		var correct = number == numberCorrect;
-		if (!correct)
-			this.reportMistake();
-		evm.tell("FishingGame.counted", { number: number });
-		evm.tell(
-			"FishingGame.countingResult",
-			{ correct: correct }
-		);
+		if (gameState.getMode() === GameMode.MONKEY_SEE && countTimes == 0 ||
+			gameState.getMode() != GameMode.MONKEY_SEE) {
+			countTimes++;
+			this.addAction(number);
+			var seemCorrect = number == numberCorrect || gameState.getMode() != GameMode.CHILD_PLAY;
+			var reallyCorrect = number == numberCorrect;
+			if (!reallyCorrect)
+				this.reportMistake();
+			evm.tell("FishingGame.counted", { number: number });
+			evm.tell(
+				"FishingGame.countingResult",
+				{ correct: seemCorrect }
+			);
+		}
 	}
 	
 	/**

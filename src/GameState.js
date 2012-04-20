@@ -7,10 +7,10 @@ function GameState() {
 	var maxSeeRounds = 1;
 	var maxDoRounds = maxSeeRounds;
 	
-	var maxBeforeHelp = 3;
+	var maxBeforeHelp = 1;
 	var currentRoundWithoutHelp = 1;
 	
-	var mode = GameMode.MONKEY_SEE;
+	var mode = GameMode.CHILD_PLAY;
 	var results = new Array();
 	var _madeMistake = false;
 	
@@ -30,6 +30,10 @@ function GameState() {
 	
 	this.timeForHelp = function() {
 		return currentRoundWithoutHelp >= maxBeforeHelp;
+	};
+	
+	this.firstRoundWithoutHelp = function() {
+		return currentRoundWithoutHelp == 1;
 	};
 	
 	this.getMaxMonkeySeeRounds = function() {

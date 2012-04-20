@@ -2,10 +2,13 @@
  * Sets up and shows the fish counting view in the fishing game.
  * 
  * @constructor
- * @param {Kinetic.Stage} stage
  * @param {EventManager} evm
+ * @param {Kinetic.Stage} stage
+ * @param {GameState} gameState
+ * @param {FishingGame} model
+ * @param {string} EVM_TAG
  */
-function FishCountingView(stage, evm, EVM_TAG) {
+function FishCountingView(evm, stage, gameState, model, EVM_TAG) {
 
 	/** @type {FishCountingView} */ var that = this;
 	
@@ -57,9 +60,12 @@ function FishCountingView(stage, evm, EVM_TAG) {
 		numGroup.add(number);
 		numGroup._num = number;
 		numGroup._text = number;
-		numGroup.on("mousedown touchstart", function() {
-			fishTank.countFish(num);
-		});
+		if (gameState.getMode() == GameMode.CHILD_PLAY ||
+			gameState.getMode() == GameMode.MONKEY_SEE) {
+			numGroup.on("mousedown touchstart", function() {
+					fishTank.countFish(num);
+			});
+		}
 		shapeLayer.add(numGroup);
 		numGroups[num] = numGroup;
 	};

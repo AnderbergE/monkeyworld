@@ -26,20 +26,27 @@ AngelPlayer.prototype.strategies["FishingGame"] = function(game, eventManager, c
 	}, EVM_TAG);
 	
 	eventManager.on("FishingGame.started", function(msg) {
-		catchFish();
+		setTimeout(function() {
+			catchFish();	
+		}, 2000);
 	}, EVM_TAG);
 	
 	function catchFish() {
 		if (catched < game.getNumberOfCorrectFish()) {
-			catched++;
-			game.catchFish(game.getOneCorrectFish(), function() {catchFish();});
-		}		
+			eventManager.play(Sounds.FISHING_ANGEL_CHOOSE_FISH);
+			setTimeout(function() {
+				catched++;
+				game.catchFish(game.getOneCorrectFish(), function() {catchFish();});	
+			}, 1000);
+		}
 	}
 	
 	function count() {
-		//eventManager.play(Sounds.MONKEY_HMM);
 		setTimeout(function() {
-			game.countFish(game.getCatchingNumber());
+			eventManager.play(Sounds.FISHING_ANGEL_COUNT);
+			setTimeout(function() {
+				game.countFish(game.getNumberCorrect());	
+			}, 1000);
 		}, 2000);	
 	}
 	

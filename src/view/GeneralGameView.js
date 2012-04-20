@@ -22,6 +22,14 @@ function GeneralGameView(evm, stage, gameState) {
 	
 	var systemConfirmation = function(happy, callback) {
 		Log.debug("Game.showSystemConfirmation", "GGV");
+		if (happy) {
+			evm.play(Sounds.MONKEY_LEARNED_WELL);
+		} else {
+			evm.play(Sounds.MONKEY_DIDNT_LEARN_WELL);
+			setTimeout(function() {
+				evm.play(Sounds.LETS_SHOW_HIM_AGAIN);
+			}, 1000);
+		}
 		var faceImg = happy ? images['happy-face'] : images['sad-face'];
 		var face = new Kinetic.Image({
 			image: faceImg,
@@ -33,7 +41,7 @@ function GeneralGameView(evm, stage, gameState) {
 		setTimeout(function() {
 			layer.remove(face);
 			callback();
-		}, 2000);
+		}, 4000);
 	};
 	
 	evm.on("Game.showHappySystemConfirmation", function(msg) {
@@ -64,6 +72,23 @@ function GeneralGameView(evm, stage, gameState) {
 		}, 1500);
 	}, EVM_TAG);
 	
+	var _loadingText = new Kinetic.Text({
+		fontFamily: "Arial",
+		fontSize: 36,
+		textFill: "white",
+		textStrokeFill: "black",
+		text: Strings.get("INIT_LOADING"),
+		align: "center",
+		y: stage.getHeight()/2 + 20,
+		x: stage.getWidth()/2
+	});
+	evm.on("Game.loading", function(msg) {
+		layer.add(_loadingText);
+	}, EVM_TAG);
+	evm.on("Game.loadingDone", function(msg) {
+		layer.remove(_loadingText);
+	}, EVM_TAG);
+	
 	evm.on("Game.eatBananas", function(msg) {
 		var text1 = new Kinetic.Text({
 			fontFamily: "Arial",
@@ -87,7 +112,7 @@ function GeneralGameView(evm, stage, gameState) {
 		});
 		layer.add(text1);
 		layer.add(text2);
-	});
+	}, EVM_TAG);
 	
 	evm.on("Game.readyToTeach", function(msg) {
 		var noGroup = new Kinetic.Group({x: stage.getWidth()/2 - 200 - 128, y: 300 });

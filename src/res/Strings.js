@@ -1,5 +1,10 @@
 /** @enum {Object} */
 var Strings = {
+	
+	"INIT_LOADING": {
+		"sv": "Laddar ner bilder och ljud...",
+		"en": "Downloading images and sounds..."
+	},
 		
 	"YAY": {
 		"sv": "Hurra!",
@@ -49,6 +54,31 @@ var Strings = {
 	"FISHING_COUNT_TARGET_FISH": {
 		"sv": "Räkna fiskarna med",
 		"en": "Count the fish with"
+	},
+	
+	"FISHING_ANGEL_CHOOSE_FISH": {
+		"sv": "Jag väljer den här fisken eftersom...",
+		"en": "I choose this fish, because it..."
+	},
+	
+	"FISHING_ANGEL_COUNT": {
+		"sv": "Jag väljer den här siffran eftersom...",
+		"en": "I choose this number, because..."
+	},
+	
+	"MONKEY_LEARNED_WELL": {
+		"sv": "Toppen! Apan lärde sig bra!",
+		"en": "Great! Monkey learned well!"
+	},
+	
+	"MONKEY_DIDNT_LEARN_WELL": {
+		"sv": "Åh, nej! Apan lärde sig inte riktigt.",
+		"en": "Oh no! Monkey didn't learn well."
+	},
+	
+	"LETS_SHOW_HIM_AGAIN": {
+		"sv": "Visa honom igen!",
+		"en": "Let's show him again!"
 	},
 	
 	"THANK_YOU_FOR_HELPING": {

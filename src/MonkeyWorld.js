@@ -217,11 +217,12 @@ function Game(gameState) {
 		evm.print();
 	};
 	
+	evm.tell("Game.loading");
 	SoundJS.addBatch(soundSources);
 	Log.debug("Loading sounds...", "sound");
 	loadImages(function() {
 	SoundJS.onLoadQueueComplete = function() {
-	
+		evm.tell("Game.loadingDone");
 			/*
 			 * ONLY_FISHING = true will start the fishing game immediately. If it
 			 * is set to false, the game will start from the beginning (i.e. like
@@ -268,9 +269,13 @@ function Game(gameState) {
 				gameState.setMode(GameMode.MONKEY_DO);
 				evm.play(Sounds.THANK_YOU_FOR_HELPING);
 				evm.tell("Game.thankYouForHelpingMonkey", { callback: function() {
-					evm.tell("Game.getBanana", { callback: function() {
+					if (gameState.firstRoundWithoutHelp()) {
+						evm.tell("Game.getBanana", { callback: function() {
+							kickInModule(FishingView, FishingGame, {result:gameState.getResults()[gameState.getMonkeyDoRounds()-1], maxNumber: 9, numberFishes: 5});
+						}});
+					} else {
 						kickInModule(FishingView, FishingGame, {result:gameState.getResults()[gameState.getMonkeyDoRounds()-1], maxNumber: 9, numberFishes: 5});
-					}});
+					}
 				}});
 			}
 		} else if (gameState.getMode() == GameMode.MONKEY_DO) {

@@ -55,6 +55,21 @@ var Sounds = {
 
 	FISHING_SWOSH:
 		new SoundEntry("60009__qubodup__swosh-22.wav", null),
+		
+	FISHING_ANGEL_CHOOSE_FISH:
+		new SoundEntry(null, Strings.get("FISHING_ANGEL_CHOOSE_FISH")),
+		
+	FISHING_ANGEL_COUNT:
+		new SoundEntry(null, Strings.get("FISHING_ANGEL_COUNT")),
+	
+	MONKEY_LEARNED_WELL:
+		new SoundEntry(null, Strings.get("MONKEY_LEARNED_WELL")),
+		
+	MONKEY_DIDNT_LEARN_WELL:
+		new SoundEntry(null, Strings.get("MONKEY_DIDNT_LEARN_WELL")),
+		
+	LETS_SHOW_HIM_AGAIN:
+		new SoundEntry(null, Strings.get("LETS_SHOW_HIM_AGAIN")),
 	
 	THANK_YOU_FOR_HELPING:
 		new SoundEntry(null, Strings.get("THANK_YOU_FOR_HELPING")),

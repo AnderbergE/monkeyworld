@@ -34,14 +34,16 @@ MonkeyPlayer.prototype.strategies["FishingGame"] = function(game, eventManager, 
 	}, EVM_TAG);
 	
 	function handleCountingResults() {
-		eventManager.play(Sounds.MONKEY_HMM);
 		setTimeout(function() {
-			var guess = result[resultPosition++];
-			game.countFish(guess);
-			if (resultPosition < result.length) {
-				handleCountingResults();
-			}
-		}, 2000);		
+			eventManager.play(Sounds.MONKEY_HMM);	
+			setTimeout(function() {
+				var guess = result[resultPosition++];
+				game.countFish(guess);
+				if (resultPosition < result.length) {
+					handleCountingResults();
+				}
+			}, 2000);
+		}, 1000);
 	};
 	
 	function handleResults() {
