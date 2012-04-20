@@ -269,7 +269,8 @@ function Game(gameState) {
 				gameState.setMode(GameMode.MONKEY_DO);
 				evm.play(Sounds.THANK_YOU_FOR_HELPING);
 				evm.tell("Game.thankYouForHelpingMonkey", { callback: function() {
-					if (gameState.firstRoundWithoutHelp()) {
+					if (!gameState.hasSeeBanana()) {
+						gameState.gotSeeBanana();
 						evm.tell("Game.getBanana", { callback: function() {
 							kickInModule(FishingView, FishingGame, {result:gameState.getResults()[gameState.getMonkeyDoRounds()-1], maxNumber: 9, numberFishes: 5});
 						}});
@@ -299,8 +300,11 @@ function Game(gameState) {
 				} else {
 					evm.tell("Game.showSadSystemConfirmation", { callback: function() {
 						if (gameState.timeForHelp()) {
+							gameState.resetMistakes();
 							gameState.setMode(GameMode.GUARDIAN_ANGEL);
-							kickInModule(FishingView, FishingGame, {maxNumber: 9, numberFishes: 5});
+							evm.tell("Game.introduceBubba", { callback: function() {
+								kickInModule(FishingView, FishingGame, {maxNumber: 9, numberFishes: 5});	
+							}});
 						} else {
 							gameState.addNoHelpRound();
 							gameState.setMode(GameMode.MONKEY_SEE);

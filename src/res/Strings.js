@@ -66,6 +66,16 @@ var Strings = {
 		"en": "I choose this number, because..."
 	},
 	
+	"BUBBA_HI": {
+		"sv": "Hej! Mitt namn är Bubba!",
+		"en": "Hi, my name is Bubba!"
+	},
+	
+	"BUBBA_HERE_TO_HELP": {
+		"sv": "Jag ska hjälpa dig och apan längs vägen.",
+		"en": "I'm here to help you and monkey throughout his journey."
+	},
+	
 	"MONKEY_LEARNED_WELL": {
 		"sv": "Toppen! Apan lärde sig bra!",
 		"en": "Great! Monkey learned well!"

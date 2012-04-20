@@ -11,8 +11,13 @@ function GameState() {
 	var currentRoundWithoutHelp = 1;
 	
 	var mode = GameMode.CHILD_PLAY;
+	var _hasSeeBanana = false;
 	var results = new Array();
 	var _madeMistake = false;
+	
+	this.lastDoRound = function() {
+		return maxDoRounds === currentDoRound;
+	};
 	
 	this.resetHelpRounds = function() {
 		currentRoundWithoutHelp = 1;
@@ -32,9 +37,19 @@ function GameState() {
 		return currentRoundWithoutHelp >= maxBeforeHelp;
 	};
 	
-	this.firstRoundWithoutHelp = function() {
-		return currentRoundWithoutHelp == 1;
+	this.gotSeeBanana = function() {
+		_hasSeeBanana = true;
 	};
+	
+	this.hasSeeBanana = function() {
+		return _hasSeeBanana;
+	};
+	
+	this.resetSeeBanana = function() {
+		_hasSeeBanana = false;
+	};
+	
+	
 	
 	this.getMaxMonkeySeeRounds = function() {
 		return maxSeeRounds;
@@ -87,6 +102,10 @@ function GameState() {
 	
 	this.getBananas = function() {
 		return bananas;
+	};
+	
+	this.resetMistakes = function() {
+		_madeMistake = false;
 	};
 	
 	/**

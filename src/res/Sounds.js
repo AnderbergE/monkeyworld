@@ -62,6 +62,12 @@ var Sounds = {
 	FISHING_ANGEL_COUNT:
 		new SoundEntry(null, Strings.get("FISHING_ANGEL_COUNT")),
 	
+	BUBBA_HI:
+		new SoundEntry(null, Strings.get("BUBBA_HI")),
+		
+	BUBBA_HERE_TO_HELP:
+		new SoundEntry(null, Strings.get("BUBBA_HERE_TO_HELP")),
+		
 	MONKEY_LEARNED_WELL:
 		new SoundEntry(null, Strings.get("MONKEY_LEARNED_WELL")),
 		

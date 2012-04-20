@@ -26,9 +26,11 @@ function GeneralGameView(evm, stage, gameState) {
 			evm.play(Sounds.MONKEY_LEARNED_WELL);
 		} else {
 			evm.play(Sounds.MONKEY_DIDNT_LEARN_WELL);
-			setTimeout(function() {
-				evm.play(Sounds.LETS_SHOW_HIM_AGAIN);
-			}, 1000);
+			if (!gameState.lastDoRound()) {
+				setTimeout(function() {
+					evm.play(Sounds.LETS_SHOW_HIM_AGAIN);
+				}, 1000);
+			}
 		}
 		var faceImg = happy ? images['happy-face'] : images['sad-face'];
 		var face = new Kinetic.Image({
@@ -43,6 +45,25 @@ function GeneralGameView(evm, stage, gameState) {
 			callback();
 		}, 4000);
 	};
+	
+	evm.on("Game.introduceBubba", function(msg) {
+		var bubba = new Kinetic.Image({
+			image: images['rafiki'],
+			x: stage.getWidth() / 2,
+			y: stage.getHeight() / 2,
+			centerOffset: { x: images['rafiki'].width / 2, y: images['rafiki'].height / 2 }
+		});
+		layer.add(bubba);
+		evm.play(Sounds.BUBBA_HI);
+		setTimeout(function() {
+			evm.play(Sounds.BUBBA_HERE_TO_HELP);
+			setTimeout(function() {
+				layer.remove(bubba);
+				msg.callback();
+			}, 2000);
+		}, 1000);
+		
+	}, EVM_TAG);
 	
 	evm.on("Game.showHappySystemConfirmation", function(msg) {
 		systemConfirmation(true, msg.callback);
