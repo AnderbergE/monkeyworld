@@ -2,10 +2,12 @@
  * @constructor
  * @param {null|string} soundFile
  * @param {null|string} subtitle
+ * @param {number=} instances
  */
-function SoundEntry(soundFile, subtitle) {
+function SoundEntry(soundFile, subtitle, instances) {
 	this.soundFile = soundFile;
 	this.subtitle = subtitle;
+	this.instances = instances;
 }
 
 /**
@@ -19,7 +21,7 @@ var Sounds = {
 		new SoundEntry(null, Strings.get("ARE_YOU_READY_TO_TEACH")),
 		
 	GET_BANANA:
-		new SoundEntry("60443__jobro__tada1.wav", null),
+		new SoundEntry("60443__jobro__tada1.wav", null, 2),
 
 	FISHING_FREE_WRONG_ONES:
 		new SoundEntry(null, Strings.get("FISHING_FREE_WRONG_ONES")),
@@ -103,9 +105,13 @@ for (var key in Sounds) {
 	var entry = Sounds[key];
 	Sounds[key]._key = key;
 	if (entry.soundFile != null) {
-		soundSources.push({
+		var e = {
 			name: key,
 			src: "../res/sound/" + entry.soundFile 
-		});
+		}
+		if (entry.instances != undefined) {
+			e.instances = entry.instances;
+		}
+		soundSources.push(e);
 	}
 }
