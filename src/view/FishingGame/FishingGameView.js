@@ -56,7 +56,6 @@ function FishingView(evm, stage, gameState, model) {
 	 * Initiate layers
 	 */
 	var shapeLayer = new Kinetic.Layer();
-	var rodLayer = new Kinetic.Layer();
 	var backgroundLayer = new Kinetic.Layer();
 	var outGroup = new Kinetic.Group({
 		x: 0, y:0
@@ -67,7 +66,6 @@ function FishingView(evm, stage, gameState, model) {
 	stage.add(backgroundLayer);
 	stage.add(pondLayer);
 	stage.add(shapeLayer);
-	stage.add(rodLayer);
 
 	var turnOffClick = function(fish) {
 		fishGroups[fish].off("mousedown touchstart");
@@ -105,7 +103,6 @@ function FishingView(evm, stage, gameState, model) {
 			basket.moveTo(backgroundLayer);
 			backgroundLayer.draw();
 		});
-		rod.moveToMonkey(2000, ROLL_DIFF);
 	};
 	
 	function translateFish(fish) {
@@ -140,7 +137,6 @@ function FishingView(evm, stage, gameState, model) {
 		evm.tell("Game.hideBig");
 		stage.remove(backgroundLayer);
 		stage.remove(shapeLayer);
-		stage.remove(rodLayer);
 		stage.remove(pondLayer);
 	};
 	
@@ -152,7 +148,8 @@ function FishingView(evm, stage, gameState, model) {
 	};
 
 	evm.on("FishingGame.catch", function(msg) {
-		rod.initCatch(msg.fish, msg.done);
+		//rod.initCatch(msg.fish, msg.done);
+		fishingRod.catchFish(msg.fish, msg.done);
 	}, EVM_TAG);
 	
 	evm.on("FishingGame.free", function(msg) {
@@ -165,7 +162,7 @@ function FishingView(evm, stage, gameState, model) {
 	
 	evm.on("fishinggame.turnOffClick", function(msg) {
 		turnOffClick(msg.fish);
-	}, EVM_TAG)
+	}, EVM_TAG);
 	
 	evm.on("fishinggame.allowClicks", function(msg) {
 		allowClicks = true;
@@ -177,7 +174,7 @@ function FishingView(evm, stage, gameState, model) {
 	
 	evm.on("FishingGame.freeWrongOnes", function(msg) {
 		evm.tell("Game.showBig", {text:Strings.get("FISHING_FREE_WRONG_ONES").toUpperCase()});
-		evm.play(Sounds.FISHING_FREE_WRONG_ONES)
+		evm.play(Sounds.FISHING_FREE_WRONG_ONES);
 	}, EVM_TAG);
 	
 	evm.on("FishingGame.catchingDone", function(msg) {
@@ -189,37 +186,63 @@ function FishingView(evm, stage, gameState, model) {
 		}, 2000);
 	}, EVM_TAG);
 	
-	var rod = function(rodLayer) {
-		/** @const @enum */ var ROD_STATE =
-		{
-			/** @const */ PENDULUM:             0,
-			/** @const */ WIND_IN_FISH:         1,
-			/** @const */ THROW_FISH_IN_BASKET: 2,
-			/** @const */ INIT_CATCHING:        3,
-			/** @const */ CATCHING:             4
+	/**
+	 * @constructor
+	 * @param {Object} config
+	 * @extends {Kinetic.Shape}
+	 */
+	Kinetic.Rod = function(config) {
+		var line = new Kinetic.Shape(config);
+		line.attrs.x3 = 0;
+		line.attrs.y3 = 0;
+		line.drawFunc = function() {
+			line.attrs.x3 = line.attrs.x2 + line.attrs.length * Math.sin(line.attrs.angle);
+			line.attrs.y3 = line.attrs.y2 + line.attrs.length * Math.cos(line.attrs.angle);
+			var context = this.getContext();
+			context.beginPath();
+			context.strokeStyle = "black";
+			context.moveTo(line.attrs.x1, line.attrs.y1);
+			context.lineTo(line.attrs.x2, line.attrs.y2);
+			context.lineWidth = line.attrs.strokeWidth;
+			context.stroke();
+			context.beginPath();
+			context.moveTo(line.attrs.x2, line.attrs.y2);
+			context.strokeStyle = "yellow";			
+			context.lineTo(line.attrs.x3, line.attrs.y3);
+			context.lineWidth = line.attrs.strokeWidth;
+			context.stroke();
 		};
-
-		var state = {
-			tip: { x: (2*config.POND.X + config.POND.WIDTH) / 2, y: 75 },
-			length: 300,
-			pendulum: 0,
-			pendulumDirection: -1,
-			maxAngle: Math.PI / 30,
-			speed: 0.0001,
-			catching: null,
-			state: ROD_STATE.PENDULUM,
-			begin: {x:config.POND.X, y:125},
-			hook: { x: (2*config.POND.X + config.POND.WIDTH) / 2, y: 375 },
-			end: {
-				x: (2*config.POND.X + config.POND.WIDTH) / 2,
-				y: 375
-			}
-		};
+		return line;
+	};
+	
+	/**
+	 * @param {number} x1
+	 * @param {number} y1
+	 * @param {number} x2
+	 * @param {number} y2
+	 * @param {number} length
+	 * @constructor
+	 */
+	function FishingRod(x1, y1, x2, y2, length, angle) {
+		
+		var playedSplash = false;
+		var pendulumDirection = 1;
+		var speed = 0.0001;
+		var maxAngle = Math.PI / 30;
+		
+		var rod = new Kinetic.Rod({
+			strokeWidth: 2,
+			x1: x1, x2: x2, y1: y1, y2: y2, length: length, angle: angle
+		});
+		shapeLayer.add(rod);
+		
+		setTimeout(function() {
+		}, 1000);
 		
 		function getGoalAngle(fish) {
 			var front = getFishFront(fish);
-			var rx = state.tip.x;
-			var ry = state.tip.y;
+			var rx = rod.attrs.x2;
+			var ry = rod.attrs.y2;
 			var dx = (rx - front.x);
 			var dy = (ry - front.y);
 			return Math.atan(dx/dy);
@@ -234,188 +257,168 @@ function FishingView(evm, stage, gameState, model) {
 			};
 		}
 		
-		return {
-			moveToMonkey: function(time, diff) {
-				Tween.get(rodLayer.attrs).to({x:rodLayer.attrs.x+diff}, time);
-			},
-			
-			draw: function(frame) {
-				var angle = state.pendulum;
-				switch (state.state) {
-				case ROD_STATE.INIT_CATCHING:
-					if (allowClicks) {
-						fishTank.turnOffClicks();
-					}
-					state.playedSplash = false;
-					evm.play(Sounds.FISHING_SWOSH);
-					angle = getGoalAngle(state.catching);
-					var front = getFishFront(state.catching);
-					
-					var distance = Math.sqrt(Math.pow(state.tip.x-front.x, 2)+
-							             Math.pow(state.tip.y-front.y, 2));
-					animator.animateTo
-					(
-						state,
-						{ pendulum: angle, length: distance },
-						{
-							duration: { length: 500, pendulum: 500 },
-							onFrame: function()
-							{
-								angle = getGoalAngle(state.catching);
-								var front = getFishFront(state.catching);
-								var distance = Math.sqrt(Math.pow(state.tip.x-front.x, 2)+
-										             Math.pow(state.tip.y-front.y, 2));
-								animator.updateEndState(state, { pendulum: angle, length: distance });
-							},
-							onFinish: function()
-							{
-								state.catching.hooked();
-								state.state = ROD_STATE.WIND_IN_FISH;
-							}
-						}
-					);
-					state.state = ROD_STATE.CATCHING;
-				case ROD_STATE.PENDULUM:
-					angle = state.pendulum;
-					state.pendulum += state.pendulumDirection *
-					state.speed * frame.timeDiff;
-					if (state.pendulum >= state.maxAngle) {
-						state.pendulumDirection *= -1;
-						state.pendulum = state.maxAngle;
-					} else if (state.pendulum <= -state.maxAngle) {
-						state.pendulumDirection *= -1; 
-						state.pendulum = - state.maxAngle;
-					}
-					break;
-				case ROD_STATE.CATCHING: break;
-				case ROD_STATE.WIND_IN_FISH:
-					//state.state = ROD_STATE.THROW_FISH_IN_BASKET;
-
-					state.state = ROD_STATE.CATCHING;
-					
-					var fish = state.catching;
-					var fishGroup = fishGroups[state.catching];
-					var mouth = fish.getMouthPosition();
-					mouth.x *= config.POND.WIDTH;
-					mouth.y *= config.POND.HEIGHT;
-					var direction = fish.getDirection();
-					fishGroup.attrs.centerOffset.y = mouth.y;
-					if (direction > 0) {
-						fishGroup.attrs.x = fishGroup.attrs.x + mouth.x;
-						fishGroup.attrs.centerOffset.x = mouth.x;
-					} else {
-						fishGroup.attrs.x = fishGroup.attrs.x - mouth.x;
-						fishGroup.attrs.centerOffset.x = mouth.x;
-					}
-					
-					evm.play(Sounds.FISHING_WINDING);
-					animator.animateTo(
-						fishGroup.attrs,
-						{
-							rotation: -1*direction * Math.PI /2
-						},
-						{
-							duration: { rotation: 500 },
-							onFrame: function(){},
-							onFinish: function(){}
-						}
-					);
-					
-					animator.animateTo
-					(
-						state,
-						{ y: config.POND.Y-120, length: 20 },
-						{
-							speed: { y: 1, length: 0.5 },
-							onFrame: function()
-							{
-								var fishGroup = fishGroups[state.catching];
-								fishGroup.attrs.x = state.end.x;
-								fishGroup.attrs.y = state.end.y;
-								var splashed = state.playedSplash;
-								var surface = config.POND.Y;
-								var aboveSurface = fishGroup.attrs.y < surface;
-								if (!splashed && aboveSurface) {
-									evm.play(Sounds.FISHING_SPLASH);
-									state.playedSplash = true;
-								}
-							},
-							onFinish: function()
-							{
-								evm.stop(Sounds.FISHING_WINDING);
-								state.state = ROD_STATE.THROW_FISH_IN_BASKET;
-							}
-						}
-					);
-
-					break;
-				case ROD_STATE.THROW_FISH_IN_BASKET:
-					state.state = ROD_STATE.CATCHING;
-					var endState = BASKET_SLOTS[fishTank.getNextBasketSlot()];
-					var fish = state.catching;
-					var mouthXPosition = fish.getMouthPosition().x;
-					var fishDirection = fish.getDirection();
-					endState.rotation = fishDirection * 2 * Math.PI;
-					
-					Tween.get(fishGroups[state.catching].attrs).to(endState, 1500).call(function(){
-						fishTank.putFishInBasket(fish);
-						if (allowClicks) {
-							state.catching.capture();
-							fishTank.turnOnClicks();
-						}
-						fishTank.noactivity();
-					});
-					
-					Tween.get(fishGroups[state.catching].attrs.centerOffset).to({x:0,y:0}, 1500).call(function() {
-					});
-					animator.animateTo(
-						state,
-						{ length: 200, pendulum: 0, y: 75 },
-						{
-							duration: { length: 1000, pendulum: 1000, y: 200 },
-							onFrame: function() {},
-							onFinish: function() {
-								state.state = ROD_STATE.PENDULUM;
-								state.done();
-							}
-						}
-					);
-					break;
-				default: break;
+		var startPendulum = function() {
+			evm.on("frame", function(msg) {
+				var frame = msg.frame;
+				var timeDiff = frame.timeDiff;
+				
+				rod.attrs.angle += pendulumDirection * speed * timeDiff;
+				if (rod.attrs.angle >= maxAngle) {
+					pendulumDirection *= -1;
+					rod.attrs.angle = maxAngle;
+				} else if (rod.attrs.angle <= -maxAngle) {
+					pendulumDirection *= -1; 
+					rod.attrs.angle = -maxAngle;
 				}
-
-				state.end.x = state.tip.x + state.length * Math.sin(angle);
-				state.end.y = state.tip.y + state.length * Math.cos(angle);
-				var context = rodLayer.getContext();
-				var rx = rodLayer.attrs.x;
-				var ry = rodLayer.attrs.y;
-				rodLayer.clear();
-				context.beginPath();
-				context.strokeStyle = "black";
-				context.moveTo(rx + state.begin.x, ry + state.begin.y);
-				context.lineTo(rx + state.tip.x, ry + state.tip.y);
-				context.stroke();
-				context.closePath();
-				context.beginPath();
-				context.moveTo(rx + state.tip.x, ry + state.tip.y);
-		        context.lineTo(rx + state.end.x, ry + state.end.y);
-		        context.strokeStyle = "brown";
-		        context.lineWidth = 2;
-		        context.stroke();
-		        context.closePath();
-			},
-			
-			/**
-			 * @param {Fish} fish
-			 */
-			initCatch: function(fish, done) {
-				state.catching = fish;
-				state.done = done;
-				state.state = ROD_STATE.INIT_CATCHING;
-			}
+			}, EVM_TAG + "_ROD");
 		};
-	}(rodLayer);
+		startPendulum();
+		
+		/**
+		 * @param {Fish} fish
+		 * @param {Function} done
+		 */
+		this.catchFish = function(fish, done) {
+			evm.off("frame", EVM_TAG + "_ROD");
+			if (allowClicks) {
+				fishTank.turnOffClicks();
+			}
+			playedSplash = false;
+			evm.play(Sounds.FISHING_SWOSH);
+			var angle = getGoalAngle(fish);
+			var front = getFishFront(fish);
+			
+			var distance = Math.sqrt(Math.pow(rod.attrs.x2 - front.x, 2)+
+					             Math.pow(rod.attrs.y2 - front.y, 2));
+			
+			animator.animateTo
+			(
+				rod.attrs,
+				{ angle: angle, length: distance },
+				{
+					duration: { length: 500, angle: 500 },
+					onFrame: function()
+					{
+						angle = getGoalAngle(fish);
+						var front = getFishFront(fish);
+						var distance = Math.sqrt(Math.pow(rod.attrs.x2 - front.x, 2)+
+								             Math.pow(rod.attrs.y2 - front.y, 2));
+						animator.updateEndState(rod.attrs, { angle: angle, length: distance });
+					},
+					onFinish: function()
+					{
+						fish.hooked();
+						windInFish(fish, done);
+					}
+				}
+			);
+		};
 
+		/**
+		 * @param {Fish} fish
+		 * @param {Function} done
+		 */
+		var windInFish = function(fish, done) {
+			var fishGroup = fishGroups[fish];
+			var mouth = fish.getMouthPosition();
+			mouth.x *= config.POND.WIDTH;
+			mouth.y *= config.POND.HEIGHT;
+			var direction = fish.getDirection();
+			fishGroup.attrs.centerOffset.y = mouth.y;
+			if (direction > 0) {
+				fishGroup.attrs.x = fishGroup.attrs.x + mouth.x;
+				fishGroup.attrs.centerOffset.x = mouth.x;
+			} else {
+				fishGroup.attrs.x = fishGroup.attrs.x - mouth.x;
+				fishGroup.attrs.centerOffset.x = mouth.x;
+			}
+			
+			evm.play(Sounds.FISHING_WINDING);
+			animator.animateTo(
+				fishGroup.attrs,
+				{
+					rotation: -1*direction * Math.PI /2
+				},
+				{
+					duration: { rotation: 500 },
+					onFrame: function(){},
+					onFinish: function(){}
+				}
+			);
+			
+			animator.animateTo
+			(
+				rod.attrs,
+				{ y2: config.POND.Y-90, length: 20 },
+				{
+					speed: { y2: 0.4, length: 0.5 },
+					onFrame: function()
+					{
+						var fishGroup = fishGroups[fish];
+						fishGroup.attrs.x = rod.attrs.x3;
+						fishGroup.attrs.y = rod.attrs.y3;
+						var splashed = playedSplash;
+						var surface = config.POND.Y;
+						var aboveSurface = fishGroup.attrs.y < surface;
+						if (!splashed && aboveSurface) {
+							evm.play(Sounds.FISHING_SPLASH);
+							playedSplash = true;
+						}
+					},
+					onFinish: function()
+					{
+						evm.stop(Sounds.FISHING_WINDING);
+						throwFishInBasket(fish, done);
+					}
+				}
+			);
+		};
+		
+		/**
+		 * @param {Fish} fish
+		 * @param {Function} done
+		 */
+		var throwFishInBasket = function(fish, done) {
+			var endState = BASKET_SLOTS[fishTank.getNextBasketSlot()];
+			var mouthXPosition = fish.getMouthPosition().x;
+			var fishDirection = fish.getDirection();
+			endState.rotation = fishDirection * 2 * Math.PI;
+			
+			Tween.get(fishGroups[fish].attrs).to(endState, 1500).call(function(){
+				fishTank.putFishInBasket(fish);
+				if (allowClicks) {
+					fish.capture();
+					fishTank.turnOnClicks();
+				}
+				fishTank.noactivity();
+			});
+			
+			Tween.get(fishGroups[fish].attrs.centerOffset).to({x:0,y:0}, 1500).call(function() {
+			});
+			animator.animateTo(
+				rod.attrs,
+				{ length: length, angle: 0, y2: y2 },
+				{
+					duration: { length: 1000, angle: 1000, y2: 200 },
+					onFrame: function() {},
+					onFinish: function() {
+						done();
+						startPendulum();
+					}
+				}
+			);
+		};
+	
+	}
+	var fishingRod = new FishingRod(
+		config.POND.X,
+		config.POND.Y - config.SKY.Y / 2,
+		config.POND.X + config.POND.WIDTH / 2,
+		config.POND.Y - config.SKY.Y,
+		300,
+		0
+	);
+	
 	/**
 	 * Animates a fish back to the pond.
 	 * @param {Fish} fish
@@ -455,12 +458,6 @@ function FishingView(evm, stage, gameState, model) {
 	
 	this.toString = function() { return "Fish View"; };
 	
-	/*evm.on("fishinggame.initiatedfish", function(msg){
-		console.log("created");
-		createFish(msg.fish);
-		
-	}, EVM_TAG);
-	*/
 	evm.on("fishinggame.fishmoved", function(msg) {
 		moveFish(msg.fish);
 	}, EVM_TAG);
@@ -718,7 +715,6 @@ function FishingView(evm, stage, gameState, model) {
 			basket.attrs.x += ROLL_DIFF;
 			outGroup.attrs.x += ROLL_DIFF;
 			shapeLayer.attrs.x += ROLL_DIFF;
-			rodLayer.attrs.x += ROLL_DIFF;
 		}
 		
 		backgroundLayer.add(outGroup);
@@ -730,7 +726,6 @@ function FishingView(evm, stage, gameState, model) {
 		 */
 		evm.on("frame", function(msg) {
 			var frame = msg.frame;
-			rod.draw(frame); // Draw the fishing rod
 			animator.tick(frame.timeDiff); // Tell the animator about the frame
 			shapeLayer.draw(); // Draw the shape layer
 
