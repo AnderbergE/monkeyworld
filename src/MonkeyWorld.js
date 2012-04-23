@@ -214,7 +214,7 @@ function Game(gameState) {
 		modelModule.resetActions();
 		modelModule = noModule;
 		evm.tell("Game.tearDown");
-		evm.print();
+		//evm.print();
 	};
 	
 	evm.tell("Game.loading");

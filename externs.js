@@ -143,6 +143,8 @@ Kinetic.Stage.prototype.container = function() {};
 	Kinetic.Stage.prototype.getTouchPosition = function() {};
 	Kinetic.Stage.prototype.getUserPosition = function() {};
 	Kinetic.Stage.prototype.getContainer = function() {};
+	Kinetic.Stage.prototype.getWidth = function() {};
+	Kinetic.Stage.prototype.getHeight = function() {};
 
 /**
  * Layer

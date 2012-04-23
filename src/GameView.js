@@ -109,7 +109,6 @@ function GameView() {
 	var moved = 0;
 	var moveDone = function(done) {
 		moved++;
-		console.log("moved: " + moved);
 		if (moved == 3) {
 			done();
 			staticLayer.draw();

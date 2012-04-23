@@ -4,10 +4,10 @@ function GameState() {
 	var bananas = 0;
 	var currentSeeRound = 1;
 	var currentDoRound = 1;
-	var maxSeeRounds = 1;
+	var maxSeeRounds = 3;
 	var maxDoRounds = maxSeeRounds;
 	
-	var maxBeforeHelp = 1;
+	var maxBeforeHelp = 3;
 	var currentRoundWithoutHelp = 1;
 	
 	var mode = GameMode.CHILD_PLAY;
