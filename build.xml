@@ -61,7 +61,8 @@
 			<file name="externs.js"/>
 			</externs>
 		      <sources dir="src">
-                <file name="res/Strings.js"/>
+		      	<file name="Settings.js"/>
+		      	<file name="res/Strings.js"/>
 		        <file name="res/Sounds.js"/>
 		      	<file name="res/Images.js"/>
 		      	<file name="GameState.js"/>
