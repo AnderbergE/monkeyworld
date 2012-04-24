@@ -168,16 +168,12 @@ var Strings = {
 	
 };
 
-var GlobalSettings = {
-	language: "en"
-};
-
 /**
  * @param {string} str
  * @param {...number} var_args
  */
 Strings.get = function(str, var_args) {
-	var tmp = Strings[str][GlobalSettings.language];
+	var tmp = Strings[str][GlobalSettings.LANGUAGE];
 	for(var i = 1; i < arguments.length; i++) 
 	      tmp = tmp.replace("%"+i, arguments[i]);
 	return tmp;
