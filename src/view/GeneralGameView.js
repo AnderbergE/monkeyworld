@@ -112,29 +112,20 @@ function GeneralGameView(evm, stage, gameState) {
 		layer.remove(_loadingText);
 	}, EVM_TAG);
 	
+	var eatNumber = null;
+	var eatNumberText = 0;
 	evm.on("Game.eatBananas", function(msg) {
-//		var text1 = new Kinetic.Text({
-//			fontFamily: "Arial",
-//			fontSize: 36,
-//			textFill: "white",
-//			textStrokeFill: "black",
-//			text: "Here the monkey will eat the bananas and grow.",
-//			align: "center",
-//			y: stage.getHeight()/2 - 20,
-//			x: stage.getWidth()/2
-//		});
-//		var text2 = new Kinetic.Text({
-//			fontFamily: "Arial",
-//			fontSize: 36,
-//			textFill: "white",
-//			textStrokeFill: "black",
-//			text: "The player can then play another game.",
-//			align: "center",
-//			y: stage.getHeight()/2 + 20,
-//			x: stage.getWidth()/2
-//		});
-//		layer.add(text1);
-//		layer.add(text2);
+		eatNumber = new Kinetic.Text({
+			fontFamily: "Arial",
+			fontSize: 72,
+			textFill: "white",
+			textStrokeFill: "black",
+			text: eatNumberText,
+			align: "center",
+			y: stage.getHeight()/2,
+			x: stage.getWidth()/2 - stage.getWidth()/4,
+			alpha: 0
+		});
 		
 		var monkey = new Kinetic.Image({
 			image: images["monkey"],
@@ -144,6 +135,7 @@ function GeneralGameView(evm, stage, gameState) {
 			scale: {x:1, y:1}
 		});
 		layer.add(monkey);
+		layer.add(eatNumber);
 		monkeyJump(monkey, 1);
 		if (bananas.length > 0) {
 			monkeyEat(monkey, bananas[bananas.length -1]);
@@ -153,6 +145,8 @@ function GeneralGameView(evm, stage, gameState) {
 	var monkeyEat = function(monkey, banana) {
 		bananas.splice(bananas.length - 1);
 		Tween.get(banana.attrs).to({ y: 300, x: 400 }, 1000).to({alpha: 0}, 500).call(function() {
+			eatNumber.attrs.text = ++eatNumberText;
+			Tween.get(eatNumber.attrs).to({alpha:1}, 500).wait(1500).to({alpha:0}, 500);
 			Tween.get(monkey.attrs.scale).to({x:monkey.attrs.scale.x * 1.2, y:monkey.attrs.scale.y*1.2}, 1000).wait(500).call(function() {
 				if (bananas.length > 0) {
 					monkeyEat(monkey, bananas[bananas.length - 1]);
