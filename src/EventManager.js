@@ -122,9 +122,6 @@ function GameEventManager(stage) {
 	
 	var subtitles = new Array();
 	
-	var subtitlesX = subtitleLayer.getParent().attrs.width / 2;
-	var subtitlesY = subtitleLayer.getParent().attrs.height - 50;
-	
 	function addSubtitle(text) {
 		for (var i = 0; i < subtitles.length; i++) {
 			subtitles[i].attrs.y -= 30; 
@@ -179,7 +176,7 @@ function GameEventManager(stage) {
 	 */
 	this.stop = function(entry) {
 		SoundJS.stop(entry._key);
-	}
+	};
 	
 	this.loadImages = function(imageSources, images, callback) {
 		Log.debug("Loading images...", "view");

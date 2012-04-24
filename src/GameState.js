@@ -4,13 +4,13 @@ function GameState() {
 	var bananas = 0;
 	var currentSeeRound = 1;
 	var currentDoRound = 1;
-	var maxSeeRounds = 3;
+	var maxSeeRounds = 1;
 	var maxDoRounds = maxSeeRounds;
 	
 	var maxBeforeHelp = 3;
 	var currentRoundWithoutHelp = 1;
 	
-	var mode = GameMode.CHILD_PLAY;
+	var mode = GameMode.MONKEY_SEE;
 	var _hasSeeBanana = false;
 	var results = new Array();
 	var _madeMistake = false;

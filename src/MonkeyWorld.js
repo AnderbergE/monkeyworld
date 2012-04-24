@@ -168,7 +168,6 @@ function Game(gameState) {
 	});
 	stage.start();
 	
-	var currentView = null;
 	/**
 	 * @param iView
 	 * @param iModel
@@ -187,19 +186,17 @@ function Game(gameState) {
 		}
 
 		
-		Log.debug("Creating model...", "model");
+		Log.debug("Creating model...", "game");
 		var l_model = new iModel(evm, gameState, config);
-		/*if (l_model.setMode != undefined)
-			l_model.setMode(gameState.getMode());*/
+		Log.debug("Initiating model...", "game");
+		l_model.init();
 		if (player != null) {
+			Log.debug("Requesting player to play...", "game");
 			l_model.play(player, evm, config);
 		}
-		Log.debug("Initiating model...", "model");
-		var viewConfig = l_model.init(config);
 
-		var view = new iView(evm, stage, gameState, l_model);
-		currentView = view;
-		//view.init(viewConfig);
+
+		new iView(evm, stage, gameState, l_model);
 		evm.tell("Game.initiate");
 		evm.tell("view.initiated");
 		l_model.start();
@@ -233,7 +230,7 @@ function Game(gameState) {
 			if (ONLY_FISHING) {
 				kickInModule(FishingView, FishingGame, {result: gameState.getResults(), maxNumber: 9, numberFishes: 5});
 			} else {
-				
+				evm.tell("Game.eatBananas");
 			}
 		};
 	});
@@ -324,32 +321,6 @@ function Game(gameState) {
 	evm.on("Game.startGame", function(msg) {
 		//set mode to msg.mode?
 		kickInModule(msg.view, msg.model, {maxNumber: 9, numberFishes: 5});
-	}, "game");
-	evm.on("Game.getBanana", function(msg) {
-		gameState.addBanana();
-        var banana = new Kinetic.Image({
-        	image: images["banana-big"],
-        	scale: { x: 0.001, y: 0.001 },
-        	centerOffset: { x: 256, y: 256 },
-        	x: stage.attrs.width / 2,
-        	y: stage.attrs.height / 2
-        });
-
-        gameLayer.add(banana);
-        evm.play(Sounds.GET_BANANA);
-        Tween.get(banana.attrs).to({rotation: Math.PI * 2}, 1000).wait(1500)
-        .to({
-        	rotation: -Math.PI / 2,
-        	x: stage.attrs.width - 50 - (gameState.getBananas()-1)*48,
-			y: 50
-        }, 1000);
-        
-        Tween.get(banana.attrs.scale).to({ x: 2, y: 2 }, 1000).wait(1500)
-        .to({
-        	x: 0.125, y: 0.125
-        }, 1000).call(function(){
-        	banana.attrs.image = images["banana-small"];
-        }).wait(1500).call(function() {msg.callback()});
 	}, "game");
 }
 

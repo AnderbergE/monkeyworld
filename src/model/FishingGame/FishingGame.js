@@ -7,7 +7,6 @@
 function FishingGame(evm, gameState, config) {
 	var mode = gameState.getMode();
 	Log.debug("Applying " + mode + " Mode", "model");
-	/** @const @type {string} */ var EVM_TAG = "FishingGame";
 	
 	this._name = "FishingGame";
 	this.toString = function() { return "Fish Tank"; };
@@ -16,7 +15,7 @@ function FishingGame(evm, gameState, config) {
 	var basketSize = 0;
 	var correctCaptured = 0;
 	var catchingNumber = 2;
-	var numberCorrect = 2;
+	var numberCorrect = 1;
 	
 	/** @const */ var WIDTH = 1;
 	/** @const */ var HEIGHT = 1;
@@ -28,8 +27,8 @@ function FishingGame(evm, gameState, config) {
 			4: {x:0.4, y:0.2}
 		};
 	
-	this.getCatchingNumber = function() { return catchingNumber };
-	this.getNumberCorrect = function() { return numberCorrect };
+	this.getCatchingNumber = function() { return catchingNumber; };
+	this.getNumberCorrect = function() { return numberCorrect; };
 	this.init = function() {
 		var maxNumber = config.maxNumber;
 		var numberFishes = config.numberFishes;
@@ -120,7 +119,7 @@ function FishingGame(evm, gameState, config) {
 	
 	this.noactivity = function() {
 		restartInactivityTimer();
-	}
+	};
 
 	this.getAllFish = function() {
 		return fishArray;
@@ -173,7 +172,7 @@ function FishingGame(evm, gameState, config) {
 			correctCaptured--;
 		}
 		checkEndOfRound();
-	}
+	};
 	
 	/**
 	 * Catch a fish.
@@ -255,7 +254,7 @@ function FishingGame(evm, gameState, config) {
 				{ correct: seemCorrect }
 			);
 		}
-	}
+	};
 	
 	/**
 	 * Called when the game starts.

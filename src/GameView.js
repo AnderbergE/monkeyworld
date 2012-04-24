@@ -5,7 +5,6 @@ function GameView() {
 	
 	/** @type {EventManager} */ var evm = new NoEventManager(); 
 	/** @type {Kinetic.Layer} */ var staticLayer = new Kinetic.Layer();
-	/** @type {Kinetic.Layer} */ var dynamicLayer = new Kinetic.Layer();
 
 	/** @type {Kinetic.Node} */ var mainFrame = null;
 	/** @type {Kinetic.Node} */ var monkeyFrame = null;
@@ -34,7 +33,7 @@ function GameView() {
 		width: INACTIVE_FRAME_WIDTH,
 		height: GAMER_FRAME_CONFIG_ACTIVE.height,
 		fill: GAMER_FRAME_CONFIG_ACTIVE.fill
-	}
+	};
 	var MONKEY_FRAME_CONFIG_ACTIVE = {
 		alpha: ACTIVE_FRAME_ALPHA,
 		width: ACTIVE_FRAME_WIDTH,
@@ -50,7 +49,6 @@ function GameView() {
 	 * @param {GameState} gameState
 	 */
 	function setupMainFrame(gameState) {
-		var mode = gameState.getMode();
 		var stage = staticLayer.getStage();
 		mainFrame = new Kinetic.Rect({
 			x: 0,
@@ -72,7 +70,6 @@ function GameView() {
 				MONKEY_FRAME_CONFIG_ACTIVE : MONKEY_FRAME_CONFIG_INACTIVE;
 		var monkeyConfig = (mode == GameMode.MONKEY_DO && gameState.getMonkeyDoRounds() > 1) ?
 				MONKEY_CONFIG_ACTIVE : MONKEY_CONFIG_INACTIVE;
-		var stage = staticLayer.getStage();
 		//MONKEY_FRAME_CONFIG.height = staticLayer.getStage().getHeight()-40;
 		monkeyFrame = new Kinetic.Rect(config);
 		monkey = new Kinetic.Image({x:monkeyConfig.x, y:monkeyConfig.y, image: images["monkey"] });
@@ -82,9 +79,6 @@ function GameView() {
 	
 	function setupAngel(gameState) {
 		var config = MONKEY_FRAME_CONFIG_ACTIVE;
-		var monkeyConfig = MONKEY_CONFIG_ACTIVE;
-		var stage = staticLayer.getStage();
-		//MONKEY_FRAME_CONFIG.height = staticLayer.getStage().getHeight()-40;
 		var angelFrame = new Kinetic.Rect(config);
 		var angel = new Kinetic.Image({x:500, y:450, image: images["rafiki"], width: 200, height: 280 });
 		staticLayer.add(angelFrame);
@@ -117,7 +111,6 @@ function GameView() {
 	};
 	function moveToMonkey(done) {
 		evm.play(Sounds.MAGIC_CHIMES);
-		var stage = staticLayer.getStage();
 		evm.on("frame", function() {
 			staticLayer.draw();
 		}, "GameView");
@@ -156,13 +149,6 @@ function GameView() {
 	 */
 	this.setStaticLayer = function(layer) {
 		staticLayer = layer;
-	};
-		
-	/**
-	 * @param {Kinetic.Layer} layer
-	 */
-	this.setDynamicLayer = function(layer) {
-		dynamicLayer = layer;
 	};
 	
 	/**

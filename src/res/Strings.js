@@ -170,7 +170,7 @@ var Strings = {
 
 var GlobalSettings = {
 	language: "en"
-}
+};
 
 /**
  * @param {string} str
@@ -181,4 +181,4 @@ Strings.get = function(str, var_args) {
 	for(var i = 1; i < arguments.length; i++) 
 	      tmp = tmp.replace("%"+i, arguments[i]);
 	return tmp;
-}
+};

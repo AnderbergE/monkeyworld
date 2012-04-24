@@ -10,8 +10,6 @@
  */
 function FishCountingView(evm, stage, gameState, model, EVM_TAG) {
 
-	/** @type {FishCountingView} */ var that = this;
-	
 	/** @const */ var GRID_POSITION   = { x: 700 , y: 150 };
 	/** @const */ var GRID_STEP       = { x: 100,  y: 150 };
 	/** @const */ var GRID_WIDTH      = 2;
@@ -149,7 +147,7 @@ function FishCountingView(evm, stage, gameState, model, EVM_TAG) {
 	evm.on("FishingGame.countingResult", function(msg) {
 		if (msg.correct) {
 			evm.play(Sounds.YAY);
-			setTimeout(function(){fishTank.acceptedCountingResult()}, 1500);
+			setTimeout(function(){fishTank.acceptedCountingResult();}, 1500);
 		} else {
 			evm.play(Sounds.FISHING_ARE_YOU_SURE);
 		}

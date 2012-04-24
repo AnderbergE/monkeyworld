@@ -13,9 +13,6 @@ Object.size = function(obj) {
 
 var Log = new(/** @constructor */ function() {
 	
-	var show = "";
-	var not = "evm";
-	
 	function write(type, msg, tag) {
 		if (tag === undefined) {
 			tag = "";
@@ -126,7 +123,6 @@ var Utils = new (/** @constructor */function() {
 			exactly = false;
 		var array = new Array(size);
 		var crookedPositions = new Array(appearances);
-		var alreadyTaken = new Array();
 		for (var i = 0; i < appearances; i++) {
 			var crookedPosition = this.getRandomInt(0, size - 1);
 			while (this.inArray(crookedPositions, crookedPosition)) {

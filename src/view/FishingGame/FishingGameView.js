@@ -5,7 +5,14 @@
  */
 function FishingView(evm, stage, gameState, model) {
 
-	/** @const @type {string} */ var EVM_TAG = "FishingView";
+	/** @const @type {string}                */ var EVM_TAG = "FishingView";
+	/** @type {Object.<Fish, Kinetic.Group>} */ var fishGroups = {};
+	/** @type {Object.<Fish, Kinetic.Text>}  */ var numberGroups = {};
+	/** @type {FishingGame}                  */ var fishTank = null;
+	/** @type {Animator}                     */ var animator = new Animator();
+	/** @type {FishingRod}                   */ var fishingRod = null;
+	/** @type {boolean}                      */ var allowClicks = true;
+	
 	/**
 	 * Configuration of the view
 	 */
@@ -42,14 +49,6 @@ function FishingView(evm, stage, gameState, model) {
 		BASKET_SLOTS[i] = basketGrid.next();
 	}
 
-	/** @type {Object.<Fish, Kinetic.Group>} */ 
-	var fishGroups = {};
-	/** @type {Object.<Fish, Kinetic.Text>} */
-	var numberGroups = {};
-	var fishTank = null;
-	var animator = new Animator();
-	/** @type {boolean} */ var allowClicks = true; 
-	
 	var fishCountingView = new FishCountingView(evm, stage, gameState, model, EVM_TAG);
 	
 	/*
@@ -96,6 +95,7 @@ function FishingView(evm, stage, gameState, model) {
 			shapeLayer.attrs.scale.x = 0.1;
 			/* ============================================================== */
 			Tween.get(shapeLayer.attrs.scale).to({x:1}, 2000);
+			
 		});
 		basket.moveTo(stage._gameLayer);
 		backgroundLayer.draw();
@@ -207,7 +207,7 @@ function FishingView(evm, stage, gameState, model) {
 			context.stroke();
 			context.beginPath();
 			context.moveTo(line.attrs.x2, line.attrs.y2);
-			context.strokeStyle = "yellow";			
+			context.strokeStyle = "brown";			
 			context.lineTo(line.attrs.x3, line.attrs.y3);
 			context.lineWidth = line.attrs.strokeWidth;
 			context.stroke();
@@ -234,6 +234,7 @@ function FishingView(evm, stage, gameState, model) {
 			strokeWidth: 2,
 			x1: x1, x2: x2, y1: y1, y2: y2, length: length, angle: angle
 		});
+
 		shapeLayer.add(rod);
 		
 		setTimeout(function() {
@@ -251,10 +252,10 @@ function FishingView(evm, stage, gameState, model) {
 		function getFishFront(fish) {
 			var dir = fish.getDirection();
 			var pos = translateFish(fish);
-			return {
-				x: pos.x + dir * fish.getMouthPosition().x*config.POND.WIDTH,
-				y: pos.y + dir * fish.getMouthPosition().y*config.POND.HEIGHT
-			};
+			var obj = new Object();
+			obj.x = pos.x + dir * fish.getMouthPosition().x*config.POND.WIDTH;
+			obj.y = pos.y + dir * fish.getMouthPosition().y*config.POND.HEIGHT;
+			return obj;
 		}
 		
 		var startPendulum = function() {
@@ -380,7 +381,6 @@ function FishingView(evm, stage, gameState, model) {
 		 */
 		var throwFishInBasket = function(fish, done) {
 			var endState = BASKET_SLOTS[fishTank.getNextBasketSlot()];
-			var mouthXPosition = fish.getMouthPosition().x;
 			var fishDirection = fish.getDirection();
 			endState.rotation = fishDirection * 2 * Math.PI;
 			
@@ -410,14 +410,6 @@ function FishingView(evm, stage, gameState, model) {
 		};
 	
 	}
-	var fishingRod = new FishingRod(
-		config.POND.X,
-		config.POND.Y - config.SKY.Y / 2,
-		config.POND.X + config.POND.WIDTH / 2,
-		config.POND.Y - config.SKY.Y,
-		300,
-		0
-	);
 	
 	/**
 	 * Animates a fish back to the pond.
@@ -489,7 +481,6 @@ function FishingView(evm, stage, gameState, model) {
 	 * @param {Fish} fish
 	 */
 	function createFish(fish) {
-
 		var pos = translateFish(fish);
 		var fishGroup = new Kinetic.Group({
 			x: pos.x,
@@ -589,24 +580,12 @@ function FishingView(evm, stage, gameState, model) {
 		for (var i = 0; i < fishArray.length; i++) {
 			createFish(fishArray[i]);
 		}
-		
-		
 
 		that.setStaticLayer(backgroundLayer);
-		that.setDynamicLayer(shapeLayer);
 		that.basicInit(gameState);
 		
     	Log.debug("Building stage...", "view");
-
-
     	
-		var background = new Kinetic.Rect({
-			x: 0,
-			y: 2,
-			width: stage.attrs.width,
-			height: stage.attrs.height,
-			fill: "white"
-		});
 		var water = new Kinetic.Rect({
 			x: config.POND.X,
 			y: config.POND.Y + 20,
@@ -716,6 +695,15 @@ function FishingView(evm, stage, gameState, model) {
 			outGroup.attrs.x += ROLL_DIFF;
 			shapeLayer.attrs.x += ROLL_DIFF;
 		}
+		
+		fishingRod = new FishingRod(
+			config.POND.X,
+			config.POND.Y - config.SKY.Y / 2,
+			config.POND.X + config.POND.WIDTH / 2,
+			config.POND.Y - config.SKY.Y,
+			300,
+			0
+		);
 		
 		backgroundLayer.add(outGroup);
 		backgroundLayer.draw();

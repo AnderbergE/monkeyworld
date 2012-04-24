@@ -118,7 +118,7 @@ var Sounds = {
 		
 	"NUMBER_10":
 		new SoundEntry(null, Strings.get("NUMBER_10"))
-}
+};
 
 var soundSources = new Array();
 
@@ -129,7 +129,7 @@ for (var key in Sounds) {
 		var e = {
 			name: key,
 			src: "../res/sound/" + entry.soundFile 
-		}
+		};
 		if (entry.instances != undefined) {
 			e.instances = entry.instances;
 		}

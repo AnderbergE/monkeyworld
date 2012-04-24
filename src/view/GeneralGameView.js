@@ -12,6 +12,8 @@ function GeneralGameView(evm, stage, gameState) {
 	var EVM_TAG = "GeneralGameView";
 	var layer = stage._gameLayer;
 	
+	var bananas = new Array();
+	
 	this.init = function() {
 		Log.debug("GeneralGameView kicking in", "GGV");
 	};
@@ -111,28 +113,85 @@ function GeneralGameView(evm, stage, gameState) {
 	}, EVM_TAG);
 	
 	evm.on("Game.eatBananas", function(msg) {
-		var text1 = new Kinetic.Text({
-			fontFamily: "Arial",
-			fontSize: 36,
-			textFill: "white",
-			textStrokeFill: "black",
-			text: "Here the monkey will eat the bananas and grow.",
-			align: "center",
-			y: stage.getHeight()/2 - 20,
-			x: stage.getWidth()/2
+//		var text1 = new Kinetic.Text({
+//			fontFamily: "Arial",
+//			fontSize: 36,
+//			textFill: "white",
+//			textStrokeFill: "black",
+//			text: "Here the monkey will eat the bananas and grow.",
+//			align: "center",
+//			y: stage.getHeight()/2 - 20,
+//			x: stage.getWidth()/2
+//		});
+//		var text2 = new Kinetic.Text({
+//			fontFamily: "Arial",
+//			fontSize: 36,
+//			textFill: "white",
+//			textStrokeFill: "black",
+//			text: "The player can then play another game.",
+//			align: "center",
+//			y: stage.getHeight()/2 + 20,
+//			x: stage.getWidth()/2
+//		});
+//		layer.add(text1);
+//		layer.add(text2);
+		
+		var monkey = new Kinetic.Image({
+			image: images["monkey"],
+			x: stage.getWidth() / 2,
+			y: stage.getHeight() / 2,
+			centerOffset: {x: images["monkey"].width / 2, y: images["monkey"].height / 2 },
+			scale: {x:1, y:1}
 		});
-		var text2 = new Kinetic.Text({
-			fontFamily: "Arial",
-			fontSize: 36,
-			textFill: "white",
-			textStrokeFill: "black",
-			text: "The player can then play another game.",
-			align: "center",
-			y: stage.getHeight()/2 + 20,
-			x: stage.getWidth()/2
+		layer.add(monkey);
+		monkeyJump(monkey, 1);
+		if (bananas.length > 0) {
+			monkeyEat(monkey, bananas[bananas.length -1]);
+		}
+	}, EVM_TAG);
+	
+	var monkeyEat = function(monkey, banana) {
+		bananas.splice(bananas.length - 1);
+		Tween.get(banana.attrs).to({ y: 300, x: 400 }, 1000).to({alpha: 0}, 500).call(function() {
+			Tween.get(monkey.attrs.scale).to({x:monkey.attrs.scale.x * 1.2, y:monkey.attrs.scale.y*1.2}, 1000).wait(500).call(function() {
+				if (bananas.length > 0) {
+					monkeyEat(monkey, bananas[bananas.length - 1]);
+				}
+			});
 		});
-		layer.add(text1);
-		layer.add(text2);
+	};
+	
+	var monkeyJump = function(monkey, dir) {
+		Tween.get(monkey.attrs).to({y:monkey.attrs.y - dir * 100}, 600).call(function() {
+			monkeyJump(monkey, dir * (-1));
+		});
+	};
+	
+	evm.on("Game.getBanana", function(msg) {
+		gameState.addBanana();
+        var banana = new Kinetic.Image({
+        	image: images["banana-big"],
+        	scale: { x: 0.001, y: 0.001 },
+        	centerOffset: { x: 256, y: 256 },
+        	x: stage.attrs.width / 2,
+        	y: stage.attrs.height / 2
+        });
+        bananas.push(banana);
+        layer.add(banana);
+        evm.play(Sounds.GET_BANANA);
+        Tween.get(banana.attrs).to({rotation: Math.PI * 2}, 1000).wait(1500)
+        .to({
+        	rotation: -Math.PI / 2,
+        	x: stage.attrs.width - 50 - (gameState.getBananas()-1)*48,
+			y: 50
+        }, 1000);
+        
+        Tween.get(banana.attrs.scale).to({ x: 2, y: 2 }, 1000).wait(1500)
+        .to({
+        	x: 0.125, y: 0.125
+        }, 1000).call(function(){
+        	banana.attrs.image = images["banana-small"];
+        }).wait(1500).call(function() {msg.callback();});
 	}, EVM_TAG);
 	
 	evm.on("Game.readyToTeach", function(msg) {
@@ -161,13 +220,13 @@ function GeneralGameView(evm, stage, gameState) {
         		layer.remove(noGroup);
         		layer.remove(text);
         	}
-        }
+        };
         
         var tearDown = function() {
             Tween.get(yesGroup.attrs).to({ x: -300, y: -300}, 600).call(donea);
             Tween.get(noGroup.attrs).to({ x: stage.getWidth()+300, y: stage.getHeight()+300}, 600).call(donea);
             Tween.get(text.attrs).to({ x: 0, y: stage.getHeight()+300}, 600).call(donea);
-        }
+        };
         
         yesGroup.on("mousedown touchstart", function() {
         	yesGroup.off("mousedown touchstart");
@@ -194,7 +253,7 @@ function GeneralGameView(evm, stage, gameState) {
 			align: "center",
 			y: 100,
 			x: stage.getWidth()/2
-		})
+		});
 		layer.add(text);
 		
 		layer.draw();

@@ -6,9 +6,9 @@ function ReadyToTeachView(evm, stage, gameState, model) {
 
 	var layer = new Kinetic.Layer();
 	var EVM_TAG = "ReadyToTeachView";
-	var yesGroup;
-	var noGroup;
-	var text;
+	var yesGroup = null;
+	var noGroup = null;
+	var text = null;
 	stage.add(layer);
 	
 	this.init = function() {
@@ -58,15 +58,13 @@ function ReadyToTeachView(evm, stage, gameState, model) {
 			align: "center",
 			y: 100,
 			x: stage.getWidth()/2
-		})
+		});
 		layer.add(text);
 		
 		layer.draw();
 	};
 	
 	evm.on("frame", function(msg) {
-		var frame = msg.frame;
-		//Tween.tick(frame.timeDiff, false);
 		layer.draw();
 	}, EVM_TAG);
 	
