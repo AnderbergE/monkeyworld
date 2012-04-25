@@ -33,7 +33,7 @@ AngelPlayer.prototype.strategies["FishingGame"] = function(game, eventManager, c
 	
 	function catchFish() {
 		if (catched < game.getNumberOfCorrectFish()) {
-			eventManager.play(Sounds.FISHING_ANGEL_CHOOSE_FISH);
+			Sound.play(Sounds.FISHING_ANGEL_CHOOSE_FISH);
 			setTimeout(function() {
 				catched++;
 				game.catchFish(game.getOneCorrectFish(), function() {catchFish();});	
@@ -43,9 +43,9 @@ AngelPlayer.prototype.strategies["FishingGame"] = function(game, eventManager, c
 	
 	function count() {
 		setTimeout(function() {
-			eventManager.play(Sounds.FISHING_ANGEL_COUNT);
+			Sound.play(Sounds.FISHING_ANGEL_COUNT);
 			setTimeout(function() {
-				game.countFish(game.getNumberCorrect());	
+				game.countFish(game.getNumberOfCorrectFish());	
 			}, 1000);
 		}, 2000);	
 	}

@@ -5,6 +5,8 @@
  * @extends {GameModule}
  */
 function FishingGame(evm, gameState, config) {
+
+	/** @type {FishingGame} */ var that = this;
 	var mode = gameState.getMode();
 	Log.debug("Applying " + mode + " Mode", "model");
 	
@@ -14,43 +16,36 @@ function FishingGame(evm, gameState, config) {
 	var basketArray = new Array();
 	var basketSize = 0;
 	var correctCaptured = 0;
-	var catchingNumber = 2;
-	var numberCorrect = 1;
+	var targetNumber = Utils.ifHasElse(config.targetNumber, 2);
+	var numberCorrect = Utils.ifHasElse(config.numberCorrect, 2);
 	
 	/** @const */ var WIDTH = 1;
 	/** @const */ var HEIGHT = 1;
 	/** @enum {Object} */ var Starts = {
-			0: {x:0.3, y:0.3},
-			1: {x:0.8, y:0.4},
-			2: {x:0.6, y:0.6},
-			3: {x:1, y:0.8},
-			4: {x:0.4, y:0.2}
-		};
-	
-	this.getCatchingNumber = function() { return catchingNumber; };
-	this.getNumberCorrect = function() { return numberCorrect; };
-	this.init = function() {
-		var maxNumber = config.maxNumber;
-		var numberFishes = config.numberFishes;
-		/** @const {number} */ var NBR_IMAGES = 2;
-		
-		var numbers = Utils.crookedRandoms(1, maxNumber, numberFishes,
-				                           catchingNumber, numberCorrect, true);
-		var id = 0;
-		for (var i = 0; i < numberFishes; i++) {
-			var pos = Starts[i % 5];
-			fishArray.push(new Fish(
-				evm,
-				id++,
-				numbers[i],
-				pos.x,
-				pos.y,
-				Math.floor(Math.random() * NBR_IMAGES)
-			));
-		}
-		
-		return { width: WIDTH, height: HEIGHT };
+		0: {x:0.3, y:0.3},
+		1: {x:0.8, y:0.4},
+		2: {x:0.6, y:0.6},
+		3: {x:1, y:0.8},
+		4: {x:0.4, y:0.2}
 	};
+	
+	var maxNumber = config.maxNumber;
+	var numberFishes = config.numberFishes;
+	/** @const {number} */ var NBR_IMAGES = 2;
+	var numbers = Utils.crookedRandoms(1, maxNumber, numberFishes,
+			                           targetNumber, numberCorrect, true);
+	var id = 0;
+	for (var i = 0; i < numberFishes; i++) {
+		var pos = Starts[i % 5];
+		fishArray.push(new Fish(
+			evm,
+			id++,
+			numbers[i],
+			pos.x,
+			pos.y,
+			Math.floor(Math.random() * NBR_IMAGES)
+		));
+	}
 	
 	this.onFrame = function(frame) {
 		for (var i = 0; i < fishArray.length; i++) {
@@ -71,9 +66,19 @@ function FishingGame(evm, gameState, config) {
 		}	
 	};
 	
-	this.getNumberOfCorrectFish = function() {
-		return numberCorrect;
-	};
+	this.getNumberOfFish = function() { return fishArray.length; };
+	
+	/**
+	 * The number of fish that carries the correct number.
+	 * @returns {number} the amount of fish that carries the correct number.
+	 */
+	this.getNumberOfCorrectFish = function() { return numberCorrect; };
+	
+	/**
+	 * Get the number that should be catched.
+	 * @returns {number} the number that should be catched.
+	 */
+	this.getCatchingNumber = function() { return targetNumber; };
 	
 	this.turnOffClicks = function() {
 		Log.debug("Turning off clicks", "FishingGame");
@@ -82,6 +87,10 @@ function FishingGame(evm, gameState, config) {
 		}
 	};
 	
+	/**
+	 * Checks if all the wanted fish are captured.
+	 * @returns {boolean}
+	 */
 	function capturedWantedFish() {
 		return correctCaptured == numberCorrect || basketSize == fishArray.length;
 	};
@@ -121,11 +130,20 @@ function FishingGame(evm, gameState, config) {
 		restartInactivityTimer();
 	};
 
+	/**
+	 * Get an Array with all the fish in the game.
+	 * @returns {Array.<Fish>}
+	 */
 	this.getAllFish = function() {
 		return fishArray;
 	};
 	
-	this.putFishInBasket = function(fish) {
+	/**
+	 * @private
+	 * Put the specified fish in the basket.
+	 * @param {Fish} fish the fish to put in the basket
+	 */
+	this._putFishInBasket = function(fish) {
 		var slot = this.getNextBasketSlot();
 		if (slot == basketArray.length) {
 			basketArray.push(fish);	
@@ -133,19 +151,23 @@ function FishingGame(evm, gameState, config) {
 			basketArray[slot] = fish;
 		}
 		basketSize++;
-		if (fish.getNumber() == catchingNumber) {
+		if (fish.getTargetNumber() == targetNumber) {
 			correctCaptured++;
 			this.addAction("correct");
 		} else {
 			this.addAction("incorrect");
 		}
-		checkEndOfRound();
+		fish.capture();
 	};
-	var that = this;
-	var checkEndOfRound = function() {
+	
+	/**
+	 * @private
+	 * Check if the fishing round is over.
+	 */
+	var _checkEndOfRound = function() {
 		if (capturedWantedFish()) {
 			for (var i = 0; i < fishArray.length; i++) {
-				if (fishArray[i].getNumber() == catchingNumber) {
+				if (fishArray[i].getTargetNumber() == targetNumber) {
 					fishArray[i].setCanFree(false);
 				}
 			}
@@ -155,33 +177,51 @@ function FishingGame(evm, gameState, config) {
 				}
 				that.addAction("FishingGame.catchingDone");
 				evm.tell("FishingGame.catchingDone");
+				evm.tell("FishingGame.countingStarted");
 			} else {
 				evm.tell("FishingGame.freeWrongOnes");
 			}
 		}
 	};
 	
-	var removeFishFromBasket = function(fish) {
+	/**
+	 * @private
+	 * Free a fish from the basket.
+	 * @param {Fish} fish the fish to free.
+	 */
+	var _removeFishFromBasket = function(fish) {
 		for (var i = 0; i < basketArray.length; i++) {
 			if (basketArray[i] === fish) {
 				basketArray[i] = undefined;
 			}
 		}
 		basketSize--;
-		if (fish.getNumber() == catchingNumber) {
+		if (fish.getTargetNumber() == targetNumber) {
 			correctCaptured--;
 		}
-		checkEndOfRound();
+		_checkEndOfRound();
+	};
+	
+	var _hooked = function(fish) {
+		fish.hooked();	
 	};
 	
 	/**
 	 * Catch a fish.
-	 * @param {Fish} fish A fish in the pond that should be captured. 
+	 * @param {Fish} fish A fish in the pond that should be captured.
+	 * @param {Function} done What to do when the fish has been caught.
 	 */
 	this.catchFish = function(fish, done) {
+		//
 		evm.tell("FishingGame.catch", {
 			fish: fish,
-			done: done
+			hooked: _hooked, 
+			done: function() {
+				that._putFishInBasket(fish);
+				_checkEndOfRound();
+				if (done != undefined)
+					done();
+			} 
 		});
 	};
 	
@@ -190,21 +230,25 @@ function FishingGame(evm, gameState, config) {
 	 * @param {Fish} fish A fish in the basket that should be free'd.
 	 */
 	this.freeFish = function(fish, done) {
-		if (fish.getNumber() == numberCorrect)
+		if (fish.getTargetNumber() == numberCorrect)
 			this.addAction("freeCorrect");
 		else
 			this.addAction("freeIncorrect");
 		evm.tell("FishingGame.free", {
 			fish: fish,
 			done: function() {
-				removeFishFromBasket(fish);
+				_removeFishFromBasket(fish);
 				fish.free();
-				done();
+				if (done != undefined)
+					done();
 			}
 		});
 	};
 
-	
+	/**
+	 * Get the basket slot with the lowest position number that is free.
+	 * @returns {number} a position in the basket Array.
+	 */
 	this.getNextBasketSlot = function() {
 		var min = 1000;
 		var foundAny = false;
@@ -221,6 +265,10 @@ function FishingGame(evm, gameState, config) {
 		}
 	};
 	
+	/**
+	 * Gets an Array with all the fish in the basket.
+	 * @returns {Array.<Fish>}
+	 */
 	this.getBasket = function() {
 		return basketArray;
 	};
@@ -272,7 +320,7 @@ function FishingGame(evm, gameState, config) {
 	this.getOneCorrectFish = function() {
 		for (var i = 0; i < fishArray.length; i++) {
 			var fish = fishArray[i];
-			if (!fish.isCaptured() && fish.getNumber() == catchingNumber) {
+			if (!fish.isCaptured() && fish.getTargetNumber() == targetNumber) {
 				return fish;
 			}
 		};
@@ -288,7 +336,7 @@ function FishingGame(evm, gameState, config) {
 	this.getOneIncorrectFish = function() {
 		for (var i = 0; i < fishArray.length; i++) {
 			var fish = fishArray[i];
-			if (!fish.isCaptured() && fish.getNumber() != catchingNumber) {
+			if (!fish.isCaptured() && fish.getTargetNumber() != targetNumber) {
 				return fish;
 			}
 		};
@@ -303,7 +351,7 @@ function FishingGame(evm, gameState, config) {
 	 */
 	this.getOneIncorrectlyCapturedFish = function() {
 		for (var i = 0; i < fishArray.length; i++) {
-			if (fishArray[i].isCaptured() && fishArray[i].getNumber() != catchingNumber) {
+			if (fishArray[i].isCaptured() && fishArray[i].getTargetNumber() != targetNumber) {
 				return fishArray[i];
 			}
 		};
@@ -318,15 +366,11 @@ function FishingGame(evm, gameState, config) {
 	 */
 	this.getOneCorrectlyCapturedFish = function() {
 		for (var i = 0; i < fishArray.length; i++) {
-			if (fishArray[i].isCaptured() && fishArray[i].getNumber() == catchingNumber) {
+			if (fishArray[i].isCaptured() && fishArray[i].getTargetNumber() == targetNumber) {
 				return fishArray[i];
 			}
 		};
 		return null;
-	};
-	
-	this.readyToCount = function() {
-		evm.tell("FishingGame.countingStarted", {});
 	};
 	
 	/**

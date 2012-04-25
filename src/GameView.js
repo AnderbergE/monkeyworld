@@ -110,7 +110,7 @@ function GameView() {
 		}
 	};
 	function moveToMonkey(done) {
-		evm.play(Sounds.MAGIC_CHIMES);
+		Sound.play(Sounds.MAGIC_CHIMES);
 		evm.on("frame", function() {
 			staticLayer.draw();
 		}, "GameView");

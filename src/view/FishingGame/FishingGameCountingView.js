@@ -124,11 +124,11 @@ function FishCountingView(evm, stage, gameState, model, EVM_TAG) {
 
 		shapeLayer.draw();
 		if (fishTank.getMode() == GameMode.CHILD_PLAY)
-			evm.play(Sounds.FISHING_COUNT_FISH);
+			Sound.play(Sounds.FISHING_COUNT_FISH);
 		else {
-			evm.play(Sounds.FISHING_COUNT_TARGET_FISH);
+			Sound.play(Sounds.FISHING_COUNT_TARGET_FISH);
 			setTimeout(function() {
-				evm.play(Sounds["NUMBER_" + fishTank.getCatchingNumber()]);
+				Sound.play(Sounds["NUMBER_" + fishTank.getCatchingNumber()]);
 			}, 700);
 		}
 	};
@@ -146,10 +146,10 @@ function FishCountingView(evm, stage, gameState, model, EVM_TAG) {
 	 */
 	evm.on("FishingGame.countingResult", function(msg) {
 		if (msg.correct) {
-			evm.play(Sounds.YAY);
+			Sound.play(Sounds.YAY);
 			setTimeout(function(){fishTank.acceptedCountingResult();}, 1500);
 		} else {
-			evm.play(Sounds.FISHING_ARE_YOU_SURE);
+			Sound.play(Sounds.FISHING_ARE_YOU_SURE);
 		}
 	}, EVM_TAG);
 	

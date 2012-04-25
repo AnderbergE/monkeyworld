@@ -3,10 +3,6 @@
  */
 function ModelModule() {};
 
-/**
- * @param {Object} config
- */
-ModelModule.prototype.init = function(config) {};
 ModelModule.prototype.start = function() {};
 ModelModule.prototype.tearDown = function() {};
 ModelModule.prototype.onFrame = function() {};

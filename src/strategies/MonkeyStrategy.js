@@ -13,8 +13,7 @@ MonkeyPlayer.prototype.strategies = function() {};
  * @constructor
  * @param {FishingGame} game
  */
-MonkeyPlayer.prototype.strategies["FishingGame"] = function(game, eventManager, config) {
-	var result = config.result;
+MonkeyPlayer.prototype.strategies["FishingGame"] = function(game, eventManager, result) {
 	var EVM_TAG = "MonkeyPlayer";
 	Log.debug("Applying MonkeyPlayer's strategy to the FishingGame", "player");
 
@@ -35,7 +34,7 @@ MonkeyPlayer.prototype.strategies["FishingGame"] = function(game, eventManager, 
 	
 	function handleCountingResults() {
 		setTimeout(function() {
-			eventManager.play(Sounds.MONKEY_HMM);	
+			Sound.play(Sounds.MONKEY_HMM);	
 			setTimeout(function() {
 				var guess = result[resultPosition++];
 				game.countFish(guess);

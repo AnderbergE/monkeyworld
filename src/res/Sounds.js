@@ -136,3 +136,64 @@ for (var key in Sounds) {
 		soundSources.push(e);
 	}
 }
+
+/**
+ * @constructor
+ */
+function _Sound() {
+
+	var stage = null;
+	var subtitleLayer = null;
+	var subtitles = new Array();
+	this.setStage = function(s) { stage = s; subtitleLayer = stage._subtitleLayer; };
+	
+	function addSubtitle(text) {
+		for (var i = 0; i < subtitles.length; i++) {
+			subtitles[i].attrs.y -= 30; 
+		}
+		subtitles.push(text);
+	};
+	
+	function removeSubtitle(text) {
+		for (var i = 0; i < subtitles.length; i++) {
+			if (subtitles[i] === text) {
+				subtitles.splice(i, 1);
+			}
+		}
+	};
+	
+	/**
+	 * @param {SoundEntry} entry
+	 */
+	this.play = function(entry) {
+		Log.notify("\"" + entry.subtitle + "\"", "sound");
+		var mute = false;
+		if (!mute && entry.soundFile != null)
+			SoundJS.play(entry._key);
+
+		if (entry.subtitle != null) {
+			var text = new Kinetic.Text({
+				x: subtitleLayer.getParent().attrs.width / 2,
+				y: subtitleLayer.getParent().attrs.height - 50,
+				text: entry.subtitle,
+				fontSize: 26,
+				fontFamily: "Arial",
+				textFill: "white",
+				fill: "gray",
+				textStroke: "black",
+				align: "center",
+				verticalAlign: "middle",
+				textStrokeWidth: 1
+			});
+			addSubtitle(text);
+			subtitleLayer.add(text);
+			stage.pleaseDrawOverlayLayer();
+			setTimeout(function() {
+				subtitleLayer.remove(text);
+				stage.pleaseDrawOverlayLayer();
+				removeSubtitle(text);
+			}, 3000);
+		}
+	};
+}
+var Sound = new _Sound();

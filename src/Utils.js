@@ -48,6 +48,13 @@ var Log = new(/** @constructor */ function() {
 
 var Utils = new (/** @constructor */function() {
 	
+	this.ifHasElse = function(lookFor, otherWise) {
+		if (lookFor != undefined && lookFor != null)
+			return lookFor;
+		else
+			return otherWise;
+	};
+	
 	this.isNumber = function(n) {
 		return ! isNaN (n-0);
 	};

@@ -11,7 +11,7 @@
 function Fish(ieventManager, id, inumber, ix, iy, ispecies) {
 
 	/** @type {EventManager} */ var eventManager = ieventManager;
-	/** @type {number}       */ var number = inumber;
+	/** @type {number}       */ var targetNumber = inumber;
 	/** @type {number}       */ var x = ix;
 	/** @type {number}       */ var y = iy;
 	/** @type {number}       */ var species = ispecies;
@@ -46,7 +46,7 @@ function Fish(ieventManager, id, inumber, ix, iy, ispecies) {
 	this.setY = function(iy) { y = iy; };
 	this.getX = function() { return x; };
 	this.getY = function() { return y; };
-	this.getNumber = function() { return number; };
+	this.getTargetNumber = function() { return targetNumber; };
 	this.getWidth = function() { return width; };
 	this.getHeight = function() { return height; };
 	this.getScaledWidth = function() { return scaledWidth; };

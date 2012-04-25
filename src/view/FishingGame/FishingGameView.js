@@ -144,12 +144,11 @@ function FishingView(evm, stage, gameState, model) {
 		tearDownView();
 		evm.off("frame", EVM_TAG);
 		fishCountingView.init(fishTank, fishGroups);
-		fishTank.readyToCount();
 	};
 
 	evm.on("FishingGame.catch", function(msg) {
 		//rod.initCatch(msg.fish, msg.done);
-		fishingRod.catchFish(msg.fish, msg.done);
+		fishingRod.catchFish(msg.fish, msg.done, msg.hooked);
 	}, EVM_TAG);
 	
 	evm.on("FishingGame.free", function(msg) {
@@ -174,13 +173,13 @@ function FishingView(evm, stage, gameState, model) {
 	
 	evm.on("FishingGame.freeWrongOnes", function(msg) {
 		evm.tell("Game.showBig", {text:Strings.get("FISHING_FREE_WRONG_ONES").toUpperCase()});
-		evm.play(Sounds.FISHING_FREE_WRONG_ONES);
+		Sound.play(Sounds.FISHING_FREE_WRONG_ONES);
 	}, EVM_TAG);
 	
 	evm.on("FishingGame.catchingDone", function(msg) {
 		allowClicks = false;
 		evm.tell("Game.showBig", {text:Strings.get("YAY").toUpperCase()});
-		evm.play(Sounds.YAY);
+		Sound.play(Sounds.YAY);
 		setTimeout(function() {
 			roundDone();
 		}, 2000);
@@ -192,9 +191,14 @@ function FishingView(evm, stage, gameState, model) {
 	 * @extends {Kinetic.Shape}
 	 */
 	Kinetic.Rod = function(config) {
+		
 		var line = new Kinetic.Shape(config);
-		line.attrs.x3 = 0;
-		line.attrs.y3 = 0;
+		
+		var circle = new Kinetic.Circle({
+			x: 200, y: 200, radius: 100, fill: "white"
+		});
+		
+		
 		line.drawFunc = function() {
 			line.attrs.x3 = line.attrs.x2 + line.attrs.length * Math.sin(line.attrs.angle);
 			line.attrs.y3 = line.attrs.y2 + line.attrs.length * Math.cos(line.attrs.angle);
@@ -211,6 +215,19 @@ function FishingView(evm, stage, gameState, model) {
 			context.lineTo(line.attrs.x3, line.attrs.y3);
 			context.lineWidth = line.attrs.strokeWidth;
 			context.stroke();
+			
+		    context.beginPath();
+		    context.arc(Math.floor(line.attrs.x3), Math.floor(line.attrs.y3), 15, 0, 2 * Math.PI, false);
+		    context.fillStyle = "red";
+		    context.fill();
+		    context.lineWidth = line.attrs.strokeWidth;
+		    context.strokeStyle = "black";
+		    context.stroke();
+		    
+		    context.font = "20pt Arial";
+		    context.fillStyle = "white";
+		    context.fillText(fishTank.getCatchingNumber(), Math.floor(line.attrs.x3) - 8, Math.floor(line.attrs.y3) + 9);
+			
 		};
 		return line;
 	};
@@ -279,13 +296,13 @@ function FishingView(evm, stage, gameState, model) {
 		 * @param {Fish} fish
 		 * @param {Function} done
 		 */
-		this.catchFish = function(fish, done) {
+		this.catchFish = function(fish, done, hooked) {
 			evm.off("frame", EVM_TAG + "_ROD");
 			if (allowClicks) {
 				fishTank.turnOffClicks();
 			}
 			playedSplash = false;
-			evm.play(Sounds.FISHING_SWOSH);
+			Sound.play(Sounds.FISHING_SWOSH);
 			var angle = getGoalAngle(fish);
 			var front = getFishFront(fish);
 			
@@ -308,7 +325,7 @@ function FishingView(evm, stage, gameState, model) {
 					},
 					onFinish: function()
 					{
-						fish.hooked();
+						hooked(fish);
 						windInFish(fish, done);
 					}
 				}
@@ -334,7 +351,7 @@ function FishingView(evm, stage, gameState, model) {
 				fishGroup.attrs.centerOffset.x = mouth.x;
 			}
 			
-			evm.play(Sounds.FISHING_WINDING);
+			Sound.play(Sounds.FISHING_WINDING);
 			animator.animateTo(
 				fishGroup.attrs,
 				{
@@ -362,7 +379,7 @@ function FishingView(evm, stage, gameState, model) {
 						var surface = config.POND.Y;
 						var aboveSurface = fishGroup.attrs.y < surface;
 						if (!splashed && aboveSurface) {
-							evm.play(Sounds.FISHING_SPLASH);
+							Sound.play(Sounds.FISHING_SPLASH);
 							playedSplash = true;
 						}
 					},
@@ -385,9 +402,8 @@ function FishingView(evm, stage, gameState, model) {
 			endState.rotation = fishDirection * 2 * Math.PI;
 			
 			Tween.get(fishGroups[fish].attrs).to(endState, 1500).call(function(){
-				fishTank.putFishInBasket(fish);
+				//fishTank.putFishInBasket(fish);
 				if (allowClicks) {
-					fish.capture();
 					fishTank.turnOnClicks();
 				}
 				fishTank.noactivity();
@@ -426,7 +442,7 @@ function FishingView(evm, stage, gameState, model) {
 					duration: { x: 1000, y: 1000, rotation: 1000 },
 					onFinish: function()
 					{
-						evm.play(Sounds.FISHING_SPLASH);
+						Sound.play(Sounds.FISHING_SPLASH);
 						group.attrs.centerOffset.x = 0;
 						group.attrs.centerOffset.y = 0;
 						var pos = translateFish(fish);
@@ -444,7 +460,7 @@ function FishingView(evm, stage, gameState, model) {
 				}
 			);
 		} else {
-			evm.play(Sounds.FISHING_NOT_THIS_ONE);
+			Sound.play(Sounds.FISHING_NOT_THIS_ONE);
 		}
 	};
 	
@@ -467,7 +483,7 @@ function FishingView(evm, stage, gameState, model) {
 	}, EVM_TAG);
 	
 	evm.on("FishingGame.inactivity", function(msg) {
-		evm.play(msg.sound);
+		Sound.play(msg.sound);
 	}, EVM_TAG);
 	
 	function moveFish(fish) {
@@ -509,7 +525,7 @@ function FishingView(evm, stage, gameState, model) {
 		var numberText = new Kinetic.Text({
 			x: 0,
 			y: 0,
-			text: fish.getNumber(),
+			text: fish.getTargetNumber(),
 			fontSize: 48,
 			fontFamily: "Gloria Hallelujah",
 			textFill: "white",
@@ -748,7 +764,7 @@ function FishingView(evm, stage, gameState, model) {
 		Log.debug("Start rolling view...", "view");
 		if (gameState.getMode() == GameMode.MONKEY_DO && gameState.getMonkeyDoRounds() == 1) {
 			evm.tell("Game.showBig", {text:Strings.get("MONKEYS_TURN").toUpperCase()});
-			evm.play(Sounds.NOW_MONKEY_SHOW_YOU);
+			Sound.play(Sounds.NOW_MONKEY_SHOW_YOU);
 			setTimeout(function() {
 				that.moveToMonkey(startGame);
 				switchToMonkey();
@@ -760,10 +776,10 @@ function FishingView(evm, stage, gameState, model) {
 	
 	var startGame = function() {
 		evm.tell("Game.showBig", {text:Strings.get("FISHING_CATCH_NUMBER", fishTank.getCatchingNumber()).toUpperCase()});
-		evm.play(Sounds.FISHING_CATCH);
+		Sound.play(Sounds.FISHING_CATCH);
 		setTimeout(function() {
 			Log.debug("Ready to play", "view");
-			evm.play(Sounds["NUMBER_" + fishTank.getCatchingNumber()]);
+			Sound.play(Sounds["NUMBER_" + fishTank.getCatchingNumber()]);
 			evm.tell("FishingGame.started", null);
 		}, 700);
 	};

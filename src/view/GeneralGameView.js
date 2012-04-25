@@ -25,12 +25,12 @@ function GeneralGameView(evm, stage, gameState) {
 	var systemConfirmation = function(happy, callback) {
 		Log.debug("Game.showSystemConfirmation", "GGV");
 		if (happy) {
-			evm.play(Sounds.MONKEY_LEARNED_WELL);
+			Sound.play(Sounds.MONKEY_LEARNED_WELL);
 		} else {
-			evm.play(Sounds.MONKEY_DIDNT_LEARN_WELL);
+			Sound.play(Sounds.MONKEY_DIDNT_LEARN_WELL);
 			if (!gameState.lastDoRound()) {
 				setTimeout(function() {
-					evm.play(Sounds.LETS_SHOW_HIM_AGAIN);
+					Sound.play(Sounds.LETS_SHOW_HIM_AGAIN);
 				}, 1000);
 			}
 		}
@@ -56,9 +56,9 @@ function GeneralGameView(evm, stage, gameState) {
 			centerOffset: { x: images['rafiki'].width / 2, y: images['rafiki'].height / 2 }
 		});
 		layer.add(bubba);
-		evm.play(Sounds.BUBBA_HI);
+		Sound.play(Sounds.BUBBA_HI);
 		setTimeout(function() {
-			evm.play(Sounds.BUBBA_HERE_TO_HELP);
+			Sound.play(Sounds.BUBBA_HERE_TO_HELP);
 			setTimeout(function() {
 				layer.remove(bubba);
 				msg.callback();
@@ -172,7 +172,7 @@ function GeneralGameView(evm, stage, gameState) {
         });
         bananas.push(banana);
         layer.add(banana);
-        evm.play(Sounds.GET_BANANA);
+        Sound.play(Sounds.GET_BANANA);
         Tween.get(banana.attrs).to({rotation: Math.PI * 2}, 1000).wait(1500)
         .to({
         	rotation: -Math.PI / 2,

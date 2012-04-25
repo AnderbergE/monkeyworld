@@ -75,7 +75,7 @@ function ReadyToTeachView(evm, stage, gameState, model) {
 	}, EVM_TAG);
 	
 	this.start = function() {
-		evm.play(Sounds.ARE_YOU_READY_TO_TEACH);
+		Sound.play(Sounds.ARE_YOU_READY_TO_TEACH);
 	};
 	
 	this.tearDown = function() {

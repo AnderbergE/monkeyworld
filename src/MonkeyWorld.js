@@ -58,6 +58,7 @@ function Game(gameState) {
 		stage._drawBackgroundLayerStop = true;
 	};
 
+	Sound.setStage(stage);
 	var evm = new GameEventManager(stage);
 	var gamerPlayer = new GamerPlayer(evm);
 	var monkeyPlayer = new MonkeyPlayer(evm);
@@ -189,10 +190,13 @@ function Game(gameState) {
 		Log.debug("Creating model...", "game");
 		var l_model = new iModel(evm, gameState, config);
 		Log.debug("Initiating model...", "game");
-		l_model.init();
 		if (player != null) {
 			Log.debug("Requesting player to play...", "game");
-			l_model.play(player, evm, config);
+			if (gameState.getMode() === GameMode.MONKEY_DO) {
+				l_model.play(player, evm, gameState.getResults()[gameState.getMonkeyDoRounds()-1]);
+			} else {
+				l_model.play(player, evm);
+			}
 		}
 
 
@@ -214,6 +218,8 @@ function Game(gameState) {
 		//evm.print();
 	};
 	
+	var fishingGameConfig = { maxNumber: 9, numberFishes: 5, targetNumber: 3 };
+	
 	evm.tell("Game.loading");
 	SoundJS.addBatch(soundSources);
 	Log.debug("Loading sounds...", "sound");
@@ -228,7 +234,7 @@ function Game(gameState) {
 			/** @const */ var ONLY_FISHING = true;
 			
 			if (ONLY_FISHING) {
-				kickInModule(FishingView, FishingGame, {result: gameState.getResults(), maxNumber: 9, numberFishes: 5});
+				kickInModule(FishingView, FishingGame, fishingGameConfig);
 			} else {
 				evm.tell("Game.eatBananas");
 			}
@@ -242,7 +248,7 @@ function Game(gameState) {
 	evm.on("Game.nextRound", function(msg) {
 		if (gameState.getMode() == GameMode.CHILD_PLAY) {
 			var done = function() {
-				kickInModule(FishingView, FishingGame, {maxNumber: 9, numberFishes: 5});
+				kickInModule(FishingView, FishingGame, fishingGameConfig);
 			};
 			var readyToTeach = function() {
 				gameState.setMode(GameMode.MONKEY_SEE);
@@ -260,26 +266,26 @@ function Game(gameState) {
 			modelModule.resetActions();
 			if (gameState.getMonkeySeeRounds() < gameState.getMaxMonkeySeeRounds()) {
 				gameState.addMonkeySeeRound();
-				kickInModule(FishingView, FishingGame, {maxNumber: 9, numberFishes: 5});
+				kickInModule(FishingView, FishingGame, fishingGameConfig);
 			} else {
 				killActiveModule();
 				gameState.setMode(GameMode.MONKEY_DO);
-				evm.play(Sounds.THANK_YOU_FOR_HELPING);
+				Sound.play(Sounds.THANK_YOU_FOR_HELPING);
 				evm.tell("Game.thankYouForHelpingMonkey", { callback: function() {
 					if (!gameState.hasSeeBanana()) {
 						gameState.gotSeeBanana();
 						evm.tell("Game.getBanana", { callback: function() {
-							kickInModule(FishingView, FishingGame, {result:gameState.getResults()[gameState.getMonkeyDoRounds()-1], maxNumber: 9, numberFishes: 5});
+							kickInModule(FishingView, FishingGame, fishingGameConfig);
 						}});
 					} else {
-						kickInModule(FishingView, FishingGame, {result:gameState.getResults()[gameState.getMonkeyDoRounds()-1], maxNumber: 9, numberFishes: 5});
+						kickInModule(FishingView, FishingGame, fishingGameConfig);
 					}
 				}});
 			}
 		} else if (gameState.getMode() == GameMode.MONKEY_DO) {
 			if (gameState.getMonkeyDoRounds() < gameState.getMaxMonkeyDoRounds()) {
 				gameState.addMonkeyDoRound();
-				kickInModule(FishingView, FishingGame, {result:gameState.getResults()[gameState.getMonkeyDoRounds()-1], maxNumber: 9, numberFishes: 5});
+				kickInModule(FishingView, FishingGame, fishingGameConfig);
 			} else {
 				killActiveModule();
 				if (!gameState.madeMistake()) {
@@ -300,13 +306,13 @@ function Game(gameState) {
 							gameState.resetMistakes();
 							gameState.setMode(GameMode.GUARDIAN_ANGEL);
 							evm.tell("Game.introduceBubba", { callback: function() {
-								kickInModule(FishingView, FishingGame, {maxNumber: 9, numberFishes: 5});	
+								kickInModule(FishingView, FishingGame, fishingGameConfig);	
 							}});
 						} else {
 							gameState.addNoHelpRound();
 							gameState.setMode(GameMode.MONKEY_SEE);
 							gameState.resetMonekyRounds();
-							kickInModule(FishingView, FishingGame, {maxNumber: 9, numberFishes: 5});
+							kickInModule(FishingView, FishingGame, fishingGameConfig);
 						}
 					}});
 				}
@@ -315,12 +321,12 @@ function Game(gameState) {
 			gameState.resetMonekyRounds();
 			gameState.resetHelpRounds();
 			gameState.setMode(GameMode.MONKEY_SEE);
-			kickInModule(FishingView, FishingGame, {maxNumber: 9, numberFishes: 5});
+			kickInModule(FishingView, FishingGame, fishingGameConfig);
 		}
 	}, "game");
 	evm.on("Game.startGame", function(msg) {
 		//set mode to msg.mode?
-		kickInModule(msg.view, msg.model, {maxNumber: 9, numberFishes: 5});
+		kickInModule(msg.view, msg.model, fishingGameConfig);
 	}, "game");
 }
 
