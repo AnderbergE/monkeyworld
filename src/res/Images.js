@@ -27,6 +27,12 @@ var IMAGE_SOURCES = {
 
 var images = {};
 
+var _img_total = 0;
+var _img_progress = 0;
+for (var src in IMAGE_SOURCES) {
+    _img_total++;
+}
+
 function loadImages(callback) {
 	Log.debug("Loading images...", "images");
 	var loadedImages = 0;
@@ -37,6 +43,7 @@ function loadImages(callback) {
             if (++loadedImages >= numImages) {
             	callback();
             }
+            _img_progress = loadedImages / _img_total;
         };
         images[src].src = "../res/img/" + IMAGE_SOURCES[src];
     }

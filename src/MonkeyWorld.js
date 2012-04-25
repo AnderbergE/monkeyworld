@@ -202,7 +202,6 @@ function Game(gameState) {
 
 		new iView(evm, stage, gameState, l_model);
 		evm.tell("Game.initiate");
-		evm.tell("view.initiated");
 		l_model.start();
 		modelModule = l_model;
 		evm.tell("Game.start");
@@ -218,14 +217,26 @@ function Game(gameState) {
 		//evm.print();
 	};
 	
-	var fishingGameConfig = { maxNumber: 9, numberFishes: 5, targetNumber: 3 };
+	var fishingGameConfig = { maxNumber: 9, numberFishes: 5, targetNumber: 3, numberCorrect: 2 };
 	
-	evm.tell("Game.loading");
-	SoundJS.addBatch(soundSources);
-	Log.debug("Loading sounds...", "sound");
-	loadImages(function() {
-	SoundJS.onLoadQueueComplete = function() {
-		evm.tell("Game.loadingDone");
+	evm.tell("Game.loadingSounds");
+	//PreloadJS.initialize();
+	
+
+	var sound_interval = null;
+	var image_interval = null;
+	//SoundJS.addBatch(soundSources);
+	Log.debug("Loading sounds...", "Game");
+	var doneLoadingSounds = function() {
+		clearInterval(sound_interval);
+		image_interval = setInterval(function() {
+			evm.tell("Game.updateImageLoading", { progress: _img_progress });
+		}, 50);
+		Log.debug("Sounds loaded.", "game");
+		evm.tell("Game.loadingImages");
+		loadImages(function() {
+			evm.tell("Game.loadingDone");
+			clearInterval(image_interval);
 			/*
 			 * ONLY_FISHING = true will start the fishing game immediately. If it
 			 * is set to false, the game will start from the beginning (i.e. like
@@ -238,8 +249,20 @@ function Game(gameState) {
 			} else {
 				evm.tell("Game.eatBananas");
 			}
-		};
-	});
+		});
+	};
+	
+	var preload = new PreloadJS(false);
+	
+	preload.onComplete = doneLoadingSounds;
+	preload.installPlugin(SoundJS);
+	sound_interval = setInterval(function() {
+		evm.tell("Game.updateSoundLoading", { progress: preload.progress });
+	}, 50);
+	
+	preload.loadManifest(soundSources);
+	
+	
 	
 	evm.on("Game.setMode", function(msg) {
 		gameState.setMode(msg.mode);
@@ -325,8 +348,15 @@ function Game(gameState) {
 		}
 	}, "game");
 	evm.on("Game.startGame", function(msg) {
-		//set mode to msg.mode?
 		kickInModule(msg.view, msg.model, fishingGameConfig);
 	}, "game");
+	
+	this.saveState = function() {
+		
+	};
+	
+	this.loadState = function() {
+		
+	};
 }
 

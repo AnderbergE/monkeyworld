@@ -1,9 +1,14 @@
 /** @enum {Object} */
 var Strings = {
 	
-	"INIT_LOADING": {
-		"sv": "Laddar ner bilder och ljud...",
-		"en": "Downloading images and sounds..."
+	"INIT_LOADING_SOUNDS": {
+		"sv": "Laddar ner ljud...",
+		"en": "Downloading sounds..."
+	},
+	
+	"INIT_LOADING_IMAGES": {
+		"sv": "Laddar ner bilder...",
+		"en": "Downloading images..."
 	},
 		
 	"YAY": {

@@ -194,11 +194,6 @@ function FishingView(evm, stage, gameState, model) {
 		
 		var line = new Kinetic.Shape(config);
 		
-		var circle = new Kinetic.Circle({
-			x: 200, y: 200, radius: 100, fill: "white"
-		});
-		
-		
 		line.drawFunc = function() {
 			line.attrs.x3 = line.attrs.x2 + line.attrs.length * Math.sin(line.attrs.angle);
 			line.attrs.y3 = line.attrs.y2 + line.attrs.length * Math.cos(line.attrs.angle);
@@ -226,8 +221,7 @@ function FishingView(evm, stage, gameState, model) {
 		    
 		    context.font = "20pt Arial";
 		    context.fillStyle = "white";
-		    context.fillText(fishTank.getCatchingNumber(), Math.floor(line.attrs.x3) - 8, Math.floor(line.attrs.y3) + 9);
-			
+		    context.fillText(fishTank.getTargetNumber(), Math.floor(line.attrs.x3) - 8, Math.floor(line.attrs.y3) + 9);
 		};
 		return line;
 	};
@@ -775,11 +769,11 @@ function FishingView(evm, stage, gameState, model) {
 	}, EVM_TAG);
 	
 	var startGame = function() {
-		evm.tell("Game.showBig", {text:Strings.get("FISHING_CATCH_NUMBER", fishTank.getCatchingNumber()).toUpperCase()});
+		evm.tell("Game.showBig", {text:Strings.get("FISHING_CATCH_NUMBER", fishTank.getTargetNumber()).toUpperCase()});
 		Sound.play(Sounds.FISHING_CATCH);
 		setTimeout(function() {
 			Log.debug("Ready to play", "view");
-			Sound.play(Sounds["NUMBER_" + fishTank.getCatchingNumber()]);
+			Sound.play(Sounds["NUMBER_" + fishTank.getTargetNumber()]);
 			evm.tell("FishingGame.started", null);
 		}, 700);
 	};

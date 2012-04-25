@@ -100,16 +100,25 @@ function GeneralGameView(evm, stage, gameState) {
 		fontSize: 36,
 		textFill: "white",
 		textStrokeFill: "black",
-		text: Strings.get("INIT_LOADING"),
+		text: Strings.get("INIT_LOADING_SOUNDS"),
 		align: "center",
 		y: stage.getHeight()/2 + 20,
 		x: stage.getWidth()/2
 	});
-	evm.on("Game.loading", function(msg) {
+	evm.on("Game.loadingSounds", function(msg) {
 		layer.add(_loadingText);
+	}, EVM_TAG);
+	evm.on("Game.loadingImages", function(msg) {
+		_loadingText.setText(Strings.get("INIT_LOADING_IMAGES"));
 	}, EVM_TAG);
 	evm.on("Game.loadingDone", function(msg) {
 		layer.remove(_loadingText);
+	}, EVM_TAG);
+	evm.on("Game.updateSoundLoading", function(msg) {
+		_loadingText.setText(Strings.get("INIT_LOADING_SOUNDS") + " " + Math.round(msg.progress * 100) + " %");
+	}, EVM_TAG);
+	evm.on("Game.updateImageLoading", function(msg) {
+		_loadingText.setText(Strings.get("INIT_LOADING_IMAGES") + " " + Math.round(msg.progress * 100) + " %");
 	}, EVM_TAG);
 	
 	var eatNumber = null;

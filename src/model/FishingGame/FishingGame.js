@@ -16,8 +16,8 @@ function FishingGame(evm, gameState, config) {
 	var basketArray = new Array();
 	var basketSize = 0;
 	var correctCaptured = 0;
-	var targetNumber = Utils.ifHasElse(config.targetNumber, 2);
-	var numberCorrect = Utils.ifHasElse(config.numberCorrect, 2);
+	var targetNumber = config.targetNumber;
+	var numberCorrect = config.numberCorrect;
 	
 	/** @const */ var WIDTH = 1;
 	/** @const */ var HEIGHT = 1;
@@ -78,7 +78,7 @@ function FishingGame(evm, gameState, config) {
 	 * Get the number that should be catched.
 	 * @returns {number} the number that should be catched.
 	 */
-	this.getCatchingNumber = function() { return targetNumber; };
+	this.getTargetNumber = function() { return targetNumber; };
 	
 	this.turnOffClicks = function() {
 		Log.debug("Turning off clicks", "FishingGame");

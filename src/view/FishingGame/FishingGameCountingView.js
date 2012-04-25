@@ -128,7 +128,7 @@ function FishCountingView(evm, stage, gameState, model, EVM_TAG) {
 		else {
 			Sound.play(Sounds.FISHING_COUNT_TARGET_FISH);
 			setTimeout(function() {
-				Sound.play(Sounds["NUMBER_" + fishTank.getCatchingNumber()]);
+				Sound.play(Sounds["NUMBER_" + fishTank.getTargetNumber()]);
 			}, 700);
 		}
 	};

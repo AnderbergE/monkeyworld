@@ -335,6 +335,25 @@ function console() {};
 console.log = function(msg) {};
 
 /*============================================================================*/
+
+/**
+ * @constructor
+ * @param {boolean=} bool
+ */
+function PreloadJS(bool) {};
+PreloadJS.prototype.onComplete = function() {};
+/**
+ * @param {Function} plugin
+ */
+PreloadJS.prototype.installPlugin = function(plugin) {};
+PreloadJS.prototype.progress = function() {};
+/**
+ * @param {Array} soundSources
+ */
+PreloadJS.prototype.loadManifest = function(soundSources) {};
+
+
+/*============================================================================*/
 function SoundJS() {};
 
 /**

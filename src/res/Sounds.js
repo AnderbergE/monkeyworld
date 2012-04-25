@@ -15,13 +15,13 @@ function SoundEntry(soundFile, subtitle, instances) {
  */
 var Sounds = {
 	YAY:
-		new SoundEntry("19446__totya__yeah.wav", Strings.get("YAY")),
+		new SoundEntry("19446__totya__yeah", Strings.get("YAY")),
 	
 	ARE_YOU_READY_TO_TEACH:
 		new SoundEntry(null, Strings.get("ARE_YOU_READY_TO_TEACH")),
 		
 	GET_BANANA:
-		new SoundEntry("60443__jobro__tada1.wav", null, 2),
+		new SoundEntry("60443__jobro__tada1", null, 2),
 
 	FISHING_FREE_WRONG_ONES:
 		new SoundEntry(null, Strings.get("FISHING_FREE_WRONG_ONES")),
@@ -48,13 +48,13 @@ var Sounds = {
 		new SoundEntry(null, Strings.get("FISHING_COUNT_TARGET_FISH")),
 		
 	FISHING_WINDING:
-		new SoundEntry("34968__mike-campbell__f-s-1-fishing-reel.wav", null), 
+		new SoundEntry("34968__mike-campbell__f-s-1-fishing-reel", null), 
 
 	FISHING_SPLASH:
-		new SoundEntry("water_movement_fast_002.wav", null),
+		new SoundEntry("water_movement_fast_002", null),
 
 	FISHING_SWOSH:
-		new SoundEntry("60009__qubodup__swosh-22.wav", null),
+		new SoundEntry("60009__qubodup__swosh-22", null),
 		
 	FISHING_ANGEL_CHOOSE_FISH:
 		new SoundEntry(null, Strings.get("FISHING_ANGEL_CHOOSE_FISH")),
@@ -87,7 +87,7 @@ var Sounds = {
 		new SoundEntry(null, Strings.get("MONKEY_HMM")),
 		
 	MAGIC_CHIMES:
-		new SoundEntry("51710__bristolstories__u-chimes3_short.wav", null),
+		new SoundEntry("51710__bristolstories__u-chimes3_short", null),
 	
 	"NUMBER_1":
 		new SoundEntry(null, Strings.get("NUMBER_1")),
@@ -127,11 +127,11 @@ for (var key in Sounds) {
 	Sounds[key]._key = key;
 	if (entry.soundFile != null) {
 		var e = {
-			name: key,
-			src: "../res/sound/" + entry.soundFile 
+			id: key,
+			src: "../res/sound/" + entry.soundFile + ".ogg|" + "../res/sound/" + entry.soundFile + ".mp3"
 		};
 		if (entry.instances != undefined) {
-			e.instances = entry.instances;
+			e.data = entry.instances;
 		}
 		soundSources.push(e);
 	}
@@ -168,8 +168,9 @@ function _Sound() {
 	this.play = function(entry) {
 		Log.notify("\"" + entry.subtitle + "\"", "sound");
 		var mute = false;
-		if (!mute && entry.soundFile != null)
+		if (!mute && entry.soundFile != null) {
 			SoundJS.play(entry._key);
+		}
 
 		if (entry.subtitle != null) {
 			var text = new Kinetic.Text({
