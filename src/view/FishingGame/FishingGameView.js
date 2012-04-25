@@ -61,7 +61,6 @@ function FishingView(evm, stage, gameState, model) {
 	});
 	var basket = null;
 	var pondLayer = backgroundLayer;
-	//var pondLayer = new Kinetic.Layer();
 	stage.add(backgroundLayer);
 	stage.add(pondLayer);
 	stage.add(shapeLayer);
@@ -94,7 +93,11 @@ function FishingView(evm, stage, gameState, model) {
 			/* ============================================================== */
 			shapeLayer.attrs.scale.x = 0.1;
 			/* ============================================================== */
-			Tween.get(shapeLayer.attrs.scale).to({x:1}, 2000);
+			Tween.get(shapeLayer.attrs.scale).to({x:1}, 2000).call(function() {
+				outGroup.moveTo(backgroundLayer);
+				outGroup.attrs.x = ROLL_DIFF;
+				backgroundLayer.draw();
+			});
 			
 		});
 		basket.moveTo(stage._gameLayer);
@@ -285,6 +288,10 @@ function FishingView(evm, stage, gameState, model) {
 			}, EVM_TAG + "_ROD");
 		};
 		startPendulum();
+		
+		this.roll = function(diff) {
+			
+		};
 		
 		/**
 		 * @param {Fish} fish
@@ -751,6 +758,7 @@ function FishingView(evm, stage, gameState, model) {
 	}, EVM_TAG);
 	
 	var forget = function() {
+		evm.forget(EVM_TAG + "_ROD");
 		evm.forget(EVM_TAG);
 	};
 	

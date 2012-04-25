@@ -217,7 +217,7 @@ function Game(gameState) {
 		//evm.print();
 	};
 	
-	var fishingGameConfig = { maxNumber: 9, numberFishes: 5, targetNumber: 3, numberCorrect: 2 };
+	var fishingGameConfig = { maxNumber: 9, numberFishes: 5, targetNumber: 3, numberCorrect: 1 };
 	
 	evm.tell("Game.loadingSounds");
 	//PreloadJS.initialize();
