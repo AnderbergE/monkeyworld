@@ -7,6 +7,13 @@
 var IMAGE_SOURCES = {
 /** @const */ "fish0": "fish/0.png",
 /** @const */ "fish1": "fish/1.png",
+/** @const */ "fish2": "fish/2.png",
+/** @const */ "fish3": "fish/BlueFish_256x256.png",
+/** @const */ "fish4": "fish/GreenFish_256x256.png",
+/** @const */ "fish5": "fish/RedFish_256x256.png",
+/** @const */ "fish6": "fish/YellowFish_256x256.png",
+/** @const */ "fish7": "fish/Gold-Fish.png",
+/** @const */ "fish8": "fish/Clown-Fish.png",
 /** @const */ "bamboo": "bambu.png",
 /** @const */ "plant": "plant.png",
 /** @const */ "sky": "sky.png",

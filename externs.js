@@ -420,3 +420,26 @@ Tween.to = function(props, duration, ease) {};
  * @param {Number} duration The duration of the wait in milliseconds (or in ticks if useTicks is true).
  */
 Tween.wait = function(duration) {};
+
+/**
+ * @constructor
+ */
+function JSON() {};
+
+/**
+ * @param {string} str
+ * @return {Object}
+ */
+JSON.parse = function(str) {};
+
+/**
+ * @param {Object} obj
+ * @return {string}
+ */
+JSON.stringify = function(obj) {};
+
+/**
+ * @param {string} arg1
+ * @param {string=} arg2
+ */
+$.cookie = function(arg1, arg2) {};

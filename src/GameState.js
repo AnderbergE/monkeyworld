@@ -15,6 +15,13 @@ function GameState() {
 	var results = new Array();
 	var _madeMistake = false;
 	
+	this.useSettings = function() {
+		maxSeeRounds = Settings.get("global", "monkeySeeRounds");
+		maxDoRounds = maxSeeRounds;
+		maxBeforeHelp = Settings.get("global", "triesBeforeGuardianAngel");
+	};
+	this.useSettings();
+	
 	this.lastDoRound = function() {
 		return maxDoRounds === currentDoRound;
 	};

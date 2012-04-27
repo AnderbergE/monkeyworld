@@ -1,8 +1,13 @@
 // To prevent SoundJS producing error message. Bug in SoundJS compilation?
 SoundJS.testAudioStall = function(event) {};
 
+var game = null;
+window["egame"] = null;
 window.onload = function() {
-	new Game(new GameState());
+
+	
+	game = new Game(new GameState());
+	window["egame"] = game;
 };
 
 
@@ -11,28 +16,78 @@ window.onload = function() {
  */
 function Game(gameState) {
 
-	/** @const */ var WIN_WIDTH = 1024;
-	/** @const */ var WIN_HEIGHT = 768;
-	var stage = new Kinetic.Stage({
+//	/** @const */ var WIN_WIDTH = 1024;
+//	/** @const */ var WIN_HEIGHT = 768;
+	
+	var settingsPanel = new SettingsPanel(Settings);
+	
+	Settings.setJSON(JSON.parse($.cookie("monkeyWorldSettings")));
+	
+	this["applySettings"] = function() {
+		settingsPanel.apply();
+		$.cookie("monkeyWorldSettings", JSON.stringify(Settings.json()));
+	};
+	
+	this["hideSettings"] = function() {
+		settingsPanel.hide();
+	};
+	
+	this["showSettings"] = function() {
+		settingsPanel.show();
+	};
+	
+	var stageConfig = {
         container: 'container',
-        width: WIN_WIDTH,
-        height: WIN_HEIGHT
-    });
-	
-	var overlayLayer = new Kinetic.Layer({
-        width: WIN_WIDTH,
-        height: WIN_HEIGHT
-	});
-	
-	var gameLayer = new Kinetic.Layer({
-		width: WIN_WIDTH,
-        height: WIN_HEIGHT
-	});
+        width: 1024,
+        height: 768
+	};
+	var stage = new Kinetic.Stage(stageConfig);
 
-	var backgroundLayer = new Kinetic.Layer({
-		width: WIN_WIDTH,
-        height: WIN_HEIGHT
-	});
+	var resizeGame = function() {
+		var w = window.innerWidth - 10;
+		var h = window.innerHeight - 10;
+		
+		var WIN_WIDTH = w;
+		var WIN_HEIGHT = WIN_WIDTH / 4 * 3;	
+		
+		if (WIN_HEIGHT > h) {
+			WIN_HEIGHT = h;
+			WIN_WIDTH = WIN_HEIGHT / 3 * 4;	
+		}
+		
+		
+		stage.attrs.width = (WIN_WIDTH);
+		stage.attrs.height = (WIN_HEIGHT);
+		if (WIN_WIDTH < w) {
+			var container = document.getElementById("container");
+			container.style.left = Math.round((w - WIN_WIDTH) / 2) + "px";
+		}
+		
+		if (WIN_HEIGHT < h) {
+			var container = document.getElementById("container");
+			container.style.top = Math.round((h - WIN_HEIGHT) / 2) + "px";
+		}
+	};
+	
+	document.body.style.backgroundImage = "background-image: linear-gradient(bottom, rgb(0,77,0) 24%, rgb(92,250,174) 74%, rgb(0,204,255) 87%)";
+	
+	resizeGame();
+	stage._mwunit = stage.getWidth() / 1024;
+	//window.addEventListener('resize', resizeGame, false);
+	//window.addEventListener('orientationchange', resizeGame, false);
+
+	/*c = document.getElementById("container");
+	w = document.getElementById("wrapper");
+	c.style.width = WIN_WIDTH;
+	c.style.height = WIN_HEIGHT;
+	w.style.width = WIN_WIDTH;*/
+	//w.style.height = WIN_HEIGHT;
+	
+	var overlayLayer = new Kinetic.Layer();
+	
+	var gameLayer = new Kinetic.Layer();
+
+	var backgroundLayer = new Kinetic.Layer();
 	stage.add(backgroundLayer);
 	stage.add(gameLayer);
 	stage.add(overlayLayer);
@@ -58,6 +113,70 @@ function Game(gameState) {
 		stage._drawBackgroundLayerStop = true;
 	};
 
+	/**
+	 * @constructor
+	 * @extends {Kinetic.Shape}
+	 */
+	Kinetic.Button = function(config) {
+		if (config.width === undefined) config.width = 100 * stage._mwunit;
+		if (config.height === undefined) config.height = 20 * stage._mwunit;
+		var button = new Kinetic.Group({
+			x: config.x,
+			y: config.y,
+			width: config.width,
+			height: config.height
+		});
+		var _rect = new Kinetic.Rect({
+			x: 0, y: 0,
+			width: config.width, height: config.height,
+			fill: "#ccc",
+			strokeWidth: 1,
+			stroke: "white"
+		});
+		var _text = new Kinetic.Text({
+			text: config.text,
+			fontFamily: "Arial",
+			textFill: "black",
+			fontSize: 10 * stage._mwunit,
+			x: config.width / 2,
+			y: config.height / 2,
+			verticalAlign: "middle",
+			align: "center"
+		});
+		button.add(_rect);
+		button.add(_text);
+		button.on("mousedown touchstart", config.callback);
+		return button;
+	};
+	
+	var settingsButton = null;
+	var restartButton = null;
+	var that = this;
+
+	function setUpButtons() {
+		if (settingsButton != null) gameLayer.remove(settingsButton);
+		if (restartButton != null) gameLayer.remove(restartButton);
+		gameLayer.add((settingsButton = new Kinetic.Button({
+			x: stage.getWidth() - 100 * stage._mwunit,
+			y: 3,
+			width: 100 * stage._mwunit,
+			text: Strings.get("SETTINGS"),
+			callback: function() {
+				that["showSettings"]();
+			}
+		})));
+		gameLayer.add((restartButton = new Kinetic.Button({
+			x: stage.getWidth() - 203 * stage._mwunit,
+			y: 3,
+			width: 100 * stage._mwunit,
+			text: Strings.get("RESTART"),
+			callback: function() {
+				that.restart();
+			}
+		})));
+	}
+	setUpButtons();
+	
 	Sound.setStage(stage);
 	var evm = new GameEventManager(stage);
 	var gamerPlayer = new GamerPlayer(evm);
@@ -119,7 +238,7 @@ function Game(gameState) {
 				bigShowing.moveTo(gameLayer);
 				stage.pleaseDrawOverlayLayer();
 				bigShowing.setText(text);
-				bigShowing.setPosition(stage.attrs.width/2, 150); 
+				bigShowing.setPosition(stage.attrs.width/2, 150 * stage._mwunit); 
 			} else {
 				bigShowing = new Kinetic.Text({
 					x: stage.attrs.width/2,
@@ -134,13 +253,14 @@ function Game(gameState) {
 						scale: {x:0.001,y:0.001},
 					textStrokeWidth: 1
 				});
+				Utils.scaleShape(bigShowing, stage._mwunit);
 			}
 			gameLayer.add(bigShowing);
 			
-			Tween.get(bigShowing.attrs.scale).to({x:2, y:2}, 1000).wait(3000).call(function() {
-				Tween.get(bigShowing.attrs.scale).to({x: 1, y: 1}, 1000).call(function() {
+			Tween.get(bigShowing.attrs.scale).to(Utils.scaleShape({x:2, y:2}, stage._mwunit), 1000).wait(3000).call(function() {
+				Tween.get(bigShowing.attrs.scale).to(Utils.scaleShape({x: 1, y: 1}, stage._mwunit), 1000).call(function() {
 				});
-				Tween.get(bigShowing.attrs).to({y: 50}, 1000).call(function(){
+				Tween.get(bigShowing.attrs).to({y: 50*stage._mwunit }, 1000).call(function(){
 					bigShowing.moveTo(overlayLayer);
 					stage.pleaseDrawOverlayLayer();
 				});
@@ -210,14 +330,15 @@ function Game(gameState) {
 	};
 	
 	function killActiveModule() {
+		modelModule.tearDown();
 		modelModule.resetMistake();
 		modelModule.resetActions();
 		modelModule = noModule;
 		evm.tell("Game.tearDown");
-		//evm.print();
+		evm.tell("Game.viewTearDown");
 	};
 	
-	var fishingGameConfig = { maxNumber: 9, numberFishes: 5, targetNumber: 3, numberCorrect: 1 };
+	var fishingGameConfig = { maxNumber: 9, numberFishes: 7, targetNumber: 3, numberCorrect: 1 };
 	
 	evm.tell("Game.loadingSounds");
 	//PreloadJS.initialize();
@@ -350,6 +471,15 @@ function Game(gameState) {
 	evm.on("Game.startGame", function(msg) {
 		kickInModule(msg.view, msg.model, fishingGameConfig);
 	}, "game");
+	
+	this.restart = function() {
+		//killActiveModule();
+		gameState = new GameState();
+		kickInModule(FishingView, FishingGame, fishingGameConfig);
+		_produce_sounds();
+		setUpButtons();
+		gameState.useSettings();
+	};
 	
 	this.saveState = function() {
 		

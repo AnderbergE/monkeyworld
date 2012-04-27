@@ -10,18 +10,18 @@
  */
 function FishCountingView(evm, stage, gameState, model, EVM_TAG) {
 
-	/** @const */ var GRID_POSITION   = { x: 700 , y: 150 };
-	/** @const */ var GRID_STEP       = { x: 100,  y: 150 };
+	/** @const */ var GRID_POSITION   = { x: 700 * stage._mwunit , y: 150 * stage._mwunit };
+	/** @const */ var GRID_STEP       = { x: 100 * stage._mwunit,  y: 150 * stage._mwunit };
 	/** @const */ var GRID_WIDTH      = 2;
 	/** @const */ var GRID_FONT       = "Arial";
 	/** @const */ var GRID_FONT_COLOR = "red";
 	/** @const */ var BASKET_CONFIG = {
-		/** @const */ x: 200,
-		/** @const */ y: 200,
-		/** @const */ width: 300,
-		/** @const */ height: 500,
+		/** @const */ x: 200 * stage._mwunit,
+		/** @const */ y: 200 * stage._mwunit,
+		/** @const */ width: 300 * stage._mwunit,
+		/** @const */ height: 500 * stage._mwunit,
 		/** @const */ stroke: "black",
-		/** @const */ strokeWidth: 3
+		/** @const */ strokeWidth: 3 * stage._mwunit
 	};
 
 	/** @type {FishingGame}   */ var fishTank = null;
@@ -43,16 +43,16 @@ function FishCountingView(evm, stage, gameState, model, EVM_TAG) {
 			x: x, y: y
 		});
 		var rect = new Kinetic.Rect({
-			width: 100,
-			height: 100
+			width: 100 * stage._mwunit,
+			height: 100 * stage._mwunit
 		});
 		var number = new Kinetic.Text({
 			text: num,
-			fontSize: 72,
+			fontSize: 72 * stage._mwunit,
 			fontFamily: GRID_FONT,
 			textFill: GRID_FONT_COLOR,
 			textStroke: "black",
-			textStrokeWidth: 2
+			textStrokeWidth: 2 * stage._mwunit
 		});
 		numGroup.add(rect);
 		numGroup.add(number);
@@ -92,8 +92,8 @@ function FishCountingView(evm, stage, gameState, model, EVM_TAG) {
 		 */
 		var basket = fishTank.getBasket();
 		var fishGrid = Utils.gridizer(
-			BASKET_CONFIG.x + 75, BASKET_CONFIG.y + 100,
-			135, 135, 2
+			BASKET_CONFIG.x + 75 * stage._mwunit, BASKET_CONFIG.y + 100 * stage._mwunit,
+			135 * stage._mwunit, 135 * stage._mwunit, 2
 		);
 		/*
 		 * Not very stylish to have to check if the basket slot is defined, but

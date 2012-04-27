@@ -61,6 +61,11 @@ function Fish(ieventManager, id, inumber, ix, iy, ispecies) {
 		switch (species) {
 		case 0: return { x: 0.1, y: 0 }; break;
 		case 1: return { x: 0.1, y: 0 }; break;
+		case 2: return { x: 0.1, y: 0 }; break;
+		case 3: return { x: 0.1, y: 0 }; break; // blue
+		case 4: return { x: 0.06, y: 0.07 }; break; // green
+		case 5: return { x: 0.06, y: 0.07 }; break; // red
+		case 6: return { x: 0.1, y: 0 }; break; // yellow
 		default: return { x: 0, y: 0 }; break;
 		}
 	};

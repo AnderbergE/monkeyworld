@@ -10,7 +10,17 @@ var Strings = {
 		"sv": "Laddar ner bilder...",
 		"en": "Downloading images..."
 	},
-		
+	
+	"RESTART": {
+		"sv": "Starta om",
+		"en": "Restart"
+	},
+	
+	"SETTINGS": {
+		"sv": "Inställningar",
+		"en": "Settings"
+	},
+	
 	"YAY": {
 		"sv": "Hurra!",
 		"en": "Yay!"
@@ -169,6 +179,81 @@ var Strings = {
 	"NUMBER_10": {
 		"sv": "nummer 10",
 		"en": "number 10"
+	},
+	
+	"SETTINGS_LABEL": {
+		"sv": "Inställningar",
+		"en": "Settings"
+	},
+	
+	"SETTINGS_APPLY": {
+		"sv": "Verkställ",
+		"en": "Apply"
+	},
+	
+	"SETTINGS_SHOW": {
+		"sv": "Visa inställningar",
+		"en": "Show settings"
+	},
+	
+	"SETTINGS_HIDE": {
+		"sv": "Göm inställningar",
+		"en": "Hide settings"
+	},
+	
+	"SETTINGS_CANCEL": {
+		"sv": "Avbryt",
+		"en": "Cancel"
+	},
+	
+	"SETTINGS_GLOBAL_LABEL": {
+		"sv": "Globala",
+		"en": "Global"
+	},
+
+	"SETTINGS_GLOBAL_LANGUAGE_LABEL": {
+		"sv": "Språk",
+		"en": "Language"
+	},
+	
+	"SETTINGS_GLOBAL_MONKEYSEEROUNDS_LABEL": {
+		"sv": "Monkey See-rundor",
+		"en": "Monkey See rounds"
+	},
+	
+	"SETTINGS_GLOBAL_TRIESBEFOREGUARDIANANGEL_LABEL": {
+		"sv": "Försök innan skyddsängel",
+		"en": "Tries before guardian angel"
+	},
+	
+	"SETTINGS_MINIGAMES_LABEL": {
+		"sv": "Minispel",
+		"en": "Mini-games"
+	},
+	
+	"SETTINGS_MINIGAMES_FISHINGGAME_LABEL": {
+		"sv": "Fiskespel",
+		"en": "Fishing Game"
+	},
+	
+	"SETTINGS_MINIGAMES_FISHINGGAME_TARGETNUMBER_LABEL": {
+		"sv": "Målnummer",
+		"en": "Target number"
+	},
+	
+	"SETTINGS_MINIGAMES_FISHINGGAME_NUMBERCORRECT_LABEL": {
+		"sv": "Antal korrekta fiskar",
+		"en": "Number of correct fish"
+	},
+	
+	"SETTINGS_MINIGAMES_FISHINGGAME_NUMBEROFFISH_LABEL": {
+		"sv": "Antal fiskar totalt",
+		"en": "Number of fish totally"
+	},
+	
+	"SETTINGS_MINIGAMES_FISHINGGAME_MAXNUMBER_LABEL": {
+		"sv": "Högsta möjliga nummer",
+		"en": "Maximum number on fish"
 	}
 	
 };
@@ -178,7 +263,8 @@ var Strings = {
  * @param {...number} var_args
  */
 Strings.get = function(str, var_args) {
-	var tmp = Strings[str][GlobalSettings.LANGUAGE];
+	if (Strings[str] === undefined) return null;
+	var tmp = Strings[str][Settings.get("global", "language")];
 	for(var i = 1; i < arguments.length; i++) 
 	      tmp = tmp.replace("%"+i, arguments[i]);
 	return tmp;

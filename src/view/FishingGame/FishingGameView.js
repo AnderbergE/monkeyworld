@@ -12,6 +12,10 @@ function FishingView(evm, stage, gameState, model) {
 	/** @type {Animator}                     */ var animator = new Animator();
 	/** @type {FishingRod}                   */ var fishingRod = null;
 	/** @type {boolean}                      */ var allowClicks = true;
+	/** @type {BubbleGenerator}              */ var bubbleGenerator = null;
+	/** @type {WaveGenerator}                */ var waveGenerator1 = null;
+	/** @type {WaveGenerator}                */ var waveGenerator2 = null;
+	/** @type {WaveGenerator}                */ var waveGenerator3 = null;
 	
 	/**
 	 * Configuration of the view
@@ -24,26 +28,30 @@ function FishingView(evm, stage, gameState, model) {
 		},
 		
 		/** @const */ POND: {
-			/** @const */ X: 285,
-			/** @const */ Y: 150,
-			/** @const */ WIDTH: 400,
-			/** @const */ HEIGHT: 580
+			/** @const */ X: 285/1024 * stage.getWidth(),
+			/** @const */ Y: 150/768 * stage.getHeight(),
+			/** @const */ WIDTH: 400 / 1024 * stage.getWidth(),
+			/** @const */ HEIGHT: 580 / 768 * stage.getHeight(),
+			/** @const */ COLOR_DARK: "#598FD9",
+			/** @const */ COLOR_LIGHT: "#8ED6FF",
+			/** @const */ GRADIENT_RADIUS_INNER: 30 * stage._mwunit,
+			/** @const */ GRADIENT_RADIUS_OUTER: 400 * stage._mwunit
 		},
 		
 		/** @const */ BASKET: {
-			/** @const */ X: 710,
-			/** @const */ Y: 50,
-			/** @const */ WIDTH: 270,
-			/** @const */ HEIGHT: 400
+			/** @const */ X: 710/1024  * stage.getWidth(),
+			/** @const */ Y: 50/768  * stage.getHeight(),
+			/** @const */ WIDTH: 270/1024 * stage.getWidth(),
+			/** @const */ HEIGHT: 400/768 * stage.getHeight()
 		}
 
 		};
 	}();
-	var ROLL_DIFF = -230;
+	var ROLL_DIFF = -240 * stage._mwunit;
 	var BASKET_SLOTS = {};
 	var basketGrid = Utils.gridizer(
-		config.BASKET.X + 64, config.BASKET.Y + config.BASKET.HEIGHT - 64,
-		125, -128, 2
+		config.BASKET.X + 64/1024 * stage.getWidth(), config.BASKET.Y + config.BASKET.HEIGHT - 64/768 * stage.getHeight(),
+		125/1024 * stage.getWidth(), -128/768 * stage.getHeight(), 2
 	);
 	for (var i = 0; i < 8; i++) {
 		BASKET_SLOTS[i] = basketGrid.next();
@@ -59,12 +67,13 @@ function FishingView(evm, stage, gameState, model) {
 	var outGroup = new Kinetic.Group({
 		x: 0, y:0
 	});
+	
 	var basket = null;
 	var pondLayer = backgroundLayer;
 	stage.add(backgroundLayer);
 	stage.add(pondLayer);
 	stage.add(shapeLayer);
-
+	
 	var turnOffClick = function(fish) {
 		fishGroups[fish].off("mousedown touchstart");
 	};
@@ -79,8 +88,11 @@ function FishingView(evm, stage, gameState, model) {
 	
 	function switchToMonkey() {
 		outGroup.moveTo(shapeLayer);
-		shapeLayer.attrs.centerOffset = {x: config.POND.WIDTH + config.POND.X, y: 0};
-		shapeLayer.attrs.x = config.POND.WIDTH + config.POND.X;
+		basket.moveTo(shapeLayer);
+		var offset = config.POND.WIDTH + config.POND.X + 300 * stage._mwunit;
+		shapeLayer.attrs.centerOffset = {x: offset, y: 0};
+		shapeLayer.attrs.x = offset;
+		basket.moveToBottom();
 		outGroup.moveToBottom();
 		backgroundLayer.draw();
 		Tween.get(shapeLayer.attrs.scale).to({x:0}, 2000).call(function(){
@@ -100,12 +112,12 @@ function FishingView(evm, stage, gameState, model) {
 			});
 			
 		});
-		basket.moveTo(stage._gameLayer);
-		backgroundLayer.draw();
-		Tween.get(basket.attrs).to({x: basket.attrs.x - 230}, 2000).call(function() {
-			basket.moveTo(backgroundLayer);
-			backgroundLayer.draw();
-		});
+		//basket.moveTo(stage._gameLayer);
+		//backgroundLayer.draw();
+//		Tween.get(basket.attrs).to({x: basket.attrs.x - ROLL_DIFF}, 2000).call(function() {
+//			basket.moveTo(backgroundLayer);
+//			backgroundLayer.draw();
+//		});
 	};
 	
 	function translateFish(fish) {
@@ -144,11 +156,21 @@ function FishingView(evm, stage, gameState, model) {
 	};
 	
 	var roundDone = function() {
-		tearDownView();
 		evm.off("frame", EVM_TAG);
+		bubbleGenerator.stop();
+		waveGenerator1.stop();
+		waveGenerator2.stop();
+		waveGenerator3.stop();
+		tearDownView();
 		fishCountingView.init(fishTank, fishGroups);
 	};
 
+	evm.on("Game.viewTearDown", function(msg) {
+		tearDownView();
+		fishCountingView.tearDown();
+		forget();
+	}, EVM_TAG);
+	
 	evm.on("FishingGame.catch", function(msg) {
 		//rod.initCatch(msg.fish, msg.done);
 		fishingRod.catchFish(msg.fish, msg.done, msg.hooked);
@@ -190,12 +212,229 @@ function FishingView(evm, stage, gameState, model) {
 	
 	/**
 	 * @constructor
+	 * @param {number} height
+	 * @param {string} darkColor
+	 * @param {string} lightColor
+	 * @param {number} velocity
+	 * @param {number} dy
+	 */
+	function WaveGenerator(height, darkColor, lightColor, velocity, dy) {
+	
+		var waveGroup = new Kinetic.Group({x:config.POND.X, y:config.POND.Y});
+		shapeLayer.add(waveGroup);
+		
+		var startPosX = -stage._mwunit * 60;
+		var startPosY = stage._mwunit * 20;
+		var defaultInterval = 4000 * stage._mwunit;
+		
+		var defaultS = config.POND.WIDTH;
+		
+		var init = function() {
+			for (var i = startPosX; i < defaultS; i+= velocity * defaultInterval / 1000 * 2) {
+				createWave(i, velocity);
+			}
+		};
+		
+		var createWave = function(startPosX, velocity) {
+			var s = defaultS - startPosX;
+			var wave = new Kinetic.Wave({wx: startPosX, wy: startPosY + dy, height: height, darkColor: darkColor, lightColor: lightColor});
+			waveGroup.add(wave);
+			Tween.get(wave.attrs).to({wx: config.POND.WIDTH}, s / velocity * 1000).call(function() {
+				waveGroup.remove(wave);
+			});
+		};
+		
+		// TODO: WaveGenerator
+		this.start = function() {
+			init();
+			this._interval = setInterval(function() {
+				createWave(startPosX, velocity);
+			}, defaultInterval);
+		};
+		
+		this.stop = function() {
+			clearInterval(this._interval);
+		};
+		
+	};
+	
+	/**
+	 * @constructor
+	 * @param {Object} cfg
+	 * @extends {Kinetic.Shape}
+	 */
+	Kinetic.Wave = function(cfg) {
+		// TODO: Kinetic.Wave
+		//cfg.wx = 0;
+		//cfg.wy = 0;
+		var wave = new Kinetic.Shape(cfg);
+		var height = cfg.height;
+		var width = 50 * stage._mwunit;
+		
+		wave.drawFunc = function() {
+			var context = this.getContext();
+			
+			context.beginPath();
+			context.moveTo(0, -20 * stage._mwunit);
+			context.lineTo(config.POND.WIDTH, -20 * stage._mwunit);
+			context.lineTo(config.POND.WIDTH, 20 * stage._mwunit);
+			context.lineTo(0, 20 * stage._mwunit);
+			/*context.fillStyle = "red";
+			context.fill();*/
+			context.clip();
+			
+            context.beginPath();
+            context.moveTo(wave.attrs.wx, wave.attrs.wy);
+            context.lineTo(wave.attrs.wx + width, wave.attrs.wy);
+            context.quadraticCurveTo(
+            	Math.floor(wave.attrs.wx + width * 0.5),
+            	Math.floor(wave.attrs.wy - height * 0.5),
+            	Math.floor(wave.attrs.wx + width * 0.75),
+            	Math.floor(wave.attrs.wy - height)
+            );
+            context.quadraticCurveTo(
+        		Math.floor(wave.attrs.wx + width * 0.5),
+				Math.floor(wave.attrs.wy - height * 0.5),
+				Math.floor(wave.attrs.wx),
+				Math.floor(wave.attrs.wy)
+            );
+            var grd = context.createRadialGradient(
+            	config.POND.WIDTH / 2, 0, config.POND.GRADIENT_RADIUS_INNER,
+            	config.POND.WIDTH / 2, 0, config.POND.GRADIENT_RADIUS_OUTER
+            );
+            grd.addColorStop(1, wave.attrs.darkColor); // dark blue
+            grd.addColorStop(0, wave.attrs.lightColor); // light blue
+            context.fillStyle = grd;
+            context.fill();
+            context.closePath();
+            this.fillStroke();
+		};
+        wave.stroke = "black";
+        wave.strokeWidth = 4;
+		
+		return wave;
+	};
+	
+	/**
+	 * @constructor
+	 * The config should contain:
+	 *  {number} x
+	 *  {number} y
+	 *  {number} radius
+	 * @param {Object} config
+	 * @extends {Kinetic.Shape}
+	 */
+	Kinetic.Bubble = function(config) {
+		config.glow = {};
+		config.glow.x = config.radius / 2;
+		config.glow.y = -config.radius / 2;
+		config.glow.radius = config.radius / 3;
+		
+		var bubble = new Kinetic.Shape(config);
+		
+		
+		bubble.drawFunc = function() {
+			var context = this.getContext();
+			
+			
+	        var grd = context.createRadialGradient(
+	        	bubble.attrs.x,
+	        	bubble.attrs.y,
+	        	bubble.attrs.radius / 2,
+	        	bubble.attrs.x,
+	        	bubble.attrs.y,
+	        	bubble.attrs.radius
+	        );
+	        
+	        var grdGlow = context.createRadialGradient(
+	        	bubble.attrs.x + bubble.attrs.glow.x,
+	        	bubble.attrs.y + bubble.attrs.glow.y,
+	        	bubble.attrs.glow.radius / 5,
+	        	bubble.attrs.x + bubble.attrs.glow.x,
+	        	bubble.attrs.y + bubble.attrs.glow.y,
+	        	bubble.attrs.glow.radius
+	        );
+			
+		    context.beginPath();
+		    context.arc(Math.floor(bubble.attrs.x), Math.floor(bubble.attrs.y), bubble.attrs.radius, 0, 2 * Math.PI, false);
+		    grd.addColorStop(0, "rgba(255,255,255,0)"); // dark blue
+		    grd.addColorStop(1, "rgba(255,255,255,1)"); // light blue
+            context.fillStyle = grd;
+		    context.fill();
+		    
+		    context.beginPath();
+		    context.arc(Math.floor(bubble.attrs.x), Math.floor(bubble.attrs.y), bubble.attrs.radius, 0, 2 * Math.PI, false);
+		    grdGlow.addColorStop(0, "white"); // dark blue
+		    grdGlow.addColorStop(1, "rgba(255,255,255,0)"); // light blue
+            context.fillStyle = grdGlow;
+		    context.fill();
+		    context.closePath();
+		    context.beginPath();
+	        var x = bubble.attrs.x;
+	        var y = bubble.attrs.y;
+	        var radius = bubble.attrs.radius * 0.65;
+	        var startAngle = Math.PI / 2;
+	        var endAngle = Math.PI;
+	        var counterClockwise = false;
+
+	        context.arc(x, y, radius, startAngle, endAngle, counterClockwise);
+	        context.lineWidth = 2;
+	        // line color
+	        context.strokeStyle = "rgba(255,255,255,0.5)";
+	        context.stroke();
+		    //context.lineWidth = "1pt";
+		    //context.strokeStyle = "black";
+		    //context.stroke();
+		};
+		return bubble;
+	};
+	
+	/**
+	 * @constructor
+	 */
+	function BubbleGenerator() {
+		var createBubble = function() {
+			
+			var radius = Utils.getRandomInt(3 * stage._mwunit, 6 * stage._mwunit);
+			var x = Utils.getRandomInt(150 * stage._mwunit, 330 * stage._mwunit);
+			var y = Utils.getRandomInt(350 * stage._mwunit, 360 * stage._mwunit);
+			var time = Utils.getRandomInt(20000, 50000); 
+			var bubble = new Kinetic.Bubble({
+				x: x,
+				y: y,
+				radius: radius
+			});
+			Tween.get(bubble.attrs).to({y: (360 * stage._mwunit - y) + 80 * stage._mwunit}, time).call(function() {
+				destroyBubble(bubble);
+			});
+			shapeLayer.add(bubble);
+		};
+		
+		var destroyBubble = function(bubble) {
+			shapeLayer.remove(bubble);
+		};
+		
+		this.start = function() {
+			this._interval = setInterval(createBubble, 3000);
+		};
+		
+		this.stop = function() {
+			clearInterval(this._interval);
+		};
+	}
+	
+	/**
+	 * @constructor
 	 * @param {Object} config
 	 * @extends {Kinetic.Shape}
 	 */
 	Kinetic.Rod = function(config) {
 		
 		var line = new Kinetic.Shape(config);
+		var dx = Math.floor(-5/1024 * stage.getWidth());
+		var dy = Math.floor(7/768*stage.getHeight());
+		var fontSize = 0.018 * stage.getWidth();
+		var radius = 15/1024 * stage.getWidth();
 		
 		line.drawFunc = function() {
 			line.attrs.x3 = line.attrs.x2 + line.attrs.length * Math.sin(line.attrs.angle);
@@ -210,21 +449,39 @@ function FishingView(evm, stage, gameState, model) {
 			context.beginPath();
 			context.moveTo(line.attrs.x2, line.attrs.y2);
 			context.strokeStyle = "brown";			
-			context.lineTo(line.attrs.x3, line.attrs.y3);
+			context.lineTo(line.attrs.x3, line.attrs.y3 - radius - radius * 0.2);
 			context.lineWidth = line.attrs.strokeWidth;
 			context.stroke();
 			
+			context.beginPath();
+		    context.arc(Math.floor(line.attrs.x3), Math.floor(line.attrs.y3) - radius*0.95, radius * 0.2, Math.PI, 0, false);
+			context.lineWidth = 2;
+	        context.strokeStyle = "black";
+	        context.stroke();
+			
+			
+            var grd = context.createRadialGradient(
+            	line.attrs.x3 + radius * 0.5,
+            	line.attrs.y3 - radius * 0.5,
+            	radius*0.1,
+            	line.attrs.x3,
+            	line.attrs.y3,
+            	radius
+            );
+            grd.addColorStop(0, "#ff6666");
+            grd.addColorStop(0.5, "#ff0000");
+            grd.addColorStop(1, "#cc0000");
+			
 		    context.beginPath();
-		    context.arc(Math.floor(line.attrs.x3), Math.floor(line.attrs.y3), 15, 0, 2 * Math.PI, false);
-		    context.fillStyle = "red";
+		    context.arc(Math.floor(line.attrs.x3), Math.floor(line.attrs.y3), radius, 0, 2 * Math.PI, false);
+		    context.fillStyle = grd;
 		    context.fill();
-		    context.lineWidth = line.attrs.strokeWidth;
-		    context.strokeStyle = "black";
+		    context.lineWidth = line.attrs.strokeWidth * 0.5;
+		    context.strokeStyle = "#aa0000";
 		    context.stroke();
-		    
-		    context.font = "20pt Arial";
+		    context.font = fontSize +"px Arial";
 		    context.fillStyle = "white";
-		    context.fillText(fishTank.getTargetNumber(), Math.floor(line.attrs.x3) - 8, Math.floor(line.attrs.y3) + 9);
+		    context.fillText(fishTank.getTargetNumber(), Math.floor(line.attrs.x3 + dx), Math.floor(line.attrs.y3 + dy));
 		};
 		return line;
 	};
@@ -245,7 +502,7 @@ function FishingView(evm, stage, gameState, model) {
 		var maxAngle = Math.PI / 30;
 		
 		var rod = new Kinetic.Rod({
-			strokeWidth: 2,
+			strokeWidth: 2 * stage._mwunit,
 			x1: x1, x2: x2, y1: y1, y2: y2, length: length, angle: angle
 		});
 
@@ -288,10 +545,6 @@ function FishingView(evm, stage, gameState, model) {
 			}, EVM_TAG + "_ROD");
 		};
 		startPendulum();
-		
-		this.roll = function(diff) {
-			
-		};
 		
 		/**
 		 * @param {Fish} fish
@@ -368,9 +621,9 @@ function FishingView(evm, stage, gameState, model) {
 			animator.animateTo
 			(
 				rod.attrs,
-				{ y2: config.POND.Y-90, length: 20 },
+				{ y2: config.POND.Y-90 * stage._mwunit, length: 20 * stage._mwunit },
 				{
-					speed: { y2: 0.4, length: 0.5 },
+					speed: { y2: 0.4 * stage._mwunit, length: 0.5 * stage._mwunit },
 					onFrame: function()
 					{
 						var fishGroup = fishGroups[fish];
@@ -404,14 +657,12 @@ function FishingView(evm, stage, gameState, model) {
 			
 			Tween.get(fishGroups[fish].attrs).to(endState, 1500).call(function(){
 				//fishTank.putFishInBasket(fish);
-				if (allowClicks) {
-					fishTank.turnOnClicks();
-				}
+
 				fishTank.noactivity();
 			});
 			
-			Tween.get(fishGroups[fish].attrs.centerOffset).to({x:0,y:0}, 1500).call(function() {
-			});
+			Tween.get(fishGroups[fish].attrs.centerOffset).to({x:0,y:0}, 1500);
+			
 			animator.animateTo(
 				rod.attrs,
 				{ length: length, angle: 0, y2: y2 },
@@ -421,6 +672,9 @@ function FishingView(evm, stage, gameState, model) {
 					onFinish: function() {
 						done();
 						startPendulum();
+						if (allowClicks) {
+							fishTank.turnOnClicks();
+						}
 					}
 				}
 			);
@@ -435,6 +689,9 @@ function FishingView(evm, stage, gameState, model) {
 	var freeFish = function(fish, done) {
 		if (fish.canFree()) {
 			Log.debug("Starting to free " + fish, "fish");
+			if (allowClicks) {
+				fishTank.turnOffClicks();
+			}
 			/** @type {Kinetic.Group} */ var group = fishGroups[fish];
 			animator.animateTo
 			(
@@ -454,6 +711,9 @@ function FishingView(evm, stage, gameState, model) {
 								onFrame: function() {},
 								onFinish: function() {
 									done();
+									if (allowClicks) {
+										fishTank.turnOnClicks();
+									}
 								}
 							}
 						);
@@ -527,13 +787,23 @@ function FishingView(evm, stage, gameState, model) {
 			x: 0,
 			y: 0,
 			text: fish.getTargetNumber(),
-			fontSize: 48,
+			fontSize: 48/1024*stage.getWidth(),
 			fontFamily: "Gloria Hallelujah",
 			textFill: "white",
 			align: "center",
 			verticalAlign: "middle",
-			textStroke: "#444"
+			textStroke: "#444",
+			textStrokeWidth: 2/1024*stage.getWidth()
 		});
+		/*
+		var mouth = new Kinetic.Circle({
+			x: fish.getMouthPosition().x * stage.getWidth() / 2,
+			y: fish.getMouthPosition().y * stage.getHeight() / 2,
+			radius: 10,
+			fill: "red"
+		});
+		fishGroup.add(mouth);
+		*/
 		fishGroup.add(numberText);
 		numberText.setScale(fish.getScale());
 
@@ -576,9 +846,9 @@ function FishingView(evm, stage, gameState, model) {
 				context.closePath();
 				this.fillStroke();
 			},
-			fill: "#EED6AF",
+			fill: "#EED6AF"/*,
 			stroke: "#CDBA96",
-			strokeWidth: 4
+			strokeWidth: 4*/
 		});
 		layer.add(triangle);
 	};
@@ -593,6 +863,10 @@ function FishingView(evm, stage, gameState, model) {
 		that.setEventManager(evm);
 		fishTank = model;
 		
+		waveGenerator2 = new WaveGenerator(30 * stage._mwunit, "#3333ff", "#aaaaff", 4, -2 * stage._mwunit);
+		waveGenerator3 = new WaveGenerator(20 * stage._mwunit, "blue", "white", 6, -2 * stage._mwunit);
+		waveGenerator1 = new WaveGenerator(15 * stage._mwunit, config.POND.COLOR_DARK, config.POND.COLOR_LIGHT, 8, -1 * stage._mwunit);
+		
 		var fishArray = fishTank.getAllFish();
 		for (var i = 0; i < fishArray.length; i++) {
 			createFish(fishArray[i]);
@@ -602,107 +876,52 @@ function FishingView(evm, stage, gameState, model) {
 		that.basicInit(gameState);
 		
     	Log.debug("Building stage...", "view");
-    	
-		var water = new Kinetic.Rect({
-			x: config.POND.X,
-			y: config.POND.Y + 20,
-			width: config.POND.WIDTH,
-			height: config.POND.HEIGHT - 20,
-			fill: "#00D2FF",
-			stroke: "#436EEE",
-			strokeWidth: 4
-		});
-		var waterSurface = new Kinetic.Shape({
-			drawFunc: function(){
-				var that = this;
-				var context = that.getContext();
-				context.beginPath();
-				context.moveTo(config.POND.X + 00, config.POND.Y);
-				context.lineTo(config.POND.X + config.POND.WIDTH - 00, config.POND.Y);
-				context.lineTo(config.POND.X + config.POND.WIDTH, config.POND.Y + 20);
-				context.lineTo(config.POND.X, config.POND.Y + 20);
-				context.closePath();
-				this.fillStroke();
-			},
-			fill: "#00FFFF",
-			alpha: 1
-		});
-		var waterSurface2 = new Kinetic.Shape({
-			drawFunc: function(){
-				var that = this;
-				var context = that.getContext();
-				context.beginPath();
-				context.moveTo(config.POND.X + 00, config.POND.Y+10);
-				context.lineTo(config.POND.X + config.POND.WIDTH - 0, config.POND.Y+10);
-				context.lineTo(config.POND.X + config.POND.WIDTH, config.POND.Y + 20);
-				context.lineTo(config.POND.X, config.POND.Y + 20);
-				context.closePath();
-				this.fillStroke();
-			},
-			fill: "#00FFFF",
-			stroke: "#00FFFF",
-			strokeWidth: 0,
-			alpha: 0.5
-		});
-		images["sky"].style.width = "300px";
-		
+
+		var water = new Kinetic.Shape({
+          drawFunc: function() {
+            var context = this.getContext();
+            context.beginPath();
+            context.moveTo(config.POND.X, config.POND.Y + 17 * stage._mwunit);
+            context.lineTo(config.POND.X + config.POND.WIDTH, config.POND.Y + 17 * stage._mwunit);
+            context.lineTo(config.POND.X + config.POND.WIDTH, config.POND.Y + config.POND.HEIGHT);
+            context.lineTo(config.POND.X, config.POND.Y + config.POND.HEIGHT);
+            
+            var grd = context.createRadialGradient(
+            	config.POND.X + config.POND.WIDTH / 2, config.POND.Y, config.POND.GRADIENT_RADIUS_INNER,
+            	config.POND.X + config.POND.WIDTH / 2, config.POND.Y, config.POND.GRADIENT_RADIUS_OUTER
+            );
+            grd.addColorStop(1, config.POND.COLOR_DARK); // dark blue
+            grd.addColorStop(0, config.POND.COLOR_LIGHT); // light blue
+            context.fillStyle = grd;
+            context.fill();
+            
+            context.closePath();
+            this.fillStroke();
+          }
+        });
+
+		images["sky"].style.width = 300*stage._mwunit + "px";
+
 		basket = new Kinetic.Image({ x: config.BASKET.X, y: config.BASKET.Y, width: config.BASKET.WIDTH, height: config.BASKET.HEIGHT, image: images["basket"] });
+		var sky = new Kinetic.Image({
+			x: config.POND.X,
+			y: config.SKY.Y * stage._mwunit,
+			width: config.POND.WIDTH,
+			image: images['sky']
+		});
 
-		var sky = new Kinetic.Image({ x: config.POND.X, y: config.SKY.Y, width: config.POND.WIDTH, image: images['sky'] });
-		
-		// TOP LEFT
-		var bamboo0 = new Kinetic.Image({ x: config.POND.X-10, y: config.SKY.Y-15, image: images["bamboo"] });
-		
-		// TOP RIGHT
-		var bamboo1 = new Kinetic.Image({ x: config.POND.X+config.POND.WIDTH-10, y: config.SKY.Y-15, image: images["bamboo"] });
-		
-		// BOTTOM LEFT
-		var bamboo3 = new Kinetic.Image({ x: config.POND.X-10, y: 255, image: images["bamboo"] });
-		
-		// BOTTOM RIGHT
-		var bamboo4 = new Kinetic.Image({ x: config.POND.X+config.POND.WIDTH-10, y: 255, image: images["bamboo"] });
-		
-		// BOTTOM
-		var bamboo7 = new Kinetic.Image({ x: config.POND.X-10, y: config.POND.Y + config.POND.HEIGHT+5, height: config.POND.WIDTH,rotation: -Math.PI/2, image: images["bamboo"] });
-		
-		// TOP
-		var bamboo9 = new Kinetic.Image({ x: config.POND.X, y: config.SKY.Y, height:config.POND.WIDTH, rotation: -Math.PI/2, image: images["bamboo"] });
-
-//		var bamboo2 = new Kinetic.Image({ x: 1024-20, y: 20, image: images["bamboo"] });
-//		var bamboo5 = new Kinetic.Image({ x: 1024-20, y: 285, image: images["bamboo"] });
-//		var bamboo6 = new Kinetic.Image({ x: config.POND.X+config.POND.WIDTH, y: 500, height:320, rotation: -Math.PI/2, image: images["bamboo"] });
-//		var bamboo8 = new Kinetic.Image({ x: config.POND.X+config.POND.WIDTH, y: 760, height:320,rotation: -Math.PI/2, image: images["bamboo"] });
-//		var bamboo10 = new Kinetic.Image({ x: config.POND.X+config.POND.WIDTH, y: 20,  height:320, rotation: -Math.PI/2, image: images["bamboo"] });
-		//backgroundLayer.add(background);
-
-		//backgroundLayer.add(avatar);
 		outGroup.add(sky);
 		backgroundLayer.add(basket);
 		
 		outGroup.add(water);
-		outGroup.add(waterSurface);
-		outGroup.add(waterSurface2);
+
 		createBottom(outGroup,
 				 config.POND.X,
 				 config.POND.X + config.POND.WIDTH,
 				 config.POND.Y + config.POND.HEIGHT,
 				 50,
 				 80);
-		outGroup.add(bamboo0);
-		outGroup.add(bamboo1);
-//		backgroundLayer.add(bamboo2);
-//		backgroundLayer.add(bamboo6);
-		outGroup.add(bamboo3);
-		outGroup.add(bamboo4);
-//		backgroundLayer.add(bamboo5);
-		outGroup.add(bamboo7);
-//		backgroundLayer.add(bamboo8);
-		outGroup.add(bamboo9);
-//		backgroundLayer.add(bamboo10);
 
-		
-		
-		
 		createPlant(outGroup, config.POND.X + 20, config.POND.Y + config.POND.HEIGHT - 150);
 		createPlant(outGroup, config.POND.X + 100, config.POND.Y + config.POND.HEIGHT - 160);
 		createPlant(outGroup, config.POND.X + config.POND.WIDTH - 130, config.POND.Y + config.POND.HEIGHT - 140);
@@ -715,16 +934,25 @@ function FishingView(evm, stage, gameState, model) {
 		
 		fishingRod = new FishingRod(
 			config.POND.X,
-			config.POND.Y - config.SKY.Y / 2,
+			config.POND.Y - config.SKY.Y * stage._mwunit / 2,
 			config.POND.X + config.POND.WIDTH / 2,
-			config.POND.Y - config.SKY.Y,
-			300,
+			config.POND.Y - config.SKY.Y * stage._mwunit,
+			300/768 * stage.getHeight(),
 			0
 		);
 		
+		bubbleGenerator = new BubbleGenerator();
+		bubbleGenerator.start();
+		// TODO: new WaveGenerator
+		waveGenerator1.start();
+		waveGenerator2.start();
+		waveGenerator3.start();
+		
+		//shapeLayer.add(new Kinetic.Wave({wx: config.POND.X, wy: config.POND.Y + 20 * stage._mwunit, color: "#8ED6FF"}));
+
 		backgroundLayer.add(outGroup);
 		backgroundLayer.draw();
-		
+
 		/**
 		 * What to do on each frame.
 		 * @param msg
@@ -733,7 +961,6 @@ function FishingView(evm, stage, gameState, model) {
 			var frame = msg.frame;
 			animator.tick(frame.timeDiff); // Tell the animator about the frame
 			shapeLayer.draw(); // Draw the shape layer
-
 		}, EVM_TAG);
 	};
 

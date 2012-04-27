@@ -51,6 +51,19 @@ var Utils = new (/** @constructor */function() {
 	this.isNumber = function(n) {
 		return ! isNaN (n-0);
 	};
+
+	this.scaleShape = function(shape, scale) {
+		if (shape.x != undefined) shape.x *= scale;
+		if (shape.y != undefined) shape.y *= scale;
+		if (shape.width != undefined) shape.width *= scale;
+		if (shape.height != undefined) shape.height *= scale;
+		if (shape.fontSize != undefined) shape.fontSize *= scale;
+		if (shape.scale != undefined) {
+			if (shape.scale.x != undefined) shape.scale.x *= scale;
+			if (shape.scale.y != undefined) shape.scale.y *= scale;
+		}
+		return shape;
+	};
 	
 	/**
 	 * @param {number} min

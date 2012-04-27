@@ -39,8 +39,13 @@ function GeneralGameView(evm, stage, gameState) {
 			image: faceImg,
 			x: stage.getWidth() / 2,
 			y: stage.getHeight() / 2,
-			centerOffset: { x: faceImg.width / 2, y: faceImg.height / 2 }
+			centerOffset: { x: faceImg.width / 2, y: faceImg.height / 2 },
+			scale: {
+				x: stage._mwunit,
+				y: stage._mwunit
+			}
 		});
+		Utils.scaleShape(face, stage._mwunit);
 		layer.add(face);
 		setTimeout(function() {
 			layer.remove(face);
@@ -55,6 +60,7 @@ function GeneralGameView(evm, stage, gameState) {
 			y: stage.getHeight() / 2,
 			centerOffset: { x: images['rafiki'].width / 2, y: images['rafiki'].height / 2 }
 		});
+		Utils.scaleShape(bubba, stage._mwunit);
 		layer.add(bubba);
 		Sound.play(Sounds.BUBBA_HI);
 		setTimeout(function() {
@@ -78,7 +84,7 @@ function GeneralGameView(evm, stage, gameState) {
 	evm.on("Game.thankYouForHelpingMonkey", function(msg) {
 		var text = new Kinetic.Text({
 			fontFamily: "Arial",
-			fontSize: 36,
+			fontSize: 36 * stage._mwunit,
 			textFill: "white",
 			textStrokeFill: "black",
 			text: Strings.get("THANK_YOU_FOR_HELPING"),
@@ -124,9 +130,18 @@ function GeneralGameView(evm, stage, gameState) {
 	var eatNumber = null;
 	var eatNumberText = 0;
 	evm.on("Game.eatBananas", function(msg) {
+		
+		
+		evm.on("Game.viewTearDown", function(msg) {
+			_monkeyJump = false;
+			evm.forget("GGV_EATBANANAS");
+			layer.remove(monkey);
+			layer.remove(eatNumber);
+		}, "GGV_EATBANANAS");
+		
 		eatNumber = new Kinetic.Text({
 			fontFamily: "Arial",
-			fontSize: 72,
+			fontSize: 72 * stage._mwunit,
 			textFill: "white",
 			textStrokeFill: "black",
 			text: eatNumberText,
@@ -141,8 +156,10 @@ function GeneralGameView(evm, stage, gameState) {
 			x: stage.getWidth() / 2,
 			y: stage.getHeight() / 2,
 			centerOffset: {x: images["monkey"].width / 2, y: images["monkey"].height / 2 },
-			scale: {x:1, y:1}
+			scale: {x: stage._mwunit, y: stage._mwunit}
 		});
+		Utils.scaleShape(monkey, stage._mwunit);
+		Utils.scaleShape(eatNumber, stage._mwunit);
 		layer.add(monkey);
 		layer.add(eatNumber);
 		monkeyJump(monkey, 1);
@@ -163,8 +180,9 @@ function GeneralGameView(evm, stage, gameState) {
 			});
 		});
 	};
-	
+	var _monkeyJump = true;
 	var monkeyJump = function(monkey, dir) {
+		if (!_monkeyJump) return;
 		Tween.get(monkey.attrs).to({y:monkey.attrs.y - dir * 100}, 600).call(function() {
 			monkeyJump(monkey, dir * (-1));
 		});
@@ -179,19 +197,20 @@ function GeneralGameView(evm, stage, gameState) {
         	x: stage.attrs.width / 2,
         	y: stage.attrs.height / 2
         });
+        Utils.scaleShape(banana, stage._mwunit);
         bananas.push(banana);
         layer.add(banana);
         Sound.play(Sounds.GET_BANANA);
         Tween.get(banana.attrs).to({rotation: Math.PI * 2}, 1000).wait(1500)
         .to({
         	rotation: -Math.PI / 2,
-        	x: stage.attrs.width - 50 - (gameState.getBananas()-1)*48,
-			y: 50
+        	x: stage.attrs.width - 50 * stage._mwunit - (gameState.getBananas()-1)*48 * stage._mwunit,
+			y: 50 * stage._mwunit
         }, 1000);
         
-        Tween.get(banana.attrs.scale).to({ x: 2, y: 2 }, 1000).wait(1500)
+        Tween.get(banana.attrs.scale).to({ x: 2 * stage._mwunit, y: 2 * stage._mwunit }, 1000).wait(1500)
         .to({
-        	x: 0.125, y: 0.125
+        	x: 0.125 * stage._mwunit, y: 0.125 * stage._mwunit
         }, 1000).call(function(){
         	banana.attrs.image = images["banana-small"];
         }).wait(1500).call(function() {msg.callback();});
@@ -208,6 +227,12 @@ function GeneralGameView(evm, stage, gameState) {
         var personYes = new Kinetic.Image({image: images["person-yes"], x: 20, y: 25});
         var personNo = new Kinetic.Image({image: images["person-no"], x: 60, y: 55});
 		
+        Utils.scaleShape(green, stage._mwunit);
+        Utils.scaleShape(red, stage._mwunit);
+        Utils.scaleShape(monkey, stage._mwunit);
+        Utils.scaleShape(personYes, stage._mwunit);
+        Utils.scaleShape(personNo, stage._mwunit);
+        
         noGroup.add(red);
         noGroup.add(personNo);
         
@@ -257,7 +282,7 @@ function GeneralGameView(evm, stage, gameState) {
 			y: 100,
 			x: stage.getWidth()/2
 		});
-		layer.add(text);
+		layer.add(Utils.scaleShape(text, stage._mwunit));
 		
 		layer.draw();
 	}, EVM_TAG);

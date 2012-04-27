@@ -91,7 +91,7 @@ function GameEventManager(stage) {
 	 */
 	this.forget = function(name) {
 		var sum = 0;
-		for (key in listeners) {
+		for (var key in listeners) {
 			for (var i = 0; i < listeners[key].length; i++) {
 				if (listeners[key][i]._caller === name) {
 					listeners[key].splice(i, 1);

@@ -4,8 +4,8 @@
 	
 	<!--
 	windows: netsh advfirewall set global StatefulFTP disable
-	-->
-<!--	<target name="upload" depends="compile">
+	--><!--
+	<target name="upload" depends="compile">
  		<ftp server="ftp.torsasok.se"
  			port="21"
 			remotedir="/admin.torsasok.se/public_html/e/deploy"
@@ -58,7 +58,8 @@
 		            debug="false" output="html/monkeyworld.js" warning="verbose">
 
 			<externs dir=".">
-			<file name="externs.js"/>
+				<file name="jquery-1.3.2.externs.js"/>
+				<file name="externs.js"/>
 			</externs>
 		      <sources dir="src">
 		      	<file name="Settings.js"/>

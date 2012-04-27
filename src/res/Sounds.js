@@ -119,29 +119,33 @@ var Sounds = {
 	"NUMBER_10":
 		new SoundEntry(null, Strings.get("NUMBER_10"))
 };
+var soundSources = null;
 
-var soundSources = new Array();
+function _produce_sounds() {
 
-for (var key in Sounds) {
-	var entry = Sounds[key];
-	Sounds[key]._key = key;
-	if (entry.soundFile != null) {
-		var e = {
-			id: key,
-			src: "../res/sound/" + entry.soundFile + ".ogg|" + "../res/sound/" + entry.soundFile + ".mp3"
-		};
-		if (entry.instances != undefined) {
-			e.data = entry.instances;
+	soundSources = new Array();
+
+	for (var key in Sounds) {
+		var entry = Sounds[key];
+		Sounds[key]._key = key;
+		if (entry.soundFile != null) {
+			var e = {
+				id: key,
+				src: "../res/sound/" + entry.soundFile + ".ogg|" + "../res/sound/" + entry.soundFile + ".mp3"
+			};
+			if (entry.instances != undefined) {
+				e.data = entry.instances;
+			}
+			soundSources.push(e);
 		}
-		soundSources.push(e);
 	}
 }
+_produce_sounds();
 
 /**
  * @constructor
  */
 function _Sound() {
-
 	var stage = null;
 	var subtitleLayer = null;
 	var subtitles = new Array();
@@ -171,7 +175,10 @@ function _Sound() {
 		if (!mute && entry.soundFile != null) {
 			SoundJS.play(entry._key);
 		}
-
+		var str = Strings.get(entry._key);
+		if (str != null)
+			entry.subtitle = str;
+		
 		if (entry.subtitle != null) {
 			var text = new Kinetic.Text({
 				x: subtitleLayer.getParent().attrs.width / 2,

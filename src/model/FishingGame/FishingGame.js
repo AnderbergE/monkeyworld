@@ -16,27 +16,30 @@ function FishingGame(evm, gameState, config) {
 	var basketArray = new Array();
 	var basketSize = 0;
 	var correctCaptured = 0;
-	var targetNumber = config.targetNumber;
-	var numberCorrect = config.numberCorrect;
+	var targetNumber = Settings.get("miniGames", "fishingGame", "targetNumber");
+	var numberCorrect = Settings.get("miniGames", "fishingGame", "numberCorrect");
+	var numberFishes = Settings.get("miniGames", "fishingGame", "numberOfFish");
+	var maxNumber = Settings.get("miniGames", "fishingGame", "maxNumber");
 	
 	/** @const */ var WIDTH = 1;
-	/** @const */ var HEIGHT = 1;
+	///** @const */ var HEIGHT = 1;
 	/** @enum {Object} */ var Starts = {
 		0: {x:0.3, y:0.3},
 		1: {x:0.8, y:0.4},
 		2: {x:0.6, y:0.6},
-		3: {x:1, y:0.8},
-		4: {x:0.4, y:0.2}
+		3: {x:1, y:0.65},
+		4: {x:0.4, y:0.2},
+		5: {x:0.1, y: 0.5},
+		6: {x:1, y: 0.8},
+		7: {x:0.8, y: 0.2}
 	};
 	
-	var maxNumber = config.maxNumber;
-	var numberFishes = config.numberFishes;
-	/** @const {number} */ var NBR_IMAGES = 2;
+	/** @const {number} */ var NBR_IMAGES = 7;
 	var numbers = Utils.crookedRandoms(1, maxNumber, numberFishes,
 			                           targetNumber, numberCorrect, true);
 	var id = 0;
 	for (var i = 0; i < numberFishes; i++) {
-		var pos = Starts[i % 5];
+		var pos = Starts[i % 7];
 		fishArray.push(new Fish(
 			evm,
 			id++,
@@ -158,6 +161,10 @@ function FishingGame(evm, gameState, config) {
 			this.addAction("incorrect");
 		}
 		fish.capture();
+	};
+	
+	this.tearDown = function() {
+		this.activity();
 	};
 	
 	/**
