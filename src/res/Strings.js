@@ -212,8 +212,8 @@ var Strings = {
 	},
 
 	"SETTINGS_GLOBAL_LANGUAGE_LABEL": {
-		"sv": "Språk",
-		"en": "Language"
+		"sv": "Språk (kan vara \"sv\" eller \"en\" och kräver omstart)",
+		"en": "Language (can be \"sv\" or \"en\" and requires restart)"
 	},
 	
 	"SETTINGS_GLOBAL_MONKEYSEEROUNDS_LABEL": {

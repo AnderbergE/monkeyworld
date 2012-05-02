@@ -307,7 +307,6 @@ function FishingView(evm, stage, gameState, model) {
             context.fillStyle = grd;
             context.fill();
             context.closePath();
-            this.fillStroke();
 		};
         wave.stroke = "black";
         wave.strokeWidth = 4;
@@ -439,19 +438,44 @@ function FishingView(evm, stage, gameState, model) {
 		line.drawFunc = function() {
 			line.attrs.x3 = line.attrs.x2 + line.attrs.length * Math.sin(line.attrs.angle);
 			line.attrs.y3 = line.attrs.y2 + line.attrs.length * Math.cos(line.attrs.angle);
+			
 			var context = this.getContext();
+
+			var cpx = (line.attrs.x2 + line.attrs.x1) / 2 - stage._mwunit * 20;
+			var cpy = line.attrs.y2 - stage._mwunit * 10;			
+
+			var mpx = (line.attrs.x1 + cpx) / 2;
+			var mpy = (line.attrs.y1 + cpy) / 2 - 5 * stage._mwunit;
+			
+			var bezier = Utils.bezier(
+				0.5,
+				{ x: line.attrs.x1, y: line.attrs.y1 },
+				{ x: mpx, y: mpy },
+				{ x: cpx, y: cpy },
+				{ x: line.attrs.x2, y: line.attrs.y2 }
+			);
+			
 			context.beginPath();
-			context.strokeStyle = "black";
+			context.strokeStyle = "brown";
 			context.moveTo(line.attrs.x1, line.attrs.y1);
+			context.lineTo(bezier.x, bezier.y);
 			context.lineTo(line.attrs.x2, line.attrs.y2);
-			context.lineWidth = line.attrs.strokeWidth;
+			context.lineWidth = line.attrs.strokeWidth / 2;
 			context.stroke();
 			context.beginPath();
 			context.moveTo(line.attrs.x2, line.attrs.y2);
 			context.strokeStyle = "brown";			
 			context.lineTo(line.attrs.x3, line.attrs.y3 - radius - radius * 0.2);
+			context.stroke();
+			
+			context.beginPath();
+			context.strokeStyle = "black";
+			context.moveTo(line.attrs.x1, line.attrs.y1);
+
+			context.bezierCurveTo(mpx, mpy, cpx, cpy, line.attrs.x2, line.attrs.y2);
 			context.lineWidth = line.attrs.strokeWidth;
 			context.stroke();
+
 			
 			context.beginPath();
 		    context.arc(Math.floor(line.attrs.x3), Math.floor(line.attrs.y3) - radius*0.95, radius * 0.2, Math.PI, 0, false);

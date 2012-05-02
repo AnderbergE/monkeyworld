@@ -4,8 +4,6 @@ SoundJS.testAudioStall = function(event) {};
 var game = null;
 window["egame"] = null;
 window.onload = function() {
-
-	
 	game = new Game(new GameState());
 	window["egame"] = game;
 };
