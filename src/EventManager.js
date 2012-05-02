@@ -29,6 +29,8 @@ function GameEventManager(stage) {
 	 * @type {Object.<string, Array>}
 	 */
 	var listeners = {};
+	var toForget = new Array();
+	var telling = 0;
 	
 	/**
 	 * @param {string} type
@@ -90,6 +92,10 @@ function GameEventManager(stage) {
 	 * @param {string} name
 	 */
 	this.forget = function(name) {
+		if (telling > 0) {
+			toForget.push(name);
+			return;
+		}
 		var sum = 0;
 		for (var key in listeners) {
 			for (var i = 0; i < listeners[key].length; i++) {
@@ -110,12 +116,20 @@ function GameEventManager(stage) {
 	 * @param {Object=} message
 	 */
 	this.tell = function(type, message) {
+		telling++;
 		var bucket = listeners[type];
 		if (bucket != undefined) {
 			for (var i = 0; i < bucket.length; i++) {
 				var callback = bucket[i];
 				callback(message);
 			}
+		}
+		telling--;
+		if (telling == 0 && toForget.length > 0) {
+			for (var i = 0; i < toForget.length; i++) {
+				this.forget(toForget[i]);
+			}
+			toForget = new Array();
 		}
 	};
 	
