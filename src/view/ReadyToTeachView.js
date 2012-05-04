@@ -1,14 +1,15 @@
 /**
  * @constructor
- * @implements {ViewModule}
+ * @extends {ViewModule}
  */
-function ReadyToTeachView(evm, stage, gameState, model) {
+function ReadyToTeachView(stage, gameState, model) {
 
 	var layer = new Kinetic.Layer();
 	var EVM_TAG = "ReadyToTeachView";
 	var yesGroup = null;
 	var noGroup = null;
 	var text = null;
+	var evm = this.evm;
 	stage.add(layer);
 	
 	this.init = function() {
@@ -83,3 +84,4 @@ function ReadyToTeachView(evm, stage, gameState, model) {
 		evm.forget(EVM_TAG);
 	};
 }
+ReadyToTeachView.prototype = new ViewModule("READY_TO_TEACH_VIEW");

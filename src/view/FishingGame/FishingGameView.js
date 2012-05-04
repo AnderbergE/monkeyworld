@@ -1,14 +1,16 @@
 /**
  * @constructor
- * @implements {ViewModule}
  * @extends {GameView}
+ * @param {FishingGame} fishingGame
  */
-function FishingView(evm, stage, gameState, model) {
+function FishingView(fishingGame) {
 
+	this.tag("FishingView");
+	var that = this;
+	var stage = that.stage;
 	/** @const @type {string}                */ var EVM_TAG = "FishingView";
 	/** @type {Object.<Fish, Kinetic.Group>} */ var fishGroups = {};
 	/** @type {Object.<Fish, Kinetic.Text>}  */ var numberGroups = {};
-	/** @type {FishingGame}                  */ var fishTank = null;
 	/** @type {Animator}                     */ var animator = new Animator();
 	/** @type {FishingRod}                   */ var fishingRod = null;
 	/** @type {boolean}                      */ var allowClicks = true;
@@ -16,6 +18,7 @@ function FishingView(evm, stage, gameState, model) {
 	/** @type {WaveGenerator}                */ var waveGenerator1 = null;
 	/** @type {WaveGenerator}                */ var waveGenerator2 = null;
 	/** @type {WaveGenerator}                */ var waveGenerator3 = null;
+	//var evm = this.evm;
 	
 	/**
 	 * Configuration of the view
@@ -57,7 +60,7 @@ function FishingView(evm, stage, gameState, model) {
 		BASKET_SLOTS[i] = basketGrid.next();
 	}
 
-	var fishCountingView = new FishCountingView(evm, stage, gameState, model, EVM_TAG);
+	var fishCountingView = new FishCountingView(this, stage, that.game, fishingGame, EVM_TAG);
 	
 	/*
 	 * Initiate layers
@@ -95,7 +98,7 @@ function FishingView(evm, stage, gameState, model) {
 		basket.moveToBottom();
 		outGroup.moveToBottom();
 		backgroundLayer.draw();
-		Tween.get(shapeLayer.attrs.scale).to({x:0}, 2000).call(function(){
+		that.getTween(shapeLayer.attrs.scale).to({x:0}, 2000).call(function(){
 			shapeLayer.attrs.centerOffset.x = 0;
 			shapeLayer.attrs.x = ROLL_DIFF;
 			/* ============================================================== */
@@ -105,7 +108,7 @@ function FishingView(evm, stage, gameState, model) {
 			/* ============================================================== */
 			shapeLayer.attrs.scale.x = 0.1;
 			/* ============================================================== */
-			Tween.get(shapeLayer.attrs.scale).to({x:1}, 2000).call(function() {
+			that.getTween(shapeLayer.attrs.scale).to({x:1}, 2000).call(function() {
 				outGroup.moveTo(backgroundLayer);
 				outGroup.attrs.x = ROLL_DIFF;
 				backgroundLayer.draw();
@@ -135,80 +138,82 @@ function FishingView(evm, stage, gameState, model) {
 	};
 	
 	var clickFunction = function(fish) {
-		fishTank.activity();
+		fishingGame.activity();
 		if (allowClicks) {
 			if (!fish.isCaptured()) {
 				Log.debug("Starting to catch " + fish, "fish");
-				fishTank.catchFish(fish, function() {});
+				fishingGame.catchFish(fish, function() {});
 			} else {
-				fishTank.freeFish(fish, function() {});
-				fishTank.noactivity();
+				fishingGame.freeFish(fish, function() {});
+				fishingGame.noactivity();
 			}
 		}
 	};
 	
+	var tearedDownView = false;
 	var tearDownView = function() {
+		if (tearedDownView) return;
+		tearedDownView = true;
 		Log.debug("Tearing down FishingView's layers", "view");
-		evm.tell("Game.hideBig");
 		stage.remove(backgroundLayer);
 		stage.remove(shapeLayer);
 		stage.remove(pondLayer);
 	};
 	
-	var roundDone = function() {
-		evm.off("frame", EVM_TAG);
+	var catchingDone = function(callback) {
+		that.off("frame");
 		bubbleGenerator.stop();
 		waveGenerator1.stop();
 		waveGenerator2.stop();
 		waveGenerator3.stop();
 		tearDownView();
-		fishCountingView.init(fishTank, fishGroups);
+		fishCountingView.init(fishingGame, fishGroups);
+		callback();
 	};
 
-	evm.on("Game.viewTearDown", function(msg) {
+	this.on("Game.stopMiniGame", function(msg) {
 		tearDownView();
 		fishCountingView.tearDown();
 		forget();
-	}, EVM_TAG);
+	});
 	
-	evm.on("FishingGame.catch", function(msg) {
-		//rod.initCatch(msg.fish, msg.done);
+	this.on("FishingGame.catch", function(msg) {
 		fishingRod.catchFish(msg.fish, msg.done, msg.hooked);
-	}, EVM_TAG);
+	});
 	
-	evm.on("FishingGame.free", function(msg) {
+	this.on("FishingGame.free", function(msg) {
 		freeFish(msg.fish, msg.done);
-	}, EVM_TAG);
+	});
 	
-	evm.on("fishinggame.turnOnClick", function(msg) {
+	this.on("fishinggame.turnOnClick", function(msg) {
 		turnOnClick(msg.fish);
-	}, EVM_TAG);
+	});
 	
-	evm.on("fishinggame.turnOffClick", function(msg) {
+	this.on("fishinggame.turnOffClick", function(msg) {
 		turnOffClick(msg.fish);
-	}, EVM_TAG);
+	});
 	
-	evm.on("fishinggame.allowClicks", function(msg) {
+	this.on("fishinggame.allowClicks", function(msg) {
 		allowClicks = true;
-	}, EVM_TAG);
+	});
 	
-	evm.on("fishinggame.disallowClicks", function(msg) {
+	this.on("fishinggame.disallowClicks", function(msg) {
 		allowClicks = false;
-	}, EVM_TAG);
+	});
 	
-	evm.on("FishingGame.freeWrongOnes", function(msg) {
-		evm.tell("Game.showBig", {text:Strings.get("FISHING_FREE_WRONG_ONES").toUpperCase()});
+	this.on("FishingGame.freeWrongOnes", function(msg) {
+		that.showBig(Strings.get("FISHING_FREE_WRONG_ONES").toUpperCase());
 		Sound.play(Sounds.FISHING_FREE_WRONG_ONES);
-	}, EVM_TAG);
+	});
 	
-	evm.on("FishingGame.catchingDone", function(msg) {
+	this.on("FishingGame.catchingDone", function(msg) {
 		allowClicks = false;
-		evm.tell("Game.showBig", {text:Strings.get("YAY").toUpperCase()});
+		that.showBig(Strings.get("YAY").toUpperCase());
 		Sound.play(Sounds.YAY);
-		setTimeout(function() {
-			roundDone();
+		this.setTimeout(function() {
+			catchingDone(msg.callback);
 		}, 2000);
-	}, EVM_TAG);
+	});
 	
 	/**
 	 * @constructor
@@ -239,12 +244,11 @@ function FishingView(evm, stage, gameState, model) {
 			var s = defaultS - startPosX;
 			var wave = new Kinetic.Wave({wx: startPosX, wy: startPosY + dy, height: height, darkColor: darkColor, lightColor: lightColor});
 			waveGroup.add(wave);
-			Tween.get(wave.attrs).to({wx: config.POND.WIDTH}, s / velocity * 1000).call(function() {
+			that.getTween(wave.attrs).to({wx: config.POND.WIDTH}, s / velocity * 1000).call(function() {
 				waveGroup.remove(wave);
 			});
 		};
 		
-		// TODO: WaveGenerator
 		this.start = function() {
 			init();
 			this._interval = setInterval(function() {
@@ -264,9 +268,6 @@ function FishingView(evm, stage, gameState, model) {
 	 * @extends {Kinetic.Shape}
 	 */
 	Kinetic.Wave = function(cfg) {
-		// TODO: Kinetic.Wave
-		//cfg.wx = 0;
-		//cfg.wy = 0;
 		var wave = new Kinetic.Shape(cfg);
 		var height = cfg.height;
 		var width = 50 * stage._mwunit;
@@ -279,8 +280,6 @@ function FishingView(evm, stage, gameState, model) {
 			context.lineTo(config.POND.WIDTH, -20 * stage._mwunit);
 			context.lineTo(config.POND.WIDTH, 20 * stage._mwunit);
 			context.lineTo(0, 20 * stage._mwunit);
-			/*context.fillStyle = "red";
-			context.fill();*/
 			context.clip();
 			
             context.beginPath();
@@ -403,7 +402,7 @@ function FishingView(evm, stage, gameState, model) {
 				y: y,
 				radius: radius
 			});
-			Tween.get(bubble.attrs).to({y: (360 * stage._mwunit - y) + 80 * stage._mwunit}, time).call(function() {
+			that.getTween(bubble.attrs).to({y: (360 * stage._mwunit - y) + 80 * stage._mwunit}, time).call(function() {
 				destroyBubble(bubble);
 			});
 			shapeLayer.add(bubble);
@@ -505,7 +504,7 @@ function FishingView(evm, stage, gameState, model) {
 		    context.stroke();
 		    context.font = fontSize +"px Arial";
 		    context.fillStyle = "white";
-		    context.fillText(fishTank.getTargetNumber(), Math.floor(line.attrs.x3 + dx), Math.floor(line.attrs.y3 + dy));
+		    context.fillText(fishingGame.getTargetNumber(), Math.floor(line.attrs.x3 + dx), Math.floor(line.attrs.y3 + dy));
 		};
 		return line;
 	};
@@ -532,9 +531,6 @@ function FishingView(evm, stage, gameState, model) {
 
 		shapeLayer.add(rod);
 		
-		setTimeout(function() {
-		}, 1000);
-		
 		function getGoalAngle(fish) {
 			var front = getFishFront(fish);
 			var rx = rod.attrs.x2;
@@ -554,7 +550,7 @@ function FishingView(evm, stage, gameState, model) {
 		}
 		
 		var startPendulum = function() {
-			evm.on("frame", function(msg) {
+			that.on("frame", function(msg) {
 				var frame = msg.frame;
 				var timeDiff = frame.timeDiff;
 				
@@ -575,9 +571,9 @@ function FishingView(evm, stage, gameState, model) {
 		 * @param {Function} done
 		 */
 		this.catchFish = function(fish, done, hooked) {
-			evm.off("frame", EVM_TAG + "_ROD");
+			that.off("frame", EVM_TAG + "_ROD");
 			if (allowClicks) {
-				fishTank.turnOffClicks();
+				fishingGame.turnOffClicks();
 			}
 			playedSplash = false;
 			Sound.play(Sounds.FISHING_SWOSH);
@@ -663,7 +659,7 @@ function FishingView(evm, stage, gameState, model) {
 					},
 					onFinish: function()
 					{
-						evm.stop(Sounds.FISHING_WINDING);
+						Sound.stop(Sounds.FISHING_WINDING);
 						throwFishInBasket(fish, done);
 					}
 				}
@@ -675,17 +671,17 @@ function FishingView(evm, stage, gameState, model) {
 		 * @param {Function} done
 		 */
 		var throwFishInBasket = function(fish, done) {
-			var endState = BASKET_SLOTS[fishTank.getNextBasketSlot()];
+			var endState = BASKET_SLOTS[fishingGame.getNextBasketSlot()];
 			var fishDirection = fish.getDirection();
 			endState.rotation = fishDirection * 2 * Math.PI;
 			
-			Tween.get(fishGroups[fish].attrs).to(endState, 1500).call(function(){
-				//fishTank.putFishInBasket(fish);
+			that.getTween(fishGroups[fish].attrs).to(endState, 1500).call(function(){
+				//fishingGame.putFishInBasket(fish);
 
-				fishTank.noactivity();
+				fishingGame.noactivity();
 			});
 			
-			Tween.get(fishGroups[fish].attrs.centerOffset).to({x:0,y:0}, 1500);
+			that.getTween(fishGroups[fish].attrs.centerOffset).to({x:0,y:0}, 1500);
 			
 			animator.animateTo(
 				rod.attrs,
@@ -697,7 +693,7 @@ function FishingView(evm, stage, gameState, model) {
 						done();
 						startPendulum();
 						if (allowClicks) {
-							fishTank.turnOnClicks();
+							fishingGame.turnOnClicks();
 						}
 					}
 				}
@@ -714,7 +710,7 @@ function FishingView(evm, stage, gameState, model) {
 		if (fish.canFree()) {
 			Log.debug("Starting to free " + fish, "fish");
 			if (allowClicks) {
-				fishTank.turnOffClicks();
+				fishingGame.turnOffClicks();
 			}
 			/** @type {Kinetic.Group} */ var group = fishGroups[fish];
 			animator.animateTo
@@ -736,7 +732,7 @@ function FishingView(evm, stage, gameState, model) {
 								onFinish: function() {
 									done();
 									if (allowClicks) {
-										fishTank.turnOnClicks();
+										fishingGame.turnOnClicks();
 									}
 								}
 							}
@@ -751,25 +747,25 @@ function FishingView(evm, stage, gameState, model) {
 	
 	this.toString = function() { return "Fish View"; };
 	
-	evm.on("fishinggame.fishmoved", function(msg) {
+	this.on("fishinggame.fishmoved", function(msg) {
 		moveFish(msg.fish);
-	}, EVM_TAG);
+	});
 	
-	evm.on("fishinggame.fishturnedleft", function(msg) {
+	this.on("fishinggame.fishturnedleft", function(msg) {
 		var scale = fishGroups[msg.fish].getScale();
 		fishGroups[msg.fish].setScale(-1 * scale.x, scale.y);
 		numberGroups[msg.fish].setScale(-1 * msg.fish.getScale(), 1*msg.fish.getScale());
-	}, EVM_TAG);
+	});
 	
-	evm.on("fishinggame.fishturnedright", function(msg) {
+	this.on("fishinggame.fishturnedright", function(msg) {
 		var scale = fishGroups[msg.fish].getScale();
 		fishGroups[msg.fish].setScale(-1 * scale.x, scale.y);
 		numberGroups[msg.fish].setScale(msg.fish.getScale()*1, msg.fish.getScale()*1);
-	}, EVM_TAG);
+	});
 	
-	evm.on("FishingGame.inactivity", function(msg) {
+	this.on("FishingGame.inactivity", function(msg) {
 		Sound.play(msg.sound);
-	}, EVM_TAG);
+	});
 	
 	function moveFish(fish) {
 		var pos = translateFish(fish);
@@ -870,34 +866,28 @@ function FishingView(evm, stage, gameState, model) {
 				context.closePath();
 				this.fillStroke();
 			},
-			fill: "#EED6AF"/*,
-			stroke: "#CDBA96",
-			strokeWidth: 4*/
+			fill: "#EED6AF"
 		});
 		layer.add(triangle);
 	};
 	
-	evm.on("Game.initiate", function(msg) {
+	this.on("Game.initiate", function(msg) {
 		init();
-	}, EVM_TAG);
+	});
 	
-	var that = this;
 	var init = function() {
-		
-		that.setEventManager(evm);
-		fishTank = model;
 		
 		waveGenerator2 = new WaveGenerator(30 * stage._mwunit, "#3333ff", "#aaaaff", 4, -2 * stage._mwunit);
 		waveGenerator3 = new WaveGenerator(20 * stage._mwunit, "blue", "white", 6, -2 * stage._mwunit);
 		waveGenerator1 = new WaveGenerator(15 * stage._mwunit, config.POND.COLOR_DARK, config.POND.COLOR_LIGHT, 8, -1 * stage._mwunit);
 		
-		var fishArray = fishTank.getAllFish();
+		var fishArray = fishingGame.getAllFish();
 		for (var i = 0; i < fishArray.length; i++) {
 			createFish(fishArray[i]);
 		}
 
 		that.setStaticLayer(backgroundLayer);
-		that.basicInit(gameState);
+		that.basicInit(that.game);
 		
     	Log.debug("Building stage...", "view");
 
@@ -950,7 +940,7 @@ function FishingView(evm, stage, gameState, model) {
 		createPlant(outGroup, config.POND.X + 100, config.POND.Y + config.POND.HEIGHT - 160);
 		createPlant(outGroup, config.POND.X + config.POND.WIDTH - 130, config.POND.Y + config.POND.HEIGHT - 140);
 		
-		if (gameState.getMode() == GameMode.MONKEY_DO && gameState.getMonkeyDoRounds() > 1 || gameState.getMode() == GameMode.GUARDIAN_ANGEL) {
+		if (that.game.getMode() == GameMode.MONKEY_DO && that.game.getRound() > 1 || that.game.getMode() == GameMode.GUARDIAN_ANGEL) {
 			basket.attrs.x += ROLL_DIFF;
 			outGroup.attrs.x += ROLL_DIFF;
 			shapeLayer.attrs.x += ROLL_DIFF;
@@ -967,13 +957,10 @@ function FishingView(evm, stage, gameState, model) {
 		
 		bubbleGenerator = new BubbleGenerator();
 		bubbleGenerator.start();
-		// TODO: new WaveGenerator
 		waveGenerator1.start();
 		waveGenerator2.start();
 		waveGenerator3.start();
 		
-		//shapeLayer.add(new Kinetic.Wave({wx: config.POND.X, wy: config.POND.Y + 20 * stage._mwunit, color: "#8ED6FF"}));
-
 		backgroundLayer.add(outGroup);
 		backgroundLayer.draw();
 
@@ -981,11 +968,11 @@ function FishingView(evm, stage, gameState, model) {
 		 * What to do on each frame.
 		 * @param msg
 		 */
-		evm.on("frame", function(msg) {
+		that.on("frame", function(msg) {
 			var frame = msg.frame;
 			animator.tick(frame.timeDiff); // Tell the animator about the frame
 			shapeLayer.draw(); // Draw the shape layer
-		}, EVM_TAG);
+		});
 	};
 
 	var loadingLayer;
@@ -1002,38 +989,38 @@ function FishingView(evm, stage, gameState, model) {
 	loadingLayer.add(text);
 	loadingLayer._text = text;
 	
-	evm.on("Game.roundDone", function(msg) {
+	this.on("Game.roundDone", function(msg) {
 		Log.debug("Tearing down view", "view");
 		fishCountingView.tearDown();
 		forget();
-	}, EVM_TAG);
+	});
 	
 	var forget = function() {
-		evm.forget(EVM_TAG + "_ROD");
-		evm.forget(EVM_TAG);
+		that.forget(EVM_TAG + "_ROD");
+		that.forget();
 	};
 	
-	evm.on("Game.start", function(msg) {
+	this.on("Game.start", function(msg) {
 		Log.debug("Start rolling view...", "view");
-		if (gameState.getMode() == GameMode.MONKEY_DO && gameState.getMonkeyDoRounds() == 1) {
-			evm.tell("Game.showBig", {text:Strings.get("MONKEYS_TURN").toUpperCase()});
+		if (that.game.getMode() == GameMode.MONKEY_DO && that.game.getRound() === 1) {
+			that.showBig(Strings.get("MONKEYS_TURN").toUpperCase());
 			Sound.play(Sounds.NOW_MONKEY_SHOW_YOU);
-			setTimeout(function() {
+			that.setTimeout(function() {
 				that.moveToMonkey(startGame);
 				switchToMonkey();
 			}, 3000);
 		} else {
 			startGame();
 		}
-	}, EVM_TAG);
+	});
 	
 	var startGame = function() {
-		evm.tell("Game.showBig", {text:Strings.get("FISHING_CATCH_NUMBER", fishTank.getTargetNumber()).toUpperCase()});
+		that.showBig(Strings.get("FISHING_CATCH_NUMBER", fishingGame.getTargetNumber()).toUpperCase());
 		Sound.play(Sounds.FISHING_CATCH);
-		setTimeout(function() {
+		that.setTimeout(function() {
 			Log.debug("Ready to play", "view");
-			Sound.play(Sounds["NUMBER_" + fishTank.getTargetNumber()]);
-			evm.tell("FishingGame.started", null);
+			Sound.play(Sounds["NUMBER_" + fishingGame.getTargetNumber()]);
+			that.evm.tell("FishingGame.started", null);
 		}, 700);
 	};
 	

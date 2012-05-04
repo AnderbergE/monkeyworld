@@ -12,12 +12,33 @@ GameEventListener.prototype.forget = function(name) {};
  * @interface
  */
 function EventManager() {}
+
+EventManager.prototype.wevm = function() {};
+
 /**
  * @param {string} type
  * @param {Function} callback
  * @param {string} name
  */
 EventManager.prototype.on = function(type, callback, name) {};
+
+/**
+ * @param {string} type
+ * @param {Object=} message
+ */
+EventManager.prototype.tell = function(type, message) {};
+
+/**
+ * @param {string} type
+ * @param {string} name
+ */
+EventManager.prototype.off = function(type, name) {};
+
+/**
+ * @param {string} name
+ */
+EventManager.prototype.forget = function(name) {};
+
 
 /**
  * @constructor
@@ -31,6 +52,8 @@ function GameEventManager(stage) {
 	var listeners = {};
 	var toForget = new Array();
 	var telling = 0;
+	
+	this.wevm = function() { return "GameEventManager"; };
 	
 	/**
 	 * @param {string} type
@@ -61,14 +84,6 @@ function GameEventManager(stage) {
 		}
 	};
 	
-	/*this.forgetAll = function() {
-		for (key in listeners) {
-			if (key != "frame") {
-				listeners[key] = new Array();
-			}
-		}
-	};*/
-	
 	this.print = function () {
 		console.log("-------EVENT MANAGER STATE-----------------");
 		for (var key in listeners) {
@@ -93,6 +108,7 @@ function GameEventManager(stage) {
 	 */
 	this.forget = function(name) {
 		if (telling > 0) {
+//			console.log("Can't forget " + name + " now.");
 			toForget.push(name);
 			return;
 		}
@@ -133,13 +149,6 @@ function GameEventManager(stage) {
 		}
 	};
 	
-	/**
-	 * @param {SoundEntry} entry
-	 */
-	this.stop = function(entry) {
-		SoundJS.stop(entry._key);
-	};
-	
 	this.loadImages = function(imageSources, images, callback) {
 		Log.debug("Loading images...", "view");
 		var loadedImages = 0;
@@ -161,6 +170,9 @@ function GameEventManager(stage) {
  * @implements {EventManager}
  */
 function NoEventManager() {
+	
+	this.wevm = function() { return "NoEventManager"; };
+	
 	/**
 	 * @param {string} type
 	 * @param {Function} callback
@@ -173,4 +185,15 @@ function NoEventManager() {
 	 * @param {Object=} message
 	 */
 	this.tell = function(type, message) {};
+	
+	/**
+	 * @param {string} type
+	 * @param {string} name
+	 */
+	this.off = function(type, name) {};
+	
+	/**
+	 * @param {string} name
+	 */
+	this.forget = function(name) {};
 };

@@ -1,13 +1,13 @@
 /**
- * @constructor
- * @param {EventManager} evm
- * @param {Object} gameState 
- * @extends {GameModule}
+ * @constructor 
+ * @extends {MiniGame}
  */
-function FishingGame(evm, gameState, config) {
-
+function FishingGame() {
 	/** @type {FishingGame} */ var that = this;
-	var mode = gameState.getMode();
+	this.tag("FishingGame");
+	//var evm = this.evm;
+
+	var mode = that.game.getMode();
 	Log.debug("Applying " + mode + " Mode", "model");
 	
 	this._name = "FishingGame";
@@ -41,7 +41,7 @@ function FishingGame(evm, gameState, config) {
 	for (var i = 0; i < numberFishes; i++) {
 		var pos = Starts[i % 7];
 		fishArray.push(new Fish(
-			evm,
+			this.evm,
 			id++,
 			numbers[i],
 			pos.x,
@@ -65,7 +65,7 @@ function FishingGame(evm, gameState, config) {
 
 	this.turnOnClicks = function() {
 		for (var i = 0; i < fishArray.length; i++) {
-			evm.tell("fishinggame.turnOnClick", {fish:fishArray[i]});
+			that.tell("fishinggame.turnOnClick", {fish:fishArray[i]});
 		}	
 	};
 	
@@ -86,7 +86,7 @@ function FishingGame(evm, gameState, config) {
 	this.turnOffClicks = function() {
 		Log.debug("Turning off clicks", "FishingGame");
 		for (var i = 0; i < fishArray.length; i++) {
-			evm.tell("fishinggame.turnOffClick", {fish:fishArray[i]});
+			that.tell("fishinggame.turnOffClick", {fish:fishArray[i]});
 		}
 	};
 	
@@ -107,11 +107,11 @@ function FishingGame(evm, gameState, config) {
 		var sound = null;
 		if (mode == GameMode.CHILD_PLAY) {
 			sound = Sounds.FISHING_THERE_ARE_MORE;
-			evm.tell("FishingGame.inactivity", {sound:sound});
+			that.tell("FishingGame.inactivity", {sound:sound});
 			restartInactivityTimer();
 		} else if (mode == GameMode.MONKEY_SEE){
 			sound = Sounds.FISHING_KEEP_GOING;
-			evm.tell("FishingGame.inactivity", {sound:sound});
+			that.tell("FishingGame.inactivity", {sound:sound});
 			restartInactivityTimer();
 		}
 	}
@@ -120,13 +120,13 @@ function FishingGame(evm, gameState, config) {
 	
 	function restartInactivityTimer() {
 		if (useTimer && !capturedWantedFish()) {
-			timer = setTimeout(inactivity, 5000);
+			timer = that.setTimeout(inactivity, 5000);
 		}
 	}
 	
 	this.activity = function() {
 		if (timer != null)
-			clearTimeout(timer);
+			that.clearTimeout(timer);
 	};
 	
 	this.noactivity = function() {
@@ -163,7 +163,7 @@ function FishingGame(evm, gameState, config) {
 		fish.capture();
 	};
 	
-	this.tearDown = function() {
+	this.stop = function() {
 		this.activity();
 	};
 	
@@ -183,10 +183,13 @@ function FishingGame(evm, gameState, config) {
 					that.reportMistake();
 				}
 				that.addAction("FishingGame.catchingDone");
-				evm.tell("FishingGame.catchingDone");
-				evm.tell("FishingGame.countingStarted");
+				that.tell("FishingGame.catchingDone", {
+					callback: function() {
+						that.tell("FishingGame.countingStarted");
+					}
+				});
 			} else {
-				evm.tell("FishingGame.freeWrongOnes");
+				that.tell("FishingGame.freeWrongOnes");
 			}
 		}
 	};
@@ -220,7 +223,7 @@ function FishingGame(evm, gameState, config) {
 	 */
 	this.catchFish = function(fish, done) {
 		//
-		evm.tell("FishingGame.catch", {
+		that.tell("FishingGame.catch", {
 			fish: fish,
 			hooked: _hooked, 
 			done: function() {
@@ -241,7 +244,7 @@ function FishingGame(evm, gameState, config) {
 			this.addAction("freeCorrect");
 		else
 			this.addAction("freeIncorrect");
-		evm.tell("FishingGame.free", {
+		that.tell("FishingGame.free", {
 			fish: fish,
 			done: function() {
 				_removeFishFromBasket(fish);
@@ -295,16 +298,16 @@ function FishingGame(evm, gameState, config) {
 	 * @param {number} number What the player thinks the correct number is.
 	 */
 	this.countFish = function(number) {
-		if (gameState.getMode() === GameMode.MONKEY_SEE && countTimes == 0 ||
-			gameState.getMode() != GameMode.MONKEY_SEE) {
+		if (that.game.getMode() === GameMode.MONKEY_SEE && countTimes == 0 ||
+			that.game.getMode() != GameMode.MONKEY_SEE) {
 			countTimes++;
 			this.addAction(number);
-			var seemCorrect = number == numberCorrect || gameState.getMode() != GameMode.CHILD_PLAY;
+			var seemCorrect = number == numberCorrect || that.game.getMode() != GameMode.CHILD_PLAY;
 			var reallyCorrect = number == numberCorrect;
 			if (!reallyCorrect)
 				this.reportMistake();
-			evm.tell("FishingGame.counted", { number: number });
-			evm.tell(
+			that.tell("FishingGame.counted", { number: number });
+			that.tell(
 				"FishingGame.countingResult",
 				{ correct: seemCorrect }
 			);
@@ -388,5 +391,5 @@ function FishingGame(evm, gameState, config) {
 		this.roundDone();
 	};
 }
-FishingGame.prototype = new GameModule();
+FishingGame.prototype = new MiniGame();
 

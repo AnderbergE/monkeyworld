@@ -421,6 +421,8 @@ Tween.to = function(props, duration, ease) {};
  */
 Tween.wait = function(duration) {};
 
+Tween.removeTweens = function(target) {};
+
 /**
  * @constructor
  */

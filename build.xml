@@ -54,6 +54,7 @@
   <taskdef name="jscomp" classname="com.google.javascript.jscomp.ant.CompileTask"
            classpath="lib/closure/compiler.jar"/>
 	<target name="compile">
+		
 		<jscomp compilationLevel="advanced"  
 		            debug="false" output="html/monkeyworld.js" warning="verbose">
 
@@ -62,31 +63,34 @@
 				<file name="externs.js"/>
 			</externs>
 		      <sources dir="src">
+		      	<file name="GlobalObject.js" />
+		      	<file name="kineticjs/Plugins.js" />
 		      	<file name="Settings.js"/>
 		      	<file name="res/Strings.js"/>
 		        <file name="res/Sounds.js"/>
 		      	<file name="res/Images.js"/>
 		      	<file name="GameState.js"/>
 		      	<file name="Player.js"/>
+		      	<file name="Module.js"/>
 		        <file name="GameModule.js"/>
 		        <file name="strategies/MonkeyStrategy.js"/>
 		        <file name="strategies/AngelStrategy.js"/>
 		        <file name="strategies/GamerStrategy.js"/>
 		        <file name="ViewModule.js"/>
-		        <file name="model/ReadyToTeach.js"/>
+		      	<file name="model/MonkeyWorld.js"/>
+		      	<file name="model/ReadyToTeach.js"/>
 		      	<file name="model/FishingGame/Fish.js"/>
 		      	<file name="model/FishingGame/FishingGame.js"/>
 		      	<file name="EventManager.js"/>
 		      	<file name="MonkeyWorld.js"/>
 		      	<file name="ModelModule.js"/>
 		      	<file name="Utils.js"/>
-		      	<file name="view/GeneralGameView.js"/>
+		      	<file name="view/MonkeyWorldView.js"/>
 		      	<file name="view/ReadyToTeachView.js"/>
 		      	<file name="view/FishingGame/FishingGameView.js"/>
 		      	<file name="view/FishingGame/FishingGameCountingView.js"/>
 		      	<file name="GameView.js"/>
 		      </sources>
-
 		    </jscomp>
 		
 			<copy todir="html" file="src/html/index.html" />

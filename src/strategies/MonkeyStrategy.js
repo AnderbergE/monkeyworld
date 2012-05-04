@@ -3,69 +3,69 @@
  * @extends {Player}
  * @constructor
  */
-function MonkeyPlayer(eventManager) {
+function MonkeyPlayer() {
 	Log.debug("Creating MonkeyPlayer", "player");
-}
-MonkeyPlayer.prototype = new Player();
-MonkeyPlayer.prototype.strategies = function() {};
+	var that = this;
+	this.strategies = function() {};
 
-/**
- * @constructor
- * @param {FishingGame} game
- */
-MonkeyPlayer.prototype.strategies["FishingGame"] = function(game, eventManager, result) {
-	var EVM_TAG = "MonkeyPlayer";
-	Log.debug("Applying MonkeyPlayer's strategy to the FishingGame", "player");
+	/**
+	 * @param {FishingGame} game
+	 */
+	this.strategies["FishingGame"] = function(game, result) {
+		Log.debug("Applying MonkeyPlayer's strategy to the FishingGame", "player");
 
-	var resultPosition = 0;
-	
-	eventManager.on("Game.start", function(msg) {
-		game.turnOffClicks();
-		game.turnOffInactivityTimer();
-	}, EVM_TAG);
-	
-	eventManager.on("FishingGame.started", function(msg) {
-		handleResults();
-	}, EVM_TAG);
-	
-	eventManager.on("FishingGame.countingStarted", function(msg) {
-		handleCountingResults();
-	}, EVM_TAG);
-	
-	function handleCountingResults() {
-		setTimeout(function() {
-			Sound.play(Sounds.MONKEY_HMM);	
+		var resultPosition = 0;
+		
+		that.on("Game.start", function(msg) {
+			game.turnOffClicks();
+			game.turnOffInactivityTimer();
+		});
+		
+		that.on("FishingGame.started", function(msg) {
+			handleResults();
+		});
+		
+		that.on("FishingGame.countingStarted", function(msg) {
+			handleCountingResults();
+		});
+		
+		function handleCountingResults() {
 			setTimeout(function() {
-				var guess = result[resultPosition++];
-				game.countFish(guess);
-				if (resultPosition < result.length) {
-					handleCountingResults();
-				}
-			}, 2000);
-		}, 1000);
+				Sound.play(Sounds.MONKEY_HMM);	
+				setTimeout(function() {
+					var guess = result[resultPosition++];
+					game.countFish(guess);
+					if (resultPosition < result.length) {
+						handleCountingResults();
+					}
+				}, 2000);
+			}, 1000);
+		};
+		
+		function handleResults() {
+			var happening = result[resultPosition++];
+			var resultLength = result.length;
+			if (resultPosition <= resultLength && happening != "FishingGame.catchingDone") {
+				this.setTimeout(function() {
+					if (happening == "correct") {
+						game.catchFish(game.getOneCorrectFish(), function() {handleResults();});
+					} else if (happening == "incorrect") {
+						game.catchFish(game.getOneIncorrectFish(), function() {handleResults();});
+					} else if (happening == "freeIncorrect") {
+						game.freeFish(game.getOneIncorrectlyCapturedFish(), function() {handleResults();});
+					} else if (happening == "freeCorrect") {
+						game.freeFish(game.getOneCorrectlyCapturedFish(), function() {handleResults();});
+					} else {
+						Log.error("Error when handling happenings (no such happening: " + happening + ")", "monkey");
+					}
+				}, 2000);
+			}
+		}
+		
+		that.on("Game.tearDown", function(msg) {
+			that.forget();
+		});
 	};
 	
-	function handleResults() {
-		var happening = result[resultPosition++];
-		var resultLength = result.length;
-		if (resultPosition <= resultLength && happening != "FishingGame.catchingDone") {
-			this.setTimeout(function() {
-				if (happening == "correct") {
-					game.catchFish(game.getOneCorrectFish(), function() {handleResults();});
-				} else if (happening == "incorrect") {
-					game.catchFish(game.getOneIncorrectFish(), function() {handleResults();});
-				} else if (happening == "freeIncorrect") {
-					game.freeFish(game.getOneIncorrectlyCapturedFish(), function() {handleResults();});
-				} else if (happening == "freeCorrect") {
-					game.freeFish(game.getOneCorrectlyCapturedFish(), function() {handleResults();});
-				} else {
-					Log.error("Error when handling happenings (no such happening: " + happening + ")", "monkey");
-				}
-			}, 2000);
-		}
-	}
-	
-	eventManager.on("Game.tearDown", function(msg) {
-		eventManager.forget(EVM_TAG);
-	}, EVM_TAG);
-};
+}
+MonkeyPlayer.prototype = new Player();

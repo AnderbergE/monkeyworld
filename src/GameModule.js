@@ -1,72 +1,65 @@
-/** @enum {string} */
-var GameMode = {
-	CHILD_PLAY: "Child Play",
-	MONKEY_SEE: "Monkey See",
-	MONKEY_DO: "Monkey Do",
-	GUARDIAN_ANGEL: "Guardian Angel"
-};
-
 /**
  * @constructor
+ * @extends {Module}
  */
-function GameModule() {
+function MiniGame() {
 	
-	/** @type {Array.<Object>} */ var actions = new Array();
-	/** @type {boolean} */ var _madeMistake = false;
-	/** @type {EventManager} */ var evm = new NoEventManager();
+	/** @private @type {MW.MiniGameRoundResult} */
+	var roundResult = null;
 	
 	/**
 	 * Tell the game what the player did.
 	 * @param {*} action
 	 */
 	this.addAction = function(action) {
-		actions.push(action);
-	};
-	
-	this.resetActions = function() {
-		actions = new Array();
+		roundResult.pushAction(action);
 	};
 	
 	/**
 	 * Tell the system that the player made a mistake during game play. 
 	 */
-	this.reportMistake = function() { _madeMistake = true; };
+	this.reportMistake = function() { roundResult.reportMistake(); };
+
 	/** @return {boolean} */
-	this.madeMistake = function() { return _madeMistake; };
-	this.resetMistake = function() { _madeMistake = false; };
+	this.madeMistake = function() { return roundResult.madeMistake(); };
 	
-	/**
-	 * Returns the actions performed by the player during game play.
-	 * @return {Array.<Object>}
-	 */
-	this.getActions = function() {
-		return actions;
+	this.getResult = function() {
+		return roundResult;
 	};
 	
 	
 	this.roundDone = function() {
 		Log.debug("Round done", "game");
-		evm.tell("Game.roundDone");
-		evm.tell("Game.nextRound");
+		this.tell("Game.roundDone");
+		this.tell("Game.nextRound");
+		this.game.miniGameDone();
 	};
 
 	/**
 	 * @param {Player} player
-	 * @param {EventManager} eventManager
-	 * @param {Object} config
+	 * @param {Object=} res
 	 */
-	this.play = function(player, eventManager, config) {
-		evm = eventManager;
-		player.strategies[this._name](this, eventManager, config);
+	this.play = function(player, res) {
+		roundResult = new MW.MiniGameRoundResult();
+		player.strategies[this._name](this, res);
+	};
+	
+	
+	this.stop = function() {
+		
 	};
 }
-GameModule.prototype = new GameView();
 
+MiniGame.prototype = new Module();
+MiniGame.prototype.onFrame = function(frame) {};
 
-/** @type {string} */
-GameModule.prototype._name = "GameModule";
-
-GameModule.prototype.getMode = function() { return this.mode; };
-/** @param {GameMode} mode */
-GameModule.prototype.setMode = function(mode) { this.mode = mode; };
-
+/**
+ * @constructor
+ * @extends {MiniGame}
+ */
+function NoMiniGame() {
+	this.play = function() {
+		throw "No implemented mini game";
+	};
+}
+NoMiniGame.prototype = new MiniGame();

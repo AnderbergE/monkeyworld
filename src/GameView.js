@@ -1,9 +1,10 @@
 /**
  * @constructor
+ * @extends {ViewModule}
  */
 function GameView() {
 	
-	/** @type {EventManager} */ var evm = new NoEventManager(); 
+	/** @type {GameView} */ var that = this;
 	/** @type {Kinetic.Layer} */ var staticLayer = new Kinetic.Layer();
 
 	/** @type {Kinetic.Node} */ var mainFrame = null;
@@ -62,9 +63,8 @@ function GameView() {
 	};
 	
 	/**
-	 * @param {GameState} gameState
 	 */
-	function setupMainFrame(gameState) {
+	function setupMainFrame() {
 		var stage = staticLayer.getStage();
 		mainFrame = new Kinetic.Rect({
 			x: 0,
@@ -74,16 +74,13 @@ function GameView() {
 		});
 		staticLayer.add(mainFrame);
 	};
-	
-	/**
-	 * @param {GameState} gameState
-	 */
-	function setupMonkey(gameState) {
+
+	function setupMonkey() {
 		var stage = staticLayer.getStage();
-		var mode = gameState.getMode();
-		var config = (mode == GameMode.MONKEY_DO && gameState.getMonkeyDoRounds() > 1) ?
+		var mode = that.game.getMode();
+		var config = (mode == GameMode.MONKEY_DO && that.game.getRound() > 1) ?
 				MONKEY_FRAME_CONFIG_ACTIVE : MONKEY_FRAME_CONFIG_INACTIVE;
-		var monkeyConfig = (mode == GameMode.MONKEY_DO && gameState.getMonkeyDoRounds() > 1) ?
+		var monkeyConfig = (mode == GameMode.MONKEY_DO && that.game.getRound() > 1) ?
 				MONKEY_CONFIG_ACTIVE : MONKEY_CONFIG_INACTIVE;
 		monkeyFrame = new Kinetic.Rect(config);
 		
@@ -104,7 +101,7 @@ function GameView() {
 		staticLayer.add(monkey);
 	};
 	
-	function setupAngel(gameState) {
+	function setupAngel() {
 		var stage = staticLayer.getStage();
 		var config = MONKEY_FRAME_CONFIG_ACTIVE;
 		var angelFrame = new Kinetic.Rect({
@@ -125,14 +122,11 @@ function GameView() {
 		staticLayer.add(angelFrame);
 		staticLayer.add(angel);
 	};
-	
-	/**
-	 * @param {GameState} gameState
-	 */
-	function setupAvatar(gameState) {
+
+	function setupAvatar() {
 		var stage = staticLayer.getStage();
-		var mode = gameState.getMode();
-		var config = (mode == GameMode.MONKEY_DO && gameState.getMonkeyDoRounds() > 1 || mode == GameMode.GUARDIAN_ANGEL) ?
+		var mode = that.game.getMode();
+		var config = (mode == GameMode.MONKEY_DO && that.game.getRound() > 1 || mode == GameMode.GUARDIAN_ANGEL) ?
 				GAMER_FRAME_CONFIG_INACTIVE : GAMER_FRAME_CONFIG_ACTIVE;
 		gamerFrame = new Kinetic.Rect(config);
 		
@@ -159,44 +153,36 @@ function GameView() {
 		if (moved == 3) {
 			done();
 			staticLayer.draw();
-			evm.forget("GameView");
+			that.forget("GameView");
 		}
 	};
 	function moveToMonkey(done) {
 		Sound.play(Sounds.MAGIC_CHIMES);
-		evm.on("frame", function() {
+		that.on("frame", function() {
 			staticLayer.draw();
 		}, "GameView");
-		Tween.get(monkey.attrs).to(MONKEY_CONFIG_ACTIVE, 2000).call(function() { moveDone(done); });
-		Tween.get(monkeyFrame.attrs).to(MONKEY_FRAME_CONFIG_ACTIVE, 2000).call(function() { moveDone(done); });
-		Tween.get(gamerFrame.attrs).to(GAMER_FRAME_CONFIG_INACTIVE, 2000).call(function() { moveDone(done); });
+		that.getTween(monkey.attrs).to(MONKEY_CONFIG_ACTIVE, 2000).call(function() { moveDone(done); });
+		that.getTween(monkeyFrame.attrs).to(MONKEY_FRAME_CONFIG_ACTIVE, 2000).call(function() { moveDone(done); });
+		that.getTween(gamerFrame.attrs).to(GAMER_FRAME_CONFIG_INACTIVE, 2000).call(function() { moveDone(done); });
 	};
 	
 	/**
 	 * Initiate the view
-	 * @param {GameState} gameState
 	 */
-	function init(gameState) {
+	function init() {
 		moved = 0;
 		_init(staticLayer.getStage());
-		setupMainFrame(gameState);
-		if (gameState.getMode() == GameMode.MONKEY_SEE || gameState.getMode() == GameMode.MONKEY_DO) {
-			setupMonkey(gameState);
+		setupMainFrame();
+		if (that.game.getMode() == GameMode.MONKEY_SEE || that.game.getMode() == GameMode.MONKEY_DO) {
+			setupMonkey();
 		}
-		if (gameState.getMode() == GameMode.GUARDIAN_ANGEL) {
-			setupAngel(gameState);
+		if (that.game.getMode() == GameMode.GUARDIAN_ANGEL) {
+			setupAngel();
 		}
-		setupAvatar(gameState);
+		setupAvatar();
 	};
 	
 /*----------------------------------------------------------------------------*/
-	
-	/**
-	 * @param {EventManager} eventManager
-	 */
-	this.setEventManager = function(eventManager) {
-		evm = eventManager;
-	};
 	
 	/**
 	 * @param {Kinetic.Layer} layer
@@ -213,10 +199,10 @@ function GameView() {
 	};
 	
 	/**
-	 * @param {GameState} gameState
 	 */
-	this.basicInit = function(gameState) {
-		init(gameState);
+	this.basicInit = function() {
+		init();
 	};
 
 }
+GameView.prototype = new ViewModule("GAME_VIEW");

@@ -203,5 +203,12 @@ function _Sound() {
 			}, 3000);
 		}
 	};
+	
+	/**
+	 * @param {SoundEntry} entry
+	 */
+	this.stop = function(entry) {
+		SoundJS.stop(entry._key);
+	};
 }
 var Sound = new _Sound();

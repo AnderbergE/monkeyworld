@@ -46,6 +46,17 @@ var Log = new(/** @constructor */ function() {
 	};
 });
 
+/**
+ * @param {Object} item
+ */
+Array.prototype.remove = function(item) {
+	for (var i = 0; i < this.length; i++) {
+		if (this[i] === item) {
+			this.splice(i);
+		}
+	}
+};
+
 var Utils = new (/** @constructor */function() {
 	
 	this.isNumber = function(n) {
@@ -138,7 +149,6 @@ var Utils = new (/** @constructor */function() {
 	};
 	
 	this.gridizer = function(startx, starty, stepx, stepy, width) {
-		
 		return new Gridizer(startx, starty, stepx, stepy, width);
 	};
 	

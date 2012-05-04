@@ -2,14 +2,14 @@
  * Sets up and shows the fish counting view in the fishing game.
  * 
  * @constructor
- * @param {EventManager} evm
+ * @param {FishingView} parent
  * @param {Kinetic.Stage} stage
- * @param {GameState} gameState
+ * @param {MW.Game} monkeyWorld
  * @param {FishingGame} model
  * @param {string} EVM_TAG
  */
-function FishCountingView(evm, stage, gameState, model, EVM_TAG) {
-
+function FishCountingView(parent, stage, monkeyWorld, model, EVM_TAG) {
+	
 	/** @const */ var GRID_POSITION   = { x: 700 * stage._mwunit , y: 150 * stage._mwunit };
 	/** @const */ var GRID_STEP       = { x: 100 * stage._mwunit,  y: 150 * stage._mwunit };
 	/** @const */ var GRID_WIDTH      = 2;
@@ -58,8 +58,8 @@ function FishCountingView(evm, stage, gameState, model, EVM_TAG) {
 		numGroup.add(number);
 		numGroup._num = number;
 		numGroup._text = number;
-		if (gameState.getMode() == GameMode.CHILD_PLAY ||
-			gameState.getMode() == GameMode.MONKEY_SEE) {
+		if (monkeyWorld.getMode() == GameMode.CHILD_PLAY ||
+			monkeyWorld.getMode() == GameMode.MONKEY_SEE) {
 			numGroup.on("mousedown touchstart", function() {
 					fishTank.countFish(num);
 			});
@@ -123,7 +123,7 @@ function FishCountingView(evm, stage, gameState, model, EVM_TAG) {
 		}
 
 		shapeLayer.draw();
-		if (fishTank.getMode() == GameMode.CHILD_PLAY)
+		if (monkeyWorld.getMode() == GameMode.CHILD_PLAY)
 			Sound.play(Sounds.FISHING_COUNT_FISH);
 		else {
 			Sound.play(Sounds.FISHING_COUNT_TARGET_FISH);
@@ -144,16 +144,16 @@ function FishCountingView(evm, stage, gameState, model, EVM_TAG) {
 	/**
 	 * What to do when the game module has evaluated the user's count. 
 	 */
-	evm.on("FishingGame.countingResult", function(msg) {
+	parent.on("FishingGame.countingResult", function(msg) {
 		if (msg.correct) {
 			Sound.play(Sounds.YAY);
 			setTimeout(function(){fishTank.acceptedCountingResult();}, 1500);
 		} else {
 			Sound.play(Sounds.FISHING_ARE_YOU_SURE);
 		}
-	}, EVM_TAG);
+	});
 	
-	evm.on("FishingGame.counted", function(msg) {
+	parent.on("FishingGame.counted", function(msg) {
 		for (var num in numGroups) {
 			numGroups[num]._text.attrs.textFill = "red";
 		}
@@ -163,5 +163,5 @@ function FishCountingView(evm, stage, gameState, model, EVM_TAG) {
 			shapeLayer.draw();
 		}, 1500);
 		shapeLayer.draw();
-	}, EVM_TAG);
+	});
 }
