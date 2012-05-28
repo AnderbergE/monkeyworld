@@ -9,6 +9,10 @@ function GamerPlayer() {
 	Log.debug("Creating GamerPlayer", "player");
 	this.strategies = function() {};
 	
+	this.strategies["Ladder"] = function(game) {
+		
+	};
+	
 	/**
 	 * @param {FishingGame} game
 	 */

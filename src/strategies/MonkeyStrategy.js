@@ -7,7 +7,58 @@ function MonkeyPlayer() {
 	Log.debug("Creating MonkeyPlayer", "player");
 	var that = this;
 	this.strategies = function() {};
-
+	
+	/**
+	 * @param {Ladder} game
+	 * @param {MW.MiniGameResult=} result
+	 */
+	this.strategies["Ladder"] = function(game, result) {
+		Log.debug("Applying MonkeyPlayer's strategy to the Ladder", "player");
+		
+		var resultPosition = 0;
+		var interrupted = false;
+		
+		that.on("Ladder.readyToPick", function(msg) {
+			play(resultPosition++);
+		});
+		
+		this.interrupt = function() {
+			Log.debug("Interrupting agent", "agent");
+			interrupted = true;
+		};
+		
+		this.resume = function() {
+			Log.debug("Resuming agent", "agent");
+			interrupted = false;
+			play(resultPosition);
+		};
+		
+		var play = function(resultPosition) {
+			if (interrupted) return;
+			setTimeout(function() {
+				if (result[resultPosition] === "correct") {
+					console.log("Target Number: " + game.getTargetNumber());
+					game.pick(game.getTargetNumber());
+				} else {
+					console.log("Incorrect Number: " + game.getIncorrectNumber());
+					game.pick(game.getIncorrectNumber());
+				}
+				
+			}, 2000);
+		};
+		
+		that.on("Ladder.hasTreat", function(msg) {
+			setTimeout(function() {
+				game.openTreat();	
+			}, 1500);
+		});
+		
+		that.on("Game.stopMiniGame", function(msg) {
+			console.log("FORGETTING MONKEY");
+			that.forget();
+		});
+	};
+	
 	/**
 	 * @param {FishingGame} game
 	 */

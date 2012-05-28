@@ -29,7 +29,12 @@ var IMAGE_SOURCES = {
 /** @const */ "banana-small": "1333448736_Banana64.png",
 /** @const */ "happy-face": "Positive.png",
 /** @const */ "sad-face": "Negative.png",
-/** @const */ "rafiki": "Rafiki.png"
+/** @const */ "rafiki": "Rafiki.png",
+/** @const */ "balloons": "balloons.png",
+/** @const */ "eyeball": "BeOS_Eyeball.png",
+/** @const */ "symbol-stop": "Symbol-Stop.png",
+/** @const */ "symbol-check": "Symbol-Check.png",
+/** @const */ "birdnest": "Birds-Nest-psd47561.png"
 };
 
 var images = {};

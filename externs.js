@@ -44,6 +44,11 @@ Kinetic.Container = function() {};
 	 */
 	Kinetic.Container.prototype.remove = function(node) {};
 	Kinetic.Container.prototype.removeChildren = function() {};
+	
+	/** @return {number} */
+	Kinetic.Container.prototype.getY = function() {};
+	/** @return {number} */
+	Kinetic.Container.prototype.getX = function() {};
 
 	/**
 	 * Node
@@ -71,6 +76,7 @@ Kinetic.Container = function() {};
 		Kinetic.Node.prototype.attrs = function() {};
 		Kinetic.Node.prototype.attrs.scale = function() {};
 		Kinetic.Node.prototype.attrs.centerOffset = function() {};
+		Kinetic.Node.prototype.attrs.points = function() {};
 		Kinetic.Node.prototype.setPosition = function( x, y ) {};
 		Kinetic.Node.prototype.getPosition = function() {};
 		Kinetic.Node.prototype.getAbsolutePosition = function() {};
@@ -99,7 +105,10 @@ Kinetic.Container = function() {};
 		Kinetic.Node.prototype.getLayer = function() {};
 		Kinetic.Node.prototype.getStage = function() {};
 		Kinetic.Node.prototype.getName = function() {};
-
+		/** @param {number} x */
+		Kinetic.Node.prototype.setX = function(x) {};
+		/** @param {number} y */
+		Kinetic.Node.prototype.setY = function(y) {};
 		Kinetic.Node.prototype.callback = function() {};
 		Kinetic.Node.prototype.duration = function() {};
 		Kinetic.Node.prototype.easing = function() {};
@@ -237,8 +246,9 @@ Kinetic.Rect = function(obj){};
 /**
  * @constructor
  * @extends {Kinetic.Shape}
+ * @param {Object=} config
  */
-Kinetic.Polygon = function(){};
+Kinetic.Polygon = function(config){};
 
 /**
  * @constructor
@@ -252,6 +262,48 @@ Kinetic.Circle.prototype.stroke = function() {};
 Kinetic.Circle.prototype.strokeWidth = function() {};
 Kinetic.Circle.prototype.setRadius = function(radius) {};
 Kinetic.Circle.prototype.getRadius = function() {};
+
+/**
+ * @constructor
+ * @extends {Kinetic.Shape}
+ * @param {Object=} config
+ */
+Kinetic.Line = function(config){};
+/** @return {Array} */
+Kinetic.Line.prototype.getDashArray = function(){};
+/** @return {String} */
+Kinetic.Line.prototype.getLineCap = function(){};
+/** @return {Array} */
+Kinetic.Line.prototype.getPoints = function(){};
+/** @param {Array} dashArray */
+Kinetic.Line.prototype.setDashArray = function(dashArray){};
+/** @param {String} lineCap */
+Kinetic.Line.prototype.setLineCap = function(lineCap){};
+/** @param {Array} can */
+Kinetic.Line.prototype.setPoints = function(can){};
+Kinetic.Line.prototype.points = function() {};
+Kinetic.Line.prototype.lineCap = function() {};
+Kinetic.Line.prototype.dashArray = function() {};
+Kinetic.Line.prototype.fill = function() {};
+Kinetic.Line.prototype.stroke = function() {};
+Kinetic.Line.prototype.strokeWidth = function() {};
+Kinetic.Line.prototype.lineJoin = function() {};
+Kinetic.Line.prototype.shadow = function() {};
+Kinetic.Line.prototype.detectonType = function() {};
+Kinetic.Line.prototype.x = function() {};
+Kinetic.Line.prototype.y = function() {};
+Kinetic.Line.prototype.visible = function() {};
+Kinetic.Line.prototype.listening = function() {};
+Kinetic.Line.prototype.id = function() {};
+Kinetic.Line.prototype.name = function() {};
+Kinetic.Line.prototype.alpha = function() {};
+Kinetic.Line.prototype.scale = function() {};
+Kinetic.Line.prototype.rotation = function() {};
+Kinetic.Line.prototype.rotationDeg = function() {};
+Kinetic.Line.prototype.centerOffset = function() {};
+Kinetic.Line.prototype.draggable = function() {};
+Kinetic.Line.prototype.dragConstraint = function() {};
+Kinetic.Line.prototype.dragBounds = function() {};
 
 /**
  * Text
@@ -296,6 +348,7 @@ Context.prototype.font = function(){};
 Context.prototype.fillStyle = function(){};
 Context.prototype.strokeWidth = function(){};
 Context.prototype.drawFunc = function(){};
+Context.prototype.drawFunc.applyStyles = function(){};
 Context.prototype.fillText = function(fillText, x, y){};
 Context.prototype.image = function(){};
 Context.prototype.centerOffset = function(){};

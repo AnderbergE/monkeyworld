@@ -58,7 +58,7 @@ Array.prototype.remove = function(item) {
 };
 
 var Utils = new (/** @constructor */function() {
-	
+
 	this.isNumber = function(n) {
 		return ! isNaN (n-0);
 	};

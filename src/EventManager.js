@@ -61,12 +61,15 @@ function GameEventManager(stage) {
 	 * @param {string} name
 	 */
 	this.on = function(type, callback, name) {
-		if (!(type in listeners))
-			listeners[type] = new Array();
-		listeners[type].push(callback);
-		callback._caller = name;
-		var _name = name === undefined ? "unnamed" : name;
-		Log.debug(_name + " registerd " + type, "evm");
+		var types = type.split(" ");
+		for (var i = 0; i < types.length; i++) {
+			if (!(types[i] in listeners))
+				listeners[types[i]] = new Array();
+			listeners[types[i]].push(callback);
+			callback._caller = name;
+			var _name = name === undefined ? "unnamed" : name;
+			Log.debug(_name + " registerd " + types[i], "evm");
+		}
 	};
 	
 	/**

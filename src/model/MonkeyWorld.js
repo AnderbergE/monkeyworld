@@ -2,15 +2,16 @@
  * @constructor
  * @extends {MW.GlobalObject}
  * @param {boolean=} useViews Defaults to true. Useful to falsify when testing.
+ * @param {Function=} startGame Game to begin play
  */
-MW.Game = function(useViews) {
+MW.Game = function(useViews, startGame) {
 
 	/** @const @type {MW.Game}      */ var that = this;
 	
 	/** @const @type {MiniGame}     */ var NO_MINI_GAME = new NoMiniGame();
 	/** @const @type {MW.NoMiniGameResult} */ var NO_RESULT    = new MW.NoMiniGameResult();
 	/** @const @type {GamerPlayer}  */ var GAMER        = new GamerPlayer();
-	/** @const @type {MonkeyPlayer} */ var MONKEY       = new MonkeyPlayer();
+	/** @const @type {MonkeyPlayer} */ var AGENT        = new MonkeyPlayer();
 	/** @const @type {AngelPlayer}  */ var ANGEL        = new AngelPlayer();
 	
 	/** @type {number}              */ var numBananas   = 0;
@@ -86,7 +87,8 @@ MW.Game = function(useViews) {
 				yes: function() {
 					gameMode = GameMode.MONKEY_SEE;
 					setRound(1);
-					addBanana(1, startMiniGame);
+					//addBanana(1, startMiniGame);
+					startMiniGame();
 				},
 				no: function() {
 					addRound();
@@ -99,8 +101,9 @@ MW.Game = function(useViews) {
 			if (_round === Settings.get("global", "monkeySeeRounds")) {
 				setRound(1);
 				gameMode = GameMode.MONKEY_DO;
-				player = MONKEY;
-				addBanana(1, startMiniGame);
+				player = AGENT;
+				//addBanana(1, startMiniGame);
+				startMiniGame();
 			} else {
 				addRound();
 				startMiniGame();
@@ -110,7 +113,7 @@ MW.Game = function(useViews) {
 				setRound(1);
 				gameMode = GameMode.CHILD_PLAY;
 				player = GAMER;
-				addBanana(2);
+				//addBanana(2);
 			} else {
 				addRound();
 				startMiniGame();
@@ -122,19 +125,27 @@ MW.Game = function(useViews) {
 	 * Start the current mini game.
 	 */
 	var startMiniGame = function() {
-		miniGame = new FishingGame();
+		startGame = undefined;
+		if (startGame === undefined) {
+			miniGame = new FishingGame();
+		} else {
+			miniGame = new startGame();
+		}
 		if (useViews) {
-			new FishingView(miniGame).setup();
+			if (miniGame instanceof FishingGame)
+				new FishingView(miniGame).setup();
+			else if (miniGame instanceof Ladder)
+				new LadderView(miniGame).setup();
 			that.tell("Game.miniGameListenersInitiated");
 		}
 		that.tell("Game.initiate");
-		miniGame.start();
-		that.tell("Game.start");
 		if (gameMode === GameMode.MONKEY_DO) {
 			miniGame.play(player, result.getResult(_round).getActions());
 		} else {
 			miniGame.play(player);	
 		}
+		miniGame.start();
+		that.tell("Game.start");
 	};
 	
 	/**
@@ -192,6 +203,7 @@ MW.Game = function(useViews) {
 	 */
 	this.start = function() {
 		result = new MW.MiniGameResult();
+		player = GAMER;
 		startMiniGame();
 	};
 	
@@ -234,6 +246,9 @@ MW.Game = function(useViews) {
 		return mistake;
 	};
 	
+	this.setAgentAsPlayer = function() { player = AGENT; };
+	this.setGamerAsPlayer = function() { player = GAMER; };
+	
 	/**
 	 * Returns true if the current player is the gamer.
 	 * @return {boolean}
@@ -241,10 +256,10 @@ MW.Game = function(useViews) {
 	this.playerIsGamer = function() { return player === GAMER; };
 	
 	/**
-	 * Returns true if the current player is the monkey.
+	 * Returns true if the current player is the teachable agent.
 	 * @return {boolean}
 	 */
-	this.playerIsMonkey = function() { return player === MONKEY; };
+	this.playerIsMonkey = function() { return player === AGENT; };
 	
 	/**
 	 * Returns true if the current player is the guardian angel.
@@ -252,6 +267,14 @@ MW.Game = function(useViews) {
 	 */
 	this.playerIsAngel = function() { return player === ANGEL; };
 
+	/** @return {boolean} true if the current mode is Child Play */
+	this.modeIsChild = function() { return gameMode === GameMode.CHILD_PLAY; };
+	
+	/** @return {boolean} true if the current mode is Agent See */
+	this.modeIsAgentSee = function() { return gameMode ===GameMode.MONKEY_SEE;};
+	
+	/** @return {boolean} true if the current mode is Agent Do */
+	this.modeIsAgentDo = function() { return gameMode === GameMode.MONKEY_DO; };
 };
 
 MW.Game.prototype = new MW.GlobalObject("MonkeyWorld.Game");

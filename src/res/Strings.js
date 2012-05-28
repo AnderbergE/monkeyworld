@@ -254,6 +254,16 @@ var Strings = {
 	"SETTINGS_MINIGAMES_FISHINGGAME_MAXNUMBER_LABEL": {
 		"sv": "Högsta möjliga nummer",
 		"en": "Maximum number on fish"
+	},
+	
+	"SETTINGS_MINIGAMES_LADDER_LABEL": {
+		"sv": "Stegen",
+		"en": "The Ladder"
+	},
+	
+	"SETTINGS_MINIGAMES_LADDER_TARGETNUMBER_LABEL": {
+		"sv": "Målnummer",
+		"en": "Target number"
 	}
 	
 };

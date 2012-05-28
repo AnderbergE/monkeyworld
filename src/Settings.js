@@ -36,6 +36,12 @@ function SettingsObject() {
 				"maxNumber": {
 					_value: 9
 				}
+			},
+			
+			"ladder": {
+				"targetNumber": {
+					_value: -1
+				}
 			}
 		}
 	};

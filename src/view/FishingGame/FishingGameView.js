@@ -1,5 +1,6 @@
 /**
  * @constructor
+ * 
  * @extends {GameView}
  * @param {FishingGame} fishingGame
  */
@@ -864,7 +865,7 @@ function FishingView(fishingGame) {
 				context.lineTo(x2, y-height);
 				context.quadraticCurveTo(x1, y-height, x1, y-bend);
 				context.closePath();
-				this.fillStroke();
+				this.applyStyles();
 			},
 			fill: "#EED6AF"
 		});
@@ -910,7 +911,7 @@ function FishingView(fishingGame) {
             context.fill();
             
             context.closePath();
-            this.fillStroke();
+            this.applyStyles();
           }
         });
 

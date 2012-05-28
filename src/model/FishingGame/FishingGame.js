@@ -10,7 +10,7 @@ function FishingGame() {
 	var mode = that.game.getMode();
 	Log.debug("Applying " + mode + " Mode", "model");
 	
-	this._name = "FishingGame";
+	//this._name = "FishingGame";
 	this.toString = function() { return "Fish Tank"; };
 	var fishArray = new Array();
 	var basketArray = new Array();

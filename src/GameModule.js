@@ -4,8 +4,11 @@
  */
 function MiniGame() {
 	
+	var that = this;
+	
 	/** @private @type {MW.MiniGameRoundResult} */
 	var roundResult = null;
+	var _strategy = null;
 	
 	/**
 	 * Tell the game what the player did.
@@ -27,7 +30,14 @@ function MiniGame() {
 		return roundResult;
 	};
 	
-	
+	/**
+	 * Call this function to tell the engine that the mini game round is over.
+	 * The message "Game.roundDone" will be broadcasted, allowing views to tear
+	 * down. Then the engine will control if another round should be played,
+	 * (restarting the mini game in another game mode) or if it is time to play
+	 * another mini game.
+	 * @protected
+	 */
 	this.roundDone = function() {
 		Log.debug("Round done", "game");
 		this.tell("Game.roundDone");
@@ -40,12 +50,26 @@ function MiniGame() {
 	 * @param {Object=} res
 	 */
 	this.play = function(player, res) {
-		roundResult = new MW.MiniGameRoundResult();
-		player.strategies[this._name](this, res);
+		roundResult = new MW.MiniGameRoundResult()
+		console.log(this._tag);
+		_strategy = new player.strategies[this._tag](this, res);
 	};
 	
+	this.interruptAgent = function() {
+		_strategy.interrupt();
+		that.game.setGamerAsPlayer();
+	};
+	
+	this.resumeAgent = function() {
+		that.game.setAgentAsPlayer();
+		_strategy.resume();
+	};
 	
 	this.stop = function() {
+		this.tell("Game.roundDone");
+	};
+	
+	this.start = function() {
 		
 	};
 }

@@ -13,10 +13,19 @@ function Module() {
 	/**
 	 * @param {Function} fnc
 	 * @param {number} time
-	 * @return {number} id
+	 * @return {number}
 	 */
 	this.setTimeout = function(fnc, time) {
 		return timeoutController.setTimeout(fnc, time);
+	};
+
+	/**
+	 * @param {Function} fnc
+	 * @param {number} time
+	 * @return {number}
+	 */
+	this.setInterval = function(fnc, time) {
+		return timeoutController.setInterval(fnc, time);
 	};
 	
 	/**
@@ -37,9 +46,20 @@ function Module() {
 		/**
 		 * @param {Function} fnc
 		 * @param {number} time
-		 * @return {number} id
+		 * @return {number}
 		 */
 		this.setTimeout = function(fnc, time) {
+			var handler = setTimeout(fnc, time);
+			timeouts.push(handler);
+			return handler;
+		};
+		
+		/**
+		 * @param {Function} fnc
+		 * @param {number} time
+		 * @returns {number}
+		 */
+		this.setInterval = function(fnc, time) {
 			var handler = setTimeout(fnc, time);
 			timeouts.push(handler);
 			return handler;

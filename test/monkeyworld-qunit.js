@@ -234,6 +234,100 @@ $(document).ready(function(){
 		ok(mg.madeMistake(), "Mistake made");
 	});
 	
+	module("Ladder", {
+		setup: function() {
+			mw = new MW.Game(false, Ladder);
+			MW.GlobalObject.prototype.game = mw;
+		},
+		teardown: function() {
+			mw = null;
+			MW.GlobalObject.prototype.game = null;
+			evm.forget("test");
+		}
+	});
+	
+	test("Start game", function() {
+		mw.start();
+		ok(mw.playerIsGamer(), "Current player should be gamer");
+	});
+	
+	test("Pick one number", function() {
+		evm.on("Ladder.picked", function(msg) {
+			equal(msg.number, 1, "Number 1 should've been picked");
+			picked = true;
+		}, "test");
+		var picked = false;
+		mw.start();
+		var ladder = mw.getMiniGame();
+		ladder.pick(1);
+		mw.miniGameDone();
+		ok(picked, "A number should've been picked");
+	});
+	
+	test("Pick incorrect number", function() {
+		evm.on("Ladder.picked", function(msg) {
+			ok(!msg.correct, "Should've picked incorrect number");
+		}, "test");
+		Settings.set("miniGames", "ladder", "targetNumber", 2);
+		mw.start();
+		var ladder = mw.getMiniGame();
+		ladder.pick(3);
+	});
+	
+	test("Pick target number", function() {
+		evm.on("Ladder.picked", function(msg) {
+			ok(msg.correct, "Should've picked incorrect number");
+		}, "test");
+		Settings.set("miniGames", "ladder", "targetNumber", 2);
+		mw.start();
+		var ladder = mw.getMiniGame();
+		ladder.pick(2);
+	});
+	
+	test("Pick redeived target number", function() {
+		mw.start();
+		var ladder = mw.getMiniGame();
+		evm.on("Ladder.picked", function(msg) {
+			equal(msg.number, ladder.getTargetNumber(), "Should've picked target number");
+		}, "test");
+		ladder.pick(ladder.getTargetNumber());
+	});
+	
+	test("Get treat", function() {
+		var picked = false;
+		var toLadder = false;
+		var toNest = false;
+		mw.start();
+		var ladder = mw.getMiniGame();
+		evm.on("Ladder.picked", function(msg) {
+			ok(!picked, "Shouldn't have registerd number yet");
+			ok(!toLadder, "Shouldn't been to ladder yet");
+			ok(!toNest, "Shouldn't be back at nest yet");
+			picked = true;
+		}, "test");
+		evm.on("Ladder.birdFlyToLadder", function(msg) {
+			ok(picked, "Should have registerd number");
+			ok(!toLadder, "Shouldn't been to ladder yet");
+			ok(!toNest, "Shouldn't be back at nest yet");
+			toLadder = true;
+			msg.callback();
+		}, "test");
+		evm.on("Ladder.birdFlyToNest", function(msg) {
+			ok(picked, "Should have registerd number");
+			ok(toLadder, "Should have been to ladder");
+			ok(!toNest, "Shouldn't be back at nest yet");
+			toNest = true;
+		}, "test");
+		evm.on("Ladder.dropTreat", function(msg) {
+			msg.callback();
+			mw.miniGameDone();
+		}, "test");
+		ladder.pick(ladder.getTargetNumber());
+		ok(picked, "Should have registerd number");
+		ok(toLadder, "Should have been to ladder");
+		ok(toNest, "Should be back at nest");
+	});
+	
 	module("Fishing Game", {
 		setup: function() {
 			mw = new MW.Game(false);

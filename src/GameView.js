@@ -203,6 +203,10 @@ function GameView() {
 	this.basicInit = function() {
 		init();
 	};
+	
+	this.tag = function(tag) {
+		this._tag = tag;
+	};
 
 }
 GameView.prototype = new ViewModule("GAME_VIEW");

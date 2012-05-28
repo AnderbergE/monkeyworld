@@ -27,6 +27,13 @@ function ViewModule(moduleName) {
 		return tweenController.getTween(target);
 	};
 	
+	/**
+	 * @param {Object} target
+	 */
+	this.removeTween = function(target) {
+		tweenController.removeTweens(target);
+	};
+	
 	var _oldTearDown = this.tearDown; 
 	this.tearDown = function() {
 		bigText.hide();
@@ -44,8 +51,10 @@ function ViewModule(moduleName) {
 		return {
 			
 		hide: function() {
-			bigShowing.setText("");
-			that.stage.pleaseDrawOverlayLayer();
+			if (bigShowing != null) {
+				bigShowing.setText("");
+				that.stage.pleaseDrawOverlayLayer();
+			}
 		},
 			
 		/**
@@ -68,7 +77,7 @@ function ViewModule(moduleName) {
 					textStroke: "black",
 					align: "center",
 					verticalAlign: "middle",
-						scale: {x:0.001,y:0.001},
+					scale: {x:0.001,y:0.001},
 					textStrokeWidth: 1
 				});
 				Utils.scaleShape(bigShowing, that.stage._mwunit);
@@ -118,6 +127,10 @@ function ViewModule(moduleName) {
 			if (!Utils.inArray(tweens, target))
 					tweens.push(target);
 			return Tween.get(target);
+		};
+		
+		this.removeTweens = function(target) {
+			Tween.removeTweens(target);
 		};
 		
 		/**

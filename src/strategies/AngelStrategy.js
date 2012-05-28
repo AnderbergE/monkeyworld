@@ -10,6 +10,10 @@ function AngelPlayer() {
 	
 	this.strategies = function() {};
 
+	this.strategies["Ladder"] = function(game) {
+		
+	};
+	
 	/**
 	 * @param {FishingGame} game
 	 */
