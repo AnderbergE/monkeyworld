@@ -13,6 +13,14 @@ var GameMode = {
 };
 
 /**
+ * @extends {Kinetic.Stage}
+ * @constructor
+ */
+Kinetic.NoStage = function() {};
+Kinetic.NoStage.getWidth = function(){};
+
+
+/**
  * @constructor
  */
 MW.GlobalObject = function(tag) {
@@ -67,7 +75,7 @@ MW.GlobalObject = function(tag) {
 };
 
 MW.GlobalObject.prototype.evm  = new NoEventManager();
-
+MW.GlobalObject.prototype.stage = new Kinetic.NoStage();
 
 
 /**
@@ -130,6 +138,10 @@ MW.MiniGameRoundResult = function() {
 	 */
 	this.pushAction = function(action) {
 		actions.push(action);
+	};
+	
+	this.popAction = function() {
+		actions.splice(actions.length - 1);
 	};
 	
 	/**

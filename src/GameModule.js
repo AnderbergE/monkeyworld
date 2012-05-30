@@ -18,6 +18,10 @@ function MiniGame() {
 		roundResult.pushAction(action);
 	};
 	
+	this.popAction = function() {
+		roundResult.popAction();
+	};
+	
 	/**
 	 * Tell the system that the player made a mistake during game play. 
 	 */
@@ -50,19 +54,27 @@ function MiniGame() {
 	 * @param {Object=} res
 	 */
 	this.play = function(player, res) {
-		roundResult = new MW.MiniGameRoundResult()
+		roundResult = new MW.MiniGameRoundResult();
 		console.log(this._tag);
 		_strategy = new player.strategies[this._tag](this, res);
 	};
 	
+	var _agentIsInterrupted = false;
+	
 	this.interruptAgent = function() {
+		_agentIsInterrupted = true;
 		_strategy.interrupt();
 		that.game.setGamerAsPlayer();
 	};
 	
 	this.resumeAgent = function() {
+		_agentIsInterrupted = false;
 		that.game.setAgentAsPlayer();
 		_strategy.resume();
+	};
+	
+	this.agentIsInterrupted = function() {
+		return _agentIsInterrupted;
 	};
 	
 	this.stop = function() {

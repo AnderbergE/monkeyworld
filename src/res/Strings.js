@@ -81,6 +81,51 @@ var Strings = {
 		"en": "I choose this number, because..."
 	},
 	
+	"LADDER_LOOKS_FUN": {
+		"sv": "Det där ser kul ut!",
+		"en": "That looks fun!"
+	},
+	
+	"LADDER_SHOW_ME": {
+		"sv": "Visa mig hur man gör!",
+		"en": "Show me how to do it!"
+	},
+	
+	"LADDER_MY_TURN": {
+		"sv": "Nu är det min tur!",
+		"en": "Now it's my turn!"
+	},
+	
+	"LADDER_IS_IT_RIGHT": {
+		"sv": "Gör jag rätt eller fel?",
+		"en": "Am I doing it right or wrong?"
+	},
+	
+	"LADDER_IT_WAS_RIGHT": {
+		"sv": "Ja! Du fick presenten!",
+		"en": "Yeah! You got it!" 
+	},
+	
+	"LADDER_OOPS_TOO_HIGH": {
+		"sv": "Oj, den flög för högt.",
+		"en": "Oh, it flew too high."
+	},
+	
+	"LADDER_OOPS_TOO_LOW": {
+		"sv": "Hoppsan, den flög för lågt.",
+		"en": "Oops, it flew too low"
+	},
+	
+	"LADDER_TRY_A_SMALLER_NUMBER": {
+		"sv": "Du kan väl testa med ett mindre nummer!",
+		"en": "Let's try a smaller number!"
+	},
+	
+	"LADDER_TRY_A_BIGGER_NUMBER": {
+		"sv": "Kanske fungerar ett större nummer bättre!",
+		"en": "Perhaps a bigger number works better!"
+	},
+	
 	"BUBBA_HI": {
 		"sv": "Hej! Mitt namn är Bubba!",
 		"en": "Hi, my name is Bubba!"

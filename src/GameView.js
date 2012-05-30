@@ -3,7 +3,7 @@
  * @extends {ViewModule}
  */
 function GameView() {
-	
+	ViewModule.call(this, "GameView");
 	/** @type {GameView} */ var that = this;
 	/** @type {Kinetic.Layer} */ var staticLayer = new Kinetic.Layer();
 
@@ -203,10 +203,5 @@ function GameView() {
 	this.basicInit = function() {
 		init();
 	};
-	
-	this.tag = function(tag) {
-		this._tag = tag;
-	};
-
 }
-GameView.prototype = new ViewModule("GAME_VIEW");
+inherit(GameView, ViewModule);

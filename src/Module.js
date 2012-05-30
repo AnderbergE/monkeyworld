@@ -3,7 +3,7 @@
  * @extends {MW.GlobalObject}
  */
 function Module() {
-	
+	MW.GlobalObject.call(this, "Module");
 	var timeoutController = new TimeoutController();
 
 	this.tearDown = function() {
@@ -85,5 +85,4 @@ function Module() {
 		};
 	};
 }
-
-Module.prototype = new MW.GlobalObject("Module");
+inherit(Module, MW.GlobalObject);

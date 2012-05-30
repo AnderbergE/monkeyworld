@@ -1,3 +1,14 @@
+function inherit(childCtor, parentCtor) {
+	console.log("Inheritance: " + childCtor);
+	  /** @constructor */
+	  function tempCtor() {};
+	  tempCtor.prototype = parentCtor.prototype;
+	  childCtor.superClass_ = parentCtor.prototype;
+	  childCtor.prototype = new tempCtor();
+	  childCtor.prototype.constructor = childCtor;
+}
+
+
 var _uid = 0;
 function uniqueId() {
 	return _uid++;
@@ -11,8 +22,9 @@ Object.size = function(obj) {
     return size;
 };
 
-var Log = new(/** @constructor */ function() {
-	
+/** @constructor */
+function _Log () {
+	console.log("Creating Log");
 	function write(type, msg, tag) {
 		if (tag === undefined) {
 			tag = "";
@@ -44,7 +56,9 @@ var Log = new(/** @constructor */ function() {
 	this.error = function(msg, tag) {
 		write("ERROR  ", msg, tag);
 	};
-});
+}
+
+var Log = new _Log();
 
 /**
  * @param {Object} item

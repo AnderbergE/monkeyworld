@@ -15,11 +15,12 @@ function Ladder()
 	/** @type {number} */ var targetNumber = Utils.getRandomInt(minNumber, maxNumber);
 	
 	/** @type {number} */ var minTreats = 1;
-	/** @type {number} */ var maxTreats = 3;
+	/** @type {number} */ var maxTreats = 2;
 	/** @type {number} */ var tries = 0;
 	/** @type {number} */ var minTries = 3;
 	/** @type {number} */ var collectedTreats = 0;
 	/** @type {boolean} */ var birdHasTreat = false;
+	/** @type {boolean} */ var interruptable = false;
 	
 	for (var i = minNumber, j = 0; i <= maxNumber; i += stepNumber)
 		ladder[j++] = i;
@@ -29,7 +30,22 @@ function Ladder()
 		targetNumber = Utils.getRandomInt(minNumber, maxNumber);
 	};
 	
+	var disallowInterrupt = function() {
+		interruptable = false;
+		if (that.game.modeIsAgentDo()) {
+			that.tell("Ladder.disallowInterrupt");
+		}
+	};
+	
+	var allowInterrupt = function(callback) {
+		interruptable = true;
+		if (that.game.modeIsAgentDo() && !that.agentIsInterrupted()) {
+			that.tell("Ladder.allowInterrupt", { callback: callback });
+		} else callback();
+	};
+	
 	var birdHasFlewn = function(correct) { return function() {
+		disallowInterrupt();
 		if (correct) {
 			birdHasTreat = true;
 			dropTreat(function() {
@@ -74,13 +90,12 @@ function Ladder()
 					that.tell("Ladder.cheer", { callback: function() { that.roundDone(); } });
 				else {
 					placeTreat();
+					if (that.game.modeIsAgentDo())
+						that.resumeAgent();
 				}
 			}
 		});
 	};
-	
-	this.turnOnClicks = function() { that.tell("Ladder.turnOnClicks"); };
-	this.turnOffClicks = function() { that.tell("Ladder.turnOffClicks"); };
 	
 	/**
 	 * Pick a number
@@ -88,15 +103,21 @@ function Ladder()
 	 */
 	this.pick = function(number) {
 		tries++;
-		that.tell("Ladder.picked", {
-			number: number,
-			correct: number === targetNumber,
-			callback: function() {
-				that.tell("Ladder.birdFlyToLadder", {
-					number: number,
-					callback: birdHasFlewn(number === targetNumber)
-				});				
-			}
+		allowInterrupt(function() {
+			that.tell("Ladder.picked", {
+				number: number,
+				correct: number === targetNumber,
+				callback: function() {
+					that.tell("Ladder.birdFlyToLadder", {
+						number: number,
+						callback: function() {
+							birdHasFlewn(number === targetNumber)();
+							if (number < targetNumber) that.tell("Ladder.tooLow");
+							if (number > targetNumber) that.tell("Ladder.tooHigh");							
+						}
+					});
+				}
+			});
 		});
 	};
 	
@@ -129,19 +150,34 @@ function Ladder()
 	
 	var _oldInterruptAgent = this.interruptAgent;
 	this.interruptAgent = function() {
-		_oldInterruptAgent();
-		if (!birdHasTreat) {
-			that.tell("Ladder.interrupt");
-			that.tell("Ladder.birdFlyToNest", { callback: function() {
-				
-			}});
+		if (interruptable && that.game.playerIsAgent()) {
+			disallowInterrupt();
+			_oldInterruptAgent();
+			that.popAction();
+			if (!birdHasTreat) {
+				that.tell("Ladder.interrupt");
+				that.tell("Ladder.birdFlyToNest", { callback: function() {
+					
+				}});
+			}
+		} else {
+			console.log("Not interruptable");
 		}
+	};
+	
+	this.helpAgent = function() {
+		that.tell("Ladder.helpAgent");
 	};
 	
 	this.start = function() {
 		that.tell("Ladder.start");
-		placeTreat();
-		console.log("start");
+		if (that.game.modeIsAgentSee()) {
+			that.tell("Ladder.introduceAgent", { callback: placeTreat });
+		} else if (that.game.modeIsAgentDo()) {
+			that.tell("Ladder.startAgent", { callback: placeTreat });
+		} else {
+			placeTreat();
+		}
 	};
 }
 

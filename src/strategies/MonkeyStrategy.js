@@ -10,13 +10,15 @@ function MonkeyPlayer() {
 	
 	/**
 	 * @param {Ladder} game
-	 * @param {MW.MiniGameResult=} result
+	 * @param {Array=} result
 	 */
 	this.strategies["Ladder"] = function(game, result) {
 		Log.debug("Applying MonkeyPlayer's strategy to the Ladder", "player");
 		
 		var resultPosition = 0;
 		var interrupted = false;
+		var intentionalMistakePosition = Utils.getRandomInt(0, result.length - 1);
+		console.log("Intentional: " + intentionalMistakePosition);
 		
 		that.on("Ladder.readyToPick", function(msg) {
 			play(resultPosition++);
@@ -30,18 +32,18 @@ function MonkeyPlayer() {
 		this.resume = function() {
 			Log.debug("Resuming agent", "agent");
 			interrupted = false;
-			play(resultPosition);
 		};
 		
 		var play = function(resultPosition) {
 			if (interrupted) return;
 			setTimeout(function() {
-				if (result[resultPosition] === "correct") {
-					console.log("Target Number: " + game.getTargetNumber());
-					game.pick(game.getTargetNumber());
-				} else {
+				console.log("Picking!");
+				if (resultPosition === intentionalMistakePosition || result[resultPosition] === "incorrect") {
 					console.log("Incorrect Number: " + game.getIncorrectNumber());
 					game.pick(game.getIncorrectNumber());
+				} else {
+					console.log("Target Number: " + game.getTargetNumber());
+					game.pick(game.getTargetNumber());
 				}
 				
 			}, 2000);
@@ -54,7 +56,6 @@ function MonkeyPlayer() {
 		});
 		
 		that.on("Game.stopMiniGame", function(msg) {
-			console.log("FORGETTING MONKEY");
 			that.forget();
 		});
 	};

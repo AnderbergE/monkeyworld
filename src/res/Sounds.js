@@ -88,6 +88,33 @@ var Sounds = {
 		
 	MAGIC_CHIMES:
 		new SoundEntry("51710__bristolstories__u-chimes3_short", null),
+		
+	LADDER_LOOKS_FUN:
+		new SoundEntry(null, Strings.get("LADDER_LOOKS_FUN")),
+		
+	LADDER_SHOW_ME:
+		new SoundEntry(null, Strings.get("LADDER_SHOW_ME")),
+
+	LADDER_MY_TURN:
+		new SoundEntry(null, Strings.get("LADDER_MY_TURN")),
+		
+	LADDER_IS_IT_RIGHT:
+		new SoundEntry(null, Strings.get("LADDER_IS_IT_RIGHT")),
+		
+	LADDER_IT_WAS_RIGHT:
+		new SoundEntry(null, Strings.get("LADDER_IT_WAS_RIGHT")),
+	
+	LADDER_OOPS_TOO_HIGH:
+		new SoundEntry(null, Strings.get("LADDER_OOPS_TOO_HIGH")),
+	
+	LADDER_OOPS_TOO_LOW:
+		new SoundEntry(null, Strings.get("LADDER_OOPS_TOO_LOW")),
+	
+	LADDER_TRY_A_SMALLER_NUMBER:
+		new SoundEntry(null, Strings.get("LADDER_TRY_A_SMALLER_NUMBER")),
+	
+	LADDER_TRY_A_BIGGER_NUMBER:
+		new SoundEntry(null, Strings.get("LADDER_TRY_A_BIGGER_NUMBER")),
 	
 	"NUMBER_1":
 		new SoundEntry(null, Strings.get("NUMBER_1")),

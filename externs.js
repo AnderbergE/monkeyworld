@@ -16,6 +16,7 @@ KineticFrame.timeDiff = function() {};
 */
 Kinetic.Stage.prototype.onFrame = function(frameconfig){};
 Kinetic.Stage.prototype.start = function(){};
+Kinetic.Stage.prototype.throttle = function(){};
 /**
  * @param {Kinetic.Layer} layer
  */
@@ -104,6 +105,10 @@ Kinetic.Container = function() {};
 		Kinetic.Node.prototype.getParent = function() {};
 		Kinetic.Node.prototype.getLayer = function() {};
 		Kinetic.Node.prototype.getStage = function() {};
+		/** @param {Object} config */
+		Kinetic.Node.prototype.setAttrs = function(config) {};
+		/** @return {Object} */
+		Kinetic.Node.prototype.gettAttrs = function() {};
 		Kinetic.Node.prototype.getName = function() {};
 		/** @param {number} x */
 		Kinetic.Node.prototype.setX = function(x) {};
@@ -216,8 +221,9 @@ Kinetic.Shape = function(config){};
 	Kinetic.Shape.prototype.fillStroke = function() {};
 	Kinetic.Shape.prototype.getContext = function() {};
 	Kinetic.Shape.prototype.getCanvas = function() {};
+
 	/**
-	 * @param {String|CanvasGradient|CanvasPattern} fill
+	 * @param {String|Object} fill
 	 */
 	Kinetic.Shape.prototype.setFill = function(fill) {};
 	Kinetic.Shape.prototype.getFill = function() {};
@@ -236,12 +242,54 @@ Kinetic.Shape = function(config){};
 	Kinetic.Shape.prototype.fillStroke = function() {};
 	
 	Kinetic.Shape.prototype.transitionTo = function(state) {};
+	
+	Kinetic.Shape.prototype.fill = function(){};
+	Kinetic.Shape.prototype.fill.colorStops = function() {};
+
+	Kinetic.Shape.prototype.stroke = function(){};
+	/**
+	 * 
+	 * @param text
+	 * @param {number} x
+	 * @param {number} y
+	 */
+	Kinetic.Shape.prototype.fillText = function(text, x, y){};
+	/**
+	 * 
+	 * @param text
+	 * @param {number} x
+	 * @param {number} y
+	 */
+	Kinetic.Shape.prototype.strokeText = function(text, x, y){};
+	Kinetic.Shape.prototype.drawImage = function(){};
+	
+	/** @return {boolean} */
+	Kinetic.Shape.prototype.intersects = function(){};
+	
+	Kinetic.Shape.prototype.drawFunc.fill = function(){};
+	Kinetic.Shape.prototype.drawFunc.stroke = function(){};
+	/**
+	 * 
+	 * @param text
+	 * @param {number} x
+	 * @param {number} y
+	 */
+	Kinetic.Shape.prototype.drawFunc.fillText = function(text, x, y){};
+	/**
+	 * 
+	 * @param text
+	 * @param {number} x
+	 * @param {number} y
+	 */
+	Kinetic.Shape.prototype.drawFunc.strokeText = function(text, x, y){};
+	Kinetic.Shape.prototype.drawFunc.drawImage = function(){};
 
 /**
  * @constructor
  * @extends {Kinetic.Shape}
  */
 Kinetic.Rect = function(obj){};
+Kinetic.Rect.prototype.cornerRadius = function() {};
 
 /**
  * @constructor
@@ -349,6 +397,7 @@ Context.prototype.fillStyle = function(){};
 Context.prototype.strokeWidth = function(){};
 Context.prototype.drawFunc = function(){};
 Context.prototype.drawFunc.applyStyles = function(){};
+Context.prototype.applyStyles = function(){};
 Context.prototype.fillText = function(fillText, x, y){};
 Context.prototype.image = function(){};
 Context.prototype.centerOffset = function(){};

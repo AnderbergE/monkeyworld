@@ -8,7 +8,7 @@ window.onload = function() {
 	window["egame"] = game;
 };
 
-/*
+
 var WebFontConfig = {
   google: { families: [ 'Nunito::latin', 'Doppio+One::latin' ] }
 };
@@ -21,7 +21,7 @@ var WebFontConfig = {
   var s = document.getElementsByTagName('script')[0];
   s.parentNode.insertBefore(wf, s);
 })();
-*/
+
 /**
  * @constructor
  */
@@ -53,7 +53,7 @@ function Game(gameState) {
         height: 768
 	};
 	var stage = new Kinetic.Stage(stageConfig);
-
+console.log("defined stage");
 	var resizeGame = function() {
 		var w = window.innerWidth - 10;
 		var h = window.innerHeight - 10;
@@ -150,7 +150,13 @@ function Game(gameState) {
 	MW.GlobalObject.prototype.evm = evm;
 	
 	//ViewModule.prototype.evm = evm;
+	//ViewModule.stage = stage;
 	ViewModule.prototype.stage = stage;
+	LadderView.prototype.stage = stage;
+	LadderView.prototype.evm = evm;
+	
+	//StageHandler.setStage(stage);
+	console.log("set stage");
 	
 //	var gamerPlayer = new GamerPlayer();
 //	var monkeyPlayer = new MonkeyPlayer();
@@ -159,6 +165,7 @@ function Game(gameState) {
 	/** @type {MW.Game} */
 	var monkeyWorld = new MW.Game(true, Ladder);
 	MW.GlobalObject.prototype.game = monkeyWorld;
+	LadderView.prototype.game = monkeyWorld;
 	new MonkeyWorldView(stage, gameState, monkeyWorld);
 
 	var noModule = new NoModule();
@@ -283,14 +290,6 @@ function Game(gameState) {
 			monkeyWorld.start();
 		});
 	};
-	
-	
-	 
-
-	
-	
-	
-	
 	var preload = new PreloadJS(false);
 	
 	preload.onComplete = doneLoadingSounds;

@@ -5,7 +5,6 @@
  * @param {Function=} startGame Game to begin play
  */
 MW.Game = function(useViews, startGame) {
-
 	/** @const @type {MW.Game}      */ var that = this;
 	
 	/** @const @type {MiniGame}     */ var NO_MINI_GAME = new NoMiniGame();
@@ -15,7 +14,7 @@ MW.Game = function(useViews, startGame) {
 	/** @const @type {AngelPlayer}  */ var ANGEL        = new AngelPlayer();
 	
 	/** @type {number}              */ var numBananas   = 0;
-	/** @type {GameMode}            */ var gameMode     = GameMode.CHILD_PLAY; 
+	/** @type {GameMode}            */ var gameMode     = GameMode.MONKEY_SEE; 
 	/** @type {MiniGame}            */ var miniGame     = NO_MINI_GAME;
 	/** @type {Player}              */ var player       = GAMER;
 	/** @type {number}              */ var _round       = 1;
@@ -83,7 +82,9 @@ MW.Game = function(useViews, startGame) {
 	 */
 	var getNextState = function() {
 		if (gameMode === GameMode.CHILD_PLAY) {
-			that.tell("Game.askIfReadyToTeach", {
+			gameMode = GameMode.MONKEY_SEE;
+			startMiniGame();
+			/*that.tell("Game.askIfReadyToTeach", {
 				yes: function() {
 					gameMode = GameMode.MONKEY_SEE;
 					setRound(1);
@@ -94,7 +95,7 @@ MW.Game = function(useViews, startGame) {
 					addRound();
 					startMiniGame();
 				}
-			});
+			});*/
 		} else if (gameMode === GameMode.MONKEY_SEE) {
 			var result = miniGame.getResult();
 			if (result.madeMistake()) mistake = true;
@@ -125,7 +126,8 @@ MW.Game = function(useViews, startGame) {
 	 * Start the current mini game.
 	 */
 	var startMiniGame = function() {
-		startGame = undefined;
+		that.evm.print();
+		//startGame = undefined;
 		if (startGame === undefined) {
 			miniGame = new FishingGame();
 		} else {
@@ -258,8 +260,15 @@ MW.Game = function(useViews, startGame) {
 	/**
 	 * Returns true if the current player is the teachable agent.
 	 * @return {boolean}
+	 * @deprecated Use <code>playerIsAgent()</code> instead
 	 */
 	this.playerIsMonkey = function() { return player === AGENT; };
+	
+	/**
+	 * Returns true if the current player is the teachable agent.
+	 * @return {boolean}
+	 */
+	this.playerIsAgent = function() { return player === AGENT; };
 	
 	/**
 	 * Returns true if the current player is the guardian angel.

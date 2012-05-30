@@ -308,7 +308,7 @@ function FishingView(fishingGame) {
             context.fill();
             context.closePath();
 		};
-        wave.stroke = "black";
+        //wave.stroke = "black";
         wave.strokeWidth = 4;
 		
 		return wave;
@@ -461,12 +461,12 @@ function FishingView(fishingGame) {
 			context.lineTo(bezier.x, bezier.y);
 			context.lineTo(line.attrs.x2, line.attrs.y2);
 			context.lineWidth = line.attrs.strokeWidth / 2;
-			context.stroke();
+			this.stroke();
 			context.beginPath();
 			context.moveTo(line.attrs.x2, line.attrs.y2);
 			context.strokeStyle = "brown";			
 			context.lineTo(line.attrs.x3, line.attrs.y3 - radius - radius * 0.2);
-			context.stroke();
+			this.stroke();
 			
 			context.beginPath();
 			context.strokeStyle = "black";
@@ -474,14 +474,14 @@ function FishingView(fishingGame) {
 
 			context.bezierCurveTo(mpx, mpy, cpx, cpy, line.attrs.x2, line.attrs.y2);
 			context.lineWidth = line.attrs.strokeWidth;
-			context.stroke();
+			this.stroke();
 
 			
 			context.beginPath();
 		    context.arc(Math.floor(line.attrs.x3), Math.floor(line.attrs.y3) - radius*0.95, radius * 0.2, Math.PI, 0, false);
 			context.lineWidth = 2;
 	        context.strokeStyle = "black";
-	        context.stroke();
+	        this.stroke();
 			
 			
             var grd = context.createRadialGradient(
@@ -505,7 +505,7 @@ function FishingView(fishingGame) {
 		    context.stroke();
 		    context.font = fontSize +"px Arial";
 		    context.fillStyle = "white";
-		    context.fillText(fishingGame.getTargetNumber(), Math.floor(line.attrs.x3 + dx), Math.floor(line.attrs.y3 + dy));
+		    this.fillText(fishingGame.getTargetNumber(), Math.floor(line.attrs.x3 + dx), Math.floor(line.attrs.y3 + dy));
 		};
 		return line;
 	};
@@ -865,7 +865,7 @@ function FishingView(fishingGame) {
 				context.lineTo(x2, y-height);
 				context.quadraticCurveTo(x1, y-height, x1, y-bend);
 				context.closePath();
-				this.applyStyles();
+				this.fill();
 			},
 			fill: "#EED6AF"
 		});
@@ -911,7 +911,7 @@ function FishingView(fishingGame) {
             context.fill();
             
             context.closePath();
-            this.applyStyles();
+            this.fill();
           }
         });
 

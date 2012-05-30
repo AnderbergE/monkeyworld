@@ -4,7 +4,8 @@
  * @param {string} moduleName
  */
 function ViewModule(moduleName) {
-	
+	Log.debug("Creating ViewModule", "object");
+	Module.call(this);
 	var that = this;
 	var tweenController = new TweenController();
 	
@@ -142,7 +143,11 @@ function ViewModule(moduleName) {
 			}
 		};
 	};
+	/** @this {ViewModule} */
+	this.getStage = function() {
+		return this.stage;
+	};
 };
 
-ViewModule.prototype = new Module();
-//ViewModule.prototype.evm = new NoEventManager();
+inherit(ViewModule, Module);
+ViewModule.prototype.stage = null;

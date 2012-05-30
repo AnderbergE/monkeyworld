@@ -5,13 +5,16 @@
  */
 function LadderView(ladder)
 {
-	//this.tag("LadderView");
-	this._tag = "LadderView";
+	GameView.call(this);
+	Log.debug("Creating LadderView", "object");
+	this.tag("LadderView");
 	var that = this;
+	console.log("Stage");
+	console.log(that);
 	
 	var GROUND_HEIGHT = 100;
-	var LEFT_GROUND_WIDTH = that.stage.getWidth() * 0.4;
-	var RIGHT_GROUND_WIDTH = that.stage.getWidth() * 0.45;
+	var LEFT_GROUND_WIDTH = that.getStage().getWidth() * 0.4;
+	var RIGHT_GROUND_WIDTH = that.getStage().getWidth() * 0.45;
 	var GROUND_FILL = "#F4A460";
 	var GROUND_STROKE = "#A52A2A";
 	var GROUND_STROKE_WIDTH = 4;
@@ -25,7 +28,7 @@ function LadderView(ladder)
 		buttonMargin: 20
 	};
 	
-	var allowNumpad = true;
+	var allowNumpad = false;
 	var allowTreat = false;
 	var activeButton = null;
 	
@@ -33,14 +36,14 @@ function LadderView(ladder)
 	/** @type{Kinetic.Layer} */ var staticLayer = new Kinetic.Layer();
 	/** @type{Kinetic.Layer} */ var dynamicLayer = new Kinetic.Layer();
 	
-	that.stage.add(staticLayer);
-	that.stage.add(dynamicLayer);
+	that.getStage().add(staticLayer);
+	that.getStage().add(dynamicLayer);
 
 	/** @type {number} */ var stepHeight = 90;
 	/** @type {number} */ var stepWidth = 120;
 	/** @type {Object} */ var ladderBegin = {
 		/** @type {number} */ x: 130,
-		/** @type {number} */ y: that.stage.getHeight() - GROUND_HEIGHT - stepHeight
+		/** @type {number} */ y: that.getStage().getHeight() - GROUND_HEIGHT - stepHeight
 	};
 	/** @type {number} */ var stepNarrowing = 10;
 	
@@ -52,7 +55,7 @@ function LadderView(ladder)
 	
 	/** @const @type {Object.<Number>} */ var DROP_ZONE = {
 		/** @const @type {number} */ x: 650,
-		/** @const @type {number} */ y: that.stage.getHeight() - GROUND_HEIGHT - 80
+		/** @const @type {number} */ y: that.getStage().getHeight() - GROUND_HEIGHT - 80
 	};
 	
 	/** @const @type {number} */ var DROP_ZONE_HEIGHT = 200;
@@ -96,7 +99,8 @@ function LadderView(ladder)
             context.quadraticCurveTo(nosePos.x - 20, nosePos.y - 10, nosePos.x - 30, nosePos.y + 10);
             context.quadraticCurveTo(nosePos.x, nosePos.y + 10, nosePos.x, nosePos.y + 20);
             context.closePath();
-            this.applyStyles();
+            this.fill();
+            this.stroke();
           },
           fill: "#FFD700",
           stroke: "#DAA520",
@@ -111,7 +115,7 @@ function LadderView(ladder)
             context.quadraticCurveTo(40, 80, 50, 100);
             context.quadraticCurveTo(40, 80, 0, 0);
             context.closePath();
-            this.applyStyles();
+            this.fill();
           },
           fill: "#FFD700",
           stroke: "#DAA520",
@@ -157,6 +161,7 @@ function LadderView(ladder)
 		that.getTween(wing.attrs.scale).to({y:0.2}, 500);
 	};
 	
+	
 	var buttonFill = {
 		start: {
 			x: -50,
@@ -195,12 +200,26 @@ function LadderView(ladder)
 		dynamicLayer.add(treat);
 	};
 	
+	that.on("Ladder.tooLow", function(msg) {
+		Sound.play(Sounds.LADDER_OOPS_TOO_LOW);
+		setTimeout(function() {
+			Sound.play(Sounds.LADDER_TRY_A_BIGGER_NUMBER);
+		}, 2000);
+	});
+	
+	that.on("Ladder.tooHigh", function(msg) {
+		Sound.play(Sounds.LADDER_OOPS_TOO_HIGH);
+		setTimeout(function() {
+			Sound.play(Sounds.LADDER_TRY_A_SMALLER_NUMBER);
+		}, 2000);
+	});
+	
 	/**
 	 * Open the treat
 	 */
 	that.on("Ladder.openTreat", function(msg) {
 		treat._circle.setFill("blue");
-		activeButton._rect.setFill(buttonFill);
+		activeButton._rect.attrs.fill = buttonFill;
 		staticLayer.draw();
 		var balloons = new Kinetic.Image({
 			x: treat.getX() + 128,
@@ -244,20 +263,14 @@ function LadderView(ladder)
 	 * Picked a number on the numpad
 	 */
 	that.on("Ladder.picked", function(msg) {
-		console.log("picked " + msg.number);
-		
 		var pick = function() {
-			console.log("NUMBER: " + msg.number);
 			numpadGroups[msg.number]._rect._originalFill = numpadGroups[msg.number]._rect.attrs.fill;
 			numpadGroups[msg.number]._rect.setFill("red");
 			activeButton = numpadGroups[msg.number]; 
 			staticLayer.draw();
 			msg.callback();
 		};
-		
-		if (that.game.modeIsAgentDo()) {
-			if (stick === null) console.log("WHAAAT!?"); else
-				console.log(stick.getPoints());
+		if (that.game.modeIsAgentDo() && !ladder.agentIsInterrupted()) {
 			var pos = {
 				x:numpadGroups[msg.number].getX(),
 				y:numpadGroups[msg.number].getY()
@@ -282,25 +295,13 @@ function LadderView(ladder)
 	that.on("Ladder.birdFlyToNest", function(msg) {
 		that.getTween(bird.attrs).to({x: BIRD.x, y: BIRD.y}, 3000).call(function() {
 			if (activeButton != null) {
-				activeButton._rect.setFill(buttonFill);
+				activeButton._rect.attrs.fill = buttonFill;
 				staticLayer.draw();
 			}
 			allowNumpad = true;
 			stopWing();
 			msg.callback();
 		});
-	});
-	
-	that.on("Ladder.turnOnClicks", function(msg) {
-		Log.debug("Turning on clicks", "ladder");
-		allowNumpad = true;
-		allowTreat = true;
-	});
-	
-	that.on("Ladder.turnOffClicks", function(msg) {
-		Log.debug("Turning off clicks", "ladder");
-		allowNumpad = false;
-		allowTreat = false;
 	});
 	
 	/**
@@ -318,7 +319,11 @@ function LadderView(ladder)
 			that.getTween(treat.attrs).to({x: DROP_ZONE.x + dropZoneOffsetWidth * dropZoneOffset, y: DROP_ZONE.y}, 500);
 		});
 		that.getTween(treat.attrs).to(dropAt, TIME_TO_DROP_ZONE).call(function() {
-			allowTreat = true;
+			if (!that.game.modeIsAgentDo())
+				allowTreat = true;
+			if (that.game.modeIsAgentSee()) {
+				Sound.play(Sounds.LADDER_IT_WAS_RIGHT);
+			}
 			msg.callback();
 		});	
 	});
@@ -328,11 +333,10 @@ function LadderView(ladder)
 	});
 
 	this.tearDown = function() {
-		that.stage.remove(staticLayer);
-		that.stage.remove(dynamicLayer);
+		that.getStage().remove(staticLayer);
+		that.getStage().remove(dynamicLayer);
 		that.forget();
 		that.hideBig();
-		console.log("TEARING DOWN VIEW");
 	};
 	
 	that.on("Game.roundDone", this.tearDown);
@@ -344,7 +348,7 @@ function LadderView(ladder)
 			that.getTween(stick.attrs.points[1]).to(STICK_ORIGIN,1000);
 		}
 	});
-	
+
 	var background = new Kinetic.Rect({
 		fill: {
 			start: {
@@ -352,29 +356,30 @@ function LadderView(ladder)
 				y: 0
 			},
 			end: {
-				x: that.stage.getWidth(),
-				y: that.stage.getHeight()
+				x: that.getStage().getWidth(),
+				y: that.getStage().getHeight()
 			},
 			colorStops: [0, '#87CEFA', 0.6, '#87CEFA', 1, '#6A5ACD']
 		},
 		x: 0,
 		y: 0,
-        width: that.stage.getWidth(),
-        height: that.stage.getHeight()
+        width: that.getStage().getWidth(),
+        height: that.getStage().getHeight()
 	});
 	
 	var leftGround = new Kinetic.Shape({
 		drawFunc: function() {
 			var context = this.getContext();
 			context.beginPath();
-			context.moveTo(0, that.stage.getHeight() - GROUND_HEIGHT);
-			context.lineTo(LEFT_GROUND_WIDTH, that.stage.getHeight() - GROUND_HEIGHT);
+			context.moveTo(0, that.getStage().getHeight() - GROUND_HEIGHT);
+			context.lineTo(LEFT_GROUND_WIDTH, that.getStage().getHeight() - GROUND_HEIGHT);
 			context.quadraticCurveTo(
-				LEFT_GROUND_WIDTH - 80, that.stage.getHeight() - GROUND_HEIGHT*0.8,
-				LEFT_GROUND_WIDTH - 100, that.stage.getHeight());
-			context.lineTo(0, that.stage.getHeight());
+				LEFT_GROUND_WIDTH - 80, that.getStage().getHeight() - GROUND_HEIGHT*0.8,
+				LEFT_GROUND_WIDTH - 100, that.getStage().getHeight());
+			context.lineTo(0, that.getStage().getHeight());
 			context.closePath();
-			this.applyStyles();
+			this.fill();
+			this.stroke();
 		},
 		fill: GROUND_FILL,
 		stroke: GROUND_STROKE,
@@ -385,14 +390,15 @@ function LadderView(ladder)
 		drawFunc: function() {
 			var context = this.getContext();
 			context.beginPath();
-			context.moveTo(that.stage.getWidth(), that.stage.getHeight() - GROUND_HEIGHT);
-			context.lineTo(that.stage.getWidth() - RIGHT_GROUND_WIDTH, that.stage.getHeight() - GROUND_HEIGHT);
+			context.moveTo(that.getStage().getWidth(), that.getStage().getHeight() - GROUND_HEIGHT);
+			context.lineTo(that.getStage().getWidth() - RIGHT_GROUND_WIDTH, that.getStage().getHeight() - GROUND_HEIGHT);
 			context.quadraticCurveTo(
-				that.stage.getWidth() - RIGHT_GROUND_WIDTH + 80, that.stage.getHeight() - GROUND_HEIGHT*0.8,
-				that.stage.getWidth() - RIGHT_GROUND_WIDTH + 100, that.stage.getHeight());
-			context.lineTo(that.stage.getWidth(), that.stage.getHeight());
+				that.getStage().getWidth() - RIGHT_GROUND_WIDTH + 80, that.getStage().getHeight() - GROUND_HEIGHT*0.8,
+				that.getStage().getWidth() - RIGHT_GROUND_WIDTH + 100, that.getStage().getHeight());
+			context.lineTo(that.getStage().getWidth(), that.getStage().getHeight());
 			context.closePath();
-			this.applyStyles();
+			this.fill();
+			this.stroke();
 		},
 		fill: GROUND_FILL,
 		stroke: GROUND_STROKE,
@@ -403,13 +409,44 @@ function LadderView(ladder)
 	staticLayer.add(leftGround);
 	staticLayer.add(rightGround);
 	staticLayer.add(birdNest);
-	if (that.game.getMode() == GameMode.MONKEY_DO) {
-		var stopButton = new Kinetic.Image({
-			image: images['symbol-stop'], x: 750, y: 700, centerOffset: {x:64,y:64}
-		});
-		var continueButton = new Kinetic.Image({
-			image: images['symbol-check'], x: 900, y: 700, centerOffset: {x:64,y:64}
-		});
+	
+	var stopButton = new Kinetic.Image({
+		image: images['symbol-stop'], x: 750, y: 700, centerOffset: {x:64,y:64}, alpha: 0
+	});
+	var continueButton = new Kinetic.Image({
+		image: images['symbol-check'], x: 900, y: 700, centerOffset: {x:64,y:64}, alpha: 0
+	});
+	
+	dynamicLayer.add(stopButton);
+	dynamicLayer.add(continueButton);
+	
+	that.on("Ladder.introduceAgent", function(msg) {
+		Sound.play(Sounds.LADDER_LOOKS_FUN);
+		that.setTimeout(function() {
+			Sound.play(Sounds.LADDER_SHOW_ME);
+			that.setTimeout(function() {
+				msg.callback();
+			}, 2000);
+		}, 2000);
+	});
+	
+	that.on("Ladder.helpAgent", function(msg) {
+		console.log("Jag behöver hjälp!");
+		allowNumpad = true;
+	});
+	
+	that.on("Ladder.startAgent", function(msg) {
+		Sound.play(Sounds.LADDER_MY_TURN);
+		that.setTimeout(function() {
+			Sound.play(Sounds.LADDER_IS_IT_RIGHT);
+			that.setTimeout(function() {
+				msg.callback();
+			}, 2000);
+		}, 2000);
+	});
+	
+	that.on("Ladder.allowInterrupt", function(msg) {
+		var d = 0; var done = function() { d++; if (d === 2) msg.callback(); };
 		stopButton.on("mousedown touchstart", function() {
 			that.getTween(stopButton.attrs).to({rotation: 8*Math.PI}, 1200).to({rotation:0});
 			ladder.interruptAgent();
@@ -417,11 +454,23 @@ function LadderView(ladder)
 		continueButton.on("mousedown touchstart", function() {
 			console.log("klick");
 			that.getTween(continueButton.attrs).to({rotation: 8*Math.PI}, 1200).to({rotation:0});
-			ladder.resumeAgent();
+			//ladder.resumeAgent();
 		});
-		dynamicLayer.add(stopButton);
-		dynamicLayer.add(continueButton);
-	};
+		that.getTween(stopButton.attrs).to({alpha:1}, 500).call(done);
+		that.getTween(continueButton.attrs).to({alpha:1}, 500).call(done);
+	});
+	
+	that.on("Ladder.disallowInterrupt", function(msg) {
+		var d = 0; var done = function() { d++; /*if (d === 2) msg.callback();*/ };
+		stopButton.off("mousedown touchstart");
+		continueButton.off("mousedown touchstart");
+		if (stopButton != null) {
+			that.getTween(stopButton.attrs).to({alpha: 0}, 500).call(done);
+		}
+		if (continueButton != null) {
+			that.getTween(continueButton.attrs).to({alpha: 0}, 500).call(done);
+		}
+	});
 	
 	for (var i = 0; i < ladder.getLadder().length; i ++) {
 		var number = ladder.getLadder()[i];
@@ -505,7 +554,8 @@ function LadderView(ladder)
 					central.x + 10, central.y + 10);
 			
 			context.closePath();
-			this.applyStyles();
+			this.fill();
+			this.stroke();
 		},
 		fill: "#556B2F",
 		stroke: "#006400",
@@ -569,11 +619,15 @@ function LadderView(ladder)
 	
 	var agent = new Kinetic.Image({
 		image: images["monkey"],
-		x: that.stage.getWidth() + 10,
-		y: that.stage.getHeight() - GROUND_HEIGHT - images["monkey"].height
+		x: that.getStage().getWidth() + 10,
+		y: that.getStage().getHeight() - GROUND_HEIGHT - images["monkey"].height
 	});
-	dynamicLayer.add(agent);
 	
+	//var agent2 = new AgentView(400,200);
+	
+	dynamicLayer.add(agent);
+	//dynamicLayer.add(agent2);
+	//agent2.transitionTo({rotation:Math.PI*2, duration: 2});
 	if (that.game.modeIsAgentDo()) {
 		stick = new Kinetic.Line({
 			points: [660, 570, STICK_ORIGIN.x, STICK_ORIGIN.y],
@@ -587,17 +641,17 @@ function LadderView(ladder)
 	if (that.game.modeIsChild()) {
 		var peekAgent = function() {
 			that.setTimeout(function() {
-				that.getTween(agent.attrs).to({x:that.stage.getWidth() - 100, rotation: -Math.PI/5}, 1000)
-				.wait(2000).to({x:that.stage.getWidth() + 10}, 1000).call(function(){peekAgent();});
+				that.getTween(agent.attrs).to({x:that.getStage().getWidth() - 100, rotation: -Math.PI/5}, 1000)
+				.wait(2000).to({x:that.getStage().getWidth() + 10}, 1000).call(function(){peekAgent();});
 			}, 2000);
 		};
 		peekAgent();
 	} else if (that.game.modeIsAgentSee() || that.game.modeIsAgentDo()) {
-		agent.setX(that.stage.getWidth() - 500);		
+		agent.setX(that.getStage().getWidth() - 500);		
 	}
 	
 	staticLayer.draw();
 	
 }
-
-LadderView.prototype = new GameView();
+inherit(LadderView, GameView);
+//LadderView.prototype = Object.create(GameView);
