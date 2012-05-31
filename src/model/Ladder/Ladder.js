@@ -109,14 +109,19 @@ function Ladder()
 				number: number,
 				correct: number === targetNumber,
 				callback: function() {
+					if (that.agentIsInterrupted() && number === targetNumber) {
+						that.helpedAgent();
+					}
 					that.tell("Ladder.birdFlyToLadder", {
 						number: number,
 						callback: function() {
 							birdHasFlewn(number === targetNumber)();
 							if (number < targetNumber && that.game.modeIsAgentSee()) that.tell("Ladder.tooLow");
-							if (number > targetNumber && that.game.modeIsAgentSee()) that.tell("Ladder.tooHigh");							
+							if (number > targetNumber && that.game.modeIsAgentSee()) that.tell("Ladder.tooHigh");
 						}
 					});
+					if (number === targetNumber && that.agentIsInterrupted()) that.tell("Ladder.justRight");
+					if (number != targetNumber && that.agentIsInterrupted()) that.tell("Ladder.hmm");
 				}
 			});
 		});
@@ -164,10 +169,6 @@ function Ladder()
 		} else {
 			console.log("Not interruptable");
 		}
-	};
-	
-	this.helpAgent = function() {
-		that.tell("Ladder.helpAgent");
 	};
 	
 	this.start = function() {

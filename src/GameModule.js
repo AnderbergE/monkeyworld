@@ -60,6 +60,7 @@ function MiniGame() {
 	};
 	
 	var _agentIsInterrupted = false;
+	var _agentIsBeingHelped = false;
 	
 	this.interruptAgent = function() {
 		_agentIsInterrupted = true;
@@ -75,6 +76,31 @@ function MiniGame() {
 	
 	this.agentIsInterrupted = function() {
 		return _agentIsInterrupted;
+	};
+	
+	/**
+	 * Tell the system that the teachable agent needs help.
+	 */
+	this.helpAgent = function() {
+		_agentIsBeingHelped = true;
+		that.game.setGamerAsPlayer();
+	};
+	
+	/**
+	 * Tell the system that the teachable agent has been helped, and that it
+	 * can now continue on its own.
+	 */
+	this.helpedAgent = function() {
+		_agentIsBeingHelped = false;
+		that.game.setAgentAsPlayer();
+	};
+	
+	/**
+	 * Checks if the teachable agent is currently being helped by the gamer.
+	 * @return {boolean}
+	 */
+	this.agentsIsBeingHelped = function() {
+		return _agentIsBeingHelped;
 	};
 	
 	this.stop = function() {

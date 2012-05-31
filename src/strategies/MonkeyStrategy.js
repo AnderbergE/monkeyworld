@@ -30,7 +30,7 @@ function MonkeyPlayer() {
 				play(resultPosition++);
 			} else {
 				Sound.play(Sounds.LADDER_PLEASE_HELP_ME);
-				game.interruptAgent();
+				game.helpAgent();
 			}
 		});
 		

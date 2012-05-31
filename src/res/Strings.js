@@ -40,6 +40,26 @@ var Strings = {
 		"sv": "Men du kan avbryta mig om jag gör fel!",
 		"en": "But you can interrupt me if I'm doing it wrong!"
 	},
+	
+	"MAYBE_THAT_WORKS": {
+		"sv": "Hmm, det kanske är rätt. Vi kan testa.",
+		"en": "Hmm, maybe that works. We can try it."
+	},
+	
+	"WHICH_ONE_DO_YOU_THINK_IT_IS": {
+		"sv": "Vilken tror du att det är?",
+		"en": "Which one do you think it is?"
+	},
+	
+	"YES_I_THINK_THAT_ONE_IS_BETTER": {
+		"sv": "Ja, det där fungerar nog bättre!",
+		"en": "Yes, I think that one is better!"
+	},
+	
+	"IM_GOING_TO_PICK_THIS_ONE": {
+		"sv": "Jag tar den här!",
+		"en": "I'm going to pick this one!"
+	},
 		
 	"FISHING_CATCH_NUMBER": {
 		"sv": "Fånga nummer %1",

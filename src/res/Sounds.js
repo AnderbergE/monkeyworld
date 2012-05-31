@@ -17,6 +17,15 @@ var Sounds = {
 	YAY:
 		new SoundEntry("19446__totya__yeah", Strings.get("YAY")),
 	
+	BIKE_HORN:
+		new SoundEntry("27882__stickinthemud__bike-horn-double-toot", null),
+
+	TADA:
+		new SoundEntry("60443__jobro__tada1", null),
+
+	CLICK:
+		new SoundEntry("406__tictacshutup__click-1-d", null, 4),
+	
 	ARE_YOU_READY_TO_TEACH:
 		new SoundEntry(null, Strings.get("ARE_YOU_READY_TO_TEACH")),
 		
@@ -29,6 +38,18 @@ var Sounds = {
 	BUT_YOU_CAN_INTERRUPT:
 		new SoundEntry(null, Strings.get("BUT_YOU_CAN_INTERRUPT")),
 
+	IM_GOING_TO_PICK_THIS_ONE:
+		new SoundEntry(null, Strings.get("IM_GOING_TO_PICK_THIS_ONE")),
+		
+	YES_I_THINK_THAT_ONE_IS_BETTER:
+		new SoundEntry(null, Strings.get("YES_I_THINK_THAT_ONE_IS_BETTER")),
+		
+	MAYBE_THAT_WORKS:
+		new SoundEntry(null, Strings.get("MAYBE_THAT_WORKS")),
+		
+	WHICH_ONE_DO_YOU_THINK_IT_IS:
+		new SoundEntry(null, Strings.get("WHICH_ONE_DO_YOU_THINK_IT_IS")),	
+		
 	FISHING_FREE_WRONG_ONES:
 		new SoundEntry(null, Strings.get("FISHING_FREE_WRONG_ONES")),
 		

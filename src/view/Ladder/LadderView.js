@@ -200,6 +200,14 @@ function LadderView(ladder)
 		dynamicLayer.add(treat);
 	};
 	
+	that.on("Ladder.justRight", function(msg) {
+		Sound.play(Sounds.YES_I_THINK_THAT_ONE_IS_BETTER);
+	});
+	
+	that.on("Ladder.hmm", function(msg) {
+		Sound.play(Sounds.MAYBE_THAT_WORKS);
+	});
+	
 	that.on("Ladder.tooLow", function(msg) {
 		Sound.play(Sounds.LADDER_OOPS_TOO_LOW);
 		setTimeout(function() {
@@ -264,18 +272,20 @@ function LadderView(ladder)
 	 */
 	that.on("Ladder.picked", function(msg) {
 		var pick = function() {
+			Sound.play(Sounds.CLICK);
 			numpadGroups[msg.number]._rect._originalFill = numpadGroups[msg.number]._rect.attrs.fill;
 			numpadGroups[msg.number]._rect.setFill("red");
 			activeButton = numpadGroups[msg.number]; 
 			staticLayer.draw();
 			msg.callback();
 		};
-		if (that.game.modeIsAgentDo() && !ladder.agentIsInterrupted()) {
+		if (that.game.modeIsAgentDo() && !ladder.agentIsInterrupted() && !ladder.agentsIsBeingHelped()) {
 			var pos = {
 				x:numpadGroups[msg.number].getX(),
 				y:numpadGroups[msg.number].getY()
 			};
-			that.getTween(stick.attrs.points[1]).to(pos,2000).call(pick).wait(1000).to(STICK_ORIGIN,2000);
+			Sound.play(Sounds.IM_GOING_TO_PICK_THIS_ONE);
+			that.getTween(stick.attrs.points[1]).wait(1500).to(pos,3000).wait(3000).call(pick).wait(1000).to(STICK_ORIGIN,1000);
 		} else {
 			pick();
 		}
@@ -286,7 +296,7 @@ function LadderView(ladder)
 	 */
 	that.on("Ladder.birdFlyToLadder", function(msg) {
 		moveWing();
-		that.getTween(bird.attrs).to({x: 300, y: stepGroups[msg.number].getY()}, 3000).call(msg.callback);
+		that.getTween(bird.attrs).to({x: 300, y: stepGroups[msg.number].getY()}, 5500).call(msg.callback);
 	});
 	
 	/**
@@ -345,7 +355,9 @@ function LadderView(ladder)
 		that.removeTween(bird.attrs);
 		if (that.game.modeIsAgentDo) {
 			that.removeTween(stick.attrs.points[1]);
-			that.getTween(stick.attrs.points[1]).to(STICK_ORIGIN,1000);
+			that.getTween(stick.attrs.points[1]).to(STICK_ORIGIN,1000).call(function() {
+				Sound.play(Sounds.WHICH_ONE_DO_YOU_THINK_IT_IS);
+			});
 		}
 	});
 
@@ -430,11 +442,6 @@ function LadderView(ladder)
 		}, 2000);
 	});
 	
-	that.on("Ladder.helpAgent", function(msg) {
-		console.log("Jag behöver hjälp!");
-		allowNumpad = true;
-	});
-	
 	that.on("Ladder.startAgent", function(msg) {
 		Sound.play(Sounds.LADDER_MY_TURN);
 		that.setTimeout(function() {
@@ -451,16 +458,21 @@ function LadderView(ladder)
 		//var d = 0; var done = function() { d++; if (d === 2) msg.callback(); };
 		stopButton.on("mousedown touchstart", function() {
 			that.getTween(stopButton.attrs).to({rotation: 8*Math.PI}, 1200).to({rotation:0});
+			Sound.play(Sounds.BIKE_HORN);
 			ladder.interruptAgent();
 		});
 		continueButton.on("mousedown touchstart", function() {
-			console.log("klick");
 			that.getTween(continueButton.attrs).to({rotation: 8*Math.PI}, 1200).to({rotation:0});
+			Sound.play(Sounds.TADA);
 			//ladder.resumeAgent();
 		});
 		//that.getTween(stopButton.attrs).to({alpha:1}, 500).call(done);
 		//that.getTween(continueButton.attrs).to({alpha:1}, 500).call(done);
 		msg.callback();
+	});
+	
+	that.on("Ladder.helpAgent", function(msg) {
+		allowNumpad = true;
 	});
 	
 	that.on("Ladder.disallowInterrupt", function(msg) {
