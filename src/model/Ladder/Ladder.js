@@ -116,8 +116,8 @@ function Ladder()
 						number: number,
 						callback: function() {
 							birdHasFlewn(number === targetNumber)();
-							if (number < targetNumber && that.game.modeIsAgentSee()) that.tell("Ladder.tooLow");
-							if (number > targetNumber && that.game.modeIsAgentSee()) that.tell("Ladder.tooHigh");
+							if (number < targetNumber && (that.game.modeIsAgentSee() || that.agentIsInterrupted())) that.tell("Ladder.tooLow");
+							if (number > targetNumber && (that.game.modeIsAgentSee() || that.agentIsInterrupted())) that.tell("Ladder.tooHigh");
 						}
 					});
 					if (number === targetNumber && that.agentIsInterrupted()) that.tell("Ladder.justRight");

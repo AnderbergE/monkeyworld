@@ -29,9 +29,7 @@ function LadderView(ladder)
 	};
 	
 	var allowNumpad = false;
-	var allowTreat = false;
 	var activeButton = null;
-	
 	
 	/** @type{Kinetic.Layer} */ var staticLayer = new Kinetic.Layer();
 	/** @type{Kinetic.Layer} */ var dynamicLayer = new Kinetic.Layer();
@@ -174,6 +172,52 @@ function LadderView(ladder)
 		colorStops: [0, 'red', 1, 'yellow']
 	};
 	
+	var shakeAgain = false;
+	var shakeTreat = function() {
+		shakeAgain = true;
+		var _shakeTreat = function() {
+			if (!shakeAgain) return; 
+			var ox = treat.getX();
+			var oy = treat.getY();
+			var time = 100;
+			var offset = 5;
+			var waitTime = 5000;
+			that.getTween(treat.attrs)
+				.to({ x: ox-offset }, time)
+				.to({ x: ox+offset }, time)
+				.to({ x: ox-offset }, time)
+				.to({ x: ox+offset }, time)
+				.to({ x: ox-offset }, time)
+				.to({ x: ox+offset }, time)
+				.to({ x: ox-offset }, time)
+				.to({ x: ox+offset }, time)
+				.to({ x: ox-offset }, time)
+				.to({ x: ox }, time);
+			that.getTween(treat.attrs)
+				.to({ y: oy-offset }, time)
+				.to({ y: oy+offset }, time)
+				.to({ y: oy-offset }, time)
+				.to({ y: oy+offset }, time)
+				.to({ y: oy-offset }, time)
+				.to({ y: oy+offset }, time)
+				.to({ y: oy-offset }, time)
+				.to({ y: oy+offset }, time)
+				.to({ y: oy-offset }, time)
+				.to({ y: oy }, time).wait(waitTime)
+				.call(function() { _shakeTreat(); });
+		}();
+	};
+	
+	var stopShakeTreat = function() {
+		shakeAgain = false;
+	};
+	
+	var addOnMouseActionToTreat = function() {
+		treat.on("mousedown touchstart", function() {
+			ladder.openTreat();
+		});
+	};
+	
 	var treat = null;
 	
 	var createTreat = function(callback) {
@@ -190,13 +234,6 @@ function LadderView(ladder)
 		treat.add(treatCircle);
 		
 		that.getTween(treat.attrs).to({y:stepGroups[ladder.getTargetNumber()].getY()}, 1000).call(callback);
-		
-		treat.on("mousedown touchstart", function() {
-			if (allowTreat) {
-				allowTreat = false;
-				ladder.openTreat();
-			};
-		});
 		dynamicLayer.add(treat);
 	};
 	
@@ -226,6 +263,8 @@ function LadderView(ladder)
 	 * Open the treat
 	 */
 	that.on("Ladder.openTreat", function(msg) {
+		treat.off("mousedown touchstart");
+		stopShakeTreat();
 		treat._circle.setFill("blue");
 		activeButton._rect.attrs.fill = buttonFill;
 		staticLayer.draw();
@@ -325,11 +364,15 @@ function LadderView(ladder)
 		flyTo.x += 170;
 		
 		that.getTween(bird.attrs).to(flyTo, TIME_TO_DROP_ZONE).call(function() {
-			that.getTween(treat.attrs).to({x: DROP_ZONE.x + dropZoneOffsetWidth * dropZoneOffset, y: DROP_ZONE.y}, 500);
+			that.getTween(treat.attrs).to({x: DROP_ZONE.x + dropZoneOffsetWidth * dropZoneOffset, y: DROP_ZONE.y}, 500).call(function() {
+				if (!that.game.modeIsAgentDo()) {
+					addOnMouseActionToTreat();
+					shakeTreat();
+				}
+			});
+			
 		});
 		that.getTween(treat.attrs).to(dropAt, TIME_TO_DROP_ZONE).call(function() {
-			if (!that.game.modeIsAgentDo())
-				allowTreat = true;
 			if (that.game.modeIsAgentSee()) {
 				Sound.play(Sounds.LADDER_IT_WAS_RIGHT);
 			}
