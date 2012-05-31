@@ -547,3 +547,10 @@ JSON.stringify = function(obj) {};
  * @param {string=} arg2
  */
 $.cookie = function(arg1, arg2) {};
+
+/**
+ * @type {Object.<Object>}
+ */
+var WebFontConfig;
+WebFontConfig.google = function() {};
+WebFontConfig.google.families = function() {};

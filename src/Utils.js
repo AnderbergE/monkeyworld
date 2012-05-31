@@ -1,11 +1,14 @@
+/**
+ * @param {Function} childCtor
+ * @param {Function} parentCtor
+ */
 function inherit(childCtor, parentCtor) {
-	console.log("Inheritance: " + childCtor);
-	  /** @constructor */
-	  function tempCtor() {};
-	  tempCtor.prototype = parentCtor.prototype;
-	  childCtor.superClass_ = parentCtor.prototype;
-	  childCtor.prototype = new tempCtor();
-	  childCtor.prototype.constructor = childCtor;
+	/** @constructor */
+	function tempCtor() {};
+	tempCtor.prototype = parentCtor.prototype;
+	childCtor.superClass_ = parentCtor.prototype;
+	childCtor.prototype = new tempCtor();
+	childCtor.prototype.constructor = childCtor;
 }
 
 

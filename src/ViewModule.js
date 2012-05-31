@@ -17,7 +17,6 @@ function ViewModule(moduleName) {
 	
 	this.setup = function() {
 		this.on("Game.stopMiniGame", function() { tearDown(); });
-		this.on("Game.stop", function(msg) { tearDown(); });
 	};
 	
 	/**
@@ -37,6 +36,7 @@ function ViewModule(moduleName) {
 	
 	var _oldTearDown = this.tearDown; 
 	this.tearDown = function() {
+		Log.debug("Tearing down", "ViewModule");
 		bigText.hide();
 		_oldTearDown();
 		tweenController.teardown();

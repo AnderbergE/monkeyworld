@@ -9,7 +9,7 @@ window.onload = function() {
 };
 
 
-var WebFontConfig = {
+WebFontConfig = {
   google: { families: [ 'Nunito::latin', 'Doppio+One::latin' ] }
 };
 (function() {

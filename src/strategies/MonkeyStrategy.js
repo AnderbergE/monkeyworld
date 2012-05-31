@@ -19,9 +19,23 @@ function MonkeyPlayer() {
 		var interrupted = false;
 		var intentionalMistakePosition = Utils.getRandomInt(0, result.length - 1);
 		console.log("Intentional: " + intentionalMistakePosition);
+		var tries = 0;
 		
 		that.on("Ladder.readyToPick", function(msg) {
 			play(resultPosition++);
+		});
+		
+		that.on("Ladder.incorrect", function(msg) {
+			if (tries < 4) {
+				play(resultPosition++);
+			} else {
+				Sound.play(Sounds.LADDER_PLEASE_HELP_ME);
+				game.interruptAgent();
+			}
+		});
+		
+		that.on("Ladder.correct", function(msg) {
+			tries = 0;
 		});
 		
 		this.interrupt = function() {
@@ -36,6 +50,7 @@ function MonkeyPlayer() {
 		
 		var play = function(resultPosition) {
 			if (interrupted) return;
+			tries++;
 			setTimeout(function() {
 				console.log("Picking!");
 				if (resultPosition === intentionalMistakePosition || result[resultPosition] === "incorrect") {

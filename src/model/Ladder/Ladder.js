@@ -54,6 +54,7 @@ function Ladder()
 			});
 		} else {
 			that.tell("Ladder.birdFlyToNest", { callback: function() {
+				that.tell("Ladder.incorrect");
 				that.addAction("incorrect");
 			}});
 		}
@@ -112,8 +113,8 @@ function Ladder()
 						number: number,
 						callback: function() {
 							birdHasFlewn(number === targetNumber)();
-							if (number < targetNumber) that.tell("Ladder.tooLow");
-							if (number > targetNumber) that.tell("Ladder.tooHigh");							
+							if (number < targetNumber && that.game.modeIsAgentSee()) that.tell("Ladder.tooLow");
+							if (number > targetNumber && that.game.modeIsAgentSee()) that.tell("Ladder.tooHigh");							
 						}
 					});
 				}

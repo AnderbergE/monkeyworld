@@ -309,7 +309,6 @@ function LadderView(ladder)
 	 */
 	that.on("Ladder.dropTreat", function(msg) {
 		/** @const @type {number} */ var TIME_TO_DROP_ZONE = 2000;
-		/** @const @type {number} */ var TIME_TO_NEST = 2000;
 		
 		var flyTo = {x: DROP_ZONE.x + dropZoneOffsetWidth * dropZoneOffset, y: DROP_ZONE.y - DROP_ZONE_HEIGHT};
 		var dropAt = {x:flyTo.x, y: flyTo.y};
@@ -332,12 +331,13 @@ function LadderView(ladder)
 		dynamicLayer.draw();
 	});
 
-	this.tearDown = function() {
+	var tearDown = function() {
+		Log.debug("Tearing down", "LadderView");
 		that.getStage().remove(staticLayer);
 		that.getStage().remove(dynamicLayer);
-		that.forget();
-		that.hideBig();
 	};
+
+	this.on("Game.stopMiniGame", function() { tearDown(); });
 	
 	that.on("Game.roundDone", this.tearDown);
 	
@@ -441,12 +441,14 @@ function LadderView(ladder)
 			Sound.play(Sounds.LADDER_IS_IT_RIGHT);
 			that.setTimeout(function() {
 				msg.callback();
+				that.getTween(stopButton.attrs).to({alpha:1},1000);
+				that.getTween(continueButton.attrs).to({alpha:1},1000);
 			}, 2000);
 		}, 2000);
 	});
 	
 	that.on("Ladder.allowInterrupt", function(msg) {
-		var d = 0; var done = function() { d++; if (d === 2) msg.callback(); };
+		//var d = 0; var done = function() { d++; if (d === 2) msg.callback(); };
 		stopButton.on("mousedown touchstart", function() {
 			that.getTween(stopButton.attrs).to({rotation: 8*Math.PI}, 1200).to({rotation:0});
 			ladder.interruptAgent();
@@ -456,20 +458,22 @@ function LadderView(ladder)
 			that.getTween(continueButton.attrs).to({rotation: 8*Math.PI}, 1200).to({rotation:0});
 			//ladder.resumeAgent();
 		});
-		that.getTween(stopButton.attrs).to({alpha:1}, 500).call(done);
-		that.getTween(continueButton.attrs).to({alpha:1}, 500).call(done);
+		//that.getTween(stopButton.attrs).to({alpha:1}, 500).call(done);
+		//that.getTween(continueButton.attrs).to({alpha:1}, 500).call(done);
+		msg.callback();
 	});
 	
 	that.on("Ladder.disallowInterrupt", function(msg) {
-		var d = 0; var done = function() { d++; /*if (d === 2) msg.callback();*/ };
+		//var d = 0; var done = function() { d++; /*if (d === 2) msg.callback();*/ };
 		stopButton.off("mousedown touchstart");
 		continueButton.off("mousedown touchstart");
-		if (stopButton != null) {
+		/*if (stopButton != null) {
 			that.getTween(stopButton.attrs).to({alpha: 0}, 500).call(done);
 		}
 		if (continueButton != null) {
 			that.getTween(continueButton.attrs).to({alpha: 0}, 500).call(done);
-		}
+		}*/
+		//msg.callback();
 	});
 	
 	for (var i = 0; i < ladder.getLadder().length; i ++) {
@@ -570,6 +574,8 @@ function LadderView(ladder)
 		numpad.buttonHeight + numpad.buttonMargin,
 		2
 	);
+	
+	var tellMyTurn = false;
 	for (var i = 1; i <= 6; i++) {
 		(function(i) {
 			var pos = numpadGrid.next();
@@ -610,6 +616,15 @@ function LadderView(ladder)
 				if (allowNumpad && that.game.playerIsGamer()) {
 					allowNumpad = false;
 					ladder.pick(i);
+				} else if (that.game.playerIsAgent() && !tellMyTurn) {
+					tellMyTurn = true;
+					Sound.play(Sounds.NO_MY_TURN);
+					setTimeout(function() {
+						Sound.play(Sounds.BUT_YOU_CAN_INTERRUPT);
+						setTimeout(function() {
+							tellMyTurn = false;
+						}, 2000);
+					}, 2000);
 				}
 			});
 			numpadGroups[i] = group;

@@ -22,6 +22,12 @@ var Sounds = {
 		
 	GET_BANANA:
 		new SoundEntry("60443__jobro__tada1", null, 2),
+		
+	NO_MY_TURN:
+		new SoundEntry(null, Strings.get("NO_MY_TURN")),
+		
+	BUT_YOU_CAN_INTERRUPT:
+		new SoundEntry(null, Strings.get("BUT_YOU_CAN_INTERRUPT")),
 
 	FISHING_FREE_WRONG_ONES:
 		new SoundEntry(null, Strings.get("FISHING_FREE_WRONG_ONES")),
@@ -115,6 +121,9 @@ var Sounds = {
 	
 	LADDER_TRY_A_BIGGER_NUMBER:
 		new SoundEntry(null, Strings.get("LADDER_TRY_A_BIGGER_NUMBER")),
+		
+	LADDER_PLEASE_HELP_ME:
+		new SoundEntry(null, Strings.get("LADDER_PLEASE_HELP_ME")),
 	
 	"NUMBER_1":
 		new SoundEntry(null, Strings.get("NUMBER_1")),

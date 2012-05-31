@@ -30,6 +30,16 @@ var Strings = {
 		"sv": "Är du redo att lära apan?",
 		"en": "Are you ready to teach monkey?"
 	},
+	
+	"NO_MY_TURN": {
+		"sv": "Nä, det är min tur!",
+		"en": "No, it's my turn!"
+	},
+	
+	"BUT_YOU_CAN_INTERRUPT": {
+		"sv": "Men du kan avbryta mig om jag gör fel!",
+		"en": "But you can interrupt me if I'm doing it wrong!"
+	},
 		
 	"FISHING_CATCH_NUMBER": {
 		"sv": "Fånga nummer %1",
@@ -124,6 +134,11 @@ var Strings = {
 	"LADDER_TRY_A_BIGGER_NUMBER": {
 		"sv": "Kanske fungerar ett större nummer bättre!",
 		"en": "Perhaps a bigger number works better!"
+	},
+	
+	"LADDER_PLEASE_HELP_ME": {
+		"sv": "Kan du hjälpa mig? Vilken ska jag ta?",
+		"en": "Can you please help me? Which one should i pick?"
 	},
 	
 	"BUBBA_HI": {

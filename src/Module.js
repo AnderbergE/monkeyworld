@@ -7,6 +7,7 @@ function Module() {
 	var timeoutController = new TimeoutController();
 
 	this.tearDown = function() {
+		Log.debug("Tearing down", "Module");
 		timeoutController.teardown();
 	};
 	
