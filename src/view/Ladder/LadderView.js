@@ -174,7 +174,7 @@ function LadderView(ladder)
 	
 	var shakeAgain = false;
 	var shakeTreat = function() {
-		shakeAgain = true;
+		/*shakeAgain = true;
 		var _shakeTreat = function() {
 			if (!shakeAgain) return; 
 			var ox = treat.getX();
@@ -205,7 +205,7 @@ function LadderView(ladder)
 				.to({ y: oy-offset }, time)
 				.to({ y: oy }, time).wait(waitTime)
 				.call(function() { _shakeTreat(); });
-		}();
+		}();*/
 	};
 	
 	var stopShakeTreat = function() {
@@ -237,13 +237,9 @@ function LadderView(ladder)
 		dynamicLayer.add(treat);
 	};
 	
-	that.on("Ladder.justRight", function(msg) {
-		Sound.play(Sounds.YES_I_THINK_THAT_ONE_IS_BETTER);
-	});
-	
-	that.on("Ladder.hmm", function(msg) {
-		Sound.play(Sounds.MAYBE_THAT_WORKS);
-	});
+	that.on("Ladder.betterBecauseBigger", function(msg) { Sound.play(Sounds.BETTER_BECAUSE_BIGGER); });
+	that.on("Ladder.betterBecauseSmaller", function(msg) { Sound.play(Sounds.BETTER_BECAUSE_SMALLER); });
+	that.on("Ladder.hmm", function(msg) { Sound.play(Sounds.MAYBE_THAT_WORKS); });
 	
 	that.on("Ladder.tooLow", function(msg) {
 		Sound.play(Sounds.LADDER_OOPS_TOO_LOW);
@@ -258,6 +254,10 @@ function LadderView(ladder)
 			Sound.play(Sounds.LADDER_TRY_A_SMALLER_NUMBER);
 		}, 2000);
 	});
+	
+	that.on("Ladder.agentTooLow", function(msg) { Sound.play(Sounds.AGENT_PLAY_TOO_LOW); });
+	that.on("Ladder.agentTooHigh", function(msg) { Sound.play(Sounds.AGENT_PLAY_TOO_HIGH); });
+	that.on("Ladder.agentHelpInInterrupt", function(msg) { Sound.play(Sounds.LADDER_AGENT_HELP_IN_INTERRUPT); });
 	
 	/**
 	 * Open the treat
@@ -318,7 +318,7 @@ function LadderView(ladder)
 			staticLayer.draw();
 			msg.callback();
 		};
-		if (that.game.modeIsAgentDo() && !ladder.agentIsInterrupted() && !ladder.agentsIsBeingHelped()) {
+		if (that.game.modeIsAgentDo() && !ladder.agentIsInterrupted() && !ladder.agentIsBeingHelped()) {
 			var pos = {
 				x:numpadGroups[msg.number].getX(),
 				y:numpadGroups[msg.number].getY()

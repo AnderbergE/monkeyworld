@@ -14,42 +14,52 @@ function SoundEntry(soundFile, subtitle, instances) {
  * @enum {SoundEntry}
  */
 var Sounds = {
-	YAY:
-		new SoundEntry("19446__totya__yeah", Strings.get("YAY")),
-	
-	BIKE_HORN:
-		new SoundEntry("27882__stickinthemud__bike-horn-double-toot", null),
+		
+	YAY:                            new SoundEntry("19446__totya__yeah", Strings.get("YAY")),
+	BIKE_HORN:                      new SoundEntry("27882__stickinthemud__bike-horn-double-toot", null),
+	TADA:                           new SoundEntry("60443__jobro__tada1", null),
+	CLICK:                          new SoundEntry("406__tictacshutup__click-1-d", null, 4),
+	NO_MY_TURN:                     new SoundEntry(null, Strings.get("NO_MY_TURN")),
+	BUT_YOU_CAN_INTERRUPT:          new SoundEntry(null, Strings.get("BUT_YOU_CAN_INTERRUPT")),
+	IM_GOING_TO_PICK_THIS_ONE:      new SoundEntry(null, Strings.get("IM_GOING_TO_PICK_THIS_ONE")),
+	YES_I_THINK_THAT_ONE_IS_BETTER: new SoundEntry(null, Strings.get("YES_I_THINK_THAT_ONE_IS_BETTER")),
+	MAYBE_THAT_WORKS:               new SoundEntry(null, Strings.get("MAYBE_THAT_WORKS")),
+	WHICH_ONE_DO_YOU_THINK_IT_IS:   new SoundEntry(null, Strings.get("WHICH_ONE_DO_YOU_THINK_IT_IS")),
+	BETTER_BECAUSE_BIGGER:          new SoundEntry(null, Strings.get("BETTER_BECAUSE_BIGGER")),
+	BETTER_BECAUSE_SMALLER:         new SoundEntry(null, Strings.get("BETTER_BECAUSE_SMALLER")),
+	AGENT_PLAY_TOO_LOW:             new SoundEntry(null, Strings.get("AGENT_PLAY_TOO_LOW")),
+	AGENT_PLAY_TOO_HIGH:            new SoundEntry(null, Strings.get("AGENT_PLAY_TOO_HIGH")),
+	MONKEY_HMM:                     new SoundEntry(null, Strings.get("MONKEY_HMM")),
+	MAGIC_CHIMES:                   new SoundEntry("51710__bristolstories__u-chimes3_short", null),
+	LADDER_LOOKS_FUN:               new SoundEntry(null, Strings.get("LADDER_LOOKS_FUN")),
+	LADDER_SHOW_ME:                 new SoundEntry(null, Strings.get("LADDER_SHOW_ME")),
+	LADDER_MY_TURN:                 new SoundEntry(null, Strings.get("LADDER_MY_TURN")),
+	LADDER_IS_IT_RIGHT:             new SoundEntry(null, Strings.get("LADDER_IS_IT_RIGHT")),
+	LADDER_IT_WAS_RIGHT:            new SoundEntry(null, Strings.get("LADDER_IT_WAS_RIGHT")),
+	LADDER_OOPS_TOO_HIGH:           new SoundEntry(null, Strings.get("LADDER_OOPS_TOO_HIGH")),
+	LADDER_OOPS_TOO_LOW:            new SoundEntry(null, Strings.get("LADDER_OOPS_TOO_LOW")),
+	LADDER_TRY_A_SMALLER_NUMBER:    new SoundEntry(null, Strings.get("LADDER_TRY_A_SMALLER_NUMBER")),
+	LADDER_TRY_A_BIGGER_NUMBER:     new SoundEntry(null, Strings.get("LADDER_TRY_A_BIGGER_NUMBER")),
+	LADDER_PLEASE_HELP_ME:          new SoundEntry(null, Strings.get("LADDER_PLEASE_HELP_ME")),
+	LADDER_AGENT_HELP_IN_INTERRUPT: new SoundEntry(null, Strings.get("LADDER_AGENT_HELP_IN_INTERRUPT")),
 
-	TADA:
-		new SoundEntry("60443__jobro__tada1", null),
-
-	CLICK:
-		new SoundEntry("406__tictacshutup__click-1-d", null, 4),
-	
-	ARE_YOU_READY_TO_TEACH:
+	"NUMBER_1":                     new SoundEntry(null, Strings.get("NUMBER_1")),
+	"NUMBER_2":                     new SoundEntry(null, Strings.get("NUMBER_2")),
+	"NUMBER_3":                     new SoundEntry(null, Strings.get("NUMBER_3")),
+	"NUMBER_4":                     new SoundEntry(null, Strings.get("NUMBER_4")),
+	"NUMBER_5":                     new SoundEntry(null, Strings.get("NUMBER_5")),
+	"NUMBER_6":                     new SoundEntry(null, Strings.get("NUMBER_6")),
+	"NUMBER_7":                     new SoundEntry(null, Strings.get("NUMBER_7")),
+	"NUMBER_8":                     new SoundEntry(null, Strings.get("NUMBER_8")),
+	"NUMBER_9":                     new SoundEntry(null, Strings.get("NUMBER_9")),
+	"NUMBER_10":                    new SoundEntry(null, Strings.get("NUMBER_10"))
+		
+	,ARE_YOU_READY_TO_TEACH:
 		new SoundEntry(null, Strings.get("ARE_YOU_READY_TO_TEACH")),
-		
-	GET_BANANA:
-		new SoundEntry("60443__jobro__tada1", null, 2),
-		
-	NO_MY_TURN:
-		new SoundEntry(null, Strings.get("NO_MY_TURN")),
-		
-	BUT_YOU_CAN_INTERRUPT:
-		new SoundEntry(null, Strings.get("BUT_YOU_CAN_INTERRUPT")),
 
-	IM_GOING_TO_PICK_THIS_ONE:
-		new SoundEntry(null, Strings.get("IM_GOING_TO_PICK_THIS_ONE")),
-		
-	YES_I_THINK_THAT_ONE_IS_BETTER:
-		new SoundEntry(null, Strings.get("YES_I_THINK_THAT_ONE_IS_BETTER")),
-		
-	MAYBE_THAT_WORKS:
-		new SoundEntry(null, Strings.get("MAYBE_THAT_WORKS")),
-		
-	WHICH_ONE_DO_YOU_THINK_IT_IS:
-		new SoundEntry(null, Strings.get("WHICH_ONE_DO_YOU_THINK_IT_IS")),	
-		
+//	GET_BANANA:
+//		new SoundEntry("60443__jobro__tada1", null, 2),
+
 	FISHING_FREE_WRONG_ONES:
 		new SoundEntry(null, Strings.get("FISHING_FREE_WRONG_ONES")),
 		
@@ -74,14 +84,14 @@ var Sounds = {
 	FISHING_COUNT_TARGET_FISH:
 		new SoundEntry(null, Strings.get("FISHING_COUNT_TARGET_FISH")),
 		
-	FISHING_WINDING:
-		new SoundEntry("34968__mike-campbell__f-s-1-fishing-reel", null), 
-
-	FISHING_SPLASH:
-		new SoundEntry("water_movement_fast_002", null),
-
-	FISHING_SWOSH:
-		new SoundEntry("60009__qubodup__swosh-22", null),
+//	FISHING_WINDING:
+//		new SoundEntry("34968__mike-campbell__f-s-1-fishing-reel", null), 
+//
+//	FISHING_SPLASH:
+//		new SoundEntry("water_movement_fast_002", null),
+//
+//	FISHING_SWOSH:
+//		new SoundEntry("60009__qubodup__swosh-22", null),
 		
 	FISHING_ANGEL_CHOOSE_FISH:
 		new SoundEntry(null, Strings.get("FISHING_ANGEL_CHOOSE_FISH")),
@@ -108,73 +118,7 @@ var Sounds = {
 		new SoundEntry(null, Strings.get("THANK_YOU_FOR_HELPING")),
 		
 	NOW_MONKEY_SHOW_YOU:
-		new SoundEntry(null, Strings.get("NOW_MONKEY_SHOW_YOU")),
-		
-	MONKEY_HMM:
-		new SoundEntry(null, Strings.get("MONKEY_HMM")),
-		
-	MAGIC_CHIMES:
-		new SoundEntry("51710__bristolstories__u-chimes3_short", null),
-		
-	LADDER_LOOKS_FUN:
-		new SoundEntry(null, Strings.get("LADDER_LOOKS_FUN")),
-		
-	LADDER_SHOW_ME:
-		new SoundEntry(null, Strings.get("LADDER_SHOW_ME")),
-
-	LADDER_MY_TURN:
-		new SoundEntry(null, Strings.get("LADDER_MY_TURN")),
-		
-	LADDER_IS_IT_RIGHT:
-		new SoundEntry(null, Strings.get("LADDER_IS_IT_RIGHT")),
-		
-	LADDER_IT_WAS_RIGHT:
-		new SoundEntry(null, Strings.get("LADDER_IT_WAS_RIGHT")),
-	
-	LADDER_OOPS_TOO_HIGH:
-		new SoundEntry(null, Strings.get("LADDER_OOPS_TOO_HIGH")),
-	
-	LADDER_OOPS_TOO_LOW:
-		new SoundEntry(null, Strings.get("LADDER_OOPS_TOO_LOW")),
-	
-	LADDER_TRY_A_SMALLER_NUMBER:
-		new SoundEntry(null, Strings.get("LADDER_TRY_A_SMALLER_NUMBER")),
-	
-	LADDER_TRY_A_BIGGER_NUMBER:
-		new SoundEntry(null, Strings.get("LADDER_TRY_A_BIGGER_NUMBER")),
-		
-	LADDER_PLEASE_HELP_ME:
-		new SoundEntry(null, Strings.get("LADDER_PLEASE_HELP_ME")),
-	
-	"NUMBER_1":
-		new SoundEntry(null, Strings.get("NUMBER_1")),
-	
-	"NUMBER_2":
-		new SoundEntry(null, Strings.get("NUMBER_2")),
-
-	"NUMBER_3":
-		new SoundEntry(null, Strings.get("NUMBER_3")),
-				
-	"NUMBER_4":
-		new SoundEntry(null, Strings.get("NUMBER_4")),
-
-	"NUMBER_5":
-		new SoundEntry(null, Strings.get("NUMBER_5")),
-						
-	"NUMBER_6":
-		new SoundEntry(null, Strings.get("NUMBER_6")),
-	
-	"NUMBER_7":
-		new SoundEntry(null, Strings.get("NUMBER_7")),
-	
-	"NUMBER_8":
-		new SoundEntry(null, Strings.get("NUMBER_8")),
-		
-	"NUMBER_9":
-		new SoundEntry(null, Strings.get("NUMBER_9")),
-		
-	"NUMBER_10":
-		new SoundEntry(null, Strings.get("NUMBER_10"))
+		new SoundEntry(null, Strings.get("NOW_MONKEY_SHOW_YOU"))
 };
 var soundSources = null;
 

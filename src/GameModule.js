@@ -99,7 +99,7 @@ function MiniGame() {
 	 * Checks if the teachable agent is currently being helped by the gamer.
 	 * @return {boolean}
 	 */
-	this.agentsIsBeingHelped = function() {
+	this.agentIsBeingHelped = function() {
 		return _agentIsBeingHelped;
 	};
 	

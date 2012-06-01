@@ -26,6 +26,8 @@ function MonkeyPlayer() {
 		});
 		
 		that.on("Ladder.incorrect", function(msg) {
+			if (game.agentIsInterrupted()) return;
+			
 			if (tries < 4) {
 				play(resultPosition++);
 			} else {
@@ -41,6 +43,7 @@ function MonkeyPlayer() {
 		this.interrupt = function() {
 			Log.debug("Interrupting agent", "agent");
 			interrupted = true;
+			tries = 0;
 		};
 		
 		this.resume = function() {

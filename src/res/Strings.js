@@ -32,18 +32,18 @@ var Strings = {
 	},
 	
 	"NO_MY_TURN": {
-		"sv": "Nä, det är min tur!",
-		"en": "No, it's my turn!"
+		"sv": "Glöm inte att det är MIN tur nu!",
+		"en": "Remember it’s MY turn now!"
 	},
-	
+
 	"BUT_YOU_CAN_INTERRUPT": {
-		"sv": "Men du kan avbryta mig om jag gör fel!",
-		"en": "But you can interrupt me if I'm doing it wrong!"
+		"sv": "Men du kan avbryta mig om jag gör fel.",
+		"en": "But you can interrupt me if I'm making a mistake."
 	},
 	
 	"MAYBE_THAT_WORKS": {
-		"sv": "Hmm, det kanske är rätt. Vi kan testa.",
-		"en": "Hmm, maybe that works. We can try it."
+		"sv": "Okej, vi testar och ser om det är rätt.",
+		"en": "OK, let's see if this works."
 	},
 	
 	"WHICH_ONE_DO_YOU_THINK_IT_IS": {
@@ -56,9 +56,29 @@ var Strings = {
 		"en": "Yes, I think that one is better!"
 	},
 	
+	"BETTER_BECAUSE_BIGGER": {
+		"sv": "Ja, det verkar vara ett bra val, eftersom den ÄR större!",
+		"en": "Yes, that seems to be a good choice because it IS bigger!"
+	},
+	
+	"BETTER_BECAUSE_SMALLER": {
+		"sv": "Ja, det verkar vara ett bra val, eftersom den ÄR mindre!",
+		"en": "Yes, that seems to be a good choice because it IS smaller!"
+	},
+	
 	"IM_GOING_TO_PICK_THIS_ONE": {
-		"sv": "Jag tar den här!",
-		"en": "I'm going to pick this one!"
+		"sv": "Okej, får se om den här fungerar. Hmm...",
+		"en": "Ok, let's see if this works. Hmm..."
+	},
+	
+	"AGENT_PLAY_TOO_LOW": {
+		"sv": "Hmm, det gick inte. Jag undrar varför. Jag testar en större!",
+		"en": "Hmm, that didn't work. I wonder why. Let me try a bigger one!"
+	},
+	
+	"AGENT_PLAY_TOO_HIGH": {
+		"sv": "Åh, nej! Var den för stor?",
+		"en": "Oh no! Was that too big?"
 	},
 		
 	"FISHING_CATCH_NUMBER": {
@@ -112,18 +132,18 @@ var Strings = {
 	},
 	
 	"LADDER_LOOKS_FUN": {
-		"sv": "Det där ser kul ut!",
-		"en": "That looks fun!"
+		"sv": "Det där såg kul ut!",
+		"en": "That looked fun!"
 	},
 	
 	"LADDER_SHOW_ME": {
 		"sv": "Visa mig hur man gör!",
-		"en": "Show me how to do it!"
+		"en": "Now show me how to do it!"
 	},
 	
 	"LADDER_MY_TURN": {
-		"sv": "Nu är det min tur!",
-		"en": "Now it's my turn!"
+		"sv": "Okej, nu ska vi se om jag klarar det här själv!",
+		"en": "Ok, now let's see if I can do this on my own!"
 	},
 	
 	"LADDER_IS_IT_RIGHT": {
@@ -137,28 +157,33 @@ var Strings = {
 	},
 	
 	"LADDER_OOPS_TOO_HIGH": {
-		"sv": "Oj, den flög för högt.",
-		"en": "Oh, it flew too high."
+		"sv": "Oj, kanske tog vi i för mycket!",
+		"en": "Oops! Maybe we overdid it!"
 	},
 	
 	"LADDER_OOPS_TOO_LOW": {
-		"sv": "Hoppsan, den flög för lågt.",
-		"en": "Oops, it flew too low"
+		"sv": "Hmm... Kanske var det inte tillräckligt!",
+		"en": "Hmm... Maybe it wasn't enough!"
 	},
 	
 	"LADDER_TRY_A_SMALLER_NUMBER": {
-		"sv": "Du kan väl testa med ett mindre nummer!",
-		"en": "Let's try a smaller number!"
+		"sv": "Vi kan väl testa en mindre och se vad som händer!",
+		"en": "Let's try a smaller one and see what happens!"
 	},
 	
 	"LADDER_TRY_A_BIGGER_NUMBER": {
-		"sv": "Kanske fungerar ett större nummer bättre!",
-		"en": "Perhaps a bigger number works better!"
+		"sv": "Vad tror du? Ska vi testa en större?",
+		"en": "What do you think? Shall we try a bigger one?"
 	},
 	
 	"LADDER_PLEASE_HELP_ME": {
-		"sv": "Kan du hjälpa mig? Vilken ska jag ta?",
-		"en": "Can you please help me? Which one should i pick?"
+		"sv": "Kan du hjälpa mig att välja rätt?",
+		"en": "Can you please help me find the right one?"
+	},
+	
+	"LADDER_AGENT_HELP_IN_INTERRUPT": {
+		"sv": "Kanske kan vi försöka med samma siffra på nummerplattan som vid presenten?",
+		"en": "Maybe we should match the number on the number pad to the number by the gift?"
 	},
 	
 	"BUBBA_HI": {

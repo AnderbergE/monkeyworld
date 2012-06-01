@@ -91,13 +91,11 @@ function Ladder()
 					that.tell("Ladder.cheer", { callback: function() { that.roundDone(); } });
 				else {
 					placeTreat();
-					if (that.game.modeIsAgentDo())
-						that.resumeAgent();
 				}
 			}
 		});
 	};
-	
+	var lastHelpAttempt = 0;
 	/**
 	 * Pick a number
 	 * @param {number} number
@@ -116,12 +114,23 @@ function Ladder()
 						number: number,
 						callback: function() {
 							birdHasFlewn(number === targetNumber)();
+							
+							if (number < targetNumber && that.game.modeIsAgentDo() && !that.agentIsInterrupted()) that.tell("Ladder.agentTooLow");
+							if (number > targetNumber && that.game.modeIsAgentDo() && !that.agentIsInterrupted()) that.tell("Ladder.agentTooHigh");
+							
 							if (number < targetNumber && (that.game.modeIsAgentSee() || that.agentIsInterrupted())) that.tell("Ladder.tooLow");
 							if (number > targetNumber && (that.game.modeIsAgentSee() || that.agentIsInterrupted())) that.tell("Ladder.tooHigh");
 						}
 					});
-					if (number === targetNumber && that.agentIsInterrupted()) that.tell("Ladder.justRight");
+					if (number === targetNumber && number < lastHelpAttempt && that.agentIsInterrupted()) that.tell("Ladder.betterBecauseSmaller");
+					if (number === targetNumber && number > lastHelpAttempt && that.agentIsInterrupted()) that.tell("Ladder.betterBecauseBigger");
 					if (number != targetNumber && that.agentIsInterrupted()) that.tell("Ladder.hmm");
+					if (that.game.modeIsAgentDo()) {
+						console.log("lastHelpAttempt = " + number);
+						lastHelpAttempt = number;
+					}
+					if (that.game.modeIsAgentDo())
+						that.resumeAgent();
 				}
 			});
 		});
