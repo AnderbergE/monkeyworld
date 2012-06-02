@@ -1,6 +1,6 @@
 body, html {
 	background-color: black;
-	background-image: url('../res/img/jungle_scene_background.png');
+	/*background-image: url('../res/img/jungle_scene_background.png');*/
 	background-repeat: no-repeat;
 	background-position: center center;
 	background-size: 100%;

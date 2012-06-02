@@ -27,12 +27,14 @@ function MonkeyPlayer() {
 		
 		that.on("Ladder.incorrect", function(msg) {
 			if (game.agentIsInterrupted()) return;
-			
-			if (tries < 4) {
+			/** @const @type {number} */ var MAX_AGENT_TRIES = 4;
+			if (tries < MAX_AGENT_TRIES) {
 				play(resultPosition++);
-			} else {
-				Sound.play(Sounds.LADDER_PLEASE_HELP_ME);
-				game.helpAgent();
+			} else if (tries === MAX_AGENT_TRIES) {
+				if (!game.agentIsBeingHelped()) {
+					Sound.play(Sounds.LADDER_PLEASE_HELP_ME);
+					game.helpAgent();
+				}
 			}
 		});
 		

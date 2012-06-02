@@ -15,7 +15,7 @@ function Ladder()
 	/** @type {number} */ var targetNumber = Utils.getRandomInt(minNumber, maxNumber);
 	
 	/** @type {number} */ var minTreats = 1;
-	/** @type {number} */ var maxTreats = 2;
+	/** @type {number} */ var maxTreats = 3;
 	/** @type {number} */ var tries = 0;
 	/** @type {number} */ var minTries = 3;
 	/** @type {number} */ var collectedTreats = 0;
@@ -55,8 +55,9 @@ function Ladder()
 		} else {
 			that.tell("Ladder.birdFlyToNest", { callback: function() {
 				that.tell("Ladder.incorrect");
+				if (timesHelped >= MAX_HELP) that.tell("Ladder.agentSuggestSolution");
 				that.addAction("incorrect");
-			}});
+			}, allowNumpad: true});
 		}
 	};};
 	
@@ -74,7 +75,8 @@ function Ladder()
 			callback: function() {
 				that.tell("Ladder.birdFlyToNest", { callback: callback });
 				that.tell("Ladder.hasTreat");
-			}
+			},
+			allowNumpad: false
 		});
 	};
 	
@@ -95,7 +97,11 @@ function Ladder()
 			}
 		});
 	};
-	var lastHelpAttempt = 0;
+	
+	/** @type {number} */ var lastHelpAttempt = 0;
+	/** @type {number} */ var timesHelped = 0;
+	/** @const @type {number} */ var MAX_HELP = 4;
+	
 	/**
 	 * Pick a number
 	 * @param {number} number
@@ -107,7 +113,12 @@ function Ladder()
 				number: number,
 				correct: number === targetNumber,
 				callback: function() {
-					if (that.agentIsInterrupted() && number === targetNumber) {
+					if (that.agentIsBeingHelped()) {
+						timesHelped++;
+					} else {
+						timesHelped = 0;
+					}
+					if (that.agentIsBeingHelped() && number === targetNumber) {
 						that.helpedAgent();
 					}
 					that.tell("Ladder.birdFlyToLadder", {
@@ -115,21 +126,26 @@ function Ladder()
 						callback: function() {
 							birdHasFlewn(number === targetNumber)();
 							
-							if (number < targetNumber && that.game.modeIsAgentDo() && !that.agentIsInterrupted()) that.tell("Ladder.agentTooLow");
-							if (number > targetNumber && that.game.modeIsAgentDo() && !that.agentIsInterrupted()) that.tell("Ladder.agentTooHigh");
+							if (number < targetNumber && that.game.modeIsAgentDo() && !that.agentIsInterrupted() && !that.agentIsBeingHelped()) that.tell("Ladder.agentTooLow");
+							if (number > targetNumber && that.game.modeIsAgentDo() && !that.agentIsInterrupted() && !that.agentIsBeingHelped()) that.tell("Ladder.agentTooHigh");
 							
-							if (number < targetNumber && (that.game.modeIsAgentSee() || that.agentIsInterrupted())) that.tell("Ladder.tooLow");
-							if (number > targetNumber && (that.game.modeIsAgentSee() || that.agentIsInterrupted())) that.tell("Ladder.tooHigh");
+							if (number < targetNumber && (that.game.modeIsAgentSee() || that.agentIsInterrupted() || that.agentIsBeingHelped())) that.tell("Ladder.tooLow");
+							if (number > targetNumber && (that.game.modeIsAgentSee() || that.agentIsInterrupted() || that.agentIsBeingHelped())) that.tell("Ladder.tooHigh");
+							if (number === targetNumber && (that.game.modeIsAgentSee() || that.agentIsInterrupted() || that.agentIsBeingHelped())) that.tell("Ladder.justRight");
 						}
 					});
-					if (number === targetNumber && number < lastHelpAttempt && that.agentIsInterrupted()) that.tell("Ladder.betterBecauseSmaller");
-					if (number === targetNumber && number > lastHelpAttempt && that.agentIsInterrupted()) that.tell("Ladder.betterBecauseBigger");
-					if (number != targetNumber && that.agentIsInterrupted()) that.tell("Ladder.hmm");
+					if (number === targetNumber && number < lastHelpAttempt && (that.agentIsInterrupted() || that.agentIsBeingHelped())) that.tell("Ladder.betterBecauseSmaller");
+					if (number === targetNumber && number > lastHelpAttempt && (that.agentIsInterrupted() || that.agentIsBeingHelped())) that.tell("Ladder.betterBecauseBigger");
+					if (number != targetNumber && (that.agentIsInterrupted() || that.agentIsBeingHelped())) that.tell("Ladder.hmm");
 					if (that.game.modeIsAgentDo()) {
 						console.log("lastHelpAttempt = " + number);
 						lastHelpAttempt = number;
 					}
-					if (that.game.modeIsAgentDo())
+					
+					var agentDoAndNotHelpingAgent = that.game.modeIsAgentDo() && !that.agentIsBeingHelped();
+					var agentBeingHelpedCorrectly = that.agentIsBeingHelped() && number === targetNumber;
+					
+					if (agentDoAndNotHelpingAgent || agentBeingHelpedCorrectly)
 						that.resumeAgent();
 				}
 			});

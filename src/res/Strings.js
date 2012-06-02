@@ -176,14 +176,24 @@ var Strings = {
 		"en": "What do you think? Shall we try a bigger one?"
 	},
 	
+	"LADDER_AGENT_SEE_CORRECT": {
+		"sv": "WOO! Tack för hjälpen! Vilken fin present!",
+		"en": "WOO! Thank you for helping me! What a great surprise!"
+	},
+	
+	"LADDER_AGENT_SUGGEST_SOLUTION_1": {
+		"sv": "Kanske kan vi försöka med samma siffra på",
+		"en": "Maybe we should match the number on"
+	},
+	
+	"LADDER_AGENT_SUGGEST_SOLUTION_2": {
+		"sv": "nummerplattan som vid presenten?",
+		"en": "the number pad to the number by the gift?"
+	},
+	
 	"LADDER_PLEASE_HELP_ME": {
 		"sv": "Kan du hjälpa mig att välja rätt?",
 		"en": "Can you please help me find the right one?"
-	},
-	
-	"LADDER_AGENT_HELP_IN_INTERRUPT": {
-		"sv": "Kanske kan vi försöka med samma siffra på nummerplattan som vid presenten?",
-		"en": "Maybe we should match the number on the number pad to the number by the gift?"
 	},
 	
 	"BUBBA_HI": {

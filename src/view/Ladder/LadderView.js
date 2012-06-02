@@ -172,44 +172,39 @@ function LadderView(ladder)
 		colorStops: [0, 'red', 1, 'yellow']
 	};
 	
-	var shakeAgain = false;
 	var shakeTreat = function() {
-		/*shakeAgain = true;
-		var _shakeTreat = function() {
-			if (!shakeAgain) return; 
-			var ox = treat.getX();
-			var oy = treat.getY();
-			var time = 100;
-			var offset = 5;
-			var waitTime = 5000;
-			that.getTween(treat.attrs)
-				.to({ x: ox-offset }, time)
-				.to({ x: ox+offset }, time)
-				.to({ x: ox-offset }, time)
-				.to({ x: ox+offset }, time)
-				.to({ x: ox-offset }, time)
-				.to({ x: ox+offset }, time)
-				.to({ x: ox-offset }, time)
-				.to({ x: ox+offset }, time)
-				.to({ x: ox-offset }, time)
-				.to({ x: ox }, time);
-			that.getTween(treat.attrs)
-				.to({ y: oy-offset }, time)
-				.to({ y: oy+offset }, time)
-				.to({ y: oy-offset }, time)
-				.to({ y: oy+offset }, time)
-				.to({ y: oy-offset }, time)
-				.to({ y: oy+offset }, time)
-				.to({ y: oy-offset }, time)
-				.to({ y: oy+offset }, time)
-				.to({ y: oy-offset }, time)
-				.to({ y: oy }, time).wait(waitTime)
-				.call(function() { _shakeTreat(); });
-		}();*/
+		var ox = treat.getX();
+		var oy = treat.getY();
+		var time = 100;
+		var offset = 5;
+		var waitTime = 4000;
+		that.getTween(treat.attrs)
+			.to({ x: ox-offset }, time)
+			.to({ x: ox+offset }, time)
+			.to({ x: ox-offset }, time)
+			.to({ x: ox+offset }, time)
+			.to({ x: ox-offset }, time)
+			.to({ x: ox+offset }, time)
+			.to({ x: ox-offset }, time)
+			.to({ x: ox+offset }, time)
+			.to({ x: ox-offset }, time)
+			.to({ x: ox }, time);
+		that.getTween(treat.attrs)
+			.to({ y: oy-offset }, time)
+			.to({ y: oy+offset }, time)
+			.to({ y: oy-offset }, time)
+			.to({ y: oy+offset }, time)
+			.to({ y: oy-offset }, time)
+			.to({ y: oy+offset }, time)
+			.to({ y: oy-offset }, time)
+			.to({ y: oy+offset }, time)
+			.to({ y: oy-offset }, time)
+			.to({ y: oy }, time).wait(waitTime)
+			.call(function() { shakeTreat(); });
 	};
 	
 	var stopShakeTreat = function() {
-		shakeAgain = false;
+		that.removeTween(treat.attrs);
 	};
 	
 	var addOnMouseActionToTreat = function() {
@@ -240,6 +235,14 @@ function LadderView(ladder)
 	that.on("Ladder.betterBecauseBigger", function(msg) { Sound.play(Sounds.BETTER_BECAUSE_BIGGER); });
 	that.on("Ladder.betterBecauseSmaller", function(msg) { Sound.play(Sounds.BETTER_BECAUSE_SMALLER); });
 	that.on("Ladder.hmm", function(msg) { Sound.play(Sounds.MAYBE_THAT_WORKS); });
+	that.on("Ladder.agentSuggestSolution", function(msg) {
+		that.setTimeout(function() {
+			Sound.play(Sounds.LADDER_AGENT_SUGGEST_SOLUTION_1);
+			that.setTimeout(function() {
+				Sound.play(Sounds.LADDER_AGENT_SUGGEST_SOLUTION_2);	
+			}, 2000);
+		}, 2000);
+	});
 	
 	that.on("Ladder.tooLow", function(msg) {
 		Sound.play(Sounds.LADDER_OOPS_TOO_LOW);
@@ -255,9 +258,12 @@ function LadderView(ladder)
 		}, 2000);
 	});
 	
+	that.on("Ladder.justRight", function(msg) {
+		Sound.play(Sounds.LADDER_IT_WAS_RIGHT);
+	});
+	
 	that.on("Ladder.agentTooLow", function(msg) { Sound.play(Sounds.AGENT_PLAY_TOO_LOW); });
 	that.on("Ladder.agentTooHigh", function(msg) { Sound.play(Sounds.AGENT_PLAY_TOO_HIGH); });
-	that.on("Ladder.agentHelpInInterrupt", function(msg) { Sound.play(Sounds.LADDER_AGENT_HELP_IN_INTERRUPT); });
 	
 	/**
 	 * Open the treat
@@ -287,6 +293,9 @@ function LadderView(ladder)
 		that.getTween(balloons.attrs.scale).to({x:1,y:1}, 500).call(function() {
 			that.getTween(balloons.attrs).to({y: 100}, 2000).call(msg.callback);
 		});
+		if (that.game.modeIsAgentSee()) {
+			Sound.play(Sounds.LADDER_AGENT_SEE_CORRECT);
+		}
 	});
 	
 	that.on("Ladder.cheer", function(msg) {
@@ -347,7 +356,7 @@ function LadderView(ladder)
 				activeButton._rect.attrs.fill = buttonFill;
 				staticLayer.draw();
 			}
-			allowNumpad = true;
+			if (msg.allowNumpad) allowNumpad = true;
 			stopWing();
 			msg.callback();
 		});
@@ -373,9 +382,6 @@ function LadderView(ladder)
 			
 		});
 		that.getTween(treat.attrs).to(dropAt, TIME_TO_DROP_ZONE).call(function() {
-			if (that.game.modeIsAgentSee()) {
-				Sound.play(Sounds.LADDER_IT_WAS_RIGHT);
-			}
 			msg.callback();
 		});	
 	});
