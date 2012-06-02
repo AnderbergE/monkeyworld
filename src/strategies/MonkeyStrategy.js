@@ -55,6 +55,8 @@ function MonkeyPlayer() {
 		
 		var play = function(resultPosition) {
 			if (interrupted) return;
+			console.log(result);
+			console.log(resultPosition);
 			tries++;
 			setTimeout(function() {
 				console.log("Picking!");

@@ -97,8 +97,9 @@ MW.Game = function(useViews, startGame) {
 				}
 			});*/
 		} else if (gameMode === GameMode.MONKEY_SEE) {
-			var result = miniGame.getResult();
-			if (result.madeMistake()) mistake = true;
+			var _result = miniGame.getResult();
+			result.pushResult(_result);
+			if (_result.madeMistake()) mistake = true;
 			if (_round === Settings.get("global", "monkeySeeRounds")) {
 				setRound(1);
 				gameMode = GameMode.MONKEY_DO;
@@ -180,7 +181,6 @@ MW.Game = function(useViews, startGame) {
 			throw "MonkeyWorld.NoActiveMiniGameException";
 		}
 		this.tell("Game.stopMiniGame");
-		result.pushResult(miniGame.getResult());
 		getNextState();
 	};
 	

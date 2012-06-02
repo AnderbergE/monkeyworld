@@ -53,11 +53,13 @@ function Ladder()
 				birdHasTreat = false;
 			});
 		} else {
-			that.tell("Ladder.birdFlyToNest", { callback: function() {
-				that.tell("Ladder.incorrect");
-				if (timesHelped >= MAX_HELP) that.tell("Ladder.agentSuggestSolution");
-				that.addAction("incorrect");
-			}, allowNumpad: true});
+			that.tell("Ladder.birdFlyToNest", {
+				callback: function() {
+					that.tell("Ladder.incorrect");
+					if (timesHelped >= MAX_HELP) that.tell("Ladder.agentSuggestSolution");
+					that.addAction("incorrect");
+				},
+				allowNumpad: true});
 		}
 	};};
 	
