@@ -4,6 +4,7 @@
  */
 function Ladder()
 {
+	MiniGame.call(this);
 	/** @type {Ladder} */ var that = this;
 	this.tag("Ladder");
 	
@@ -133,7 +134,7 @@ function Ladder()
 							
 							if (number < targetNumber && (that.game.modeIsAgentSee() || that.agentIsInterrupted() || that.agentIsBeingHelped())) that.tell("Ladder.tooLow");
 							if (number > targetNumber && (that.game.modeIsAgentSee() || that.agentIsInterrupted() || that.agentIsBeingHelped())) that.tell("Ladder.tooHigh");
-							if (number === targetNumber && (that.game.modeIsAgentSee() || that.agentIsInterrupted() || that.agentIsBeingHelped())) that.tell("Ladder.justRight");
+							//if (number === targetNumber && (that.game.modeIsAgentSee() || that.agentIsInterrupted() || that.agentIsBeingHelped())) that.tell("Ladder.justRight");
 						}
 					});
 					if (number === targetNumber && number < lastHelpAttempt && (that.agentIsInterrupted() || that.agentIsBeingHelped())) that.tell("Ladder.betterBecauseSmaller");
@@ -209,5 +210,4 @@ function Ladder()
 		}
 	};
 }
-
-Ladder.prototype = new MiniGame();
+inherit(Ladder, MiniGame);

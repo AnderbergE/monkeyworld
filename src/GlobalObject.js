@@ -5,6 +5,12 @@
 var MW = {};
 
 /** @enum {string} */
+var Events = {
+	FRAME: "frame",
+	TEAR_DOWN: "tearDown"
+};
+
+/** @enum {string} */
 var GameMode = {
 	CHILD_PLAY: "Child Play",
 	MONKEY_SEE: "Monkey See",

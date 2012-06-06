@@ -258,9 +258,9 @@ function LadderView(ladder)
 		}, 2000);
 	});
 	
-	that.on("Ladder.justRight", function(msg) {
-		Sound.play(Sounds.LADDER_IT_WAS_RIGHT);
-	});
+	//that.on("Ladder.justRight", function(msg) {
+		//Sound.play(Sounds.LADDER_IT_WAS_RIGHT);
+	//});
 	
 	that.on("Ladder.agentTooLow", function(msg) { Sound.play(Sounds.AGENT_PLAY_TOO_LOW); });
 	that.on("Ladder.agentTooHigh", function(msg) { Sound.play(Sounds.AGENT_PLAY_TOO_HIGH); });
@@ -396,7 +396,7 @@ function LadderView(ladder)
 		that.getStage().remove(dynamicLayer);
 	};
 
-	this.on("Game.stopMiniGame", function() { tearDown(); });
+	that.on("Game.stopMiniGame", function() { tearDown(); });
 	
 	that.on("Game.roundDone", this.tearDown);
 	
@@ -494,12 +494,9 @@ function LadderView(ladder)
 	that.on("Ladder.startAgent", function(msg) {
 		Sound.play(Sounds.LADDER_MY_TURN);
 		that.setTimeout(function() {
-			Sound.play(Sounds.LADDER_IS_IT_RIGHT);
-			that.setTimeout(function() {
-				msg.callback();
-				that.getTween(stopButton.attrs).to({alpha:1},1000);
-				that.getTween(continueButton.attrs).to({alpha:1},1000);
-			}, 2000);
+			msg.callback();
+			that.getTween(stopButton.attrs).to({alpha:1},1000);
+			that.getTween(continueButton.attrs).to({alpha:1},1000);
 		}, 2000);
 	});
 	
@@ -694,9 +691,9 @@ function LadderView(ladder)
 	}
 	
 	var agent = new Kinetic.Image({
-		image: images["monkey"],
+		image: images[that.agentImage],
 		x: that.getStage().getWidth() + 10,
-		y: that.getStage().getHeight() - GROUND_HEIGHT - images["monkey"].height
+		y: that.getStage().getHeight() - GROUND_HEIGHT - images[that.agentImage].height
 	});
 	
 	//var agent2 = new AgentView(400,200);

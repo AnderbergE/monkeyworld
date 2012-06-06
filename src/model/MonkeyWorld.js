@@ -20,6 +20,7 @@ MW.Game = function(useViews, startGame) {
 	/** @type {number}              */ var _round       = 1;
 	/** @type {boolean}             */ var mistake      = false;
 	/** @type {MW.MiniGameResult}   */ var result       = NO_RESULT;
+	/** @type {string}              */ var agentImage   = null;
 
 	/*========================================================================*/
 	/*=== CONSTRUCTOR ========================================================*/
@@ -204,9 +205,17 @@ MW.Game = function(useViews, startGame) {
 	 * Start the Monkey World game
 	 */
 	this.start = function() {
-		result = new MW.MiniGameResult();
-		player = GAMER;
-		startMiniGame();
+		
+		var chooser = null;
+		chooser = new MW.AgentChooser(function(agent) {
+			chooser.tearDown();
+			agentImage = agent;
+			GameView.prototype.agentImage = agent;
+			result = new MW.MiniGameResult();
+			player = GAMER;
+			startMiniGame();
+		});
+		new MW.AgentChooserView(chooser).setup();
 	};
 	
 	/**

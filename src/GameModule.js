@@ -3,7 +3,7 @@
  * @extends {Module}
  */
 function MiniGame() {
-	
+	Module.call(this);
 	var that = this;
 	
 	/** @private @type {MW.MiniGameRoundResult} */
@@ -112,7 +112,9 @@ function MiniGame() {
 	};
 }
 
-MiniGame.prototype = new Module();
+//MiniGame.prototype = new Module();
+
+inherit(MiniGame, Module);
 MiniGame.prototype.onFrame = function(frame) {};
 
 /**

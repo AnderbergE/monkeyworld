@@ -193,6 +193,7 @@ Kinetic.Layer = function(config){};
  * v3.8.2
  * @constructor
  * @extends {Kinetic.Container}
+ * @param {Object=} config
  */
 Kinetic.Group = function(config){};
 	Kinetic.Group.prototype.getChildren = function() {};

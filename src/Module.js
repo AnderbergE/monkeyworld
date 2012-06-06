@@ -4,11 +4,13 @@
  */
 function Module() {
 	MW.GlobalObject.call(this, "Module");
+	var module = this;
 	var timeoutController = new TimeoutController();
-
+	
 	this.tearDown = function() {
 		Log.debug("Tearing down", "Module");
 		timeoutController.teardown();
+		module.tell(Events.TEAR_DOWN);
 	};
 	
 	/**

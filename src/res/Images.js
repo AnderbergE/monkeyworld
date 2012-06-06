@@ -34,7 +34,11 @@ var IMAGE_SOURCES = {
 /** @const */ "eyeball": "BeOS_Eyeball.png",
 /** @const */ "symbol-stop": "Symbol-Stop.png",
 /** @const */ "symbol-check": "Symbol-Check.png",
-/** @const */ "birdnest": "Birds-Nest-psd47561.png"
+/** @const */ "birdnest": "Birds-Nest-psd47561.png",
+/** @const */ "junglebg": "Jungle_Bkg2.png",
+/** @const */ "elephant": "elephant.png",
+/** @const */ "lion": "lion.png",
+/** @const */ "giraff": "giraff.png"
 };
 
 var images = {};
