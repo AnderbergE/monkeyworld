@@ -20,7 +20,6 @@ MW.Game = function(useViews, startGame) {
 	/** @type {number}              */ var _round       = 1;
 	/** @type {boolean}             */ var mistake      = false;
 	/** @type {MW.MiniGameResult}   */ var result       = NO_RESULT;
-	/** @type {string}              */ var agentImage   = null;
 
 	/*========================================================================*/
 	/*=== CONSTRUCTOR ========================================================*/
@@ -136,10 +135,13 @@ MW.Game = function(useViews, startGame) {
 			miniGame = new startGame();
 		}
 		if (useViews) {
-			if (miniGame instanceof FishingGame)
+			if (miniGame instanceof FishingGame) {
+				FishingView.prototype.agentImage = GameView.prototype.agentImage;
 				new FishingView(miniGame).setup();
-			else if (miniGame instanceof Ladder)
+			} else if (miniGame instanceof Ladder) {
+				LadderView.prototype.agentImage = GameView.prototype.agentImage;
 				new LadderView(miniGame).setup();
+			}
 			that.tell("Game.miniGameListenersInitiated");
 		}
 		that.tell("Game.initiate");
@@ -209,7 +211,6 @@ MW.Game = function(useViews, startGame) {
 		var chooser = null;
 		chooser = new MW.AgentChooser(function(agent) {
 			chooser.tearDown();
-			agentImage = agent;
 			GameView.prototype.agentImage = agent;
 			result = new MW.MiniGameResult();
 			player = GAMER;

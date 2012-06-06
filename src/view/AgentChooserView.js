@@ -1,11 +1,12 @@
 /**
  * @constructor
- * @extends {GameView}
+ * @extends {ViewModule}
  * @param {MW.AgentChooser} chooser
  */
 MW.AgentChooserView = function(chooser) {
-	GameView.call(this);
+	ViewModule.call(this, "AgentChooserView");
 	this.tag("AgentChooserView");
+	
 	var view = this;
 	/** @type {Kinetic.Layer} */ var layer = null;
 	
@@ -96,7 +97,7 @@ MW.AgentChooserView = function(chooser) {
 			stroke: "white",
 			centerOffset: {
 				x: CONFIG.BUTTON.WIDTH / 2,
-				y: CONFIG.BUTTON.HEIGHT / 2,
+				y: CONFIG.BUTTON.HEIGHT / 2
 			}
 		});
 		g.add(rect);
@@ -110,11 +111,6 @@ MW.AgentChooserView = function(chooser) {
 				y: images[agent].height / 2
 			}
 		});
-		
-
-		if (img.getWidth() > 200) {
-			img.setWidth(200);
-		}
 		
 		g.add(img);
 		
@@ -136,7 +132,7 @@ MW.AgentChooserView = function(chooser) {
 		layer = new Kinetic.Layer();
 		view.stage.add(layer);
 		var bg = new Kinetic.Image({
-			image: images["junglebg"],
+			image: images["junglebg"]
 		});
 		layer.add(bg);
 		var buttonGrid = Utils.gridizer(
@@ -155,7 +151,7 @@ MW.AgentChooserView = function(chooser) {
 	/**
 	 * Tear down the view
 	 */
-	view.on(Events.TEAR_DOWN, function() {
+	view.on(Events.TEAR_DOWN, function(msg) {
 		view.forget();
 		view.stage.remove(layer);
 	});
@@ -163,8 +159,8 @@ MW.AgentChooserView = function(chooser) {
 	/**
 	 * On each frame
 	 */
-	view.on(Events.FRAME, function() {
+	view.on(Events.FRAME, function(msg) {
 		layer.draw();
 	});
 };
-inherit(MW.AgentChooserView, GameView);
+inherit(MW.AgentChooserView, ViewModule);
