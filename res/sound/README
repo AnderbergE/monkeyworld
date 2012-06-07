@@ -1,0 +1,42 @@
+################################################################################
+# MANAGING SOUND FILES FOR MONKEY WORLD                                        #
+################################################################################
+
+  === Quick intro ===
+  Monkey World needs its sound files in .ogg and .mp3 format.
+
+  To convert all files with the extension .wav in the current working directory
+  to mp3 and ogg, run the following script:
+  
+    > ./convert.sh wav
+  
+  The script needs to have lame, oggenc and mplayer installed.
+  
+  === Long version ===
+  Since all major web browsers have implemented different audio support for the
+  HTML5 audio tag, Monkey World needs to convert its audio file to each
+  supported format.
+
+  As of April 2012, this is a subset of the support, according to W3C:
+
+              mp3   wav   ogg
+    ---------------------------
+     IE9    |  x
+     FF     |        x     x
+     Chrome |  x     x     x
+     Safari |  x     x
+     Opera  |        x     x
+
+  Furthermore, Monkey World's current sound engine (SoundJS v0.2.0) doesn't seem
+  to support wav. Thus, to confirm to all major browers and the engine, each
+  sound file should be available in both mp3 and ogg format. This is how to do
+  it:
+
+  To convert an existing set of sound files (for example in wav format), run the
+  script convert.sh with the parameter wav:
+
+    > ./convert.sh wav
+
+  It will convert all the files with the extension .wav in the working directory
+  to the corresponding .mp3 and .ogg files.
+
