@@ -10,7 +10,7 @@ window.onload = function() {
 
 
 WebFontConfig = {
-  google: { families: [ 'Nunito::latin', 'Doppio+One::latin' ] }
+  google: { families: [ 'Nunito::latin', 'Doppio+One::latin', 'Nobile:400,700:latin' ] }
 };
 (function() {
   var wf = document.createElement('script');
@@ -143,7 +143,7 @@ console.log("defined stage");
 			}
 		})));
 	}
-	setUpButtons();
+	//setUpButtons();
 	
 	Sound.setStage(stage);
 	var evm = new GameEventManager(stage);
@@ -201,7 +201,8 @@ console.log("defined stage");
 
 	
 	stage.onFrame(function(frame) {
-		fps.showFps(frame); // Update FPS display
+		if (MW.debug)
+			fps.showFps(frame); // Update FPS display
 		evm.tell("frame", {frame:frame});
 		modelModule.onFrame(frame);
 		gameLayer.draw();
@@ -253,7 +254,7 @@ console.log("defined stage");
 //		overlayLayer.moveToTop();
 	};
 
-	evm.on("Game.miniGameListenersInitiated", function() {
+	evm.on("Game.miniGameListenersInitiated Game.viewInitiated", function() {
 		gameLayer.moveToTop();
 		overlayLayer.moveToTop();
 	}, "game");

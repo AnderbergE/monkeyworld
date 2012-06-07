@@ -4,6 +4,8 @@
  */
 var MW = {};
 
+MW.debug = false;
+
 /** @enum {string} */
 var Events = {
 	FRAME: "frame",

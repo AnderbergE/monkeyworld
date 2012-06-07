@@ -217,6 +217,7 @@ MW.Game = function(useViews, startGame) {
 			startMiniGame();
 		});
 		new MW.AgentChooserView(chooser).setup();
+		that.tell("Game.viewInitiated");
 	};
 	
 	/**

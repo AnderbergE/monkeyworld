@@ -26,6 +26,11 @@ var Strings = {
 		"en": "Yay!"
 	},
 	
+	"THANKS_FOR_CHOOSING_ME": {
+		"sv": "Ja! Tack för att du valde mig!",
+		"en": "Yay! Thanks for choosing me!"
+	},
+	
 	"ARE_YOU_READY_TO_TEACH": {
 		"sv": "Är du redo att lära apan?",
 		"en": "Are you ready to teach monkey?"

@@ -14,7 +14,7 @@ MW.AgentChooserView = function(chooser) {
 	var CONFIG = {
 		/** @const @type {Object.<number>} */
 		GRID: {
-			/** @const */ X: 400,
+			/** @const */ X: 363,
 			/** @const */ Y: 230,
 			/** @const */ WIDTH: 2
 		},
@@ -22,7 +22,7 @@ MW.AgentChooserView = function(chooser) {
 		BUTTON: {
 			/** @const */ WIDTH: 250,
 			/** @const */ HEIGHT: 250,
-			/** @const */ MARGIN: 30
+			/** @const */ MARGIN: 60
 		}
 	};
 	
@@ -66,11 +66,13 @@ MW.AgentChooserView = function(chooser) {
 		buttons.bringForward = function(button, callback) {
 			/** @const @type {number} */ var TIME_HIDE = 1000;
 			/** @const @type {number} */ var TIME_MOVE = 1000;
-			/** @const @type {number} */ var TIME_WAIT = 2000;
+			/** @const @type {number} */ var TIME_WAIT = 3000;
 			for (var i = 0; i < array.length; i++) {
 				if (array[i] === button) {
 					view.getTween(array[i].attrs).wait(TIME_HIDE).to({x: view.stage.getWidth() / 2, y: view.stage.getHeight() / 2}, TIME_MOVE);
-					view.getTween(array[i].attrs.scale).wait(TIME_HIDE).to({x: 1.5, y: 1.5}, TIME_MOVE).wait(TIME_WAIT).call(callback);
+					view.getTween(array[i].attrs.scale).wait(TIME_HIDE).to({x: 1.5, y: 1.5}, TIME_MOVE).call(function() {
+						Sound.play(Sounds.THANKS_FOR_CHOOSING_ME);
+					}).wait(TIME_WAIT).call(callback);
 				} else {
 					view.getTween(array[i].attrs).to({alpha: 0}, TIME_HIDE);
 				}
@@ -90,8 +92,27 @@ MW.AgentChooserView = function(chooser) {
 		var rect = new Kinetic.Rect({
 			width: CONFIG.BUTTON.WIDTH,
 			height: CONFIG.BUTTON.HEIGHT,
-			fill: "red",
-			alpha: 0.8,
+			//fill: "#007700",
+			fill: {
+	            start: {
+	              x: CONFIG.BUTTON.WIDTH / 2,
+	              y: CONFIG.BUTTON.HEIGHT / 2,
+	              radius: 0
+	            },
+	            end: {
+		              x: CONFIG.BUTTON.WIDTH / 2,
+		              y: CONFIG.BUTTON.HEIGHT / 2,
+	              radius: CONFIG.BUTTON.WIDTH * 0.75
+	            },
+	            colorStops: [0, '#00FF7F', 1, '#556B2F']
+	          },
+	          shadow: {
+	              color: 'black',
+	              blur: 15,
+	              offset: [15, 15],
+	              alpha: 0.5
+	            },
+			alpha: 0.6,
 			cornerRadius: 10,
 			strokeWidth: 4,
 			stroke: "white",
@@ -116,7 +137,7 @@ MW.AgentChooserView = function(chooser) {
 		
 		g.on("mousedown touchstart", function() {
 			Sound.play(Sounds.CLICK);
-			g._rect.setFill("yellow");
+			g._rect.setFill("white");
 			g.moveToTop();
 			buttons.bringForward(g, function() { chooser.choose(g._agent); });
 			buttons.disableClicks();
