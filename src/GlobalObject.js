@@ -4,7 +4,7 @@
  */
 var MW = {};
 
-MW.debug = false;
+MW.debug = true;
 
 /** @enum {string} */
 var Events = {

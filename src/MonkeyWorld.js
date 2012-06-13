@@ -229,10 +229,11 @@ function Game(gameState) {
 //				if (++i === 10) {
 //					clearInterval(dummyInterval);
 //					Log.debug("Dummy loaded.", "game");
+					var wait = MW.debug ? 0 : 1000;
 					setTimeout(function() {
 						evm.tell("Game.loadingDone");
 						monkeyWorld.start();
-					}, 1000);
+					}, wait);
 //				}
 //			};
 //			dummyInterval = setInterval(dummyUpdateFunction, 400);

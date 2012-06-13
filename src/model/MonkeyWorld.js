@@ -209,15 +209,23 @@ MW.Game = function(useViews, startGame) {
 	this.start = function() {
 		
 		var chooser = null;
-		chooser = new MW.AgentChooser(function(agent) {
-			chooser.tearDown();
+		var useChooser = !MW.debug;
+		var _start = function(agent) {
 			GameView.prototype.agentImage = agent;
 			result = new MW.MiniGameResult();
 			player = GAMER;
 			startMiniGame();
-		});
-		new MW.AgentChooserView(chooser).setup();
-		that.tell("Game.viewInitiated");
+		};
+		if (useChooser) {
+			chooser = new MW.AgentChooser(function(agent) {
+				chooser.tearDown();
+				_start(agent);
+			});
+			new MW.AgentChooserView(chooser).setup();
+			that.tell("Game.viewInitiated");
+		} else {
+			_start("monkey");
+		}
 	};
 	
 	/**
