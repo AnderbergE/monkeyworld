@@ -300,7 +300,7 @@ function LadderView(ladder)
 	
 	that.on("Ladder.cheer", function(msg) {
 		that.showBig("YAY!");
-		that.setTimeout(msg.callback, 2000);
+		that.setTimeout(msg.callback, 1500);
 	});
 	
 	that.on("Ladder.placeTreat", function(msg) {
