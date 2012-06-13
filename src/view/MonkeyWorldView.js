@@ -194,7 +194,8 @@ function MonkeyWorldView(stage, gameState, game) {
 				x: (BAR_CONFIG.WIDTH + BAR_CONFIG.MARGIN) / 2,
 				y: (BAR_CONFIG.HEIGHT + BAR_CONFIG.MARGIN) / 2
 			},
-			fill: "#333"
+			fill: "#333",
+			alpha: 0
 		});
 		
 		var filler = new Kinetic.Rect({
@@ -215,7 +216,7 @@ function MonkeyWorldView(stage, gameState, game) {
 			textFill: "black",
 			fontStyle: "bold",
 			textStrokeFill: "black",
-			text: Strings.get("INIT_LOADING_SOUNDS"),
+			text: "Monkey World Demo",
 			align: "center",
 			y: stage.getHeight()/2 - 50,
 			x: stage.getWidth()/2
@@ -224,10 +225,12 @@ function MonkeyWorldView(stage, gameState, game) {
 		view.on("Game.showLoadingScreen", function(msg) {
 			layer.add(bar);
 			layer.add(filler);
+			layer.add(loadingText);
+			bar.transitionTo({alpha:1, duration: msg.time / 1000});
 		});	
 		
 		view.on("Game.loadingSounds", function(msg) {
-			layer.add(loadingText);
+			loadingText.setText(Strings.get("INIT_LOADING_SOUNDS"));
 		});
 		view.on("Game.loadingImages", function(msg) {
 			loadingText.setText(Strings.get("INIT_LOADING_IMAGES"));

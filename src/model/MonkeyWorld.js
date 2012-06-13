@@ -140,7 +140,8 @@ MW.Game = function(useViews, startGame) {
 				new FishingView(miniGame).setup();
 			} else if (miniGame instanceof Ladder) {
 				LadderView.prototype.agentImage = GameView.prototype.agentImage;
-				new LadderView(miniGame).setup();
+				//new LadderView(miniGame).setup();
+				new MountainView(miniGame).setup();
 			}
 			that.tell("Game.miniGameListenersInitiated");
 		}
@@ -253,7 +254,7 @@ MW.Game = function(useViews, startGame) {
 	
 	/**
 	 * Returns the current mini game.
-	 * @return {MiniGame}
+	 * @return {MiniGame|NoMiniGame}
 	 */
 	this.getMiniGame = function() {
 		return miniGame;
