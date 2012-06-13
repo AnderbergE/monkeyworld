@@ -1,6 +1,3 @@
-// To prevent SoundJS producing error message. Bug in SoundJS compilation?
-SoundJS.testAudioStall = function(event) {};
-
 var game = null;
 window["egame"] = null;
 window.onload = function() {
