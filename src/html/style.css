@@ -1,25 +1,30 @@
 body, html {
-	background-color: black;
+	background-color: white;
 	/*background-image: url('../res/img/jungle_scene_background.png');*/
-	background-repeat: no-repeat;
+	/*background-repeat: no-repeat;
 	background-position: center center;
 	background-size: 100%;
-	
+	*/
 	height: 100%;
-	padding: 0;
+	/*padding: 0;
 	margin: 0;
-	position: relative;
-	
+	position: relative;*/
 	
 }
 #wrapper {
-	position: relative;
-	min-height: 100%;
-	margin-left: auto;
-	margin-right: auto;
+	width: 1024px;
+	height: 768px;
+	border: 1px solid #000;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin-left: -512px; 
+	/* Half the width of the DIV tag which is 50 pixels */
+	margin-top: -384px; 
+	/* Half the height of the DIV tag which is also 50 pixels */
 }
 #container {
-	position:absolute;
+	/*position:absolute;*/
 }
 div#settings-panel {
 	display: none;
