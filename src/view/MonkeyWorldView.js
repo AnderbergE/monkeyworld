@@ -153,7 +153,7 @@ function MonkeyWorldView(stage, gameState, game) {
 		var text = new Kinetic.Text({
 			fontFamily: "Arial",
 			fontSize: 36 * stage._mwunit,
-			textFill: "white",
+			textFill: "black",
 			textStrokeFill: "black",
 			text: Strings.get("THANK_YOU_FOR_HELPING"),
 			align: "center",
@@ -169,31 +169,84 @@ function MonkeyWorldView(stage, gameState, game) {
 		}, 1500);
 	});
 	
-	var _loadingText = new Kinetic.Text({
-		fontFamily: "Arial",
-		fontSize: 36,
-		textFill: "white",
-		textStrokeFill: "black",
-		text: Strings.get("INIT_LOADING_SOUNDS"),
-		align: "center",
-		y: stage.getHeight()/2 + 20,
-		x: stage.getWidth()/2
-	});
-	this.on("Game.loadingSounds", function(msg) {
-		layer.add(_loadingText);
-	});
-	this.on("Game.loadingImages", function(msg) {
-		_loadingText.setText(Strings.get("INIT_LOADING_IMAGES"));
-	});
-	this.on("Game.loadingDone", function(msg) {
-		layer.remove(_loadingText);
-	});
-	this.on("Game.updateSoundLoading", function(msg) {
-		_loadingText.setText(Strings.get("INIT_LOADING_SOUNDS") + " " + Math.round(msg.progress * 100) + " %");
-	});
-	this.on("Game.updateImageLoading", function(msg) {
-		_loadingText.setText(Strings.get("INIT_LOADING_IMAGES") + " " + Math.round(msg.progress * 100) + " %");
-	});
+	/**
+	 * Show loading bars and percentage numbers when downloading images, sound
+	 * and possibly other resources.
+	 * 
+	 * @param {MonkeyWorldView} view
+	 */
+	(function LoadingModule(view) {
+		
+		/** @const */
+		var BAR_CONFIG = {
+			/** @const */ WIDTH: 300,
+			/** @const */ HEIGHT: 30,
+			/** @const */ MARGIN: 20
+		};
+		
+		var bar = new Kinetic.Rect({
+			x: stage.getWidth() / 2,
+			y: stage.getHeight() / 2,
+			width: BAR_CONFIG.WIDTH + BAR_CONFIG.MARGIN,
+			height: BAR_CONFIG.HEIGHT + BAR_CONFIG.MARGIN,
+			cornerRadius: 10,
+			centerOffset: {
+				x: (BAR_CONFIG.WIDTH + BAR_CONFIG.MARGIN) / 2,
+				y: (BAR_CONFIG.HEIGHT + BAR_CONFIG.MARGIN) / 2
+			},
+			fill: "#333"
+		});
+		
+		var filler = new Kinetic.Rect({
+			x: stage.getWidth() / 2,
+			y: stage.getHeight() / 2,
+			width: 0,
+			height: BAR_CONFIG.HEIGHT,
+			centerOffset: {
+				x: BAR_CONFIG.WIDTH / 2,
+				y: BAR_CONFIG.HEIGHT / 2
+			},
+			fill: "#FFCC00"
+		});
+		
+		var loadingText = new Kinetic.Text({
+			fontFamily: "Arial",
+			fontSize: 10,
+			textFill: "black",
+			fontStyle: "bold",
+			textStrokeFill: "black",
+			text: Strings.get("INIT_LOADING_SOUNDS"),
+			align: "center",
+			y: stage.getHeight()/2 - 50,
+			x: stage.getWidth()/2
+		});
+		
+		view.on("Game.showLoadingScreen", function(msg) {
+			layer.add(bar);
+			layer.add(filler);
+		});	
+		
+		view.on("Game.loadingSounds", function(msg) {
+			layer.add(loadingText);
+		});
+		view.on("Game.loadingImages", function(msg) {
+			loadingText.setText(Strings.get("INIT_LOADING_IMAGES"));
+		});
+		view.on("Game.loadingDone", function(msg) {
+			layer.remove(loadingText);
+			layer.remove(bar);
+			layer.remove(filler);
+		});
+		view.on("Game.updateSoundLoading", function(msg) {
+			//loadingText.setText(Strings.get("INIT_LOADING_SOUNDS") + " " + Math.round(msg.progress * 100) + " %");
+			filler.setWidth(msg.progress * BAR_CONFIG.WIDTH);
+		});
+		view.on("Game.updateImageLoading", function(msg) {
+			//loadingText.setText(Strings.get("INIT_LOADING_IMAGES") + " " + Math.round(msg.progress * 100) + " %");
+			filler.setWidth(msg.progress * BAR_CONFIG.WIDTH);
+		});
+
+	})(this);
 	
 	var eatNumber = null;
 	var eatNumberText = 0;
@@ -322,20 +375,6 @@ function MonkeyWorldView(stage, gameState, game) {
             Tween.get(noGroup.attrs).to({ x: stage.getWidth()+300, y: stage.getHeight()+300}, 600).call(donea);
             Tween.get(text.attrs).to({ x: 0, y: stage.getHeight()+300}, 600).call(donea);
         };
-        
-//        yesGroup.on("mousedown touchstart", function() {
-//        	yesGroup.off("mousedown touchstart");
-//        	noGroup.off("mousedown touchstart");
-//        	tearDown();
-//        	msg.yes();
-//        });
-//        
-//        noGroup.on("mousedown touchstart", function() {
-//        	yesGroup.off("mousedown touchstart");
-//        	noGroup.off("mousedown touchstart");
-//        	tearDown();
-//        	msg.no();
-//        });
         
 		layer.add(yesGroup);
 		layer.add(noGroup);

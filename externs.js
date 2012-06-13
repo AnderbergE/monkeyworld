@@ -291,6 +291,8 @@ Kinetic.Shape = function(config){};
  */
 Kinetic.Rect = function(obj){};
 Kinetic.Rect.prototype.cornerRadius = function() {};
+Kinetic.Rect.prototype.setWidth = function(w) {};
+Kinetic.Rect.prototype.setHeight = function(h) {};
 
 /**
  * @constructor

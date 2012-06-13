@@ -92,7 +92,6 @@ MW.AgentChooserView = function(chooser) {
 		var rect = new Kinetic.Rect({
 			width: CONFIG.BUTTON.WIDTH,
 			height: CONFIG.BUTTON.HEIGHT,
-			//fill: "#007700",
 			fill: {
 	            start: {
 	              x: CONFIG.BUTTON.WIDTH / 2,

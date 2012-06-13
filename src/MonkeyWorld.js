@@ -50,34 +50,33 @@ function Game(gameState) {
         height: 768
 	};
 	var stage = new Kinetic.Stage(stageConfig);
-console.log("defined stage");
-	var resizeGame = function() {
-		var w = window.innerWidth - 10;
-		var h = window.innerHeight - 10;
-		
-		var WIN_WIDTH = w;
-		var WIN_HEIGHT = WIN_WIDTH / 4 * 3;	
-		
-		if (WIN_HEIGHT > h) {
-			WIN_HEIGHT = h;
-			WIN_WIDTH = WIN_HEIGHT / 3 * 4;	
-		}
-		
-		
-		stage.attrs.width = (WIN_WIDTH);
-		stage.attrs.height = (WIN_HEIGHT);
-		if (WIN_WIDTH < w) {
-			var container = document.getElementById("container");
-			container.style.left = Math.round((w - WIN_WIDTH) / 2) + "px";
-		}
-		
-		if (WIN_HEIGHT < h) {
-			var container = document.getElementById("container");
-			container.style.top = Math.round((h - WIN_HEIGHT) / 2) + "px";
-		}
-	};
-	
-	//resizeGame();
+//	var resizeGame = function() {
+//		var w = window.innerWidth - 10;
+//		var h = window.innerHeight - 10;
+//		
+//		var WIN_WIDTH = w;
+//		var WIN_HEIGHT = WIN_WIDTH / 4 * 3;	
+//		
+//		if (WIN_HEIGHT > h) {
+//			WIN_HEIGHT = h;
+//			WIN_WIDTH = WIN_HEIGHT / 3 * 4;	
+//		}
+//		
+//		
+//		stage.attrs.width = (WIN_WIDTH);
+//		stage.attrs.height = (WIN_HEIGHT);
+//		if (WIN_WIDTH < w) {
+//			var container = document.getElementById("container");
+//			container.style.left = Math.round((w - WIN_WIDTH) / 2) + "px";
+//		}
+//		
+//		if (WIN_HEIGHT < h) {
+//			var container = document.getElementById("container");
+//			container.style.top = Math.round((h - WIN_HEIGHT) / 2) + "px";
+//		}
+//	};
+//	resizeGame();
+
 	stage._mwunit = stage.getWidth() / 1024;
 	
 	/* ===== Layers ==========================================================*/
@@ -107,8 +106,6 @@ console.log("defined stage");
 		stage._drawOverlayLayer = true;
 	};
 
-
-	
 	var settingsButton = null;
 	var restartButton = null;
 	var that = this;
@@ -152,13 +149,6 @@ console.log("defined stage");
 	LadderView.prototype.stage = stage;
 	LadderView.prototype.evm = evm;
 	
-	//StageHandler.setStage(stage);
-	console.log("set stage");
-	
-//	var gamerPlayer = new GamerPlayer();
-//	var monkeyPlayer = new MonkeyPlayer();
-//	var angelPlayer = new AngelPlayer();
-
 	/** @type {MW.Game} */
 	var monkeyWorld = new MW.Game(true, Ladder);
 	MW.GlobalObject.prototype.game = monkeyWorld;
@@ -195,8 +185,6 @@ console.log("defined stage");
 		};
 	}();
 	
-
-	
 	stage.onFrame(function(frame) {
 		if (MW.debug)
 			fps.showFps(frame); // Update FPS display
@@ -210,67 +198,18 @@ console.log("defined stage");
 		Tween.tick(frame.timeDiff, false);
 	});
 	stage.start();
-	
-	/**
-	 * @param iView
-	 * @param iModel
-	 * @param config
-	 * @param {Function=} callback
-	 */
-	function kickInModule(iView, iModel, config, callback) {
-//		killActiveModule();
-//		var player = null;
-//		if (gameState.getMode() === GameMode.CHILD_PLAY || gameState.getMode() === GameMode.MONKEY_SEE) {
-//			player = gamerPlayer;
-//		} else if (gameState.getMode() === GameMode.MONKEY_DO) {
-//			player = monkeyPlayer;
-//		} else if (gameState.getMode() === GameMode.GUARDIAN_ANGEL) {
-//			player = angelPlayer;
-//		}
-//
-//		
-//		Log.debug("Creating model...", "game");
-//		var l_model = new iModel(gameState);
-//		Log.debug("Initiating model...", "game");
-//		if (player != null) {
-//			Log.debug("Requesting player to play...", "game");
-//			if (gameState.getMode() === GameMode.MONKEY_DO) {
-//				l_model.play(player, gameState.getResults()[gameState.getMonkeyDoRounds()-1]);
-//			} else {
-//				l_model.play(player);
-//			}
-//		}
-//
-//
-//		new iView(gameState, l_model).setup();
-//		evm.tell("Game.initiate");
-//		l_model.start();
-//		modelModule = l_model;
-//		evm.tell("Game.start");
-//		gameLayer.moveToTop();
-//		overlayLayer.moveToTop();
-	};
 
 	evm.on("Game.miniGameListenersInitiated Game.viewInitiated", function() {
 		gameLayer.moveToTop();
 		overlayLayer.moveToTop();
 	}, "game");
 	
-	function killActiveModule() {
-//		console.log("killActiveModule");
-//		modelModule.tearDown();
-//		modelModule.resetMistake();
-//		modelModule.resetActions();
-//		modelModule = noModule;
-//		evm.tell("Game.tearDown");
-//		evm.tell("Game.viewTearDown");
-//		evm.print();
-	};
+	evm.tell("Game.showLoadingScreen");
 	evm.tell("Game.loadingSounds");
 
 	var sound_interval = null;
 	var image_interval = null;
-	Log.debug("Loading sounds...", "Game");
+	Log.debug("Loading sounds...", "game");
 	var doneLoadingSounds = function() {
 		clearInterval(sound_interval);
 		image_interval = setInterval(function() {
@@ -279,13 +218,29 @@ console.log("defined stage");
 		Log.debug("Sounds loaded.", "game");
 		evm.tell("Game.loadingImages");
 		loadImages(function() {
-			evm.tell("Game.loadingDone");
 			clearInterval(image_interval);
-			
+			evm.tell("Game.updateImageLoading", { progress: 1 });
+			Log.debug("Images loaded.", "game");
+//			Log.debug("Loading dummy...", "game");
+//			var i = 0;
+//			var dummyInterval = null;
+//			var dummyUpdateFunction = function() {
+//				evm.tell("Game.updateImageLoading", { progress: i/10 });
+//				if (++i === 10) {
+//					clearInterval(dummyInterval);
+//					Log.debug("Dummy loaded.", "game");
+					setTimeout(function() {
+						evm.tell("Game.loadingDone");
+						monkeyWorld.start();
+					}, 1000);
+//				}
+//			};
+//			dummyInterval = setInterval(dummyUpdateFunction, 400);
+
 			/*
 			 * This is where the actual game kicks in
 			 */
-			monkeyWorld.start();
+//			monkeyWorld.start();
 		});
 	};
 	var preload = new PreloadJS(false);
@@ -298,102 +253,7 @@ console.log("defined stage");
 	
 	preload.loadManifest(soundSources);
 	
-	
-	
-	evm.on("Game.setMode", function(msg) {
-		gameState.setMode(msg.mode);
-	}, "game");
-	
-	evm.on("Game.nextRound", function(msg) {
-//		if (gameState.getMode() == GameMode.CHILD_PLAY) {
-//			var done = function() {
-//				kickInModule(FishingView, FishingGame, fishingGameConfig);
-//			};
-//			var readyToTeach = function() {
-//				gameState.setMode(GameMode.MONKEY_SEE);
-//				evm.tell("Game.getBanana", { callback: done });
-//			};
-//			var notReadyToTeach = function() {
-//				done();
-//			};
-//			evm.tell("Game.readyToTeach", { yes: readyToTeach, no: notReadyToTeach });
-//		} else if (gameState.getMode() == GameMode.MONKEY_SEE) {
-//			gameState.pushResult(modelModule.getActions());
-//			if (modelModule.madeMistake()) {
-//				gameState.reportMistake();
-//			}
-//			modelModule.resetActions();
-//			if (gameState.getMonkeySeeRounds() < gameState.getMaxMonkeySeeRounds()) {
-//				gameState.addMonkeySeeRound();
-//				kickInModule(FishingView, FishingGame, fishingGameConfig);
-//			} else {
-//				killActiveModule();
-//				gameState.setMode(GameMode.MONKEY_DO);
-//				Sound.play(Sounds.THANK_YOU_FOR_HELPING);
-//				evm.tell("Game.thankYouForHelpingMonkey", { callback: function() {
-//					if (!gameState.hasSeeBanana()) {
-//						gameState.gotSeeBanana();
-//						evm.tell("Game.getBanana", { callback: function() {
-//							kickInModule(FishingView, FishingGame, fishingGameConfig);
-//						}});
-//					} else {
-//						kickInModule(FishingView, FishingGame, fishingGameConfig);
-//					}
-//				}});
-//			}
-//		} else if (gameState.getMode() == GameMode.MONKEY_DO) {
-//			if (gameState.getMonkeyDoRounds() < gameState.getMaxMonkeyDoRounds()) {
-//				gameState.addMonkeyDoRound();
-//				kickInModule(FishingView, FishingGame, fishingGameConfig);
-//			} else {
-//				killActiveModule();
-//				if (!gameState.madeMistake()) {
-//					evm.tell("Game.showHappySystemConfirmation", { callback: function() {
-//						evm.tell("Game.getBanana", { callback: function() {
-//							setTimeout(function() {
-//								evm.tell("Game.getBanana", { callback: function() {
-//									setTimeout(function() {
-//										evm.tell("Game.eatBananas");
-//									}, 1500);
-//								}});
-//							}, 200);	
-//						}});
-//					}});
-//				} else {
-//					evm.tell("Game.showSadSystemConfirmation", { callback: function() {
-//						if (gameState.timeForHelp()) {
-//							gameState.resetMistakes();
-//							gameState.setMode(GameMode.GUARDIAN_ANGEL);
-//							evm.tell("Game.introduceBubba", { callback: function() {
-//								kickInModule(FishingView, FishingGame, fishingGameConfig);	
-//							}});
-//						} else {
-//							gameState.addNoHelpRound();
-//							gameState.setMode(GameMode.MONKEY_SEE);
-//							gameState.resetMonekyRounds();
-//							kickInModule(FishingView, FishingGame, fishingGameConfig);
-//						}
-//					}});
-//				}
-//			}
-//		} else if (gameState.getMode() == GameMode.GUARDIAN_ANGEL) {
-//			gameState.resetMonekyRounds();
-//			gameState.resetHelpRounds();
-//			gameState.setMode(GameMode.MONKEY_SEE);
-//			kickInModule(FishingView, FishingGame, fishingGameConfig);
-//		}
-	}, "game");
-//	evm.on("Game.startGame", function(msg) {
-//		kickInModule(msg.view, msg.model, fishingGameConfig);
-//	}, "game");
-	
 	this.restart = function() {
-//		//killActiveModule();
-//		gameState = new GameState();
-//		kickInModule(FishingView, FishingGame, fishingGameConfig);
-//		_produce_sounds();
-//		setUpButtons();
-//		gameState.useSettings();
 		monkeyWorld.restart();
 	};
 }
