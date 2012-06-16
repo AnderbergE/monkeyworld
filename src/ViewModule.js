@@ -10,13 +10,15 @@ function ViewModule(moduleName) {
 	var tweenController = new TweenController();
 	
 	var tearDown = function() {
+		that.hideBig();
 		that.forget();
 		if (that.tearDown != undefined)
 			that.tearDown();
 	};
 	
-	this.setup = function() {
+	this._setup = function() {
 		this.on("Game.stopMiniGame", function() { tearDown(); });
+		this.on("Game.roundDone", function() { tearDown(); });
 	};
 	
 	/**

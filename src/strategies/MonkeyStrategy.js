@@ -22,6 +22,7 @@ function MonkeyPlayer() {
 		var tries = 0;
 		
 		that.on("Ladder.readyToPick", function(msg) {
+			console.log("HERE");
 			play(resultPosition++);
 		});
 		

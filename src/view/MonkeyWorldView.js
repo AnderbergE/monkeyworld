@@ -13,7 +13,6 @@ function MonkeyWorldView(stage, gameState, game) {
 	ViewModule.call(this, "MonkeyWorldView");
 	/** @type {MonkeyWorldView} */ var that = this;
 	console.log(this);
-	//this.tag("MonkeyWorldView");
 	this._tag = "MonkeyWorldView";
 	
 	var layer = stage._gameLayer;
@@ -241,11 +240,9 @@ function MonkeyWorldView(stage, gameState, game) {
 			layer.remove(filler);
 		});
 		view.on("Game.updateSoundLoading", function(msg) {
-			//loadingText.setText(Strings.get("INIT_LOADING_SOUNDS") + " " + Math.round(msg.progress * 100) + " %");
 			filler.setWidth(msg.progress * BAR_CONFIG.WIDTH);
 		});
 		view.on("Game.updateImageLoading", function(msg) {
-			//loadingText.setText(Strings.get("INIT_LOADING_IMAGES") + " " + Math.round(msg.progress * 100) + " %");
 			filler.setWidth(msg.progress * BAR_CONFIG.WIDTH);
 		});
 

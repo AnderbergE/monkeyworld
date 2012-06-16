@@ -93,6 +93,7 @@
 		      	<file name="view/FishingGame/FishingGameView.js"/>
 		      	<file name="view/FishingGame/FishingGameCountingView.js"/>
 		      	<file name="view/Ladder/LadderView.js"/>
+		      	<file name="view/Ladder/TreeView.js"/>
 		      	<file name="view/Ladder/MountainView.js"/>
 		      	<file name="GameView.js"/>
 			    <file name="MonkeyWorld.js"/>

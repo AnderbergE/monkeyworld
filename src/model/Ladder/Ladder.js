@@ -16,7 +16,7 @@ function Ladder()
 	/** @type {number} */ var targetNumber = Utils.getRandomInt(minNumber, maxNumber);
 	
 	/** @type {number} */ var minTreats = 1;
-	/** @type {number} */ var maxTreats = 3;
+	/** @type {number} */ var maxTreats = 1;
 	/** @type {number} */ var tries = 0;
 	/** @type {number} */ var minTries = 3;
 	/** @type {number} */ var collectedTreats = 0;
@@ -68,19 +68,19 @@ function Ladder()
 		setTargetNumber();
 		that.tell("Ladder.placeTreat", {
 			callback: function() {
-				that.tell("Ladder.readyToPick");
+				that.tell("Ladder.readyToPick", {}, MW.debug);
 			}
-		});
+		}, MW.debug);
 	};
 	
 	var dropTreat = function(callback) {
 		that.tell("Ladder.dropTreat", {
 			callback: function() {
-				that.tell("Ladder.birdFlyToNest", { callback: callback });
-				that.tell("Ladder.hasTreat");
+				that.tell("Ladder.birdFlyToNest", { callback: callback }, MW.debug);
+				that.tell("Ladder.hasTreat", {}, MW.debug);
 			},
 			allowNumpad: false
-		});
+		}, MW.debug);
 	};
 	
 	this.openTreat = function() {
@@ -98,7 +98,7 @@ function Ladder()
 					placeTreat();
 				}
 			}
-		});
+		}, MW.debug);
 	};
 	
 	/** @type {number} */ var lastHelpAttempt = 0;
@@ -136,7 +136,7 @@ function Ladder()
 							if (number > targetNumber && (that.game.modeIsAgentSee() || that.agentIsInterrupted() || that.agentIsBeingHelped())) that.tell("Ladder.tooHigh");
 							//if (number === targetNumber && (that.game.modeIsAgentSee() || that.agentIsInterrupted() || that.agentIsBeingHelped())) that.tell("Ladder.justRight");
 						}
-					});
+					}, MW.debug);
 					if (number === targetNumber && number < lastHelpAttempt && (that.agentIsInterrupted() || that.agentIsBeingHelped())) that.tell("Ladder.betterBecauseSmaller");
 					if (number === targetNumber && number > lastHelpAttempt && (that.agentIsInterrupted() || that.agentIsBeingHelped())) that.tell("Ladder.betterBecauseBigger");
 					if (number != targetNumber && (that.agentIsInterrupted() || that.agentIsBeingHelped())) that.tell("Ladder.hmm");
@@ -151,7 +151,7 @@ function Ladder()
 					if (agentDoAndNotHelpingAgent || agentBeingHelpedCorrectly)
 						that.resumeAgent();
 				}
-			});
+			}, MW.debug);
 		});
 	};
 	

@@ -133,13 +133,16 @@ function GameEventManager(stage) {
 	/**
 	 * @param {string} type
 	 * @param {Object=} message
+	 * @param {boolean=} debug
 	 */
-	this.tell = function(type, message) {
+	this.tell = function(type, message, debug) {
 		telling++;
 		var bucket = listeners[type];
 		if (bucket != undefined) {
 			for (var i = 0; i < bucket.length; i++) {
 				var callback = bucket[i];
+				if (debug != undefined && debug)
+					Log.debug("      " + bucket[i]._caller);
 				callback(message);
 			}
 		}

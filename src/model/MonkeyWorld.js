@@ -14,7 +14,7 @@ MW.Game = function(useViews, startGame) {
 	/** @const @type {AngelPlayer}  */ var ANGEL        = new AngelPlayer();
 	
 	/** @type {number}              */ var numBananas   = 0;
-	/** @type {GameMode}            */ var gameMode     = GameMode.CHILD_PLAY; 
+	/** @type {GameMode}            */ var gameMode     = GameMode.MONKEY_SEE; 
 	/** @type {MiniGame}            */ var miniGame     = NO_MINI_GAME;
 	/** @type {Player}              */ var player       = GAMER;
 	/** @type {number}              */ var _round       = 1;
@@ -135,13 +135,19 @@ MW.Game = function(useViews, startGame) {
 			miniGame = new startGame();
 		}
 		if (useViews) {
+			var v = null;
 			if (miniGame instanceof FishingGame) {
 				FishingView.prototype.agentImage = GameView.prototype.agentImage;
-				new FishingView(miniGame).setup();
+				v = new FishingView(miniGame);
 			} else if (miniGame instanceof Ladder) {
-				LadderView.prototype.agentImage = GameView.prototype.agentImage;
-				//new LadderView(miniGame).setup();
-				new MountainView(miniGame).setup();
+//				TreeView.prototype.agentImage = GameView.prototype.agentImage;
+//				v = new TreeView(miniGame);
+				MountainView.prototype.agentImage = GameView.prototype.agentImage;
+				v = new MountainView(miniGame);
+			}
+			if (v != null) {
+				v._setup();
+				if (v.setup != undefined) v.setup();
 			}
 			that.tell("Game.miniGameListenersInitiated");
 		}

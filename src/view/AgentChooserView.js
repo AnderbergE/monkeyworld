@@ -66,7 +66,7 @@ MW.AgentChooserView = function(chooser) {
 		buttons.bringForward = function(button, callback) {
 			/** @const @type {number} */ var TIME_HIDE = 1000;
 			/** @const @type {number} */ var TIME_MOVE = 1000;
-			/** @const @type {number} */ var TIME_WAIT = 3000;
+			/** @const @type {number} */ var TIME_WAIT = 5000;
 			for (var i = 0; i < array.length; i++) {
 				if (array[i] === button) {
 					view.getTween(array[i].attrs).wait(TIME_HIDE).to({x: view.stage.getWidth() / 2, y: view.stage.getHeight() / 2}, TIME_MOVE);

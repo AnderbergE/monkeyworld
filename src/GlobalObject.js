@@ -65,9 +65,12 @@ MW.GlobalObject = function(tag) {
 	 * all listeners.
 	 * @param {string} type
 	 * @param {Object=} msg
+	 * @param {boolean=} debug
 	 */
-	this.tell = function(type, msg) {
-		this.evm.tell(type, msg);
+	this.tell = function(type, msg, debug) {
+		if (debug != undefined && debug)
+			Log.debug("Out: " + type, this._tag);
+		this.evm.tell(type, msg, debug);
 	};
 	
 	this.wevm = function() {
