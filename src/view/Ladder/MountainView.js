@@ -165,7 +165,9 @@ function MountainView(game) {
 	};
 	
 	view.on("Ladder.interrupt", function(msg) {
-
+		resetButton();
+		view.removeTween(cage.attrs);
+		view.getTween(cage.attrs).to({x:CAGE_CONFIG.X,y:CAGE_CONFIG.Y});
 	});
 	
 	// TODO: Rename to "placeTarget"
@@ -197,6 +199,7 @@ function MountainView(game) {
 		var x = g._balloons.getX();
 		var y = b.getY();
 		resetButton = function() {
+			view.removeTween(b.attrs);
 			b.setX(x);
 			b.setY(y);
 			b.moveTo(g);
@@ -205,7 +208,7 @@ function MountainView(game) {
 		
 		var yOffset = -110;
 		var xOffset = 20;
-		view.getTween(b.attrs).to({x: - Math.abs(CAGE_CONFIG.X - g.getX()) + xOffset, y: CAGE_CONFIG.Y - g.getY() + yOffset }, 1000).call(function() {
+		view.getTween(b.attrs).to({x: - Math.abs(CAGE_CONFIG.X - g.getX()) + xOffset, y: CAGE_CONFIG.Y - g.getY() + yOffset }, 4000).call(function() {
 			b.moveTo(cage);
 			b.setX(xOffset);
 			b.setY(yOffset);
@@ -250,7 +253,7 @@ function MountainView(game) {
 	// TODO: Rename event to "resetScene"
 	view.on("Ladder.birdFlyToNest", function(msg) {
 		var whenDone = function() {
-			resetButton();
+			if (resetButton != null) resetButton();
 			if (msg.allowNumpad) allowNumpad = true;
 			msg.callback();
 		};

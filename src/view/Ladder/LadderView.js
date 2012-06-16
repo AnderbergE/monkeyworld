@@ -58,6 +58,15 @@ function LadderView(tag, ladder)
 		}
 	};
 	
+	view.on("Ladder.interrupt", function(msg) {
+		if (view.game.modeIsAgentDo()) {
+			view.removeTween(stick.attrs.points[1]);
+			view.getTween(stick.attrs.points[1]).to(STICK_ORIGIN,1000).call(function() {
+				Sound.play(Sounds.WHICH_ONE_DO_YOU_THINK_IT_IS);
+			});
+		}
+	});
+	
 	view.on("Ladder.introduceAgent", function(msg) {
 		Sound.play(Sounds.LADDER_LOOKS_FUN);
 		view.setTimeout(function() {
