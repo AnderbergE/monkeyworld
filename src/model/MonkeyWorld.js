@@ -140,10 +140,13 @@ MW.Game = function(useViews, startGame) {
 				FishingView.prototype.agentImage = GameView.prototype.agentImage;
 				v = new FishingView(miniGame);
 			} else if (miniGame instanceof Ladder) {
-//				TreeView.prototype.agentImage = GameView.prototype.agentImage;
-//				v = new TreeView(miniGame);
-				MountainView.prototype.agentImage = GameView.prototype.agentImage;
-				v = new MountainView(miniGame);
+				if (false) {
+					TreeView.prototype.agentImage = GameView.prototype.agentImage;
+					v = new TreeView(miniGame);
+				} else {
+					MountainView.prototype.agentImage = GameView.prototype.agentImage;
+					v = new MountainView(miniGame);
+				}
 			}
 			if (v != null) {
 				v._setup();

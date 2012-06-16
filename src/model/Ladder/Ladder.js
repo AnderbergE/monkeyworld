@@ -93,7 +93,7 @@ function Ladder()
 				 * minTreats.
 				 */
 				if (collectedTreats === maxTreats || (tries >= minTries && collectedTreats >= minTreats))
-					that.tell("Ladder.cheer", { callback: function() { that.roundDone(); } });
+					that.tell("Ladder.cheer", { callback: function() { that.roundDone(); } }, MW.debug);
 				else {
 					placeTreat();
 				}

@@ -154,8 +154,19 @@ function MountainView(game) {
 		dynamicLayer.add(cage);
 		view.on("frame", function() { dynamicLayer.draw(); });
 		view.addInterruptButtons(dynamicLayer);
+		
+		view.addAgent(
+			view.getStage().getWidth() - 500,
+			LADDER_CONFIG.Y,
+			dynamicLayer
+		);
+		
 		staticLayer.draw();
 	};
+	
+	view.on("Ladder.interrupt", function(msg) {
+
+	});
 	
 	// TODO: Rename to "placeTarget"
 	view.on("Ladder.placeTreat", function(msg) {
@@ -167,9 +178,19 @@ function MountainView(game) {
 		msg.callback();
 	});
 	
-	view.on("Ladder.picked", function(msg) {
-		var b = balloonGroups[msg.number - 1]._balloons;
-		var g = balloonGroups[msg.number - 1];
+	this.getStickPoint = function(number) {
+		console.log(number);
+		var r = balloonGroups[number - 1];
+		console.log(r);
+		return {
+			x: r.getX() + r._rect.getWidth() / 2,
+			y: r.getY() + r._rect.getHeight() / 2
+		};
+	};
+	
+	this.pick = function(number, callback) {
+		var b = balloonGroups[number - 1]._balloons;
+		var g = balloonGroups[number - 1];
 		
 		g._rect.setFill("red");
 		
@@ -189,18 +210,9 @@ function MountainView(game) {
 			b.setX(xOffset);
 			b.setY(yOffset);
 			b.moveDown();
-			msg.callback();
+			callback();
 		});
-	});
-	
-	view.on("Ladder.allowInterrupt", function(msg) {
-		// TODO: Activate interrupt buttons
-		msg.callback();
-	});
-	
-	view.on("Ladder.disallowInterrupt", function(msg) {
-		// TODO: Deactivate interrupt buttons
-	});
+	};
 	
 	// TODO: Rename to "approachLadder"
 	view.on("Ladder.birdFlyToLadder", function(msg) {
@@ -251,32 +263,8 @@ function MountainView(game) {
 		}
 	});
 	
-	view.on("Ladder.cheer", function(msg) {
-		view.showBig("YAY!");
-		view.setTimeout(msg.callback, 1500);
-	});
-	
-	view.on("Ladder.introduceAgent", function(msg) {
-		Sound.play(Sounds.LADDER_LOOKS_FUN);
-		view.setTimeout(function() {
-			Sound.play(Sounds.LADDER_SHOW_ME);
-			view.setTimeout(function() {
-				msg.callback();
-			}, 2000);
-		}, 2000);
-	});
-	
-	view.on("Ladder.startAgent", function(msg) {
-		Sound.play(Sounds.LADDER_MY_TURN);
-		view.setTimeout(function() {
-			msg.callback();
-			//view.getTween(stopButton.attrs).to({alpha:1},1000);
-			//view.getTween(continueButton.attrs).to({alpha:1},1000);
-		}, 2000);
-	});
-	
 	view.tearDown = function() {
-		Log.debug("Tearing down MountainView", "mt-view");
+		Log.debug("Tearing down MountainView", this._tag);
 		view.stage.remove(staticLayer);
 		view.stage.remove(dynamicLayer);
 	};

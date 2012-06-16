@@ -7,17 +7,14 @@ function TreeView(ladder)
 {
 	LadderView.call(this, "TreeView", ladder);
 	Log.debug("Creating TreeView", "object");
-	var that = this;
-	console.log("Stage");
-	console.log(that);
+	var view = this;
 	
 	var GROUND_HEIGHT = 100;
-	var LEFT_GROUND_WIDTH = that.getStage().getWidth() * 0.4;
-	var RIGHT_GROUND_WIDTH = that.getStage().getWidth() * 0.45;
+	var LEFT_GROUND_WIDTH = view.getStage().getWidth() * 0.4;
+	var RIGHT_GROUND_WIDTH = view.getStage().getWidth() * 0.45;
 	var GROUND_FILL = "#F4A460";
 	var GROUND_STROKE = "#A52A2A";
 	var GROUND_STROKE_WIDTH = 4;
-	var STICK_ORIGIN = {x:800, y: 650};
 	
 	var numpad = {
 		x: 1024 - 300,
@@ -33,14 +30,14 @@ function TreeView(ladder)
 	/** @type{Kinetic.Layer} */ var staticLayer = new Kinetic.Layer();
 	/** @type{Kinetic.Layer} */ var dynamicLayer = new Kinetic.Layer();
 	
-	that.getStage().add(staticLayer);
-	that.getStage().add(dynamicLayer);
+	view.getStage().add(staticLayer);
+	view.getStage().add(dynamicLayer);
 
 	/** @type {number} */ var stepHeight = 90;
 	/** @type {number} */ var stepWidth = 120;
 	/** @type {Object} */ var ladderBegin = {
 		/** @type {number} */ x: 130,
-		/** @type {number} */ y: that.getStage().getHeight() - GROUND_HEIGHT - stepHeight
+		/** @type {number} */ y: view.getStage().getHeight() - GROUND_HEIGHT - stepHeight
 	};
 	/** @type {number} */ var stepNarrowing = 10;
 	
@@ -52,7 +49,7 @@ function TreeView(ladder)
 	
 	/** @const @type {Object.<Number>} */ var DROP_ZONE = {
 		/** @const @type {number} */ x: 650,
-		/** @const @type {number} */ y: that.getStage().getHeight() - GROUND_HEIGHT - 80
+		/** @const @type {number} */ y: view.getStage().getHeight() - GROUND_HEIGHT - 80
 	};
 	
 	/** @const @type {number} */ var DROP_ZONE_HEIGHT = 200;
@@ -141,7 +138,7 @@ function TreeView(ladder)
 	 */
 	var moveWingRec = function(wingDir) {
 		if (wingDir === undefined) wingDir = 1;
-		that.getTween(wing.attrs.scale).to({y:wingDir*(-1)}, 500).call(function() {
+		view.getTween(wing.attrs.scale).to({y:wingDir*(-1)}, 500).call(function() {
 			if (fly) {
 				moveWingRec(wingDir * (-1));
 			}
@@ -155,7 +152,7 @@ function TreeView(ladder)
 	
 	var stopWing = function() {
 		fly = false;
-		that.getTween(wing.attrs.scale).to({y:0.2}, 500);
+		view.getTween(wing.attrs.scale).to({y:0.2}, 500);
 	};
 	
 	
@@ -177,7 +174,7 @@ function TreeView(ladder)
 		var time = 100;
 		var offset = 5;
 		var waitTime = 4000;
-		that.getTween(treat.attrs)
+		view.getTween(treat.attrs)
 			.to({ x: ox-offset }, time)
 			.to({ x: ox+offset }, time)
 			.to({ x: ox-offset }, time)
@@ -188,7 +185,7 @@ function TreeView(ladder)
 			.to({ x: ox+offset }, time)
 			.to({ x: ox-offset }, time)
 			.to({ x: ox }, time);
-		that.getTween(treat.attrs)
+		view.getTween(treat.attrs)
 			.to({ y: oy-offset }, time)
 			.to({ y: oy+offset }, time)
 			.to({ y: oy-offset }, time)
@@ -203,7 +200,7 @@ function TreeView(ladder)
 	};
 	
 	var stopShakeTreat = function() {
-		that.removeTween(treat.attrs);
+		view.removeTween(treat.attrs);
 	};
 	
 	var addOnMouseActionToTreat = function() {
@@ -227,47 +224,14 @@ function TreeView(ladder)
 		treat._circle = treatCircle;
 		treat.add(treatCircle);
 		
-		that.getTween(treat.attrs).to({y:stepGroups[ladder.getTargetNumber()].getY()}, 1000).call(callback);
+		view.getTween(treat.attrs).to({y:stepGroups[ladder.getTargetNumber()].getY()}, 1000).call(callback);
 		dynamicLayer.add(treat);
 	};
-	
-	that.on("Ladder.betterBecauseBigger", function(msg) { Sound.play(Sounds.BETTER_BECAUSE_BIGGER); });
-	that.on("Ladder.betterBecauseSmaller", function(msg) { Sound.play(Sounds.BETTER_BECAUSE_SMALLER); });
-	that.on("Ladder.hmm", function(msg) { Sound.play(Sounds.MAYBE_THAT_WORKS); });
-	that.on("Ladder.agentSuggestSolution", function(msg) {
-		that.setTimeout(function() {
-			Sound.play(Sounds.LADDER_AGENT_SUGGEST_SOLUTION_1);
-			that.setTimeout(function() {
-				Sound.play(Sounds.LADDER_AGENT_SUGGEST_SOLUTION_2);	
-			}, 2000);
-		}, 2000);
-	});
-	
-	that.on("Ladder.tooLow", function(msg) {
-		Sound.play(Sounds.LADDER_OOPS_TOO_LOW);
-		setTimeout(function() {
-			Sound.play(Sounds.LADDER_TRY_A_BIGGER_NUMBER);
-		}, 2000);
-	});
-	
-	that.on("Ladder.tooHigh", function(msg) {
-		Sound.play(Sounds.LADDER_OOPS_TOO_HIGH);
-		setTimeout(function() {
-			Sound.play(Sounds.LADDER_TRY_A_SMALLER_NUMBER);
-		}, 2000);
-	});
-	
-	//that.on("Ladder.justRight", function(msg) {
-		//Sound.play(Sounds.LADDER_IT_WAS_RIGHT);
-	//});
-	
-	that.on("Ladder.agentTooLow", function(msg) { Sound.play(Sounds.AGENT_PLAY_TOO_LOW); });
-	that.on("Ladder.agentTooHigh", function(msg) { Sound.play(Sounds.AGENT_PLAY_TOO_HIGH); });
 	
 	/**
 	 * Open the treat
 	 */
-	that.on("Ladder.openTreat", function(msg) {
+	view.on("Ladder.openTreat", function(msg) {
 		treat.off("mousedown touchstart");
 		stopShakeTreat();
 		treat._circle.setFill("blue");
@@ -289,68 +253,50 @@ function TreeView(ladder)
 			}
 		});
 		dynamicLayer.add(balloons);
-		that.getTween(balloons.attrs.scale).to({x:1,y:1}, 500).call(function() {
-			that.getTween(balloons.attrs).to({y: 100}, 2000).call(msg.callback);
+		view.getTween(balloons.attrs.scale).to({x:1,y:1}, 500).call(function() {
+			view.getTween(balloons.attrs).to({y: 100}, 2000).call(msg.callback);
 		});
-		if (that.game.modeIsAgentSee()) {
+		if (view.game.modeIsAgentSee()) {
 			Sound.play(Sounds.LADDER_AGENT_SEE_CORRECT);
 		}
 	});
 	
-	that.on("Ladder.cheer", function(msg) {
-		that.showBig("YAY!");
-		that.setTimeout(msg.callback, 1500);
-	});
-	
-	that.on("Ladder.placeTreat", function(msg) {
+	view.on("Ladder.placeTreat", function(msg) {
 		dropZoneOffset++;
 		createTreat(msg.callback);
 		allowNumpad = true;
 	});
 	
-	that.on("Ladder.done", function(msg) {
-		that.showBig("YAY!");
-	});
+	this.pick = function(number, callback) {
+		Sound.play(Sounds.CLICK);
+		numpadGroups[number]._rect._originalFill = numpadGroups[number]._rect.attrs.fill;
+		numpadGroups[number]._rect.setFill("red");
+		activeButton = numpadGroups[number]; 
+		staticLayer.draw();
+		callback();
+	};
 	
-	/** @type {Kinetic.Line} */ var stick = null;
-	
-	/**
-	 * Picked a number on the numpad
-	 */
-	that.on("Ladder.picked", function(msg) {
-		var pick = function() {
-			Sound.play(Sounds.CLICK);
-			numpadGroups[msg.number]._rect._originalFill = numpadGroups[msg.number]._rect.attrs.fill;
-			numpadGroups[msg.number]._rect.setFill("red");
-			activeButton = numpadGroups[msg.number]; 
-			staticLayer.draw();
-			msg.callback();
+	this.getStickPoint = function(number) {
+		console.log(number);
+		return {
+			x:numpadGroups[number].getX(),
+			y:numpadGroups[number].getY()
 		};
-		if (that.game.modeIsAgentDo() && !ladder.agentIsInterrupted() && !ladder.agentIsBeingHelped()) {
-			var pos = {
-				x:numpadGroups[msg.number].getX(),
-				y:numpadGroups[msg.number].getY()
-			};
-			Sound.play(Sounds.IM_GOING_TO_PICK_THIS_ONE);
-			that.getTween(stick.attrs.points[1]).wait(1500).to(pos,3000).wait(3000).call(pick).wait(1000).to(STICK_ORIGIN,1000);
-		} else {
-			pick();
-		}
-	});
+	};
 	
 	/**
 	 * Bird flies to the ladder
 	 */
-	that.on("Ladder.birdFlyToLadder", function(msg) {
+	view.on("Ladder.birdFlyToLadder", function(msg) {
 		moveWing();
-		that.getTween(bird.attrs).to({x: 300, y: stepGroups[msg.number].getY()}, 5500).call(msg.callback);
+		view.getTween(bird.attrs).to({x: 300, y: stepGroups[msg.number].getY()}, 5500).call(msg.callback);
 	});
 	
 	/**
 	 * Bird flies to the nest
 	 */
-	that.on("Ladder.birdFlyToNest", function(msg) {
-		that.getTween(bird.attrs).to({x: BIRD.x, y: BIRD.y}, 3000).call(function() {
+	view.on("Ladder.birdFlyToNest", function(msg) {
+		view.getTween(bird.attrs).to({x: BIRD.x, y: BIRD.y}, 3000).call(function() {
 			if (activeButton != null) {
 				activeButton._rect.attrs.fill = buttonFill;
 				staticLayer.draw();
@@ -364,47 +310,46 @@ function TreeView(ladder)
 	/**
 	 * Bird drops the treat
 	 */
-	that.on("Ladder.dropTreat", function(msg) {
+	view.on("Ladder.dropTreat", function(msg) {
 		/** @const @type {number} */ var TIME_TO_DROP_ZONE = 2000;
 		
 		var flyTo = {x: DROP_ZONE.x + dropZoneOffsetWidth * dropZoneOffset, y: DROP_ZONE.y - DROP_ZONE_HEIGHT};
 		var dropAt = {x:flyTo.x, y: flyTo.y};
 		flyTo.x += 170;
 		
-		that.getTween(bird.attrs).to(flyTo, TIME_TO_DROP_ZONE).call(function() {
-			that.getTween(treat.attrs).to({x: DROP_ZONE.x + dropZoneOffsetWidth * dropZoneOffset, y: DROP_ZONE.y}, 500).call(function() {
-				if (!that.game.modeIsAgentDo()) {
+		view.getTween(bird.attrs).to(flyTo, TIME_TO_DROP_ZONE).call(function() {
+			view.getTween(treat.attrs).to({x: DROP_ZONE.x + dropZoneOffsetWidth * dropZoneOffset, y: DROP_ZONE.y}, 500).call(function() {
+				if (!view.game.modeIsAgentDo()) {
 					addOnMouseActionToTreat();
 					shakeTreat();
 				}
 			});
 			
 		});
-		that.getTween(treat.attrs).to(dropAt, TIME_TO_DROP_ZONE).call(function() {
+		view.getTween(treat.attrs).to(dropAt, TIME_TO_DROP_ZONE).call(function() {
 			msg.callback();
 		});	
 	});
 	
-	that.on("frame", function() {
+	view.on("frame", function() {
 		dynamicLayer.draw();
 	});
 
-	that.tearDown = function() {
-		Log.debug("Tearing down", "TreeView");
-		that.getStage().remove(staticLayer);
-		that.getStage().remove(dynamicLayer);
+	view.tearDown = function() {
+		Log.debug("Tearing down", this._tag);
+		view.getStage().remove(staticLayer);
+		view.getStage().remove(dynamicLayer);
 	};
 
-//	TODO: Confirm that restart works without this line
-//	that.on("Game.stopMiniGame", function() { tearDown(); });
+//	TODO: Confirm that restart works without these lines
+//	view.on("Game.stopMiniGame", function() { tearDown(); });
+//	view.on("Game.roundDone", this.tearDown);
 	
-//	that.on("Game.roundDone", this.tearDown);
-	
-	that.on("Ladder.interrupt", function(msg) {
-		that.removeTween(bird.attrs);
-		if (that.game.modeIsAgentDo) {
-			that.removeTween(stick.attrs.points[1]);
-			that.getTween(stick.attrs.points[1]).to(STICK_ORIGIN,1000).call(function() {
+	view.on("Ladder.interrupt", function(msg) {
+		view.removeTween(bird.attrs);
+		if (view.game.modeIsAgentDo) {
+			view.removeTween(stick.attrs.points[1]);
+			view.getTween(stick.attrs.points[1]).to(STICK_ORIGIN,1000).call(function() {
 				Sound.play(Sounds.WHICH_ONE_DO_YOU_THINK_IT_IS);
 			});
 		}
@@ -417,27 +362,27 @@ function TreeView(ladder)
 				y: 0
 			},
 			end: {
-				x: that.getStage().getWidth(),
-				y: that.getStage().getHeight()
+				x: view.getStage().getWidth(),
+				y: view.getStage().getHeight()
 			},
 			colorStops: [0, '#87CEFA', 0.6, '#87CEFA', 1, '#6A5ACD']
 		},
 		x: 0,
 		y: 0,
-        width: that.getStage().getWidth(),
-        height: that.getStage().getHeight()
+        width: view.getStage().getWidth(),
+        height: view.getStage().getHeight()
 	});
 	
 	var leftGround = new Kinetic.Shape({
 		drawFunc: function() {
 			var context = this.getContext();
 			context.beginPath();
-			context.moveTo(0, that.getStage().getHeight() - GROUND_HEIGHT);
-			context.lineTo(LEFT_GROUND_WIDTH, that.getStage().getHeight() - GROUND_HEIGHT);
+			context.moveTo(0, view.getStage().getHeight() - GROUND_HEIGHT);
+			context.lineTo(LEFT_GROUND_WIDTH, view.getStage().getHeight() - GROUND_HEIGHT);
 			context.quadraticCurveTo(
-				LEFT_GROUND_WIDTH - 80, that.getStage().getHeight() - GROUND_HEIGHT*0.8,
-				LEFT_GROUND_WIDTH - 100, that.getStage().getHeight());
-			context.lineTo(0, that.getStage().getHeight());
+				LEFT_GROUND_WIDTH - 80, view.getStage().getHeight() - GROUND_HEIGHT*0.8,
+				LEFT_GROUND_WIDTH - 100, view.getStage().getHeight());
+			context.lineTo(0, view.getStage().getHeight());
 			context.closePath();
 			this.fill();
 			this.stroke();
@@ -451,12 +396,12 @@ function TreeView(ladder)
 		drawFunc: function() {
 			var context = this.getContext();
 			context.beginPath();
-			context.moveTo(that.getStage().getWidth(), that.getStage().getHeight() - GROUND_HEIGHT);
-			context.lineTo(that.getStage().getWidth() - RIGHT_GROUND_WIDTH, that.getStage().getHeight() - GROUND_HEIGHT);
+			context.moveTo(view.getStage().getWidth(), view.getStage().getHeight() - GROUND_HEIGHT);
+			context.lineTo(view.getStage().getWidth() - RIGHT_GROUND_WIDTH, view.getStage().getHeight() - GROUND_HEIGHT);
 			context.quadraticCurveTo(
-				that.getStage().getWidth() - RIGHT_GROUND_WIDTH + 80, that.getStage().getHeight() - GROUND_HEIGHT*0.8,
-				that.getStage().getWidth() - RIGHT_GROUND_WIDTH + 100, that.getStage().getHeight());
-			context.lineTo(that.getStage().getWidth(), that.getStage().getHeight());
+				view.getStage().getWidth() - RIGHT_GROUND_WIDTH + 80, view.getStage().getHeight() - GROUND_HEIGHT*0.8,
+				view.getStage().getWidth() - RIGHT_GROUND_WIDTH + 100, view.getStage().getHeight());
+			context.lineTo(view.getStage().getWidth(), view.getStage().getHeight());
 			context.closePath();
 			this.fill();
 			this.stroke();
@@ -471,19 +416,9 @@ function TreeView(ladder)
 	staticLayer.add(rightGround);
 	staticLayer.add(birdNest);
 
-	that.addInterruptButtons(dynamicLayer);
+	view.addInterruptButtons(dynamicLayer);
 	
-	that.on("Ladder.introduceAgent", function(msg) {
-		Sound.play(Sounds.LADDER_LOOKS_FUN);
-		that.setTimeout(function() {
-			Sound.play(Sounds.LADDER_SHOW_ME);
-			that.setTimeout(function() {
-				msg.callback();
-			}, 2000);
-		}, 2000);
-	});
-	
-	that.on("Ladder.helpAgent", function(msg) {
+	view.on("Ladder.helpAgent", function(msg) {
 		allowNumpad = true;
 	});
 	
@@ -624,10 +559,10 @@ function TreeView(ladder)
 			group._text = text;
 			group.add(text);
 			group.on("mousedown touchstart", function() {
-				if (allowNumpad && that.game.playerIsGamer()) {
+				if (allowNumpad && view.game.playerIsGamer()) {
 					allowNumpad = false;
 					ladder.pick(i);
-				} else if (that.game.playerIsAgent() && !tellMyTurn) {
+				} else if (view.game.playerIsAgent() && !tellMyTurn) {
 					tellMyTurn = true;
 					Sound.play(Sounds.NO_MY_TURN);
 					setTimeout(function() {
@@ -643,38 +578,11 @@ function TreeView(ladder)
 		})(i);
 	}
 	
-	var agent = new Kinetic.Image({
-		image: images[that.agentImage],
-		x: that.getStage().getWidth() + 10,
-		y: that.getStage().getHeight() - GROUND_HEIGHT - images[that.agentImage].height
-	});
-	
-	//var agent2 = new AgentView(400,200);
-	
-	dynamicLayer.add(agent);
-	//dynamicLayer.add(agent2);
-	//agent2.transitionTo({rotation:Math.PI*2, duration: 2});
-	if (that.game.modeIsAgentDo()) {
-		stick = new Kinetic.Line({
-			points: [660, 570, STICK_ORIGIN.x, STICK_ORIGIN.y],
-			stroke: "brown",
-			strokeWidth: 2,
-			lineCap: "round"
-		});
-		dynamicLayer.add(stick);
-	}
-	
-	if (that.game.modeIsChild()) {
-		var peekAgent = function() {
-			that.setTimeout(function() {
-				that.getTween(agent.attrs).to({x:that.getStage().getWidth() - 100, rotation: -Math.PI/5}, 1000)
-				.wait(2000).to({x:that.getStage().getWidth() + 10}, 1000).call(function(){peekAgent();});
-			}, 2000);
-		};
-		peekAgent();
-	} else if (that.game.modeIsAgentSee() || that.game.modeIsAgentDo()) {
-		agent.setX(that.getStage().getWidth() - 500);		
-	}
+	view.addAgent(
+		view.getStage().getWidth() - 500,
+		view.getStage().getHeight() - GROUND_HEIGHT - images[view.agentImage].height,
+		dynamicLayer
+	);
 	
 	staticLayer.draw();
 	
