@@ -3,11 +3,25 @@
  * @extends {LadderView}
  * @param {Ladder} ladder
  */
-function TreeView(ladder)
-{
+function TreeView(ladder) {
+	/** @type {TreeView} */ var view = this;
 	LadderView.call(this, "TreeView", ladder);
 	Log.debug("Creating TreeView", "object");
-	var view = this;
+	
+	/**
+	 * Define sounds specific for this implementation of the ladder game.
+	 */
+	view.tooLow          = Sounds.LADDER_TREE_OOPS_TOO_LOW;
+	view.tooHigh         = Sounds.LADDER_TREE_OOPS_TOO_HIGH;
+	view.tryBigger       = Sounds.LADDER_TREE_TRY_A_BIGGER_NUMBER;
+	view.trySmaller      = Sounds.LADDER_TREE_TRY_A_SMALLER_NUMBER;
+	view.suggestion1     = Sounds.LADDER_TREE_AGENT_SUGGEST_SOLUTION_1;
+	view.suggestion2     = Sounds.LADDER_TREE_AGENT_SUGGEST_SOLUTION_2;
+	view.agentTooLow     = Sounds.LADDER_TREE_AGENT_PLAY_TOO_LOW;
+	view.agentTooHigh    = Sounds.LADDER_TREE_AGENT_PLAY_TOO_HIGH;
+	view.betterBigger    = Sounds.LADDER_TREE_BETTER_BECAUSE_BIGGER;
+	view.betterSmaller   = Sounds.LADDER_TREE_BETTER_BECAUSE_SMALLER;
+	view.agentSeeCorrect = Sounds.LADDER_TREE_AGENT_SEE_CORRECT;
 	
 	var GROUND_HEIGHT = 100;
 	var LEFT_GROUND_WIDTH = view.getStage().getWidth() * 0.4;
@@ -231,7 +245,7 @@ function TreeView(ladder)
 	/**
 	 * Open the treat
 	 */
-	view.on("Ladder.openTreat", function(msg) {
+	view.openTreat = function(msg) {
 		treat.off("mousedown touchstart");
 		stopShakeTreat();
 		treat._circle.setFill("blue");
@@ -256,10 +270,7 @@ function TreeView(ladder)
 		view.getTween(balloons.attrs.scale).to({x:1,y:1}, 500).call(function() {
 			view.getTween(balloons.attrs).to({y: 100}, 2000).call(msg.callback);
 		});
-		if (view.game.modeIsAgentSee()) {
-			Sound.play(Sounds.LADDER_AGENT_SEE_CORRECT);
-		}
-	});
+	};
 	
 	view.on("Ladder.placeTreat", function(msg) {
 		dropZoneOffset++;
@@ -345,9 +356,12 @@ function TreeView(ladder)
 //	view.on("Game.stopMiniGame", function() { tearDown(); });
 //	view.on("Game.roundDone", this.tearDown);
 	
-	view.on("Ladder.interrupt", function(msg) {
+	view.interrupt = function() {
+		console.log("interrupt!");
 		view.removeTween(bird.attrs);
-	});
+	};
+	
+	view.setup = function() {};
 
 	var background = new Kinetic.Rect({
 		fill: {

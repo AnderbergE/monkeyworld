@@ -4,12 +4,28 @@
  * @param {Ladder} game
  */
 function MountainView(game) {
-	/** @type{MountainView} */ var view = this;
+	/** @type {MountainView} */ var view = this;
 	LadderView.call(this, "MtView", game);
 	Log.debug("Constructing MountainView", this._tag);
 	
+	/**
+	 * Define sounds specific for this implementation of the ladder game. 
+	 */
+	view.tooLow          = Sounds.LADDER_MOUNTAIN_IM_UP_HERE;
+	view.tooHigh         = Sounds.LADDER_MOUNTAIN_IM_DOWN_HERE;
+	view.tryBigger       = Sounds.LADDER_MOUNTAIN_TRY_MORE_BALLOONS;
+	view.trySmaller      = Sounds.LADDER_MOUNTAIN_TRY_FEWER_BALLOONS;
+	view.suggestion1     = Sounds.LADDER_MOUNTAIN_AGENT_SUGGEST_SOLUTION_1;
+	view.suggestion2     = Sounds.LADDER_MOUNTAIN_AGENT_SUGGEST_SOLUTION_2;
+	view.agentTooLow     = Sounds.LADDER_MOUNTAIN_AGENT_PLAY_TOO_LOW;
+	view.agentTooHigh    = Sounds.LADDER_MOUNTAIN_AGENT_PLAY_TOO_HIGH;
+	view.betterBigger    = Sounds.LADDER_MOUNTAIN_BETTER_BECAUSE_BIGGER;
+	view.betterSmaller   = Sounds.LADDER_MOUNTAIN_BETTER_BECAUSE_SMALLER;
+	view.agentSeeCorrect = Sounds.LADDER_MOUNTAIN_AGENT_SEE_CORRECT;
+	
 	var allowNumpad = false;
 	var resetButton = null;
+	var tellMyTurn = false;
 	
 	var dynamicLayer = new Kinetic.Layer();
 	var staticLayer = new Kinetic.Layer();
@@ -126,6 +142,15 @@ function MountainView(game) {
 					if (allowNumpad && view.game.playerIsGamer()) {
 						allowNumpad = false;
 						game.pick(i + 1);
+					} else if (view.game.playerIsAgent() && !tellMyTurn) {
+						tellMyTurn = true;
+						Sound.play(Sounds.NO_MY_TURN);
+						setTimeout(function() {
+							Sound.play(Sounds.BUT_YOU_CAN_INTERRUPT);
+							setTimeout(function() {
+								tellMyTurn = false;
+							}, 2000);
+						}, 2000);
 					}
 				});
 				
@@ -164,11 +189,11 @@ function MountainView(game) {
 		staticLayer.draw();
 	};
 	
-	view.on("Ladder.interrupt", function(msg) {
+	view.interrupt = function() {
 		resetButton();
 		view.removeTween(cage.attrs);
 		view.getTween(cage.attrs).to({x:CAGE_CONFIG.X,y:CAGE_CONFIG.Y});
-	});
+	};
 	
 	// TODO: Rename to "placeTarget"
 	view.on("Ladder.placeTreat", function(msg) {
@@ -181,9 +206,7 @@ function MountainView(game) {
 	});
 	
 	this.getStickPoint = function(number) {
-		console.log(number);
 		var r = balloonGroups[number - 1];
-		console.log(r);
 		return {
 			x: r.getX() + r._rect.getWidth() / 2,
 			y: r.getY() + r._rect.getHeight() / 2
@@ -229,6 +252,10 @@ function MountainView(game) {
 	view.on("Ladder.dropTreat", function(msg) {
 		var friendOffsetX = CAGE_CONFIG.WIDTH / 2;
 		var friendOffsetY = -FRIEND_CONFIG.HEIGHT / 2;
+		Sound.play(Sounds.LADDER_MOUNTAIN_YOU_SAVED_ME);
+		view.setTimeout(function() {
+			Sound.play(Sounds.LADDER_MOUNTAIN_IM_HUNGRY);
+		}, 2000);
 		view.getTween(friend.attrs).to({ x: cage.getX() + friendOffsetX, y: cage.getY() + friendOffsetY }, 1000).call(function() {
 			var time = 3000;
 			view.getTween(cage.attrs).to({x:CAGE_CONFIG.X, y: CAGE_CONFIG.Y}, time);
@@ -246,9 +273,9 @@ function MountainView(game) {
 	});
 	
 	// TODO: Rename event to "confirmTarget"
-	view.on("Ladder.openTreat", function(msg) {
+	view.openTreat = function(msg) {
 		msg.callback();
-	});
+	};
 	
 	// TODO: Rename event to "resetScene"
 	view.on("Ladder.birdFlyToNest", function(msg) {

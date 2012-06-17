@@ -12,7 +12,6 @@ function MonkeyWorldView(stage, gameState, game) {
 	Log.debug("Creating MonkeyWorldView", "object");
 	ViewModule.call(this, "MonkeyWorldView");
 	/** @type {MonkeyWorldView} */ var that = this;
-	console.log(this);
 	this._tag = "MonkeyWorldView";
 	
 	var layer = stage._gameLayer;
@@ -53,7 +52,6 @@ function MonkeyWorldView(stage, gameState, game) {
 		}, 4000);
 	};
 
-	console.log(this);
 	this.on("Game.askIfReadyToTeach", function(msg) {
 //		var noGroup = new Kinetic.Group({x: that.stage.getWidth()/2 - 200 - 128, y: 300 });
 //		var yesGroup = new Kinetic.Group({x: that.stage.getWidth()/2 + 200 - 128, y: 300 });
@@ -139,6 +137,58 @@ function MonkeyWorldView(stage, gameState, game) {
 		}, 1000);
 		
 	});
+	
+	/**
+	 * Show a menu in which the user can choose a mini game to play.
+	 * 
+	 * @param {MonkeyWorldView} view
+	 */
+	(function(view) {
+		var buttons = new Array();
+		view.on("Game.showMiniGameChooser", function(msg) {
+			
+			var callback = msg.callback;
+			var games = msg.games;
+			var grid = Utils.gridizer(200, 200, 300, 100, 2);
+			
+			for (var i = 0; i < games.length; i++) { (function(i) {
+				var game = games[i];
+				var pos = grid.next();
+				var button = new Kinetic.Group(pos);
+				var rect = new Kinetic.Rect({
+					width: 280,
+					height: 100,
+					stroke: "black",
+					strokeWidth: 4
+				});
+				var text = new Kinetic.Text({
+					text: game.title,
+					fontSize: 20,
+					fontFamily: "sans-serif",
+					textFill: "black",
+					align: "center",
+					verticalAlign: "middle",
+					x: rect.getWidth() / 2,
+					y: rect.getHeight() / 2
+				});
+				button.add(rect);
+				button.add(text);
+				button.on("mousedown touchstart", function() {
+					rect.setFill("yellow");
+					callback(game);
+				});
+				buttons.push(button);
+				layer.add(button);
+			})(i);}
+		});
+		
+		view.on("Game.hideMiniGameChooser", function(msg) {
+			for (var i = 0; i < buttons.length; i++) {
+				layer.remove(buttons[i]);
+			}
+			buttons = new Array();
+		});
+	})(this);
 	
 	this.on("Game.showHappySystemConfirmation", function(msg) {
 		systemConfirmation(true, msg.callback);
@@ -333,7 +383,7 @@ function MonkeyWorldView(stage, gameState, game) {
         	x: 0.125 * stage._mwunit, y: 0.125 * stage._mwunit
         }, 1000).call(function(){
         	banana.attrs.image = images["banana-small"];
-        }).wait(1500).call(function() {console.log("HERE");if (msg != undefined && msg.callback != undefined) msg.callback();});
+        }).wait(1500).call(function() {if (msg != undefined && msg.callback != undefined) msg.callback();});
 	});
 	
 	this.on("Game.readyToTeach", function(msg) {

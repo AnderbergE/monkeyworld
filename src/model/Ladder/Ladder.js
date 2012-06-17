@@ -16,7 +16,7 @@ function Ladder()
 	/** @type {number} */ var targetNumber = Utils.getRandomInt(minNumber, maxNumber);
 	
 	/** @type {number} */ var minTreats = 1;
-	/** @type {number} */ var maxTreats = 1;
+	/** @type {number} */ var maxTreats = 3;
 	/** @type {number} */ var tries = 0;
 	/** @type {number} */ var minTries = 3;
 	/** @type {number} */ var collectedTreats = 0;
@@ -141,7 +141,6 @@ function Ladder()
 					if (number === targetNumber && number > lastHelpAttempt && (that.agentIsInterrupted() || that.agentIsBeingHelped())) that.tell("Ladder.betterBecauseBigger");
 					if (number != targetNumber && (that.agentIsInterrupted() || that.agentIsBeingHelped())) that.tell("Ladder.hmm");
 					if (that.game.modeIsAgentDo()) {
-						console.log("lastHelpAttempt = " + number);
 						lastHelpAttempt = number;
 					}
 					
@@ -194,8 +193,6 @@ function Ladder()
 					
 				}});
 			}
-		} else {
-			console.log("Not interruptable");
 		}
 	};
 	

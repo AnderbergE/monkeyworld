@@ -61,12 +61,12 @@ var Strings = {
 		"en": "Yes, I think that one is better!"
 	},
 	
-	"BETTER_BECAUSE_BIGGER": {
+	"LADDER_TREE_BETTER_BECAUSE_BIGGER": {
 		"sv": "Ja, det verkar vara ett bra val, eftersom den ÄR större!",
 		"en": "Yes, that seems to be a good choice because it IS bigger!"
 	},
 	
-	"BETTER_BECAUSE_SMALLER": {
+	"LADDER_TREE_BETTER_BECAUSE_SMALLER": {
 		"sv": "Ja, det verkar vara ett bra val, eftersom den ÄR mindre!",
 		"en": "Yes, that seems to be a good choice because it IS smaller!"
 	},
@@ -76,16 +76,6 @@ var Strings = {
 		"en": "Ok, let's see if this works. Hmm..."
 	},
 	
-	"AGENT_PLAY_TOO_LOW": {
-		"sv": "Hmm, det gick inte. Jag undrar varför. Jag testar en större!",
-		"en": "Hmm, that didn't work. I wonder why. Let me try a bigger one!"
-	},
-	
-	"AGENT_PLAY_TOO_HIGH": {
-		"sv": "Åh, nej! Var den för stor?",
-		"en": "Oh no! Was that too big?"
-	},
-		
 	"FISHING_CATCH_NUMBER": {
 		"sv": "Fånga nummer %1",
 		"en": "Catch number %1"
@@ -161,37 +151,47 @@ var Strings = {
 		"en": "Yeah! You got it!" 
 	},
 	
-	"LADDER_OOPS_TOO_HIGH": {
+	"LADDER_TREE_OOPS_TOO_HIGH": {
 		"sv": "Oj, kanske tog vi i för mycket!",
 		"en": "Oops! Maybe we overdid it!"
 	},
 	
-	"LADDER_OOPS_TOO_LOW": {
+	"LADDER_TREE_OOPS_TOO_LOW": {
 		"sv": "Hmm... Kanske var det inte tillräckligt!",
 		"en": "Hmm... Maybe it wasn't enough!"
 	},
 	
-	"LADDER_TRY_A_SMALLER_NUMBER": {
+	"LADDER_TREE_TRY_A_SMALLER_NUMBER": {
 		"sv": "Vi kan väl testa en mindre och se vad som händer!",
 		"en": "Let's try a smaller one and see what happens!"
 	},
 	
-	"LADDER_TRY_A_BIGGER_NUMBER": {
+	"LADDER_TREE_TRY_A_BIGGER_NUMBER": {
 		"sv": "Vad tror du? Ska vi testa en större?",
 		"en": "What do you think? Shall we try a bigger one?"
 	},
 	
-	"LADDER_AGENT_SEE_CORRECT": {
+	"LADDER_TREE_AGENT_PLAY_TOO_LOW": {
+		"sv": "Hmm, det gick inte. Jag undrar varför. Jag testar en större!",
+		"en": "Hmm, that didn't work. I wonder why. Let me try a bigger one!"
+	},
+	
+	"LADDER_TREE_AGENT_PLAY_TOO_HIGH": {
+		"sv": "Åh, nej! Var den för stor?",
+		"en": "Oh no! Was that too big?"
+	},
+	
+	"LADDER_TREE_AGENT_SEE_CORRECT": {
 		"sv": "WOO! Tack för hjälpen! Vilken fin present!",
 		"en": "WOO! Thank you for helping me! What a great surprise!"
 	},
 	
-	"LADDER_AGENT_SUGGEST_SOLUTION_1": {
+	"LADDER_TREE_AGENT_SUGGEST_SOLUTION_1": {
 		"sv": "Kanske kan vi försöka med samma siffra på",
 		"en": "Maybe we should match the number on"
 	},
 	
-	"LADDER_AGENT_SUGGEST_SOLUTION_2": {
+	"LADDER_TREE_AGENT_SUGGEST_SOLUTION_2": {
 		"sv": "nummerplattan som vid presenten?",
 		"en": "the number pad to the number by the gift?"
 	},
@@ -199,6 +199,71 @@ var Strings = {
 	"LADDER_PLEASE_HELP_ME": {
 		"sv": "Kan du hjälpa mig att välja rätt?",
 		"en": "Can you please help me find the right one?"
+	},
+	
+	"LADDER_MOUNTAIN_IM_DOWN_HERE": {
+		"sv": "Jag är här nere!",
+		"en": "I'm down here!"
+	},
+	
+	"LADDER_MOUNTAIN_IM_UP_HERE": {
+		"sv": "Jag är här uppe!",
+		"en": "I'm up here!"
+	},
+	
+	"LADDER_MOUNTAIN_YOU_SAVED_ME": {
+		"sv": "Du räddade mig!!!",
+		"en": "You saved me!!!"
+	},
+	
+	"LADDER_MOUNTAIN_IM_HUNGRY": {
+		"sv": "Jag är hungrig. Kom så går vi och äter!",
+		"en": "I'm hungry. Let's go eat!"
+	},
+	
+	"LADDER_MOUNTAIN_TRY_FEWER_BALLOONS": {
+		"sv": "Kanske ska vi testa med färre ballonger?",
+		"en": "Perhaps we should try with fewer balloons?"
+	},
+	
+	"LADDER_MOUNTAIN_TRY_MORE_BALLOONS": {
+		"sv": "Vi kan väl testa med fler ballonger och se vad som händer?",
+		"en": "Let's try with more balloons and see what happens!"
+	},
+	
+	"LADDER_MOUNTAIN_AGENT_SUGGEST_SOLUTION_1": {
+		"sv": "Kanske kan vi försöka med lika många ballonger",
+		"en": "Maybe we should match the number of balloons"
+	},
+	
+	"LADDER_MOUNTAIN_AGENT_SUGGEST_SOLUTION_2": {
+		"sv": "som nivåer upp din vän är.",
+		"en": "to the level your friend is stuck on."
+	},
+	
+	"LADDER_MOUNTAIN_AGENT_PLAY_TOO_LOW": {
+		"sv": "Oj, det kanske var för få ballonger.",
+		"en": "Oops, maybe I used to few balloons."
+	},
+	
+	"LADDER_MOUNTAIN_AGENT_PLAY_TOO_HIGH": {
+		"sv": "Hoppsan, det var nog för många ballonger!",
+		"en": "Oops, I think there were too many balloons!"
+	},
+	
+	"LADDER_MOUNTAIN_BETTER_BECAUSE_BIGGER": {
+		"sv": "Ja, det fungerar nog, för det ÄR fler ballonger!",
+		"en": "Yes, this can work, beacuse that IS more ballons!"
+	},
+	
+	"LADDER_MOUNTAIN_BETTER_BECAUSE_SMALLER": {
+		"sv": "Ja, det fungerar nog, för det ÄR färre ballonger!",
+		"en": "Yes, this will probably work, beacuse that IS fewer balloons!"
+	},
+	
+	"LADDER_MOUNTAIN_AGENT_SEE_CORRECT": {
+		"sv": "WOO! Tack för hjälpen! Vi räddade vår vän!",
+		"en": "WOO! Thank you for helping me! We saved our friend!"
 	},
 	
 	"BUBBA_HI": {

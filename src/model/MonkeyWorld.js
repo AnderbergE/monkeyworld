@@ -14,8 +14,10 @@ MW.Game = function(useViews, startGame) {
 	/** @const @type {AngelPlayer}  */ var ANGEL        = new AngelPlayer();
 	
 	/** @type {number}              */ var numBananas   = 0;
-	/** @type {GameMode}            */ var gameMode     = GameMode.MONKEY_SEE; 
+	/** @type {GameMode}            */ var gameMode     = GameMode.CHILD_PLAY; 
 	/** @type {MiniGame}            */ var miniGame     = NO_MINI_GAME;
+	/** @type {Function} @constructor */ var miniGameView = null;
+	/** @type {Function}            */ var miniGameStarter = null;
 	/** @type {Player}              */ var player       = GAMER;
 	/** @type {number}              */ var _round       = 1;
 	/** @type {boolean}             */ var mistake      = false;
@@ -115,6 +117,9 @@ MW.Game = function(useViews, startGame) {
 				setRound(1);
 				gameMode = GameMode.CHILD_PLAY;
 				player = GAMER;
+				chooseMiniGame(function() {
+					startMiniGame();	
+				});
 				//addBanana(2);
 			} else {
 				addRound();
@@ -123,35 +128,34 @@ MW.Game = function(useViews, startGame) {
 		}
 	};
 	
+	var chooseMiniGame = function(callback) {
+		that.tell("Game.showMiniGameChooser", {
+			callback: function(choice) {
+				miniGameStarter = function() {
+					that.tell("Game.hideMiniGameChooser");
+					miniGame = new choice.game();
+					miniGameView = choice.view;					
+				}
+				callback();
+			},
+			games: [
+				{ title: "Tree Game", view: TreeView, game: Ladder },
+				{ title: "Mountain Game", view: MountainView, game: Ladder }
+			]
+		});
+	};
+	
 	/**
 	 * Start the current mini game.
 	 */
 	var startMiniGame = function() {
 		that.evm.print();
-		//startGame = undefined;
-		if (startGame === undefined) {
-			miniGame = new FishingGame();
-		} else {
-			miniGame = new startGame();
-		}
+		miniGameStarter();
 		if (useViews) {
-			var v = null;
-			if (miniGame instanceof FishingGame) {
-				FishingView.prototype.agentImage = GameView.prototype.agentImage;
-				v = new FishingView(miniGame);
-			} else if (miniGame instanceof Ladder) {
-				if (false) {
-					TreeView.prototype.agentImage = GameView.prototype.agentImage;
-					v = new TreeView(miniGame);
-				} else {
-					MountainView.prototype.agentImage = GameView.prototype.agentImage;
-					v = new MountainView(miniGame);
-				}
-			}
-			if (v != null) {
-				v._setup();
-				if (v.setup != undefined) v.setup();
-			}
+			miniGameView.prototype.agentImage = GameView.prototype.agentImage;
+			var v = new miniGameView(miniGame);
+			v._setup();
+			v.setup();
 			that.tell("Game.miniGameListenersInitiated");
 		}
 		that.tell("Game.initiate");
@@ -224,7 +228,9 @@ MW.Game = function(useViews, startGame) {
 			GameView.prototype.agentImage = agent;
 			result = new MW.MiniGameResult();
 			player = GAMER;
-			startMiniGame();
+			chooseMiniGame(function() {
+				startMiniGame();	
+			});
 		};
 		if (useChooser) {
 			chooser = new MW.AgentChooser(function(agent) {

@@ -18,11 +18,10 @@ function MonkeyPlayer() {
 		var resultPosition = 0;
 		var interrupted = false;
 		var intentionalMistakePosition = Utils.getRandomInt(0, result.length - 1);
-		console.log("Intentional: " + intentionalMistakePosition);
+		Log.debug("Will make mistake on try number " + intentionalMistakePosition + 1, "agent");
 		var tries = 0;
 		
 		that.on("Ladder.readyToPick", function(msg) {
-			console.log("HERE");
 			play(resultPosition++);
 		});
 		
@@ -56,16 +55,12 @@ function MonkeyPlayer() {
 		
 		var play = function(resultPosition) {
 			if (interrupted) return;
-			console.log(result);
-			console.log(resultPosition);
 			tries++;
 			setTimeout(function() {
-				console.log("Picking!");
+				Log.debug("Picking a number", "agent");
 				if (resultPosition === intentionalMistakePosition || result[resultPosition] === "incorrect") {
-					console.log("Incorrect Number: " + game.getIncorrectNumber());
 					game.pick(game.getIncorrectNumber());
 				} else {
-					console.log("Target Number: " + game.getTargetNumber());
 					game.pick(game.getTargetNumber());
 				}
 				

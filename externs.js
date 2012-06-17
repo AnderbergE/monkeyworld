@@ -223,6 +223,9 @@ Kinetic.Shape = function(config){};
 	Kinetic.Shape.prototype.getContext = function() {};
 	Kinetic.Shape.prototype.getCanvas = function() {};
 
+	Kinetic.Shape.prototype.getWidth = function() {};
+	Kinetic.Shape.prototype.getHeight = function() {};
+	
 	/**
 	 * @param {String|Object} fill
 	 */

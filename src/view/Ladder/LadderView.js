@@ -65,6 +65,7 @@ function LadderView(tag, ladder)
 				Sound.play(Sounds.WHICH_ONE_DO_YOU_THINK_IT_IS);
 			});
 		}
+		view.interrupt();
 	});
 	
 	view.on("Ladder.introduceAgent", function(msg) {
@@ -109,34 +110,40 @@ function LadderView(tag, ladder)
 		view.setTimeout(msg.callback, 1500);
 	});
 	
-	view.on("Ladder.betterBecauseBigger", function(msg) { Sound.play(Sounds.BETTER_BECAUSE_BIGGER); });
-	view.on("Ladder.betterBecauseSmaller", function(msg) { Sound.play(Sounds.BETTER_BECAUSE_SMALLER); });
+	view.on("Ladder.openTreat", function(msg) {
+		if (view.game.modeIsAgentSee())
+			Sound.play(view.agentSeeCorrect);
+		view.openTreat(msg);
+	});
+	
+	view.on("Ladder.betterBecauseBigger", function(msg) { Sound.play(view.betterBigger); });
+	view.on("Ladder.betterBecauseSmaller", function(msg) { Sound.play(view.betterSmaller); });
 	view.on("Ladder.hmm", function(msg) { Sound.play(Sounds.MAYBE_THAT_WORKS); });
 	view.on("Ladder.agentSuggestSolution", function(msg) {
 		view.setTimeout(function() {
-			Sound.play(Sounds.LADDER_AGENT_SUGGEST_SOLUTION_1);
+			Sound.play(view.suggestion1);
 			view.setTimeout(function() {
-				Sound.play(Sounds.LADDER_AGENT_SUGGEST_SOLUTION_2);	
+				Sound.play(view.suggestion1);	
 			}, 2000);
 		}, 2000);
 	});
 	
 	view.on("Ladder.tooLow", function(msg) {
-		Sound.play(Sounds.LADDER_OOPS_TOO_LOW);
+		Sound.play(view.tooLow);
 		setTimeout(function() {
-			Sound.play(Sounds.LADDER_TRY_A_BIGGER_NUMBER);
+			Sound.play(view.tryBigger);
 		}, 2000);
 	});
 	
 	view.on("Ladder.tooHigh", function(msg) {
-		Sound.play(Sounds.LADDER_OOPS_TOO_HIGH);
+		Sound.play(view.tooHigh);
 		setTimeout(function() {
-			Sound.play(Sounds.LADDER_TRY_A_SMALLER_NUMBER);
+			Sound.play(view.trySmaller);
 		}, 2000);
 	});
 	
-	view.on("Ladder.agentTooLow", function(msg) { Sound.play(Sounds.AGENT_PLAY_TOO_LOW); });
-	view.on("Ladder.agentTooHigh", function(msg) { Sound.play(Sounds.AGENT_PLAY_TOO_HIGH); });
+	view.on("Ladder.agentTooLow", function(msg) { Sound.play(view.agentTooLow); });
+	view.on("Ladder.agentTooHigh", function(msg) { Sound.play(view.agentTooHigh); });
 	
 	/**
 	 * Picked a number on the numpad
