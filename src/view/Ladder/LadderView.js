@@ -110,10 +110,10 @@ function LadderView(tag, ladder)
 		view.setTimeout(msg.callback, 1500);
 	});
 	
-	view.on("Ladder.openTreat", function(msg) {
+	view.on("Ladder.confirmTarget", function(msg) {
 		if (view.game.modeIsAgentSee())
 			Sound.play(view.agentSeeCorrect);
-		view.openTreat(msg);
+		view.confirmTarget(msg);
 	});
 	
 	view.on("Ladder.betterBecauseBigger", function(msg) { Sound.play(view.betterBigger); });

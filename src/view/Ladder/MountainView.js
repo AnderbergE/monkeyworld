@@ -195,8 +195,7 @@ function MountainView(game) {
 		view.getTween(cage.attrs).to({x:CAGE_CONFIG.X,y:CAGE_CONFIG.Y});
 	};
 	
-	// TODO: Rename to "placeTarget"
-	view.on("Ladder.placeTreat", function(msg) {
+	view.on("Ladder.placeTarget", function(msg) {
 		var level = game.getTargetNumber() - 1;
 		friend.setX(LADDER_CONFIG.X - level * LADDER_CONFIG.SLOPE);
 		friend.setY(LADDER_CONFIG.Y - level * LADDER_CONFIG.HEIGHT);
@@ -240,16 +239,14 @@ function MountainView(game) {
 		});
 	};
 	
-	// TODO: Rename to "approachLadder"
-	view.on("Ladder.birdFlyToLadder", function(msg) {
+	view.on("Ladder.approachLadder", function(msg) {
 		view.getTween(cage.attrs).to({
 			x: (LADDER_CONFIG.X - (msg.number - 1) * LADDER_CONFIG.SLOPE + LADDER_CONFIG.WIDTH),
 			y: (LADDER_CONFIG.Y - (msg.number - 1) * LADDER_CONFIG.HEIGHT)
 		}, 2000).call(msg.callback);
 	});
 	
-	// TODO: Rename to "getTarget"
-	view.on("Ladder.dropTreat", function(msg) {
+	view.on("Ladder.getTarget", function(msg) {
 		var friendOffsetX = CAGE_CONFIG.WIDTH / 2;
 		var friendOffsetY = -FRIEND_CONFIG.HEIGHT / 2;
 		Sound.play(Sounds.LADDER_MOUNTAIN_YOU_SAVED_ME);
@@ -265,20 +262,17 @@ function MountainView(game) {
 		});
 	});
 	
-	// TODO: Rename event to hasTarget
-	view.on("Ladder.hasTreat", function(msg) {
+	view.on("Ladder.hasTarget", function(msg) {
 		if (!view.game.modeIsAgentDo())
 			game.openTreat();
 		
 	});
 	
-	// TODO: Rename event to "confirmTarget"
-	view.openTreat = function(msg) {
+	view.confirmTarget = function(msg) {
 		msg.callback();
 	};
 	
-	// TODO: Rename event to "resetScene"
-	view.on("Ladder.birdFlyToNest", function(msg) {
+	view.on("Ladder.resetScene", function(msg) {
 		var whenDone = function() {
 			if (resetButton != null) resetButton();
 			if (msg.allowNumpad) allowNumpad = true;

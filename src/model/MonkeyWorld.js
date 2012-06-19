@@ -2,9 +2,10 @@
  * @constructor
  * @extends {MW.GlobalObject}
  * @param {boolean=} useViews Defaults to true. Useful to falsify when testing.
- * @param {Function=} startGame Game to begin play
+ * @param {boolean=} useAgentChooser Defaults to true. Falsify when testing.
+ * @param {string=} startGame Code of the game to begin play ("tree", "mountain" or "fishing").
  */
-MW.Game = function(useViews, startGame) {
+MW.Game = function(useViews, useAgentChooser, startGame) {
 	/** @const @type {MW.Game}      */ var that = this;
 	
 	/** @const @type {MiniGame}     */ var NO_MINI_GAME = new NoMiniGame();
@@ -20,14 +21,21 @@ MW.Game = function(useViews, startGame) {
 	/** @type {Function}            */ var miniGameStarter = null;
 	/** @type {Player}              */ var player       = GAMER;
 	/** @type {number}              */ var _round       = 1;
-	/** @type {boolean}             */ var mistake      = false;
 	/** @type {MW.MiniGameResult}   */ var result       = NO_RESULT;
 
+	/** @type {Object.<Object>} */
+	var gameLibrary = {
+		"fishing": { title: "Fishing Game", view: FishingView, game: FishingGame, available: false },
+		"tree": { title: "Tree Game", view: TreeView, game: Ladder },
+		"mountain": { title: "Mountain Game", view: MountainView, game: Ladder }
+	};
+	
 	/*========================================================================*/
 	/*=== CONSTRUCTOR ========================================================*/
 	/*========================================================================*/
 	
 	if (useViews === undefined) useViews = true;
+	if (useAgentChooser === undefined) useAgentChooser = true;
 	this.on("frame", function(msg) { miniGame.onFrame(msg.frame); });
 
 	
@@ -86,32 +94,12 @@ MW.Game = function(useViews, startGame) {
 		if (gameMode === GameMode.CHILD_PLAY) {
 			gameMode = GameMode.MONKEY_SEE;
 			startMiniGame();
-			/*that.tell("Game.askIfReadyToTeach", {
-				yes: function() {
-					gameMode = GameMode.MONKEY_SEE;
-					setRound(1);
-					//addBanana(1, startMiniGame);
-					startMiniGame();
-				},
-				no: function() {
-					addRound();
-					startMiniGame();
-				}
-			});*/
 		} else if (gameMode === GameMode.MONKEY_SEE) {
 			var _result = miniGame.getResult();
 			result.pushResult(_result);
-			if (_result.madeMistake()) mistake = true;
-			if (_round === Settings.get("global", "monkeySeeRounds")) {
-				setRound(1);
-				gameMode = GameMode.MONKEY_DO;
-				player = AGENT;
-				//addBanana(1, startMiniGame);
-				startMiniGame();
-			} else {
-				addRound();
-				startMiniGame();
-			}
+			gameMode = GameMode.MONKEY_DO;
+			player = AGENT;
+			startMiniGame();
 		} else if (gameMode === GameMode.MONKEY_DO) {
 			if (_round === Settings.get("global", "monkeySeeRounds")) {
 				setRound(1);
@@ -120,7 +108,6 @@ MW.Game = function(useViews, startGame) {
 				chooseMiniGame(function() {
 					startMiniGame();	
 				});
-				//addBanana(2);
 			} else {
 				addRound();
 				startMiniGame();
@@ -129,20 +116,25 @@ MW.Game = function(useViews, startGame) {
 	};
 	
 	var chooseMiniGame = function(callback) {
-		that.tell("Game.showMiniGameChooser", {
-			callback: function(choice) {
-				miniGameStarter = function() {
-					that.tell("Game.hideMiniGameChooser");
-					miniGame = new choice.game();
-					miniGameView = choice.view;					
-				}
-				callback();
-			},
-			games: [
-				{ title: "Tree Game", view: TreeView, game: Ladder },
-				{ title: "Mountain Game", view: MountainView, game: Ladder }
-			]
-		});
+		if (startGame === undefined) {
+			that.tell("Game.showMiniGameChooser", {
+				callback: function(choice) {
+					miniGameStarter = function() {
+						that.tell("Game.hideMiniGameChooser");
+						miniGame = new choice.game();
+						miniGameView = choice.view;					
+					};
+					callback();
+				},
+				games: gameLibrary
+			});
+		} else {
+			miniGameStarter = function() {
+				miniGame = new gameLibrary[startGame].game();
+				miniGameView = gameLibrary[startGame].view;	
+			};
+			callback();
+		}
 	};
 	
 	/**
@@ -221,24 +213,24 @@ MW.Game = function(useViews, startGame) {
 	 * Start the Monkey World game
 	 */
 	this.start = function() {
-		
 		var chooser = null;
-		var useChooser = !MW.debug;
 		var _start = function(agent) {
 			GameView.prototype.agentImage = agent;
 			result = new MW.MiniGameResult();
 			player = GAMER;
 			chooseMiniGame(function() {
-				startMiniGame();	
+				startMiniGame();
 			});
 		};
-		if (useChooser) {
+		if (useAgentChooser) {
 			chooser = new MW.AgentChooser(function(agent) {
 				chooser.tearDown();
 				_start(agent);
 			});
-			new MW.AgentChooserView(chooser).setup();
-			that.tell("Game.viewInitiated");
+			if (useViews) {
+				new MW.AgentChooserView(chooser).setup();
+				that.tell("Game.viewInitiated");
+			}
 		} else {
 			_start("monkey");
 		}
@@ -253,7 +245,6 @@ MW.Game = function(useViews, startGame) {
 		gameMode = GameMode.CHILD_PLAY;
 		setRound(1);
 		player = GAMER;
-		mistake = false;
 		result = NO_RESULT;
 		this.tell("Game.stop");
 	};
@@ -273,14 +264,6 @@ MW.Game = function(useViews, startGame) {
 	 */
 	this.getMiniGame = function() {
 		return miniGame;
-	};
-	
-	/**
-	 * Returns true if a mistake has been made in the current mini game.
-	 * @return {boolean}
-	 */
-	this.madeMistake = function() {
-		return mistake;
 	};
 	
 	this.setAgentAsPlayer = function() { player = AGENT; };

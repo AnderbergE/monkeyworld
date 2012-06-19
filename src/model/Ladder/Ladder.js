@@ -54,7 +54,7 @@ function Ladder()
 				birdHasTreat = false;
 			});
 		} else {
-			that.tell("Ladder.birdFlyToNest", {
+			that.tell("Ladder.resetScene", {
 				callback: function() {
 					that.tell("Ladder.incorrect");
 					if (timesHelped >= MAX_HELP) that.tell("Ladder.agentSuggestSolution");
@@ -66,7 +66,7 @@ function Ladder()
 	
 	var placeTreat = function() {
 		setTargetNumber();
-		that.tell("Ladder.placeTreat", {
+		that.tell("Ladder.placeTarget", {
 			callback: function() {
 				that.tell("Ladder.readyToPick", {}, MW.debug);
 			}
@@ -74,10 +74,10 @@ function Ladder()
 	};
 	
 	var dropTreat = function(callback) {
-		that.tell("Ladder.dropTreat", {
+		that.tell("Ladder.getTarget", {
 			callback: function() {
-				that.tell("Ladder.birdFlyToNest", { callback: callback }, MW.debug);
-				that.tell("Ladder.hasTreat", {}, MW.debug);
+				that.tell("Ladder.resetScene", { callback: callback }, MW.debug);
+				that.tell("Ladder.hasTarget", {}, MW.debug);
 			},
 			allowNumpad: false
 		}, MW.debug);
@@ -85,7 +85,7 @@ function Ladder()
 	
 	this.openTreat = function() {
 		collectedTreats++;
-		that.tell("Ladder.openTreat", {
+		that.tell("Ladder.confirmTarget", {
 			callback: function() {
 				/*
 				 * End round if gamer has maximum number of treats, OR if
@@ -124,7 +124,7 @@ function Ladder()
 					if (that.agentIsBeingHelped() && number === targetNumber) {
 						that.helpedAgent();
 					}
-					that.tell("Ladder.birdFlyToLadder", {
+					that.tell("Ladder.approachLadder", {
 						number: number,
 						callback: function() {
 							birdHasFlewn(number === targetNumber)();
@@ -189,7 +189,7 @@ function Ladder()
 			that.popAction();
 			if (!birdHasTreat) {
 				that.tell("Ladder.interrupt");
-				that.tell("Ladder.birdFlyToNest", { callback: function() {
+				that.tell("Ladder.resetScene", { callback: function() {
 					
 				}});
 			}

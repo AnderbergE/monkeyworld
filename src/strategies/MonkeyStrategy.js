@@ -67,7 +67,7 @@ function MonkeyPlayer() {
 			}, 2000);
 		};
 		
-		that.on("Ladder.hasTreat", function(msg) {
+		that.on("Ladder.hasTarget", function(msg) {
 			setTimeout(function() {
 				game.openTreat();	
 			}, 1500);

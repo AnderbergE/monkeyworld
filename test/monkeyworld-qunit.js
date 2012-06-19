@@ -7,7 +7,7 @@ $(document).ready(function(){
 
 	module("Monkey World", {
 		setup: function() {
-			mw = new MW.Game(false);
+			mw = new MW.Game(false, false, "fishing");
 			MW.GlobalObject.prototype.game = mw;
 		},
 		teardown: function() {
@@ -18,202 +18,51 @@ $(document).ready(function(){
 	});
 	
 	test("Correct default state", function() {
-		equal(mw.numberOfBananas(), 0);
 		equal(mw.getMode(), GameMode.CHILD_PLAY);
-		equal(mw.getRound(), 1);
 		ok(mw.playerIsGamer());
 	});
 	
 	test("Play simple game in child play mode", function() {
 		mw.start();
 		mw.miniGameDone();
-		equal(mw.numberOfBananas(), 0);
-		equal(mw.getMode(), GameMode.CHILD_PLAY);
-		equal(mw.getRound(), 1);
-		ok(mw.playerIsGamer());
-	});
-	
-	test("Deny transition to monkey see mode", function() {
-		evm.on("Game.askIfReadyToTeach", function(msg) {
-			evm.forget("test");
-			msg.no();
-		}, "test");
-		mw.start();
-		mw.miniGameDone();
-		equal(mw.numberOfBananas(), 0);
-		equal(mw.getMode(), GameMode.CHILD_PLAY);
-		equal(mw.getRound(), 2);
-		ok(mw.playerIsGamer());
-	});
-	
-	test("Deny, then accept transition to monkey see mode", function() {
-		evm.on("Game.askIfReadyToTeach", function(msg) {
-			evm.forget("test");
-			msg.no();
-		}, "test");
-		evm.on("Game.addBanana", function(msg) {
-			if (msg.callback != undefined) msg.callback();
-		}, "test");
-		mw.start();
-		mw.miniGameDone();
-		equal(mw.numberOfBananas(), 0);
-		equal(mw.getMode(), GameMode.CHILD_PLAY);
-		equal(mw.getRound(), 2);
-		ok(mw.playerIsGamer());
-		evm.on("Game.askIfReadyToTeach", function(msg) {
-			evm.forget("test");
-			msg.yes();
-		}, "test");
-		mw.miniGameDone();
-		equal(mw.numberOfBananas(), 1);
 		equal(mw.getMode(), GameMode.MONKEY_SEE);
-		equal(mw.getRound(), 1);
-		ok(mw.playerIsGamer());
-	});
-	
-	test("Transition to monkey see mode", function() {
-		evm.on("Game.askIfReadyToTeach", function(msg) {
-			evm.forget("test");
-			msg.yes();
-		}, "test");
-		evm.on("Game.addBanana", function(msg) {
-			if (msg.callback != undefined) msg.callback();
-		}, "test");
-		mw.start();
-		mw.miniGameDone();
-		equal(mw.numberOfBananas(), 1);
-		equal(mw.getMode(), GameMode.MONKEY_SEE);
-		equal(mw.getRound(), 1);
-		ok(mw.playerIsGamer());
-	});
-	
-	test("Add monkey see round", function() {
-		evm.on("Game.askIfReadyToTeach", function(msg) {
-			evm.forget("test");
-			msg.yes();
-		}, "test");
-		evm.on("Game.addBanana", function(msg) {
-			if (msg.callback != undefined) msg.callback();
-		}, "test");
-		Settings.set("global", "monkeySeeRounds", 3);
-		mw.start();
-		mw.miniGameDone();
-		mw.miniGameDone();
-		equal(mw.numberOfBananas(), 1);
-		equal(mw.getMode(), GameMode.MONKEY_SEE);
-		equal(mw.getRound(), 2);
-		ok(mw.playerIsGamer());
-	});
-	
-	test("Add many monkey see round", function() {
-		evm.on("Game.askIfReadyToTeach", function(msg) {
-			evm.forget("test");
-			msg.yes();
-		}, "test");
-		evm.on("Game.addBanana", function(msg) {
-			if (msg.callback != undefined) msg.callback();
-		}, "test");
-		Settings.set("global", "monkeySeeRounds", 10);
-		mw.start();
-		mw.miniGameDone();
-		mw.miniGameDone();
-		mw.miniGameDone();
-		mw.miniGameDone();
-		mw.miniGameDone();
-		equal(mw.numberOfBananas(), 1);
-		equal(mw.getMode(), GameMode.MONKEY_SEE);
-		equal(mw.getRound(), 5);
 		ok(mw.playerIsGamer());
 	});
 	
 	test("Transition to monkey do", function() {
-		evm.on("Game.askIfReadyToTeach", function(msg) {
-			evm.forget("test");
-			msg.yes();
-		}, "test");
-		evm.on("Game.addBanana", function(msg) {
-			if (msg.callback != undefined) msg.callback();
-		}, "test");
-		Settings.set("global", "monkeySeeRounds", 3);
 		mw.start();
+		equal(mw.getMode(), GameMode.CHILD_PLAY, "Start in Child Play mode");
 		mw.miniGameDone();
+		equal(mw.getMode(), GameMode.MONKEY_SEE, "Next round is Monkey See mode");
 		mw.miniGameDone();
-		mw.miniGameDone();
-		mw.miniGameDone();
-		equal(mw.numberOfBananas(), 2);
-		equal(mw.getMode(), GameMode.MONKEY_DO);
-		equal(mw.getRound(), 1);
-		ok(mw.playerIsMonkey());
+		equal(mw.getMode(), GameMode.MONKEY_DO, "Next rount is Monkey Do mode");
+		ok(!mw.playerIsGamer(), "Player should not be gamer");
+		ok(mw.playerIsMonkey(), "Player should be monkey");
 	});
 	
-	test("Finish monkey do correctly", function() {
-		evm.on("Game.askIfReadyToTeach", function(msg) {
-			evm.forget("test");
-			msg.yes();
-		}, "test");
-		evm.on("Game.addBanana", function(msg) {
-			if (msg.callback != undefined) msg.callback();
-		}, "bananatester");
-		Settings.set("global", "monkeySeeRounds", 3);
+	test("Finish monkey do", function() {
 		mw.start();
 		mw.miniGameDone(); // child play
-		mw.miniGameDone(); // monkey see 1
-		mw.miniGameDone(); // monkey see 2
-		mw.miniGameDone(); // monkey see 3
+		mw.miniGameDone(); // monkey see
 		ok(mw.playerIsMonkey(), "Active player is monkey");
-		mw.miniGameDone(); // monkey do 1
-		ok(mw.playerIsMonkey(), "Active player is monkey");
-		mw.miniGameDone(); // monkey do 2
-		ok(mw.playerIsMonkey(), "Active player is monkey");
-		mw.miniGameDone(); // monkey do 3
-		equal(mw.numberOfBananas(), 4, "Number of bananas is now 4");
+		mw.miniGameDone(); // monkey do
 		equal(mw.getMode(), GameMode.CHILD_PLAY, "Switched to child play mode");
-		equal(mw.getRound(), 1, "Reset round to 1");
 		ok(mw.playerIsGamer(), "Activated gamer player");
-		ok(!mw.madeMistake(), "No player mistake made");
-		evm.forget("bananatester");
 	});
 	
-	test("Restart", function() {
-		evm.on("Game.askIfReadyToTeach", function(msg) {
-			evm.forget("test");
-			msg.yes();
-		}, "test");
-		Settings.set("global", "monkeySeeRounds", 3);
+	test("State after restart", function() {
 		mw.start();
 		mw.miniGameDone(); // child play
-		mw.miniGameDone(); // monkey see 1
-		mw.miniGameDone(); // monkey see 2
-		mw.miniGameDone(); // monkey see 3
-		mw.miniGameDone(); // monkey do 1
-		mw.miniGameDone(); // monkey do 2
-		equal(mw.numberOfBananas(), 2, "Should have two bananas");
+		mw.miniGameDone(); // monkey see
 		ok(mw.playerIsMonkey(), "Current player should be monkey");
 		mw.restart();
-		equal(mw.numberOfBananas(), 0, "Should have zero bananas");
 		equal(mw.getMode(), GameMode.CHILD_PLAY, "Should me in Child Play Mode");
-		equal(mw.getRound(), 1, "Should be round 1");
 		ok(mw.playerIsGamer(), "Current player should be gamer player");
-		ok(!mw.madeMistake(), "No player mistake made");
-	});
-	
-	test("Make mistake in monkey see", function() {
-		evm.on("Game.askIfReadyToTeach", function(msg) {
-			evm.forget("test");
-			msg.yes();
-		}, "test");
-		Settings.set("global", "monkeySeeRounds", 3);
-		mw.start();
-		mw.miniGameDone(); // child play
-		mw.miniGameDone(); // monkey see 1
-		mw.getMiniGame().reportMistake();
-		mw.miniGameDone(); // monkey see 2
-		ok(mw.madeMistake(), "Register that player did mistake");
 	});
 	
 	module("Game Module", {
 		setup: function() {
-			mw = new MW.Game(false);
+			mw = new MW.Game(false, false, "fishing");
 			MW.GlobalObject.prototype.game = mw;
 			evm.on("Game.addBanana", function(msg) {
 				if (msg.callback != undefined) msg.callback();
@@ -236,7 +85,7 @@ $(document).ready(function(){
 	
 	module("Ladder", {
 		setup: function() {
-			mw = new MW.Game(false, Ladder);
+			mw = new MW.Game(false, false, "tree");
 			MW.GlobalObject.prototype.game = mw;
 		},
 		teardown: function() {
@@ -268,20 +117,18 @@ $(document).ready(function(){
 		evm.on("Ladder.picked", function(msg) {
 			ok(!msg.correct, "Should've picked incorrect number");
 		}, "test");
-		Settings.set("miniGames", "ladder", "targetNumber", 2);
 		mw.start();
 		var ladder = mw.getMiniGame();
-		ladder.pick(3);
+		ladder.pick(ladder.getIncorrectNumber());
 	});
 	
 	test("Pick target number", function() {
 		evm.on("Ladder.picked", function(msg) {
 			ok(msg.correct, "Should've picked incorrect number");
 		}, "test");
-		Settings.set("miniGames", "ladder", "targetNumber", 2);
 		mw.start();
 		var ladder = mw.getMiniGame();
-		ladder.pick(2);
+		ladder.pick(ladder.getTargetNumber());
 	});
 	
 	test("Pick redeived target number", function() {
@@ -330,7 +177,7 @@ $(document).ready(function(){
 	
 	module("Fishing Game", {
 		setup: function() {
-			mw = new MW.Game(false);
+			mw = new MW.Game(false, false, "fishing");
 			MW.GlobalObject.prototype.game = mw;
 			evm.on("FishingGame.catch", function(msg) { msg.done(); }, "test");
 			evm.on("FishingGame.free", function(msg) { msg.done(); }, "test");

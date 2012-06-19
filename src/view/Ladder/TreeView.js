@@ -245,7 +245,7 @@ function TreeView(ladder) {
 	/**
 	 * Open the treat
 	 */
-	view.openTreat = function(msg) {
+	view.confirmTarget = function(msg) {
 		treat.off("mousedown touchstart");
 		stopShakeTreat();
 		treat._circle.setFill("blue");
@@ -272,7 +272,7 @@ function TreeView(ladder) {
 		});
 	};
 	
-	view.on("Ladder.placeTreat", function(msg) {
+	view.on("Ladder.placeTarget", function(msg) {
 		dropZoneOffset++;
 		createTreat(msg.callback);
 		allowNumpad = true;
@@ -298,7 +298,7 @@ function TreeView(ladder) {
 	/**
 	 * Bird flies to the ladder
 	 */
-	view.on("Ladder.birdFlyToLadder", function(msg) {
+	view.on("Ladder.approachLadder", function(msg) {
 		moveWing();
 		view.getTween(bird.attrs).to({x: 300, y: stepGroups[msg.number].getY()}, 5500).call(msg.callback);
 	});
@@ -306,7 +306,7 @@ function TreeView(ladder) {
 	/**
 	 * Bird flies to the nest
 	 */
-	view.on("Ladder.birdFlyToNest", function(msg) {
+	view.on("Ladder.resetScene", function(msg) {
 		view.getTween(bird.attrs).to({x: BIRD.x, y: BIRD.y}, 3000).call(function() {
 			if (activeButton != null) {
 				activeButton._rect.attrs.fill = buttonFill;
@@ -321,7 +321,7 @@ function TreeView(ladder) {
 	/**
 	 * Bird drops the treat
 	 */
-	view.on("Ladder.dropTreat", function(msg) {
+	view.on("Ladder.getTarget", function(msg) {
 		/** @const @type {number} */ var TIME_TO_DROP_ZONE = 2000;
 		
 		var flyTo = {x: DROP_ZONE.x + dropZoneOffsetWidth * dropZoneOffset, y: DROP_ZONE.y - DROP_ZONE_HEIGHT};

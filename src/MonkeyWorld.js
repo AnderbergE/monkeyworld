@@ -150,7 +150,7 @@ function Game(gameState) {
 	LadderView.prototype.evm = evm;
 	
 	/** @type {MW.Game} */
-	var monkeyWorld = new MW.Game(true, Ladder);
+	var monkeyWorld = new MW.Game(true, !MW.debug);
 	MW.GlobalObject.prototype.game = monkeyWorld;
 	LadderView.prototype.game = monkeyWorld;
 	new MonkeyWorldView(stage, gameState, monkeyWorld);
