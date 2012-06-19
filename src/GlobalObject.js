@@ -33,7 +33,7 @@ Kinetic.NoStage.getWidth = function(){};
  */
 MW.GlobalObject = function(tag) {
 	this._tag = tag;
-    
+	
 	/**
 	 * Register a listener to the event manager.
 	 * @param {string} type
@@ -87,7 +87,7 @@ MW.GlobalObject = function(tag) {
 
 MW.GlobalObject.prototype.evm  = new NoEventManager();
 MW.GlobalObject.prototype.stage = new Kinetic.NoStage();
-
+MW.GlobalObject.prototype.game = null;
 
 /**
  * @constructor

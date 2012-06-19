@@ -8,20 +8,22 @@ Event Order
 -----------
 
 1. start
-  1. introduceAgent | startAgent
-  2. placeTarget
+  1. _introduceAgent_ | _startAgent_
+  2. _placeTarget_
   3. readyToPick
-  4. picked
-      1. approachLadder
+  4. [ _allowInterrupt_ ]
+  5. _picked_
+      1. _approachLadder_
          1. [ agentTooLow | agentTooHigh ] | [ tooLow | tooHigh ]
          2. [ betterBecauseSmaller | betterBecauseBigger | hmm ]
-      2. getTarget
-         1. resetScene
+      2. _getTarget_
+         1. _resetScene_
          2. hasTarget
-      3. confirmTarget
-         1. GOTO: 1.2 | cheer
-   5. [ interrupt ]
-      1. resetScene
-      2. GOTO: 1.2
-   6. resetScene
+      3. _confirmTarget_
+         1. **GOTO: 1.2** | cheer
+   6. disallowInterrupt
+      1. [ interrupt ]
+         1. _resetScene_
+         2. **GOTO: 1.2**
+   7. resetScene
 

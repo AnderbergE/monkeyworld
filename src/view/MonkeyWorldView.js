@@ -4,11 +4,9 @@
  * 
  * @constructor
  * @extends {ViewModule}
- * @param {Kinetic.Stage} stage
- * @param {GameState} gameState
- * @param {MW.Game} game
  */
-function MonkeyWorldView(stage, gameState, game) {
+function MonkeyWorldView() {
+	var stage = this.stage;
 	Log.debug("Creating MonkeyWorldView", "object");
 	ViewModule.call(this, "MonkeyWorldView");
 	this._tag = "MonkeyWorldView";

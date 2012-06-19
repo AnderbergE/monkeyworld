@@ -1,18 +1,62 @@
 /**
  * @constructor
  * @extends {MW.GlobalObject}
- * @param {boolean=} useViews Defaults to true. Useful to falsify when testing.
- * @param {boolean=} useAgentChooser Defaults to true. Falsify when testing.
- * @param {string=} startGame Code of the game to begin play ("tree", "mountain" or "fishing").
+ * @param {Kinetic.Stage} stage
+ * @param {boolean=}      useViews         Defaults to true. Useful to falsify
+ *                                         when testing.
+ * @param {boolean=}      useAgentChooser  Defaults to true. Falsify when
+ *                                         testing.
+ * @param {string=}       startGame        Code of the game to begin play
+ *                                         ("tree", "mountain" or "fishing").
  */
-MW.Game = function(useViews, useAgentChooser, startGame) {
+MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	/** @const @type {MW.Game}      */ var that = this;
+	
+	this.evm = new GameEventManager(stage);
+	this.stage = stage;
+	this.game = this;
+	
+	/**
+	 * @param {Function} object to create
+	 * @param {*=} arg1
+	 * @param {*=} arg2
+	 * @param {*=} arg3
+	 * @param {*=} arg4
+	 */
+	var newObject = function(object, arg1, arg2, arg3, arg4) {
+		/*
+		 * TODO: Think real hard about if this is a good way to give everyone
+		 * access to the EventManager, MW.Game and Kinetic.Stage objects. If
+		 * using ordinary constructors instead, this whole method is not
+		 * necessary any more, since the caller can use the keyword 'new'
+		 * instead.
+		 */
+		object.prototype.evm = that.evm;
+		object.prototype.game = that;
+		object.prototype.stage = stage;
+		
+		/*
+		 * TODO: Find out how to achieve this with apply(...) instead.
+		 */
+		var tmp = null;
+		if (arg1 === undefined)
+			tmp = new object();
+		else if (arg1 != undefined && arg2 === undefined)
+			tmp = new object(arg1);
+		else if (arg2 != undefined && arg3 === undefined)
+			tmp = new object(arg1, arg2);
+		else if (arg3 != undefined && arg4 === undefined)
+			tmp = new object(arg1, arg2, arg3);
+		else
+			tmp = new object(arg1, arg2, arg3, arg4);
+		return tmp;
+	};
 	
 	/** @const @type {MiniGame}     */ var NO_MINI_GAME = new NoMiniGame();
 	/** @const @type {MW.NoMiniGameResult} */ var NO_RESULT    = new MW.NoMiniGameResult();
-	/** @const @type {GamerPlayer}  */ var GAMER        = new GamerPlayer();
-	/** @const @type {MonkeyPlayer} */ var AGENT        = new MonkeyPlayer();
-	/** @const @type {AngelPlayer}  */ var ANGEL        = new AngelPlayer();
+	/** @const @type {GamerPlayer}  */ var GAMER        = newObject(GamerPlayer);
+	/** @const @type {MonkeyPlayer} */ var AGENT        = newObject(MonkeyPlayer);
+	/** @const @type {AngelPlayer}  */ var ANGEL        = newObject(AngelPlayer);
 	
 	/** @type {number}              */ var numBananas   = 0;
 	/** @type {GameMode}            */ var gameMode     = GameMode.CHILD_PLAY; 
@@ -37,6 +81,7 @@ MW.Game = function(useViews, useAgentChooser, startGame) {
 	if (useViews === undefined) useViews = true;
 	if (useAgentChooser === undefined) useAgentChooser = true;
 	this.on("frame", function(msg) { miniGame.onFrame(msg.frame); });
+	if (useViews) newObject(MonkeyWorldView);
 
 	
 	/*========================================================================*/
@@ -121,7 +166,7 @@ MW.Game = function(useViews, useAgentChooser, startGame) {
 				callback: function(choice) {
 					miniGameStarter = function() {
 						that.tell("Game.hideMiniGameChooser");
-						miniGame = new choice.game();
+						miniGame = newObject(choice.game);
 						miniGameView = choice.view;					
 					};
 					callback();
@@ -130,7 +175,7 @@ MW.Game = function(useViews, useAgentChooser, startGame) {
 			});
 		} else {
 			miniGameStarter = function() {
-				miniGame = new gameLibrary[startGame].game();
+				miniGame = newObject(gameLibrary[startGame].game);
 				miniGameView = gameLibrary[startGame].view;	
 			};
 			callback();
@@ -143,9 +188,10 @@ MW.Game = function(useViews, useAgentChooser, startGame) {
 	var startMiniGame = function() {
 		that.evm.print();
 		miniGameStarter();
+		console.log(miniGame);
 		if (useViews) {
 			miniGameView.prototype.agentImage = GameView.prototype.agentImage;
-			var v = new miniGameView(miniGame);
+			var v = newObject(miniGameView, miniGame);
 			v._setup();
 			v.setup();
 			that.tell("Game.miniGameListenersInitiated");
@@ -223,12 +269,12 @@ MW.Game = function(useViews, useAgentChooser, startGame) {
 			});
 		};
 		if (useAgentChooser) {
-			chooser = new MW.AgentChooser(function(agent) {
+			chooser = newObject(MW.AgentChooser, function(agent) {
 				chooser.tearDown();
 				_start(agent);
 			});
 			if (useViews) {
-				new MW.AgentChooserView(chooser).setup();
+				newObject(MW.AgentChooserView, chooser).setup();
 				that.tell("Game.viewInitiated");
 			}
 		} else {
@@ -302,6 +348,7 @@ MW.Game = function(useViews, useAgentChooser, startGame) {
 	
 	/** @return {boolean} true if the current mode is Agent Do */
 	this.modeIsAgentDo = function() { return gameMode === GameMode.MONKEY_DO; };
+	
 };
 
 MW.Game.prototype = new MW.GlobalObject("MonkeyWorld.Game");

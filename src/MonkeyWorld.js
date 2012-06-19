@@ -140,21 +140,10 @@ function Game(gameState) {
 	//setUpButtons();
 	
 	Sound.setStage(stage);
-	var evm = new GameEventManager(stage);
-	MW.GlobalObject.prototype.evm = evm;
-	
-	//ViewModule.prototype.evm = evm;
-	//ViewModule.stage = stage;
-	ViewModule.prototype.stage = stage;
-	LadderView.prototype.stage = stage;
-	LadderView.prototype.evm = evm;
-	
-	/** @type {MW.Game} */
-	var monkeyWorld = new MW.Game(true, !MW.debug);
-	MW.GlobalObject.prototype.game = monkeyWorld;
-	LadderView.prototype.game = monkeyWorld;
-	new MonkeyWorldView(stage, gameState, monkeyWorld);
 
+	/** @type {MW.Game} */
+	var monkeyWorld = new MW.Game(stage, true, !MW.debug);
+	var evm = monkeyWorld.evm;
 	var noModule = new NoModule();
 	var modelModule = noModule;
 	

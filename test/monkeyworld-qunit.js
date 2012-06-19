@@ -1,191 +1,206 @@
 $(document).ready(function(){
 
-	var evm = new GameEventManager();
-	MW.GlobalObject.prototype.evm = evm;
-	var gameState = new GameState();
-	var mw = null;
+	//var evm = new GameEventManager();
+	//MW.GlobalObject.prototype.evm = evm;
+//	var gameState = new GameState();
+//	var mw = null;
 
 	module("Monkey World", {
 		setup: function() {
-			mw = new MW.Game(false, false, "fishing");
-			MW.GlobalObject.prototype.game = mw;
+			this.mw = new MW.Game(null, false, false, "fishing");
 		},
 		teardown: function() {
-			evm.forget("test");
-			mw = null;
-			MW.GlobalObject.prototype.game = null;
+			this.mw.forget("test");
+			this.mw = null;
 		}
 	});
 	
 	test("Correct default state", function() {
-		equal(mw.getMode(), GameMode.CHILD_PLAY);
-		ok(mw.playerIsGamer());
+		equal(this.mw.getMode(), GameMode.CHILD_PLAY);
+		ok(this.mw.playerIsGamer());
 	});
 	
 	test("Play simple game in child play mode", function() {
-		mw.start();
-		mw.miniGameDone();
-		equal(mw.getMode(), GameMode.MONKEY_SEE);
-		ok(mw.playerIsGamer());
+		this.mw.start();
+		this.mw.miniGameDone();
+		equal(this.mw.getMode(), GameMode.MONKEY_SEE);
+		ok(this.mw.playerIsGamer());
 	});
 	
 	test("Transition to monkey do", function() {
-		mw.start();
-		equal(mw.getMode(), GameMode.CHILD_PLAY, "Start in Child Play mode");
-		mw.miniGameDone();
-		equal(mw.getMode(), GameMode.MONKEY_SEE, "Next round is Monkey See mode");
-		mw.miniGameDone();
-		equal(mw.getMode(), GameMode.MONKEY_DO, "Next rount is Monkey Do mode");
-		ok(!mw.playerIsGamer(), "Player should not be gamer");
-		ok(mw.playerIsMonkey(), "Player should be monkey");
+		this.mw.start();
+		equal(this.mw.getMode(), GameMode.CHILD_PLAY, "Start in Child Play mode");
+		this.mw.miniGameDone();
+		equal(this.mw.getMode(), GameMode.MONKEY_SEE, "Next round is Monkey See mode");
+		this.mw.miniGameDone();
+		equal(this.mw.getMode(), GameMode.MONKEY_DO, "Next rount is Monkey Do mode");
+		ok(!this.mw.playerIsGamer(), "Player should not be gamer");
+		ok(this.mw.playerIsMonkey(), "Player should be monkey");
 	});
 	
 	test("Finish monkey do", function() {
-		mw.start();
-		mw.miniGameDone(); // child play
-		mw.miniGameDone(); // monkey see
-		ok(mw.playerIsMonkey(), "Active player is monkey");
-		mw.miniGameDone(); // monkey do
-		equal(mw.getMode(), GameMode.CHILD_PLAY, "Switched to child play mode");
-		ok(mw.playerIsGamer(), "Activated gamer player");
+		this.mw.start();
+		this.mw.miniGameDone(); // child play
+		this.mw.miniGameDone(); // monkey see
+		ok(this.mw.playerIsMonkey(), "Active player is monkey");
+		this.mw.miniGameDone(); // monkey do
+		equal(this.mw.getMode(), GameMode.CHILD_PLAY, "Switched to child play mode");
+		ok(this.mw.playerIsGamer(), "Activated gamer player");
 	});
 	
 	test("State after restart", function() {
-		mw.start();
-		mw.miniGameDone(); // child play
-		mw.miniGameDone(); // monkey see
-		ok(mw.playerIsMonkey(), "Current player should be monkey");
-		mw.restart();
-		equal(mw.getMode(), GameMode.CHILD_PLAY, "Should me in Child Play Mode");
-		ok(mw.playerIsGamer(), "Current player should be gamer player");
+		this.mw.start();
+		this.mw.miniGameDone(); // child play
+		this.mw.miniGameDone(); // monkey see
+		ok(this.mw.playerIsMonkey(), "Current player should be monkey");
+		this.mw.restart();
+		equal(this.mw.getMode(), GameMode.CHILD_PLAY, "Should me in Child Play Mode");
+		ok(this.mw.playerIsGamer(), "Current player should be gamer player");
 	});
 	
 	module("Game Module", {
 		setup: function() {
-			mw = new MW.Game(false, false, "fishing");
-			MW.GlobalObject.prototype.game = mw;
-			evm.on("Game.addBanana", function(msg) {
+			this.mw = new MW.Game(null, false, false, "fishing");
+			this.mw.on("Game.addBanana", function(msg) {
 				if (msg.callback != undefined) msg.callback();
 			}, "test");
 		},
 		teardown: function() {
-			evm.forget("test");
-			mw = null;
-			MW.GlobalObject.prototype.game = null;
+			this.mw.forget("test");
+			this.mw = null;
 		}
 	});
 	
 	test("Report mistake", function() {
-		mw.start();
-		ok(!mw.getMiniGame().madeMistake(), "No mistake made yet");
-		var mg = mw.getMiniGame();
+		this.mw.start();
+		ok(!this.mw.getMiniGame().madeMistake(), "No mistake made yet");
+		var mg = this.mw.getMiniGame();
 		mg.reportMistake();
 		ok(mg.madeMistake(), "Mistake made");
 	});
 	
 	module("Ladder", {
 		setup: function() {
-			mw = new MW.Game(false, false, "tree");
-			MW.GlobalObject.prototype.game = mw;
+			this.mw = new MW.Game(null, false, false, "tree");
+			//MW.GlobalObject.prototype.game = this.mw;
+			
+			this.getGame = function() {
+				var tmpGame = new MW.Game(null, false, false, "tree");
+				MW.GlobalObject.prototype.game = this.mw;	
+			};
 		},
 		teardown: function() {
-			mw = null;
-			MW.GlobalObject.prototype.game = null;
-			evm.forget("test");
+//			this.mw = null;
+//			MW.GlobalObject.prototype.game = null;
+			this.mw.forget("test");
 		}
 	});
 	
 	test("Start game", function() {
-		mw.start();
-		ok(mw.playerIsGamer(), "Current player should be gamer");
+		this.mw.start();
+		ok(this.mw.playerIsGamer(), "Current player should be gamer");
 	});
 	
 	test("Pick one number", function() {
-		evm.on("Ladder.picked", function(msg) {
+		var that = this;
+		this.mw.on("Ladder.start", function(msg) {
+			var ladder = that.mw.getMiniGame();
+			ladder.pick(1);
+		});
+		this.mw.on("Ladder.picked", function(msg) {
 			equal(msg.number, 1, "Number 1 should've been picked");
 			picked = true;
 		}, "test");
 		var picked = false;
-		mw.start();
-		var ladder = mw.getMiniGame();
-		ladder.pick(1);
-		mw.miniGameDone();
+		this.mw.start();
 		ok(picked, "A number should've been picked");
 	});
 	
 	test("Pick incorrect number", function() {
-		evm.on("Ladder.picked", function(msg) {
+		var that = this;
+		this.mw.on("Ladder.start", function(msg) {
+			var ladder = that.mw.getMiniGame();
+			ladder.pick(ladder.getIncorrectNumber());	
+		}, "test");
+		this.mw.on("Ladder.picked", function(msg) {
 			ok(!msg.correct, "Should've picked incorrect number");
 		}, "test");
-		mw.start();
-		var ladder = mw.getMiniGame();
-		ladder.pick(ladder.getIncorrectNumber());
+		this.mw.start();
 	});
 	
 	test("Pick target number", function() {
-		evm.on("Ladder.picked", function(msg) {
-			ok(msg.correct, "Should've picked incorrect number");
-		}, "test");
-		mw.start();
-		var ladder = mw.getMiniGame();
-		ladder.pick(ladder.getTargetNumber());
-	});
-	
-	test("Pick redeived target number", function() {
-		mw.start();
-		var ladder = mw.getMiniGame();
-		evm.on("Ladder.picked", function(msg) {
+		this.mw.start();
+		var ladder = this.mw.getMiniGame();
+		this.mw.on("Ladder.picked", function(msg) {
 			equal(msg.number, ladder.getTargetNumber(), "Should've picked target number");
 		}, "test");
 		ladder.pick(ladder.getTargetNumber());
 	});
 	
 	test("Get treat", function() {
+		var placed = false;
 		var picked = false;
 		var toLadder = false;
 		var toNest = false;
-		mw.start();
-		var ladder = mw.getMiniGame();
-		evm.on("Ladder.picked", function(msg) {
+		var ladder = null;
+		var that = this;
+		this.mw.on("Ladder.start", function(msg) {
+			ladder = that.mw.getMiniGame();
+		}, "test");
+		this.mw.on("Ladder.placeTarget", function(msg) {
+			console.log("placetarget");
+			ok(!placed, "Shouldn't have placed target yet");
+			ok(!picked, "Shouldn't have registerd number yet");
+			ok(!toLadder, "Shouldn't been to ladder yet");
+			ok(!toNest, "Shouldn't be back at nest yet");
+			placed = true;
+			msg.callback();
+		}, "test");
+		this.mw.on("Ladder.picked", function(msg) {
+			ok(placed, "Should have placed target");
 			ok(!picked, "Shouldn't have registerd number yet");
 			ok(!toLadder, "Shouldn't been to ladder yet");
 			ok(!toNest, "Shouldn't be back at nest yet");
 			picked = true;
+			msg.callback();
 		}, "test");
-		evm.on("Ladder.birdFlyToLadder", function(msg) {
+		this.mw.on("Ladder.approachLadder", function(msg) {
+			ok(placed, "Should have placed target");
 			ok(picked, "Should have registerd number");
 			ok(!toLadder, "Shouldn't been to ladder yet");
 			ok(!toNest, "Shouldn't be back at nest yet");
 			toLadder = true;
 			msg.callback();
 		}, "test");
-		evm.on("Ladder.birdFlyToNest", function(msg) {
+		this.mw.on("Ladder.resetScene", function(msg) {
+			ok(placed, "Should have placed target");
 			ok(picked, "Should have registerd number");
 			ok(toLadder, "Should have been to ladder");
 			ok(!toNest, "Shouldn't be back at nest yet");
 			toNest = true;
-		}, "test");
-		evm.on("Ladder.dropTreat", function(msg) {
 			msg.callback();
-			mw.miniGameDone();
 		}, "test");
-		ladder.pick(ladder.getTargetNumber());
-		ok(picked, "Should have registerd number");
-		ok(toLadder, "Should have been to ladder");
-		ok(toNest, "Should be back at nest");
+		this.mw.on("Ladder.getTarget", function(msg) {
+			msg.callback();
+		}, "test");
+		this.mw.on("Ladder.readyToPick", function(msg) {
+			ladder.pick(ladder.getTargetNumber());
+			ok(picked, "Should have registerd number");
+			ok(toLadder, "Should have been to ladder");
+			ok(toNest, "Should be back at nest");			
+		});
+		this.mw.start();
 	});
 	
 	module("Fishing Game", {
 		setup: function() {
-			mw = new MW.Game(false, false, "fishing");
-			MW.GlobalObject.prototype.game = mw;
-			evm.on("FishingGame.catch", function(msg) { msg.done(); }, "test");
-			evm.on("FishingGame.free", function(msg) { msg.done(); }, "test");
+			this.mw = new MW.Game(null, false, false, "fishing");
+			this.mw.on("FishingGame.catch", function(msg) { msg.done(); }, "test");
+			this.mw.on("FishingGame.free", function(msg) { msg.done(); }, "test");
 		},
 		teardown: function() {
-			mw = null;
-			MW.GlobalObject.prototype.game = null;
-			evm.forget("test");
+			this.mw.forget("test");
+			this.mw = null;
 		}
 	});
 
@@ -196,7 +211,8 @@ $(document).ready(function(){
 		Settings.set("miniGames", "fishingGame", "maxNumber", 9);
 		for (var i = 0; i < data.length; i++) {
 			Settings.set("miniGames", "fishingGame", "numberOfFish", data[i]);
-			var fg = new FishingGame(gameState);
+			this.mw.start();
+			var fg = this.mw.getMiniGame();
 			equal(fg.getNumberOfFish(), data[i]);
 		}
 	});
@@ -205,7 +221,8 @@ $(document).ready(function(){
 		Settings.set("miniGames", "fishingGame", "maxNumber", 21);
 		Settings.set("miniGames", "fishingGame", "numberOfFish", 565);
 		Settings.set("miniGames", "fishingGame", "numberCorrect", 200);
-		var gfg = new FishingGame(gameState);
+		this.mw.start();
+		var gfg = this.mw.getMiniGame();
 		var correctFish = gfg.getOneCorrectFish();
 		gfg.catchFish(correctFish);
 		var basket = gfg.getBasket();
@@ -217,7 +234,8 @@ $(document).ready(function(){
 		Settings.set("miniGames", "fishingGame", "maxNumber", 21);
 		Settings.set("miniGames", "fishingGame", "numberOfFish", 565);
 		Settings.set("miniGames", "fishingGame", "numberCorrect", FISH_TO_CATCH);
-		var gfg = new FishingGame(gameState);
+		this.mw.start();
+		var gfg = this.mw.getMiniGame();
 		var correct = new Array();
 		for (var i = 0; i < FISH_TO_CATCH; i++) {
 			var fish = gfg.getOneCorrectFish();
@@ -234,7 +252,8 @@ $(document).ready(function(){
 		Settings.set("miniGames", "fishingGame", "maxNumber", 21);
 		Settings.set("miniGames", "fishingGame", "numberOfFish", 565);
 		Settings.set("miniGames", "fishingGame", "numberCorrect", 200);
-		var gfg = new FishingGame(gameState);
+		this.mw.start();
+		var gfg = this.mw.getMiniGame();
 		var incorrectFish = gfg.getOneIncorrectFish();
 		gfg.catchFish(incorrectFish);
 		var basket = gfg.getBasket();
@@ -246,7 +265,8 @@ $(document).ready(function(){
 		Settings.set("miniGames", "fishingGame", "maxNumber", 21);
 		Settings.set("miniGames", "fishingGame", "numberOfFish", 565);
 		Settings.set("miniGames", "fishingGame", "numberCorrect", FISH_TO_CATCH);
-		var gfg = new FishingGame(gameState);
+		this.mw.start();
+		var gfg = this.mw.getMiniGame();
 		var incorrect = new Array();
 		for (var i = 0; i < FISH_TO_CATCH; i++) {
 			var fish = gfg.getOneIncorrectFish();
@@ -275,7 +295,8 @@ $(document).ready(function(){
 		Settings.set("miniGames", "fishingGame", "numberOfFish", numCorrect + numIncorrect);
 		Settings.set("miniGames", "fishingGame", "numberCorrect", numCorrect);
 		Settings.set("miniGames", "fishingGame", "targetNumber", CORRECT_NUMBER);
-		var gfg = new FishingGame(gameState);
+		this.mw.start();
+		var gfg = this.mw.getMiniGame();
 		for (var i = 0; i < numCorrect + numIncorrect; i++) {
 			var fish = (data[i] ? gfg.getOneCorrectFish() : gfg.getOneIncorrectFish());
 			caught.push(fish);
@@ -297,7 +318,8 @@ $(document).ready(function(){
 		Settings.set("miniGames", "fishingGame", "numberOfFish", 50);
 		Settings.set("miniGames", "fishingGame", "numberCorrect", 10);
 		Settings.set("miniGames", "fishingGame", "targetNumber", CORRECT_NUMBER);
-		var gfg = new FishingGame(gameState);
+		this.mw.start();
+		var gfg = this.mw.getMiniGame();
 		var fish = gfg.getOneCorrectFish();
 		gfg.catchFish(fish);
 		var basket = gfg.getBasket();
@@ -318,7 +340,8 @@ $(document).ready(function(){
 		Settings.set("miniGames", "fishingGame", "numberOfFish", numberTotal);
 		Settings.set("miniGames", "fishingGame", "numberCorrect", NUMBER_CORRECT);
 		Settings.set("miniGames", "fishingGame", "targetNumber", TARGET_NUMBER);
-		var gfg = new FishingGame(gameState);
+		this.mw.start();
+		var gfg = this.mw.getMiniGame();
 		var basket = gfg.getBasket();
 		var correct1 = gfg.getOneCorrectFish();
 		gfg.catchFish(correct1);
@@ -392,7 +415,8 @@ $(document).ready(function(){
 		Settings.set("miniGames", "fishingGame", "numberOfFish", numberTotal);
 		Settings.set("miniGames", "fishingGame", "numberCorrect", NUMBER_CORRECT);
 		Settings.set("miniGames", "fishingGame", "targetNumber", TARGET_NUMBER);
-		var gfg = new FishingGame(gameState);
+		this.mw.start();
+		var gfg = this.mw.getMiniGame();
 		equal(gfg.getNextBasketSlot(), 0);
 		gfg.catchFish(gfg.getOneCorrectFish());
 		equal(gfg.getNextBasketSlot(), 1);
