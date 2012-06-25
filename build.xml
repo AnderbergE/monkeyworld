@@ -1,56 +1,6 @@
 <project name="MonkeyWorld" default="compile">
 
     <property name="lib" value="lib" />
-	
-	<!--
-	windows: netsh advfirewall set global StatefulFTP disable
-	--><!--
-	<target name="upload" depends="compile">
- 		<ftp server="ftp.torsasok.se"
- 			port="21"
-			remotedir="/admin.torsasok.se/public_html/e/deploy"
-			userid="torsasok.se"
-			password="oringen2004"
- 			verbose="yes"
- 			passive="yes"
- 			binary="yes"
-			depends="yes">
-			<fileset dir="./js" />
-			<fileset dir="./src">
-				<include name="index.html" />
-				<include name="style.css" />
-			</fileset>
-		</ftp>
-	</target>
-	
-	<target name="upload_lib">
- 		<ftp server="ftp.torsasok.se"
- 			port="21"
-			remotedir="/admin.torsasok.se/public_html/e/lib"
-			userid="torsasok.se"
-			password="oringen2004"
- 			verbose="yes"
- 			passive="yes"
- 			binary="yes"
-			depends="yes">
-			<fileset dir="./lib" />
-		</ftp>
-	</target>
-	
-	<target name="upload_res">
-	 	<ftp server="ftp.torsasok.se"
- 			port="21"
-			remotedir="/admin.torsasok.se/public_html/e/res"
-			userid="torsasok.se"
-			password="oringen2004"
- 			verbose="yes"
- 			passive="yes"
- 			binary="yes"
-			depends="yes">
-			<fileset dir="./res" />
-		</ftp>
-	</target>
--->
   <taskdef name="jscomp" classname="com.google.javascript.jscomp.ant.CompileTask"
            classpath="lib/closure/compiler.jar"/>
 	<target name="compile">
@@ -81,6 +31,7 @@
 		      	<file name="model/MonkeyWorld.js"/>
 		      	<file name="model/ReadyToTeach.js"/>
 		      	<file name="model/AgentChooser.js"/>
+		      	<file name="model/BackendScorer.js"/>
 		      	<file name="model/FishingGame/Fish.js"/>
 		      	<file name="model/FishingGame/FishingGame.js"/>
 		      	<file name="model/Ladder/Ladder.js"/>
