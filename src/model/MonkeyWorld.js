@@ -52,20 +52,20 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 		return tmp;
 	};
 	
-	/** @const @type {MiniGame}     */ var NO_MINI_GAME = new NoMiniGame();
-	/** @const @type {MW.NoMiniGameResult} */ var NO_RESULT    = new MW.NoMiniGameResult();
-	/** @const @type {GamerPlayer}  */ var GAMER        = newObject(GamerPlayer);
-	/** @const @type {MonkeyPlayer} */ var AGENT        = newObject(MonkeyPlayer);
-	/** @const @type {AngelPlayer}  */ var ANGEL        = newObject(AngelPlayer);
+	/** @const @type {MiniGame}            */ var NO_MINI_GAME    = new NoMiniGame();
+	/** @const @type {MW.NoMiniGameResult} */ var NO_RESULT       = new MW.NoMiniGameResult();
+	/** @const @type {GamerPlayer}         */ var GAMER           = newObject(GamerPlayer);
+	/** @const @type {MonkeyPlayer}        */ var AGENT           = newObject(MonkeyPlayer);
+	/** @const @type {AngelPlayer}         */ var ANGEL           = newObject(AngelPlayer);
 	
-	/** @type {number}              */ var numBananas   = 0;
-	/** @type {GameMode}            */ var gameMode     = GameMode.CHILD_PLAY; 
-	/** @type {MiniGame}            */ var miniGame     = NO_MINI_GAME;
-	/** @type {Function} @constructor */ var miniGameView = null;
-	/** @type {Function}            */ var miniGameStarter = null;
-	/** @type {Player}              */ var player       = GAMER;
-	/** @type {number}              */ var _round       = 1;
-	/** @type {MW.MiniGameResult}   */ var result       = NO_RESULT;
+	/** @type {number}                     */ var numBananas      = 0;
+	/** @type {MW.GameMode}                */ var gameMode        = MW.GameMode.CHILD_PLAY; 
+	/** @type {MiniGame}                   */ var miniGame        = NO_MINI_GAME;
+	/** @type {Function} @constructor      */ var miniGameView    = null;
+	/** @type {Function}                   */ var miniGameStarter = null;
+	/** @type {Player}                     */ var player          = GAMER;
+	/** @type {number}                     */ var _round          = 1;
+	/** @type {MW.MiniGameResult}          */ var result          = NO_RESULT;
 
 	/** @type {Object.<Object>} */
 	var gameLibrary = {
@@ -97,8 +97,8 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	 */
 	var setRound = function(round) {
 		if (round > Settings.get("global", "monkeySeeRounds") &&
-		    (gameMode === GameMode.MONKEY_SEE ||
-		     gameMode === GameMode.MONKEY_DO)) {
+		    (gameMode === MW.GameMode.AGENT_SEE ||
+		     gameMode === MW.GameMode.AGENT_DO)) {
 			throw "MonkeyWorld.MiniGameRoundOverMaxLimit";
 		} else if (round < 1){
 			throw "MonkeyWorld.MiniGameRoundUnderMinLimit";
@@ -136,19 +136,19 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	 * Calculate what the next game mode, round and player should be.
 	 */
 	var getNextState = function() {
-		if (gameMode === GameMode.CHILD_PLAY) {
-			gameMode = GameMode.MONKEY_SEE;
+		if (gameMode === MW.GameMode.CHILD_PLAY) {
+			gameMode = MW.GameMode.AGENT_SEE;
 			startMiniGame();
-		} else if (gameMode === GameMode.MONKEY_SEE) {
+		} else if (gameMode === MW.GameMode.AGENT_SEE) {
 			var _result = miniGame.getResult();
 			result.pushResult(_result);
-			gameMode = GameMode.MONKEY_DO;
+			gameMode = MW.GameMode.AGENT_DO;
 			player = AGENT;
 			startMiniGame();
-		} else if (gameMode === GameMode.MONKEY_DO) {
+		} else if (gameMode === MW.GameMode.AGENT_DO) {
 			if (_round === Settings.get("global", "monkeySeeRounds")) {
 				setRound(1);
-				gameMode = GameMode.CHILD_PLAY;
+				gameMode = MW.GameMode.CHILD_PLAY;
 				player = GAMER;
 				chooseMiniGame(function() {
 					startMiniGame();	
@@ -188,8 +188,8 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	var startMiniGame = function() {
 		that.evm.print();
 		miniGameStarter();
-		console.log(miniGame);
 		if (useViews) {
+			that.tell(MW.Event.BACKEND_SCORE_SHOW);
 			miniGameView.prototype.agentImage = GameView.prototype.agentImage;
 			var v = newObject(miniGameView, miniGame);
 			v._setup();
@@ -197,7 +197,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 			that.tell("Game.miniGameListenersInitiated");
 		}
 		that.tell("Game.initiate");
-		if (gameMode === GameMode.MONKEY_DO) {
+		if (gameMode === MW.GameMode.AGENT_DO) {
 			miniGame.play(player, result.getResult(_round).getActions());
 		} else {
 			miniGame.play(player);	
@@ -241,7 +241,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	
 	/**
 	 * Get the current game mode.
-	 * @return {GameMode}
+	 * @return {MW.GameMode}
 	 */
 	this.getMode = function() {
 		return gameMode;
@@ -288,7 +288,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	this.stop = function() {
 		stopMiniGame();
 		numBananas = 0;
-		gameMode = GameMode.CHILD_PLAY;
+		gameMode = MW.GameMode.CHILD_PLAY;
 		setRound(1);
 		player = GAMER;
 		result = NO_RESULT;
@@ -341,13 +341,13 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	this.playerIsAngel = function() { return player === ANGEL; };
 
 	/** @return {boolean} true if the current mode is Child Play */
-	this.modeIsChild = function() { return gameMode === GameMode.CHILD_PLAY; };
+	this.modeIsChild = function() { return gameMode === MW.GameMode.CHILD_PLAY; };
 	
 	/** @return {boolean} true if the current mode is Agent See */
-	this.modeIsAgentSee = function() { return gameMode ===GameMode.MONKEY_SEE;};
+	this.modeIsAgentSee = function() { return gameMode === MW.GameMode.AGENT_SEE;};
 	
 	/** @return {boolean} true if the current mode is Agent Do */
-	this.modeIsAgentDo = function() { return gameMode === GameMode.MONKEY_DO; };
+	this.modeIsAgentDo = function() { return gameMode === MW.GameMode.AGENT_DO; };
 	
 };
 

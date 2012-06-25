@@ -58,8 +58,8 @@ function FishCountingView(parent, stage, monkeyWorld, model, EVM_TAG) {
 		numGroup.add(number);
 		numGroup._num = number;
 		numGroup._text = number;
-		if (monkeyWorld.getMode() == GameMode.CHILD_PLAY ||
-			monkeyWorld.getMode() == GameMode.MONKEY_SEE) {
+		if (monkeyWorld.modeIsChild() ||
+			monkeyWorld.modeIsAgentSee()) {
 			numGroup.on("mousedown touchstart", function() {
 					fishTank.countFish(num);
 			});
@@ -123,7 +123,7 @@ function FishCountingView(parent, stage, monkeyWorld, model, EVM_TAG) {
 		}
 
 		shapeLayer.draw();
-		if (monkeyWorld.getMode() == GameMode.CHILD_PLAY)
+		if (monkeyWorld.modeIsChild())
 			Sound.play(Sounds.FISHING_COUNT_FISH);
 		else {
 			Sound.play(Sounds.FISHING_COUNT_TARGET_FISH);

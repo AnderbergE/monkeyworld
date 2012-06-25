@@ -7,6 +7,8 @@ function FishingGame() {
 	this.tag("FishingGame");
 	//var evm = this.evm;
 
+	/** @type {MW.Game} */ var game = that.game;
+	
 	var mode = that.game.getMode();
 	Log.debug("Applying " + mode + " Mode", "model");
 	
@@ -105,11 +107,11 @@ function FishingGame() {
 	
 	function inactivity() {
 		var sound = null;
-		if (mode == GameMode.CHILD_PLAY) {
+		if (game.modeIsChild()) {
 			sound = Sounds.FISHING_THERE_ARE_MORE;
 			that.tell("FishingGame.inactivity", {sound:sound});
 			restartInactivityTimer();
-		} else if (mode == GameMode.MONKEY_SEE){
+		} else if (game.modeIsAgentSee()) {
 			sound = Sounds.FISHING_KEEP_GOING;
 			that.tell("FishingGame.inactivity", {sound:sound});
 			restartInactivityTimer();
@@ -178,7 +180,7 @@ function FishingGame() {
 					fishArray[i].setCanFree(false);
 				}
 			}
-			if (basketSize == numberCorrect || mode == GameMode.MONKEY_SEE || mode == GameMode.MONKEY_DO) {
+			if (basketSize == numberCorrect || game.modeIsAgentSee() || game.modeIsAgentDo()) {
 				if (basketSize != numberCorrect) {
 					that.reportMistake();
 				}
@@ -298,11 +300,11 @@ function FishingGame() {
 	 * @param {number} number What the player thinks the correct number is.
 	 */
 	this.countFish = function(number) {
-		if (that.game.getMode() === GameMode.MONKEY_SEE && countTimes == 0 ||
-			that.game.getMode() != GameMode.MONKEY_SEE) {
+		if (game.modeIsAgentSee() && countTimes == 0 ||
+			!game.modeIsAgentSee()) {
 			countTimes++;
 			this.addAction(number);
-			var seemCorrect = number == numberCorrect || that.game.getMode() != GameMode.CHILD_PLAY;
+			var seemCorrect = number == numberCorrect || !game.modeIsChild();
 			var reallyCorrect = number == numberCorrect;
 			if (!reallyCorrect)
 				this.reportMistake();

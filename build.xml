@@ -20,7 +20,6 @@
 		      	<file name="res/Strings.js"/>
 		        <file name="res/Sounds.js"/>
 		      	<file name="res/Images.js"/>
-		      	<file name="GameState.js"/>
 		      	<file name="Player.js"/>
 		      	<file name="Module.js"/>
 		        <file name="GameModule.js"/>
@@ -29,7 +28,6 @@
 		        <file name="strategies/GamerStrategy.js"/>
 		        <file name="ViewModule.js"/>
 		      	<file name="model/MonkeyWorld.js"/>
-		      	<file name="model/ReadyToTeach.js"/>
 		      	<file name="model/AgentChooser.js"/>
 		      	<file name="model/BackendScorer.js"/>
 		      	<file name="model/FishingGame/Fish.js"/>
@@ -39,7 +37,6 @@
 		      	<file name="ModelModule.js"/>
 		      	<file name="view/AgentView.js"/>
 		      	<file name="view/MonkeyWorldView.js"/>
-		      	<file name="view/ReadyToTeachView.js"/>
 		      	<file name="view/AgentChooserView.js"/>
 		      	<file name="view/FishingGame/FishingGameView.js"/>
 		      	<file name="view/FishingGame/FishingGameCountingView.js"/>

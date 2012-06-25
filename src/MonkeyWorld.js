@@ -1,7 +1,7 @@
 var game = null;
 window["egame"] = null;
 window.onload = function() {
-	game = new Game(new GameState());
+	game = new Game();
 	window["egame"] = game;
 };
 
@@ -22,7 +22,7 @@ WebFontConfig = {
 /**
  * @constructor
  */
-function Game(gameState) {
+function Game() {
 
 //	/** @const */ var WIN_WIDTH = 1024;
 //	/** @const */ var WIN_HEIGHT = 768;

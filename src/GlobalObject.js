@@ -4,20 +4,33 @@
  */
 var MW = {};
 
-MW.debug = false;
+MW.debug = true;
 
-/** @enum {string} */
+/** @enum {string} @deprecated Use MW.Event instead */
 var Events = {
 	FRAME: "frame",
-	TEAR_DOWN: "tearDown"
+	TEAR_DOWN: "tearDown",
 };
 
-/** @enum {string} */
-var GameMode = {
+/**
+ * @enum {string}
+ */
+MW.Event = {
+	FRAME: "frame",
+	TEAR_DOWN: "tearDown",
+	BACKEND_SCORE_UPDATE_MODE: "backendScoreUpdateMode",
+	BACKEND_SCORE_UPDATE_MINIGAME: "backendScoreGameUpdateMiniGame",
+	BACKEND_SCORE_HIDE: "backendScoreHide",
+	BACKEND_SCORE_SHOW: "backendScoreShow"	
+};
+
+/**
+ * @enum {string}
+ */
+MW.GameMode = {
 	CHILD_PLAY: "Child Play",
-	MONKEY_SEE: "Monkey See",
-	MONKEY_DO: "Monkey Do",
-	GUARDIAN_ANGEL: "Guardian Angel"
+	AGENT_SEE: "Monkey See",
+	AGENT_DO: "Monkey Do"
 };
 
 /**

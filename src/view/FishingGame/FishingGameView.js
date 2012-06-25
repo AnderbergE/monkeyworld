@@ -5,9 +5,10 @@
  * @param {FishingGame} fishingGame
  */
 function FishingView(fishingGame) {
-
+	GameView.call(this, "FishingView");
 	this.tag("FishingView");
 	var that = this;
+	var game = that.game;
 	var stage = that.stage;
 	/** @const @type {string}                */ var EVM_TAG = "FishingView";
 	/** @type {Object.<Fish, Kinetic.Group>} */ var fishGroups = {};
@@ -941,7 +942,7 @@ function FishingView(fishingGame) {
 		createPlant(outGroup, config.POND.X + 100, config.POND.Y + config.POND.HEIGHT - 160);
 		createPlant(outGroup, config.POND.X + config.POND.WIDTH - 130, config.POND.Y + config.POND.HEIGHT - 140);
 		
-		if (that.game.getMode() == GameMode.MONKEY_DO && that.game.getRound() > 1 || that.game.getMode() == GameMode.GUARDIAN_ANGEL) {
+		if (game.modeIsAgentDo() && that.game.getRound() > 1) {
 			basket.attrs.x += ROLL_DIFF;
 			outGroup.attrs.x += ROLL_DIFF;
 			shapeLayer.attrs.x += ROLL_DIFF;
@@ -1003,7 +1004,7 @@ function FishingView(fishingGame) {
 	
 	this.on("Game.start", function(msg) {
 		Log.debug("Start rolling view...", "view");
-		if (that.game.getMode() == GameMode.MONKEY_DO && that.game.getRound() === 1) {
+		if (game.modeIsAgentDo() && that.game.getRound() === 1) {
 			that.showBig(Strings.get("MONKEYS_TURN").toUpperCase());
 			Sound.play(Sounds.NOW_MONKEY_SHOW_YOU);
 			that.setTimeout(function() {
@@ -1026,4 +1027,5 @@ function FishingView(fishingGame) {
 	};
 	
 }
-FishingView.prototype = new GameView();
+inherit(FishingView, GameView);
+//FishingView.prototype = new GameView();

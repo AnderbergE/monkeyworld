@@ -8,6 +8,10 @@ function MiniGame() {
 	
 	/** @private @type {MW.MiniGameRoundResult} */
 	var roundResult = null;
+	
+	/** @private @type {number} */ var backendScore = 10;
+	that.tell(MW.Event.BACKEND_SCORE_UPDATE_MODE, { backendScore: backendScore });
+	
 	var _strategy = null;
 	
 	/**
@@ -22,16 +26,32 @@ function MiniGame() {
 		roundResult.popAction();
 	};
 	
+	var subtractBackendScore = function() {
+		if (backendScore > 0) {
+			backendScore--;
+			that.tell(MW.Event.BACKEND_SCORE_UPDATE_MODE,
+				{ backendScore: backendScore }, true);
+		}		
+	};
+	
 	/**
 	 * Tell the system that the player made a mistake during game play. 
 	 */
-	this.reportMistake = function() { roundResult.reportMistake(); };
+	this.reportMistake = function() {
+		subtractBackendScore();
+		roundResult.reportMistake();
+	};
 
 	/** @return {boolean} */
 	this.madeMistake = function() { return roundResult.madeMistake(); };
 	
+	/** @return {number} */
 	this.getResult = function() {
 		return roundResult;
+	};
+	
+	this.getBackendScore = function() {
+		return backendScore;
 	};
 	
 	/**
@@ -111,8 +131,6 @@ function MiniGame() {
 		
 	};
 }
-
-//MiniGame.prototype = new Module();
 
 inherit(MiniGame, Module);
 MiniGame.prototype.onFrame = function(frame) {};

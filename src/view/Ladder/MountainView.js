@@ -287,7 +287,9 @@ function MountainView(game) {
 		}
 	});
 	
+	var oldTearDown = view.tearDown;
 	view.tearDown = function() {
+		oldTearDown();
 		Log.debug("Tearing down MountainView", this._tag);
 		view.stage.remove(staticLayer);
 		view.stage.remove(dynamicLayer);

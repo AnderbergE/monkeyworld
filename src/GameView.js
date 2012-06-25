@@ -4,7 +4,45 @@
  */
 function GameView() {
 	ViewModule.call(this, "GameView");
-	/** @type {GameView} */ var that = this;
+	/** @type {GameView}      */ var view  = this;
+	/** @type {Kinetic.Layer} */ var layer = view.stage._gameLayer;
+
+	/**
+	 * Show the current backend score of a mini game.
+	 * @param {MonkeyWorldView}
+	 */
+	(function(view) {
+		var text = new Kinetic.Text({
+			text: "Backend Score (current mode): ",
+			fontSize: 20,
+			fontFamily: "monospace",
+			textFill: "black",
+			align: "left",
+			verticalAlign: "middle",
+			x: view.stage.getWidth() - 500,
+			y: 15
+		});
+		layer.add(text);
+		
+		view.on(MW.Event.BACKEND_SCORE_UPDATE_MODE, function(msg) {
+			text.setText(msg.backendScore);
+		});
+		
+		view.on(MW.Event.BACKEND_SCORE_HIDE, function(msg) {
+			text.attrs.visible = false;
+		});
+		
+		view.on(MW.Event.BACKEND_SCORE_SHOW, function(msg) {
+			text.attrs.visible = true;
+		});
+		
+	})(this);
+
+	
+	
+	
+	
+	
 	/** @type {Kinetic.Layer} */ var staticLayer = new Kinetic.Layer();
 
 	/** @type {Kinetic.Node} */ var mainFrame = null;
@@ -77,10 +115,10 @@ function GameView() {
 
 	function setupMonkey() {
 		var stage = staticLayer.getStage();
-		var mode = that.game.getMode();
-		var config = (mode == GameMode.MONKEY_DO && that.game.getRound() > 1) ?
+		var mode = view.game.getMode();
+		var config = (mode == MW.GameMode.AGENT_DO && view.game.getRound() > 1) ?
 				MONKEY_FRAME_CONFIG_ACTIVE : MONKEY_FRAME_CONFIG_INACTIVE;
-		var monkeyConfig = (mode == GameMode.MONKEY_DO && that.game.getRound() > 1) ?
+		var monkeyConfig = (mode == MW.GameMode.AGENT_DO && view.game.getRound() > 1) ?
 				MONKEY_CONFIG_ACTIVE : MONKEY_CONFIG_INACTIVE;
 		monkeyFrame = new Kinetic.Rect(config);
 		
@@ -125,8 +163,8 @@ function GameView() {
 
 	function setupAvatar() {
 		var stage = staticLayer.getStage();
-		var mode = that.game.getMode();
-		var config = (mode == GameMode.MONKEY_DO && that.game.getRound() > 1 || mode == GameMode.GUARDIAN_ANGEL) ?
+		var mode = view.game.getMode();
+		var config = (mode == MW.GameMode.AGENT_DO && view.game.getRound() > 1) ?
 				GAMER_FRAME_CONFIG_INACTIVE : GAMER_FRAME_CONFIG_ACTIVE;
 		gamerFrame = new Kinetic.Rect(config);
 		
@@ -153,17 +191,17 @@ function GameView() {
 		if (moved == 3) {
 			done();
 			staticLayer.draw();
-			that.forget("GameView");
+			view.forget("GameView");
 		}
 	};
 	function moveToMonkey(done) {
 		Sound.play(Sounds.MAGIC_CHIMES);
-		that.on("frame", function() {
+		view.on("frame", function() {
 			staticLayer.draw();
 		}, "GameView");
-		that.getTween(monkey.attrs).to(MONKEY_CONFIG_ACTIVE, 2000).call(function() { moveDone(done); });
-		that.getTween(monkeyFrame.attrs).to(MONKEY_FRAME_CONFIG_ACTIVE, 2000).call(function() { moveDone(done); });
-		that.getTween(gamerFrame.attrs).to(GAMER_FRAME_CONFIG_INACTIVE, 2000).call(function() { moveDone(done); });
+		view.getTween(monkey.attrs).to(MONKEY_CONFIG_ACTIVE, 2000).call(function() { moveDone(done); });
+		view.getTween(monkeyFrame.attrs).to(MONKEY_FRAME_CONFIG_ACTIVE, 2000).call(function() { moveDone(done); });
+		view.getTween(gamerFrame.attrs).to(GAMER_FRAME_CONFIG_INACTIVE, 2000).call(function() { moveDone(done); });
 	};
 	
 	/**
@@ -173,11 +211,8 @@ function GameView() {
 		moved = 0;
 		_init(staticLayer.getStage());
 		setupMainFrame();
-		if (that.game.getMode() == GameMode.MONKEY_SEE || that.game.getMode() == GameMode.MONKEY_DO) {
+		if (view.game.getMode() == MW.GameMode.AGENT_SEE || view.game.getMode() == MW.GameMode.AGENT_DO) {
 			setupMonkey();
-		}
-		if (that.game.getMode() == GameMode.GUARDIAN_ANGEL) {
-			setupAngel();
 		}
 		setupAvatar();
 	};
