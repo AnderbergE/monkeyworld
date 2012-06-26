@@ -10,7 +10,6 @@ function MiniGame() {
 	var roundResult = null;
 	
 	/** @private @type {number} */ var backendScore = 10;
-	that.tell(MW.Event.BACKEND_SCORE_UPDATE_MODE, { backendScore: backendScore });
 	
 	var _strategy = null;
 	
@@ -45,11 +44,12 @@ function MiniGame() {
 	/** @return {boolean} */
 	this.madeMistake = function() { return roundResult.madeMistake(); };
 	
-	/** @return {number} */
+	/** @return {MW.MiniGameRoundResult} */
 	this.getResult = function() {
 		return roundResult;
 	};
 	
+	/** @return {number} */
 	this.getBackendScore = function() {
 		return backendScore;
 	};
@@ -74,9 +74,12 @@ function MiniGame() {
 	 * @param {Object=} res
 	 */
 	this.play = function(player, res) {
+		backendScore = 10;
+		that.tell(MW.Event.BACKEND_SCORE_UPDATE_MODE, { backendScore: backendScore }, true);
 		roundResult = new MW.MiniGameRoundResult();
 		console.log(this._tag);
 		_strategy = new player.strategies[this._tag](this, res);
+		this.start();
 	};
 	
 	var _agentIsInterrupted = false;
@@ -125,10 +128,6 @@ function MiniGame() {
 	
 	this.stop = function() {
 		this.tell("Game.roundDone");
-	};
-	
-	this.start = function() {
-		
 	};
 }
 

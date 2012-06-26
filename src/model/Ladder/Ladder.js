@@ -56,6 +56,7 @@ function Ladder()
 		} else {
 			that.tell("Ladder.resetScene", {
 				callback: function() {
+					that.reportMistake();
 					that.tell("Ladder.incorrect");
 					if (timesHelped >= MAX_HELP) that.tell("Ladder.agentSuggestSolution");
 					that.addAction("incorrect");

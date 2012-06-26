@@ -1,5 +1,13 @@
 /**
  * @constructor
+ * @param {Function} minigameConstructor
+ */
+MW.MinigameHandler = function(minigameConstructor) {
+	
+};
+
+/**
+ * @constructor
  * @extends {MW.GlobalObject}
  * @param {Kinetic.Stage} stage
  * @param {boolean=}      useViews         Defaults to true. Useful to falsify
@@ -58,7 +66,11 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	/** @const @type {MonkeyPlayer}        */ var AGENT           = newObject(MonkeyPlayer);
 	/** @const @type {AngelPlayer}         */ var ANGEL           = newObject(AngelPlayer);
 	
-	/** @type {number}                     */ var numBananas      = 0;
+	/** @const @type {MW.NoLearningTrack}     */ var NO_TRACK     = new MW.NoLearningTrack();
+	/** @const @type {MW.RegularLearningTrack}*/ var REGULAR_TRACK= new MW.RegularLearningTrack();
+	/** @const @type {MW.MediumLearningTrack} */ var MEDIUM_TRACK = new MW.MediumLearningTrack();
+	/** @const @type {MW.FastLearningTrack}   */ var FAST_TRACK   = new MW.FastLearningTrack();
+	
 	/** @type {MW.GameMode}                */ var gameMode        = MW.GameMode.CHILD_PLAY; 
 	/** @type {MiniGame}                   */ var miniGame        = NO_MINI_GAME;
 	/** @type {Function} @constructor      */ var miniGameView    = null;
@@ -66,6 +78,9 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	/** @type {Player}                     */ var player          = GAMER;
 	/** @type {number}                     */ var _round          = 1;
 	/** @type {MW.MiniGameResult}          */ var result          = NO_RESULT;
+	/** @type {number}                     */ var miniGameScore   = 0;
+	
+	/** @type {MW.LearningTrack}              */ var _learningTrack  = REGULAR_TRACK;
 
 	/** @type {Object.<Object>} */
 	var gameLibrary = {
@@ -80,7 +95,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	
 	if (useViews === undefined) useViews = true;
 	if (useAgentChooser === undefined) useAgentChooser = true;
-	this.on("frame", function(msg) { miniGame.onFrame(msg.frame); });
+	//this.on("frame", function(msg) { miniGame.onFrame(msg.frame); });
 	if (useViews) newObject(MonkeyWorldView);
 
 	
@@ -108,6 +123,21 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	};
 	
 	/**
+	 * @param {MW.LearningTrack} learningTrack
+	 */
+	var setLearningTrack = function(learningTrack) {
+		_learningTrack = learningTrack;
+		that.tell(MW.Event.LEARNING_TRACK_UPDATE, { learningTrack: learningTrack });
+	};
+	
+	/**
+	 * @returns {MW.LearningTrack}
+	 */
+	var getLearningTrack = function() {
+		return _learningTrack;
+	}
+	
+	/**
 	 * Add one round to the current mini game
 	 */
 	var addRound = function() {
@@ -115,21 +145,20 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	};
 	
 	/**
-	 * Add one or more bananas
-	 * @param {number=} number Defaults to one (1) banana
-	 * @param {Function=} callback What to do when the banana has been added
+	 * Set the current minigame score to <code>score</code>.
 	 */
-	var addBanana = function(number, callback) {
-		if (number === undefined) number = 1;
-		numBananas++;
-		console.log(number + " " +numBananas);
-		if (number > 0) {
-			console.log("ADD BANANA");
-			that.tell("Game.addBanana", {
-				index: numBananas,
-				callback: number > 1 ? function() { addBanana(number - 1, callback); } : callback
-			});
-		}
+	var setMinigameScore = function(score) {
+		console.log("setMinigameScore" + score)
+		miniGameScore = score;
+		console.log("setMinigameScore" + miniGameScore)
+		that.tell(MW.Event.BACKEND_SCORE_UPDATE_MINIGAME, { score: miniGameScore });
+	};
+	
+	/**
+	 * Add <code>score</code> to the current minigame's total scoring. 
+	 */
+	var addMinigameScore = function(score) {
+		setMinigameScore(miniGameScore + score);
 	};
 	
 	/**
@@ -150,6 +179,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 				setRound(1);
 				gameMode = MW.GameMode.CHILD_PLAY;
 				player = GAMER;
+				stopMiniGame();
 				chooseMiniGame(function() {
 					startMiniGame();	
 				});
@@ -166,6 +196,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 				callback: function(choice) {
 					miniGameStarter = function() {
 						that.tell("Game.hideMiniGameChooser");
+						console.log("NYTT SPEL");
 						miniGame = newObject(choice.game);
 						miniGameView = choice.view;					
 					};
@@ -176,6 +207,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 		} else {
 			miniGameStarter = function() {
 				miniGame = newObject(gameLibrary[startGame].game);
+				console.log("NYTT SPEL " + miniGame.getBackendScore());
 				miniGameView = gameLibrary[startGame].view;	
 			};
 			callback();
@@ -189,7 +221,6 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 		that.evm.print();
 		miniGameStarter();
 		if (useViews) {
-			that.tell(MW.Event.BACKEND_SCORE_SHOW);
 			miniGameView.prototype.agentImage = GameView.prototype.agentImage;
 			var v = newObject(miniGameView, miniGame);
 			v._setup();
@@ -197,13 +228,14 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 			that.tell("Game.miniGameListenersInitiated");
 		}
 		that.tell("Game.initiate");
+		that.tell(MW.Event.MINIGAME_INITIATED);
 		if (gameMode === MW.GameMode.AGENT_DO) {
 			miniGame.play(player, result.getResult(_round).getActions());
 		} else {
-			miniGame.play(player);	
+			miniGame.play(player);
 		}
-		miniGame.start();
-		that.tell("Game.start");
+		that.tell("Game.start", {}, true);
+		that.tell(MW.Event.MINIGAME_STARTED, {}, true);
 	};
 	
 	/**
@@ -213,20 +245,14 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 		that.tell("Game.stopMiniGame");
 		miniGame.stop();
 		delete miniGame;
+		miniGameScore = 0;
 		miniGame = NO_MINI_GAME;
+		that.tell(MW.Event.MINIGAME_ENDED);
 	};
 
 	/*========================================================================*/
 	/*=== PUBLIC =============================================================*/
 	/*========================================================================*/
-	
-	/**
-	 * Return the number of bananas
-	 * @returns {number}
-	 */
-	this.numberOfBananas = function() {
-		return numBananas;
-	};
 	
 	/**
 	 * Tell the game that a mini game has finished
@@ -235,7 +261,8 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 		if (miniGame === NO_MINI_GAME) {
 			throw "MonkeyWorld.NoActiveMiniGameException";
 		}
-		this.tell("Game.stopMiniGame");
+		this.tell("Game.stopMiniGame", {}, true);
+		addMinigameScore(miniGame.getBackendScore());
 		getNextState();
 	};
 	
@@ -256,6 +283,14 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	};
 	
 	/**
+	 * Get the current score.
+	 * @return {number}
+	 */
+	this.getScore = function() {
+		return miniGameScore;
+	};
+	
+	/**
 	 * Start the Monkey World game
 	 */
 	this.start = function() {
@@ -264,7 +299,11 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 			GameView.prototype.agentImage = agent;
 			result = new MW.MiniGameResult();
 			player = GAMER;
+//			minigameHandler = newObject(MW.MinigameHandler);
+			if (useViews) newObject(MW.MinigameHandlerView);
 			chooseMiniGame(function() {
+				setMinigameScore(0);
+				setLearningTrack(REGULAR_TRACK);
 				startMiniGame();
 			});
 		};
@@ -287,7 +326,6 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	 */
 	this.stop = function() {
 		stopMiniGame();
-		numBananas = 0;
 		gameMode = MW.GameMode.CHILD_PLAY;
 		setRound(1);
 		player = GAMER;
@@ -320,13 +358,6 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	 * @return {boolean}
 	 */
 	this.playerIsGamer = function() { return player === GAMER; };
-	
-	/**
-	 * Returns true if the current player is the teachable agent.
-	 * @return {boolean}
-	 * @deprecated Use <code>playerIsAgent()</code> instead
-	 */
-	this.playerIsMonkey = function() { return player === AGENT; };
 	
 	/**
 	 * Returns true if the current player is the teachable agent.

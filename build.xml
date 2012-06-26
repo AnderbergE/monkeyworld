@@ -27,7 +27,12 @@
 		        <file name="strategies/AngelStrategy.js"/>
 		        <file name="strategies/GamerStrategy.js"/>
 		        <file name="ViewModule.js"/>
-		      	<file name="model/MonkeyWorld.js"/>
+		      	<file name="LearningTrack/LearningTrack.js"/>
+		      	<file name="LearningTrack/NoLearningTrack.js"/>
+		      	<file name="LearningTrack/RegularLearningTrack.js"/>
+		      	<file name="LearningTrack/MediumLearningTrack.js"/>
+		      	<file name="LearningTrack/FastLearningTrack.js"/>
+		      	<file name="model/Game.js"/>
 		      	<file name="model/AgentChooser.js"/>
 		      	<file name="model/BackendScorer.js"/>
 		      	<file name="model/FishingGame/Fish.js"/>
@@ -37,6 +42,7 @@
 		      	<file name="ModelModule.js"/>
 		      	<file name="view/AgentView.js"/>
 		      	<file name="view/MonkeyWorldView.js"/>
+		      	<file name="view/MinigameHandlerView.js"/>
 		      	<file name="view/AgentChooserView.js"/>
 		      	<file name="view/FishingGame/FishingGameView.js"/>
 		      	<file name="view/FishingGame/FishingGameCountingView.js"/>

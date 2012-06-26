@@ -5,7 +5,7 @@
  * @param {FishingGame} fishingGame
  */
 function FishingView(fishingGame) {
-	GameView.call(this, "FishingView");
+	GameView.call(this);
 	this.tag("FishingView");
 	var that = this;
 	var game = that.game;

@@ -25,5 +25,5 @@ Event Order
       1. [ interrupt ]
          1. _resetScene_
          2. **GOTO: 1.2**
-   7. resetScene
+   7. _resetScene_
 

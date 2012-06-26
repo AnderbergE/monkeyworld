@@ -10,7 +10,7 @@ function Module() {
 	this.tearDown = function() {
 		Log.debug("Tearing down", "Module");
 		timeoutController.teardown();
-		module.tell(Events.TEAR_DOWN);
+		module.tell(MW.Event.TEAR_DOWN);
 	};
 	
 	/**

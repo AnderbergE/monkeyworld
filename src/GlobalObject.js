@@ -5,12 +5,7 @@
 var MW = {};
 
 MW.debug = true;
-
-/** @enum {string} @deprecated Use MW.Event instead */
-var Events = {
-	FRAME: "frame",
-	TEAR_DOWN: "tearDown",
-};
+MW.testing = false;
 
 /**
  * @enum {string}
@@ -18,10 +13,14 @@ var Events = {
 MW.Event = {
 	FRAME: "frame",
 	TEAR_DOWN: "tearDown",
+	MINIGAME_INITIATED: "miniGameInitiated",
+	MINIGAME_STARTED: "miniGameStarted",
+	MINIGAME_ENDED: "miniGameDone",
+	LEARNING_TRACK_UPDATE: "learningTrackUpdate",
 	BACKEND_SCORE_UPDATE_MODE: "backendScoreUpdateMode",
-	BACKEND_SCORE_UPDATE_MINIGAME: "backendScoreGameUpdateMiniGame",
+	BACKEND_SCORE_UPDATE_MINIGAME: "backendScoreGameUpdateMiniGame"/*,
 	BACKEND_SCORE_HIDE: "backendScoreHide",
-	BACKEND_SCORE_SHOW: "backendScoreShow"	
+	BACKEND_SCORE_SHOW: "backendScoreShow"	*/
 };
 
 /**
@@ -46,6 +45,7 @@ Kinetic.NoStage.getWidth = function(){};
  */
 MW.GlobalObject = function(tag) {
 	this._tag = tag;
+	var that = this;
 	
 	/**
 	 * Register a listener to the event manager.
@@ -96,6 +96,7 @@ MW.GlobalObject = function(tag) {
 	this.tag = function(tag) {
 		this._tag = tag;
 	};
+
 };
 
 MW.GlobalObject.prototype.evm  = new NoEventManager();
@@ -149,13 +150,16 @@ MW.MiniGameRoundResult = function() {
 	/**
 	 * Report that a mistake has been made.
 	 */ 
-	this.reportMistake = function() { console.log("reportMistake"); madeMistake = true; };
+	this.reportMistake = function() {
+		Log.debug("Got mistake report", "game");
+		madeMistake = true;
+	};
 	
 	/**
 	 * Returns true if a mistake has been made.
 	 * @returns {boolean}
 	 */
-	this.madeMistake = function() { console.log("madeMistake="+madeMistake); return madeMistake; };
+	this.madeMistake = function() { return madeMistake; };
 	
 	/**
 	 * @param {*} action

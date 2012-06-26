@@ -1,9 +1,8 @@
 /**
  * @constructor
  * @extends {Module}
- * @param {string} moduleName
  */
-function ViewModule(moduleName) {
+function ViewModule() {
 	Log.debug("Creating ViewModule", "object");
 	Module.call(this);
 	var that = this;

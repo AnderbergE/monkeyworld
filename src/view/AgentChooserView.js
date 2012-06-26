@@ -4,7 +4,7 @@
  * @param {MW.AgentChooser} chooser
  */
 MW.AgentChooserView = function(chooser) {
-	ViewModule.call(this, "AgentChooserView");
+	ViewModule.call(this);
 	this.tag("AgentChooserView");
 	
 	var view = this;
@@ -171,7 +171,7 @@ MW.AgentChooserView = function(chooser) {
 	/**
 	 * Tear down the view
 	 */
-	view.on(Events.TEAR_DOWN, function(msg) {
+	view.on(MW.Event.TEAR_DOWN, function(msg) {
 		view.forget();
 		view.stage.remove(layer);
 	});
@@ -179,7 +179,7 @@ MW.AgentChooserView = function(chooser) {
 	/**
 	 * On each frame
 	 */
-	view.on(Events.FRAME, function(msg) {
+	view.on(MW.Event.FRAME, function(msg) {
 		layer.draw();
 	});
 };

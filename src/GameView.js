@@ -3,19 +3,20 @@
  * @extends {ViewModule}
  */
 function GameView() {
-	ViewModule.call(this, "GameView");
+	ViewModule.call(this);
 	/** @type {GameView}      */ var view  = this;
 	/** @type {Kinetic.Layer} */ var layer = view.stage._gameLayer;
 
 	/**
 	 * Show the current backend score of a mini game.
-	 * @param {MonkeyWorldView}
+	 * @param {GameView} view
 	 */
 	(function(view) {
+		/** @const @type {string} */ var label = "Backend Score (current mode):";
 		var text = new Kinetic.Text({
-			text: "Backend Score (current mode): ",
-			fontSize: 20,
-			fontFamily: "monospace",
+			text: label,
+			fontSize: 16,
+			fontFamily: "sans-serif",
 			textFill: "black",
 			align: "left",
 			verticalAlign: "middle",
@@ -25,23 +26,14 @@ function GameView() {
 		layer.add(text);
 		
 		view.on(MW.Event.BACKEND_SCORE_UPDATE_MODE, function(msg) {
-			text.setText(msg.backendScore);
+			text.setText(label + " " + msg.backendScore);
 		});
 		
-		view.on(MW.Event.BACKEND_SCORE_HIDE, function(msg) {
-			text.attrs.visible = false;
-		});
-		
-		view.on(MW.Event.BACKEND_SCORE_SHOW, function(msg) {
-			text.attrs.visible = true;
+		view.on(MW.Event.TEAR_DOWN, function(msg) {
+			layer.remove(text);
 		});
 		
 	})(this);
-
-	
-	
-	
-	
 	
 	/** @type {Kinetic.Layer} */ var staticLayer = new Kinetic.Layer();
 

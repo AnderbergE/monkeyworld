@@ -7,8 +7,7 @@
  */
 function MonkeyWorldView() {
 	var stage = this.stage;
-	Log.debug("Creating MonkeyWorldView", "object");
-	ViewModule.call(this, "MonkeyWorldView");
+	ViewModule.call(this);
 	this._tag = "MonkeyWorldView";
 	
 	var layer = stage._gameLayer;
