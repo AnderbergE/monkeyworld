@@ -1,61 +1,79 @@
 <project name="MonkeyWorld" default="compile">
 
-    <property name="lib" value="lib" />
-  <taskdef name="jscomp" classname="com.google.javascript.jscomp.ant.CompileTask"
-           classpath="lib/closure/compiler.jar"/>
-	<target name="compile">
-		
-		<jscomp compilationLevel="advanced"  
-		            debug="true" output="html/monkeyworld.js" warning="verbose">
+	<property name="lib" value="lib" />
+	<property name="source.dir" value="src" />
+	<property name="build.dir" value="html" />
+	<property name="aggregate.dir" value="." />
+
+	<taskdef
+		name="jscomp"
+		classname="com.google.javascript.jscomp.ant.CompileTask"
+		classpath="lib/closure/compiler.jar"/>
+
+	<target name="aggregate">
+	    <concat destfile="${aggregate.dir}/aggregate.js">
+	        <!--<filelist dir="${source.dir}" files="${js.core}"/>-->
+	        <fileset dir="${source.dir}" includes="*.js" />
+	    </concat>
+	</target>
+	
+	<target name="compile" depends="aggregate">
+		<jscomp
+			compilationLevel="advanced"
+			debug="true"
+			output="html/monkeyworld.js"
+			warning="verbose">
 
 			<externs dir=".">
 				<file name="jquery-1.3.2.externs.js"/>
 				<file name="externs.js"/>
 			</externs>
-		      <sources dir="src">
-		      	<file name="Utils.js"/>
-		      	<file name="GlobalObject.js" />
-		      	<file name="kineticjs/Plugins.js" />
-		      	<file name="Settings.js"/>
-		      	<file name="res/Strings.js"/>
-		        <file name="res/Sounds.js"/>
-		      	<file name="res/Images.js"/>
-		      	<file name="Player.js"/>
-		      	<file name="Module.js"/>
-		        <file name="GameModule.js"/>
-		        <file name="strategies/MonkeyStrategy.js"/>
-		        <file name="strategies/AngelStrategy.js"/>
-		        <file name="strategies/GamerStrategy.js"/>
-		        <file name="ViewModule.js"/>
-		      	<file name="LearningTrack/LearningTrack.js"/>
-		      	<file name="LearningTrack/NoLearningTrack.js"/>
-		      	<file name="LearningTrack/RegularLearningTrack.js"/>
-		      	<file name="LearningTrack/MediumLearningTrack.js"/>
-		      	<file name="LearningTrack/FastLearningTrack.js"/>
-		      	<file name="model/Game.js"/>
-		      	<file name="model/AgentChooser.js"/>
-		      	<file name="model/BackendScorer.js"/>
-		      	<file name="model/FishingGame/Fish.js"/>
-		      	<file name="model/FishingGame/FishingGame.js"/>
-		      	<file name="model/Ladder/Ladder.js"/>
-		      	<file name="EventManager.js"/>
-		      	<file name="ModelModule.js"/>
-		      	<file name="view/AgentView.js"/>
-		      	<file name="view/MonkeyWorldView.js"/>
-		      	<file name="view/MinigameHandlerView.js"/>
-		      	<file name="view/AgentChooserView.js"/>
-		      	<file name="view/FishingGame/FishingGameView.js"/>
-		      	<file name="view/FishingGame/FishingGameCountingView.js"/>
-		      	<file name="view/Ladder/LadderView.js"/>
-		      	<file name="view/Ladder/TreeView.js"/>
-		      	<file name="view/Ladder/MountainView.js"/>
-		      	<file name="GameView.js"/>
-			    <file name="MonkeyWorld.js"/>
-		      </sources>
-		    </jscomp>
+			<!--${source.dir}-->
+			<sources dir="${source.dir}">
+				<!--<file name="aggregate.js" />-->
+				<file name="Utils.js"/>
+				<file name="GlobalObject.js" />
+				<file name="kineticjs/Plugins.js" />
+				<file name="Settings.js"/>
+				<file name="res/Strings.js"/>
+				<file name="res/Sounds.js"/>
+				<file name="res/Images.js"/>
+				<file name="Player.js"/>
+				<file name="Module.js"/>
+				<file name="GameModule.js"/>
+				<file name="strategies/MonkeyStrategy.js"/>
+				<file name="strategies/AngelStrategy.js"/>
+				<file name="strategies/GamerStrategy.js"/>
+				<file name="ViewModule.js"/>
+				<file name="LearningTrack/LearningTrack.js"/>
+				<file name="LearningTrack/NoLearningTrack.js"/>
+				<file name="LearningTrack/RegularLearningTrack.js"/>
+				<file name="LearningTrack/MediumLearningTrack.js"/>
+				<file name="LearningTrack/FastLearningTrack.js"/>
+				<file name="model/Game.js"/>
+				<file name="model/AgentChooser.js"/>
+				<file name="model/BackendScorer.js"/>
+				<file name="model/FishingGame/Fish.js"/>
+				<file name="model/FishingGame/FishingGame.js"/>
+				<file name="model/Ladder/Ladder.js"/>
+				<file name="EventManager.js"/>
+				<file name="ModelModule.js"/>
+				<file name="view/AgentView.js"/>
+				<file name="view/MonkeyWorldView.js"/>
+				<file name="view/MinigameHandlerView.js"/>
+				<file name="view/AgentChooserView.js"/>
+				<file name="view/FishingGame/FishingGameView.js"/>
+				<file name="view/FishingGame/FishingGameCountingView.js"/>
+				<file name="view/Ladder/LadderView.js"/>
+				<file name="view/Ladder/TreeView.js"/>
+				<file name="view/Ladder/MountainView.js"/>
+				<file name="GameView.js"/>
+				<file name="MonkeyWorld.js"/>
+			</sources>
+		</jscomp>
 		
-			<copy todir="html" file="src/html/index.html" />
-			<copy todir="html" file="src/html/style.css" />
+		<copy todir="${build.dir}" file="${source.dir}/html/index.html" />
+		<copy todir="${build.dir}" file="${source.dir}/html/style.css" />
 	</target>
 
 </project>

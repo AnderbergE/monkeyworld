@@ -84,7 +84,6 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 
 	/** @type {Object.<Object>} */
 	var gameLibrary = {
-		"fishing": { title: "Fishing Game", view: FishingView, game: FishingGame, available: false },
 		"tree": { title: "Tree Game", view: TreeView, game: Ladder },
 		"mountain": { title: "Mountain Game", view: MountainView, game: Ladder }
 	};

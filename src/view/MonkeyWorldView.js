@@ -32,7 +32,6 @@ function MonkeyWorldView() {
 			//for (var i = 0; i < games.length; i++) { (function(i) {
 			for (var gameObject in games) { (function() {
 				var game = games[gameObject];
-				if (game.available != undefined && !game.available) return;
 				var pos = grid.next();
 				var button = new Kinetic.Group(pos);
 				var rect = new Kinetic.Rect({
