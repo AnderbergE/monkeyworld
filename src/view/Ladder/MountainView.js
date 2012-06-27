@@ -11,17 +11,17 @@ function MountainView(game) {
 	/**
 	 * Define sounds specific for this implementation of the ladder game. 
 	 */
-	view.tooLow          = Sounds.LADDER_MOUNTAIN_IM_UP_HERE;
-	view.tooHigh         = Sounds.LADDER_MOUNTAIN_IM_DOWN_HERE;
-	view.tryBigger       = Sounds.LADDER_MOUNTAIN_TRY_MORE_BALLOONS;
-	view.trySmaller      = Sounds.LADDER_MOUNTAIN_TRY_FEWER_BALLOONS;
-	view.suggestion1     = Sounds.LADDER_MOUNTAIN_AGENT_SUGGEST_SOLUTION_1;
-	view.suggestion2     = Sounds.LADDER_MOUNTAIN_AGENT_SUGGEST_SOLUTION_2;
-	view.agentTooLow     = Sounds.LADDER_MOUNTAIN_AGENT_PLAY_TOO_LOW;
-	view.agentTooHigh    = Sounds.LADDER_MOUNTAIN_AGENT_PLAY_TOO_HIGH;
-	view.betterBigger    = Sounds.LADDER_MOUNTAIN_BETTER_BECAUSE_BIGGER;
-	view.betterSmaller   = Sounds.LADDER_MOUNTAIN_BETTER_BECAUSE_SMALLER;
-	view.agentSeeCorrect = Sounds.LADDER_MOUNTAIN_AGENT_SEE_CORRECT;
+	view.tooLow          = MW.Sounds.LADDER_MOUNTAIN_IM_UP_HERE;
+	view.tooHigh         = MW.Sounds.LADDER_MOUNTAIN_IM_DOWN_HERE;
+	view.tryBigger       = MW.Sounds.LADDER_MOUNTAIN_TRY_MORE_BALLOONS;
+	view.trySmaller      = MW.Sounds.LADDER_MOUNTAIN_TRY_FEWER_BALLOONS;
+	view.suggestion1     = MW.Sounds.LADDER_MOUNTAIN_AGENT_SUGGEST_SOLUTION_1;
+	view.suggestion2     = MW.Sounds.LADDER_MOUNTAIN_AGENT_SUGGEST_SOLUTION_2;
+	view.agentTooLow     = MW.Sounds.LADDER_MOUNTAIN_AGENT_PLAY_TOO_LOW;
+	view.agentTooHigh    = MW.Sounds.LADDER_MOUNTAIN_AGENT_PLAY_TOO_HIGH;
+	view.betterBigger    = MW.Sounds.LADDER_MOUNTAIN_BETTER_BECAUSE_BIGGER;
+	view.betterSmaller   = MW.Sounds.LADDER_MOUNTAIN_BETTER_BECAUSE_SMALLER;
+	view.agentSeeCorrect = MW.Sounds.LADDER_MOUNTAIN_AGENT_SEE_CORRECT;
 	
 	var allowNumpad = false;
 	var resetButton = null;
@@ -144,9 +144,9 @@ function MountainView(game) {
 						game.pick(i + 1);
 					} else if (view.game.playerIsAgent() && !tellMyTurn) {
 						tellMyTurn = true;
-						Sound.play(Sounds.NO_MY_TURN);
+						MW.Sound.play(MW.Sounds.NO_MY_TURN);
 						setTimeout(function() {
-							Sound.play(Sounds.BUT_YOU_CAN_INTERRUPT);
+							MW.Sound.play(MW.Sounds.BUT_YOU_CAN_INTERRUPT);
 							setTimeout(function() {
 								tellMyTurn = false;
 							}, 2000);
@@ -249,9 +249,9 @@ function MountainView(game) {
 	view.on("Ladder.getTarget", function(msg) {
 		var friendOffsetX = CAGE_CONFIG.WIDTH / 2;
 		var friendOffsetY = -FRIEND_CONFIG.HEIGHT / 2;
-		Sound.play(Sounds.LADDER_MOUNTAIN_YOU_SAVED_ME);
+		MW.Sound.play(MW.Sounds.LADDER_MOUNTAIN_YOU_SAVED_ME);
 		view.setTimeout(function() {
-			Sound.play(Sounds.LADDER_MOUNTAIN_IM_HUNGRY);
+			MW.Sound.play(MW.Sounds.LADDER_MOUNTAIN_IM_HUNGRY);
 		}, 2000);
 		view.getTween(friend.attrs).to({ x: cage.getX() + friendOffsetX, y: cage.getY() + friendOffsetY }, 1000).call(function() {
 			var time = 3000;

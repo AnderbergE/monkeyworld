@@ -11,17 +11,17 @@ function TreeView(ladder) {
 	/**
 	 * Define sounds specific for this implementation of the ladder game.
 	 */
-	view.tooLow          = Sounds.LADDER_TREE_OOPS_TOO_LOW;
-	view.tooHigh         = Sounds.LADDER_TREE_OOPS_TOO_HIGH;
-	view.tryBigger       = Sounds.LADDER_TREE_TRY_A_BIGGER_NUMBER;
-	view.trySmaller      = Sounds.LADDER_TREE_TRY_A_SMALLER_NUMBER;
-	view.suggestion1     = Sounds.LADDER_TREE_AGENT_SUGGEST_SOLUTION_1;
-	view.suggestion2     = Sounds.LADDER_TREE_AGENT_SUGGEST_SOLUTION_2;
-	view.agentTooLow     = Sounds.LADDER_TREE_AGENT_PLAY_TOO_LOW;
-	view.agentTooHigh    = Sounds.LADDER_TREE_AGENT_PLAY_TOO_HIGH;
-	view.betterBigger    = Sounds.LADDER_TREE_BETTER_BECAUSE_BIGGER;
-	view.betterSmaller   = Sounds.LADDER_TREE_BETTER_BECAUSE_SMALLER;
-	view.agentSeeCorrect = Sounds.LADDER_TREE_AGENT_SEE_CORRECT;
+	view.tooLow          = MW.Sounds.LADDER_TREE_OOPS_TOO_LOW;
+	view.tooHigh         = MW.Sounds.LADDER_TREE_OOPS_TOO_HIGH;
+	view.tryBigger       = MW.Sounds.LADDER_TREE_TRY_A_BIGGER_NUMBER;
+	view.trySmaller      = MW.Sounds.LADDER_TREE_TRY_A_SMALLER_NUMBER;
+	view.suggestion1     = MW.Sounds.LADDER_TREE_AGENT_SUGGEST_SOLUTION_1;
+	view.suggestion2     = MW.Sounds.LADDER_TREE_AGENT_SUGGEST_SOLUTION_2;
+	view.agentTooLow     = MW.Sounds.LADDER_TREE_AGENT_PLAY_TOO_LOW;
+	view.agentTooHigh    = MW.Sounds.LADDER_TREE_AGENT_PLAY_TOO_HIGH;
+	view.betterBigger    = MW.Sounds.LADDER_TREE_BETTER_BECAUSE_BIGGER;
+	view.betterSmaller   = MW.Sounds.LADDER_TREE_BETTER_BECAUSE_SMALLER;
+	view.agentSeeCorrect = MW.Sounds.LADDER_TREE_AGENT_SEE_CORRECT;
 	
 	var GROUND_HEIGHT = 100;
 	var LEFT_GROUND_WIDTH = view.getStage().getWidth() * 0.4;
@@ -85,14 +85,14 @@ function TreeView(ladder) {
 		fill: "blue"
 	});
 	var eyeball1 = new Kinetic.Image({
-		image: images["eyeball"],
+		image: MW.Images.EYEBALL,
 		width: 30,
 		height: 30,
 		x: -50,
 		y: -40
 	});
 	var eyeball2 = new Kinetic.Image({
-		image: images["eyeball"],
+		image: MW.Images.EYEBALL,
 		width: 30,
 		height: 30,
 		x: -30,
@@ -137,7 +137,7 @@ function TreeView(ladder) {
 	bird.add(wing);
 	
 	var birdNest = new Kinetic.Image({
-		image: images["birdnest"],
+		image: MW.Images.BIRDNEST,
 		x: NEST.x,
 		y: NEST.y,
 		width: 180,
@@ -254,7 +254,7 @@ function TreeView(ladder) {
 		var balloons = new Kinetic.Image({
 			x: treat.getX() + 128,
 			y: treat.getY(),
-			image: images["balloons"],
+			image: MW.Images.BALLOONS,
 			width: 128,
 			height: 128,
 			centerOffset: {
@@ -279,7 +279,7 @@ function TreeView(ladder) {
 	});
 	
 	this.pick = function(number, callback) {
-		Sound.play(Sounds.CLICK);
+		MW.Sound.play(MW.Sounds.CLICK);
 		numpadGroups[number]._rect._originalFill = numpadGroups[number]._rect.attrs.fill;
 		numpadGroups[number]._rect.setFill("red");
 		activeButton = numpadGroups[number]; 
@@ -572,9 +572,9 @@ function TreeView(ladder) {
 					ladder.pick(i);
 				} else if (view.game.playerIsAgent() && !tellMyTurn) {
 					tellMyTurn = true;
-					Sound.play(Sounds.NO_MY_TURN);
+					MW.Sound.play(MW.Sounds.NO_MY_TURN);
 					setTimeout(function() {
-						Sound.play(Sounds.BUT_YOU_CAN_INTERRUPT);
+						MW.Sound.play(MW.Sounds.BUT_YOU_CAN_INTERRUPT);
 						setTimeout(function() {
 							tellMyTurn = false;
 						}, 2000);
@@ -588,7 +588,7 @@ function TreeView(ladder) {
 	
 	view.addAgent(
 		view.getStage().getWidth() - 500,
-		view.getStage().getHeight() - GROUND_HEIGHT - images[view.agentImage].height,
+		view.getStage().getHeight() - GROUND_HEIGHT - view.agentImage.height,
 		dynamicLayer
 	);
 	

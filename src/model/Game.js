@@ -317,7 +317,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 				that.tell("Game.viewInitiated");
 			}
 		} else {
-			_start("monkey");
+			_start(MW.Images.MONKEY);
 		}
 	};
 	

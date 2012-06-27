@@ -124,11 +124,11 @@ function FishCountingView(parent, stage, monkeyWorld, model, EVM_TAG) {
 
 		shapeLayer.draw();
 		if (monkeyWorld.modeIsChild())
-			Sound.play(Sounds.FISHING_COUNT_FISH);
+			MW.Sound.play(MW.Sounds.FISHING_COUNT_FISH);
 		else {
-			Sound.play(Sounds.FISHING_COUNT_TARGET_FISH);
+			MW.Sound.play(MW.Sounds.FISHING_COUNT_TARGET_FISH);
 			setTimeout(function() {
-				Sound.play(Sounds["NUMBER_" + fishTank.getTargetNumber()]);
+				MW.Sound.play(MW.Sounds["NUMBER_" + fishTank.getTargetNumber()]);
 			}, 700);
 		}
 	};
@@ -146,10 +146,10 @@ function FishCountingView(parent, stage, monkeyWorld, model, EVM_TAG) {
 	 */
 	parent.on("FishingGame.countingResult", function(msg) {
 		if (msg.correct) {
-			Sound.play(Sounds.YAY);
+			MW.Sound.play(MW.Sounds.YAY);
 			setTimeout(function(){fishTank.acceptedCountingResult();}, 1500);
 		} else {
-			Sound.play(Sounds.FISHING_ARE_YOU_SURE);
+			MW.Sound.play(MW.Sounds.FISHING_ARE_YOU_SURE);
 		}
 	});
 	

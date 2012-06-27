@@ -35,7 +35,7 @@ function AngelPlayer() {
 		
 		function catchFish() {
 			if (catched < game.getNumberOfCorrectFish()) {
-				Sound.play(Sounds.FISHING_ANGEL_CHOOSE_FISH);
+				MW.Sound.play(MW.Sounds.FISHING_ANGEL_CHOOSE_FISH);
 				setTimeout(function() {
 					catched++;
 					game.catchFish(game.getOneCorrectFish(), function() {catchFish();});	
@@ -45,7 +45,7 @@ function AngelPlayer() {
 		
 		function count() {
 			setTimeout(function() {
-				Sound.play(Sounds.FISHING_ANGEL_COUNT);
+				MW.Sound.play(MW.Sounds.FISHING_ANGEL_COUNT);
 				setTimeout(function() {
 					game.countFish(game.getNumberOfCorrectFish());	
 				}, 1000);

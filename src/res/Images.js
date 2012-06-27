@@ -2,9 +2,9 @@
  * Definition of all the images that the application will use. They can be
  * loaded before the game starts.
  * 
- * @const
+ * @enum {string}
  */
-var IMAGE_SOURCES = {
+MW.Images = {
 ///** @const */ "fish0": "fish/0.png",
 ///** @const */ "fish1": "fish/1.png",
 ///** @const */ "fish2": "fish/2.png",
@@ -18,7 +18,7 @@ var IMAGE_SOURCES = {
 ///** @const */ "plant": "plant.png",
 ///** @const */ "sky": "sky.png",
 ///** @const */ "basket": "01-tileable-basket-weave-textures-preview-003.jpg",
-/** @const */ "monkey": "monkey.png",
+/** @const */ MONKEY: "monkey.png",
 ///** @const */ "avatar": "Boo-icon.png",
 ///** @const */ "monkey_icon": "Gnome-Face-Monkey-64.png",
 ///** @const */ "green": "1333364667_Circle_Green.png",
@@ -30,37 +30,46 @@ var IMAGE_SOURCES = {
 ///** @const */ "happy-face": "Positive.png",
 ///** @const */ "sad-face": "Negative.png",
 ///** @const */ "rafiki": "Rafiki.png",
-/** @const */ "balloons": "balloons.png",
-/** @const */ "eyeball": "BeOS_Eyeball.png",
-/** @const */ "symbol-stop": "Symbol-Stop.png",
-/** @const */ "symbol-check": "Symbol-Check.png",
-/** @const */ "birdnest": "Birds-Nest-psd47561.png",
-/** @const */ "junglebg": "Jungle_Bkg.png",
-/** @const */ "elephant": "elephant.png",
-/** @const */ "lion": "lion.png",
-/** @const */ "giraff": "giraff.png"
+/** @const */ BALLOONS: "balloons.png",
+/** @const */ EYEBALL: "BeOS_Eyeball.png",
+/** @const */ SYMBOL_STOP: "Symbol-Stop.png",
+/** @const */ SYMBOL_CHECK: "Symbol-Check.png",
+/** @const */ BIRDNEST: "Birds-Nest-psd47561.png",
+/** @const */ JUNGLEBG: "Jungle_Bkg.png",
+/** @const */ ELEPHANT: "elephant.png",
+/** @const */ LION: "lion.png",
+/** @const */ GIRAFF: "giraff.png"
 };
 
-var images = {};
+MW.ImageHandler = (function() {
+	var imageHandler = {};
+	
+	var images = {};
 
-var _img_total = 0;
-var _img_progress = 0;
-for (var src in IMAGE_SOURCES) {
-    _img_total++;
-}
+	var _img_total = 0;
+	var _img_progress = 0;
+	for (var src in MW.Images) {
+	    _img_total++;
+	}
+	
+	imageHandler.getProgress = function() { return _img_progress; };
+	
+	imageHandler.loadImages = function(callback) {
+		Log.debug("Loading images...", "images");
+		var loadedImages = 0;
+		var numImages = Object.size(MW.Images);
+		for (var src in MW.Images) {
+			var str = MW.Images[src];
+			MW.Images[src] = new Image();
+	        MW.Images[src].onload = function(){
+	            if (++loadedImages >= numImages) {
+	            	callback();
+	            }
+	            _img_progress = loadedImages / _img_total;
+	        };
+	        MW.Images[src].src = "../res/img/" + str;
+	    }
+	};
+	return imageHandler;
+})();
 
-function loadImages(callback) {
-	Log.debug("Loading images...", "images");
-	var loadedImages = 0;
-	var numImages = Object.size(IMAGE_SOURCES);
-	for (var src in IMAGE_SOURCES) {
-        images[src] = new Image();
-        images[src].onload = function(){
-            if (++loadedImages >= numImages) {
-            	callback();
-            }
-            _img_progress = loadedImages / _img_total;
-        };
-        images[src].src = "../res/img/" + IMAGE_SOURCES[src];
-    }
-};

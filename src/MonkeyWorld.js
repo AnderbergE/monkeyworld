@@ -139,8 +139,6 @@ function Game() {
 	}
 	//setUpButtons();
 	
-	Sound.setStage(stage);
-
 	/** @type {MW.Game} */
 	var monkeyWorld = new MW.Game(stage, true, !MW.debug);
 	var evm = monkeyWorld.evm;
@@ -209,35 +207,19 @@ function Game() {
 		var doneLoadingSounds = function() {
 			clearInterval(sound_interval);
 			image_interval = setInterval(function() {
-				evm.tell("Game.updateImageLoading", { progress: _img_progress });
+				evm.tell("Game.updateImageLoading", { progress: MW.ImageHandler.getProgress() });
 			}, 50);
 			Log.debug("Sounds loaded.", "game");
 			evm.tell("Game.loadingImages");
-			loadImages(function() {
+			MW.ImageHandler.loadImages(function() {
 				clearInterval(image_interval);
 				evm.tell("Game.updateImageLoading", { progress: 1 });
 				Log.debug("Images loaded.", "game");
-	//			Log.debug("Loading dummy...", "game");
-	//			var i = 0;
-	//			var dummyInterval = null;
-	//			var dummyUpdateFunction = function() {
-	//				evm.tell("Game.updateImageLoading", { progress: i/10 });
-	//				if (++i === 10) {
-	//					clearInterval(dummyInterval);
-	//					Log.debug("Dummy loaded.", "game");
 						var wait = MW.debug ? 0 : 1000;
 						setTimeout(function() {
 							evm.tell("Game.loadingDone");
 							monkeyWorld.start();
 						}, wait);
-	//				}
-	//			};
-	//			dummyInterval = setInterval(dummyUpdateFunction, 400);
-	
-				/*
-				 * This is where the actual game kicks in
-				 */
-	//			monkeyWorld.start();
 			});
 		};
 		var preload = new PreloadJS(false);
@@ -248,8 +230,9 @@ function Game() {
 			evm.tell("Game.updateSoundLoading", { progress: preload.progress });
 		}, 50);
 		
-		preload.loadManifest(soundSources);
-	}
+		MW.Sound.setStage(stage);
+		preload.loadManifest(MW.Sound.getSources());
+	};
 	
 	this.restart = function() {
 		monkeyWorld.restart();

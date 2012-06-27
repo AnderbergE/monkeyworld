@@ -71,7 +71,7 @@ MW.AgentChooserView = function(chooser) {
 				if (array[i] === button) {
 					view.getTween(array[i].attrs).wait(TIME_HIDE).to({x: view.stage.getWidth() / 2, y: view.stage.getHeight() / 2}, TIME_MOVE);
 					view.getTween(array[i].attrs.scale).wait(TIME_HIDE).to({x: 1.5, y: 1.5}, TIME_MOVE).call(function() {
-						Sound.play(Sounds.THANKS_FOR_CHOOSING_ME);
+						MW.Sound.play(MW.Sounds.THANKS_FOR_CHOOSING_ME);
 					}).wait(TIME_WAIT).call(callback);
 				} else {
 					view.getTween(array[i].attrs).to({alpha: 0}, TIME_HIDE);
@@ -125,17 +125,17 @@ MW.AgentChooserView = function(chooser) {
 		g._agent = agent;
 		
 		var img = new Kinetic.Image({
-			image: images[agent],
+			image: agent,
 			centerOffset: {
-				x: images[agent].width / 2,
-				y: images[agent].height / 2
+				x: agent.width / 2,
+				y: agent.height / 2
 			}
 		});
 		
 		g.add(img);
 		
 		g.on("mousedown touchstart", function() {
-			Sound.play(Sounds.CLICK);
+			MW.Sound.play(MW.Sounds.CLICK);
 			g._rect.setFill("white");
 			g.moveToTop();
 			buttons.bringForward(g, function() { chooser.choose(g._agent); });
@@ -152,7 +152,7 @@ MW.AgentChooserView = function(chooser) {
 		layer = new Kinetic.Layer();
 		view.stage.add(layer);
 		var bg = new Kinetic.Image({
-			image: images["junglebg"]
+			image: MW.Images.JUNGLEBG
 		});
 		layer.add(bg);
 		var buttonGrid = Utils.gridizer(

@@ -38,7 +38,7 @@ MW.MinigameHandlerView = function() {
 
 	/**
 	 * Show the current learning track.
-	 * @param {GameView} view
+	 * @param {MW.MinigameHandlerView} view
 	 */
 	(function(view) {
 		/** @const @type {string} */ var label = "Learning track (current game):";

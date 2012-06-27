@@ -32,7 +32,7 @@ function MonkeyPlayer() {
 				play(resultPosition++);
 			} else if (tries === MAX_AGENT_TRIES) {
 				if (!game.agentIsBeingHelped()) {
-					Sound.play(Sounds.LADDER_PLEASE_HELP_ME);
+					MW.Sound.play(MW.Sounds.LADDER_PLEASE_HELP_ME);
 					game.helpAgent();
 				}
 			}
@@ -101,7 +101,7 @@ function MonkeyPlayer() {
 		
 		function handleCountingResults() {
 			setTimeout(function() {
-				Sound.play(Sounds.MONKEY_HMM);	
+				MW.Sound.play(MW.Sounds.MONKEY_HMM);	
 				setTimeout(function() {
 					var guess = result[resultPosition++];
 					game.countFish(guess);

@@ -6,7 +6,11 @@ MW.AgentChooser = function(done) {
 	Module.call(this);
 	var chooser = this;
 	
-	var agents = ["monkey", "lion", "elephant", "giraff"];
+	var agents = [
+		MW.Images.MONKEY,
+		MW.Images.LION,
+		MW.Images.ELEPHANT,
+		MW.Images.GIRAFF];
 	
 	/**
 	 * Get an array representing the available agents.

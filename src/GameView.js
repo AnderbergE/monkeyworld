@@ -120,10 +120,10 @@ function GameView() {
 			scale: {
 				x: 1.0 * stage._mwunit,
 				y: 1.0 * stage._mwunit
-			},
-			width: images["monkey"].width,
-			height: images["monkey"].height,
-			image: images["monkey"]
+			}//,
+//			width: MW.Images.MONKEY.width,
+//			height: MW.Images.MONKEY.height,
+//			image: MW.Images.MONKEY
 		};
 		
 		monkey = new Kinetic.Image(MONKEY_IMAGE_CONFIG);
@@ -145,7 +145,7 @@ function GameView() {
 		var angel = new Kinetic.Image(Utils.scaleShape({
 			x: 500,
 			y: 450,
-			image: images["rafiki"],
+//			image: MW.Images.RAFIKI,
 			width: 200,
 			height: 280
 		}, stage._mwunit));
@@ -166,10 +166,10 @@ function GameView() {
 			scale:  {
 				x:      0.8 * stage._mwunit,
 				y:      0.8 * stage._mwunit
-			},
-			width:  images["avatar"].width,
-			height: images["avatar"].height,
-			image:  images["avatar"]
+			}//,
+//			width:  MW.Images.AVATAR.width,
+//			height: MW.Images.AVATAR.height,
+//			image:  MW.Images.AVATAR
 		};
 		
 		avatar = new Kinetic.Image(AVATAR_IMAGE_CONFIG);
@@ -187,7 +187,7 @@ function GameView() {
 		}
 	};
 	function moveToMonkey(done) {
-		Sound.play(Sounds.MAGIC_CHIMES);
+		MW.Sound.play(MW.Sounds.MAGIC_CHIMES);
 		view.on("frame", function() {
 			staticLayer.draw();
 		}, "GameView");

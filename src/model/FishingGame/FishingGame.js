@@ -108,11 +108,11 @@ function FishingGame() {
 	function inactivity() {
 		var sound = null;
 		if (game.modeIsChild()) {
-			sound = Sounds.FISHING_THERE_ARE_MORE;
+			sound = MW.Sounds.FISHING_THERE_ARE_MORE;
 			that.tell("FishingGame.inactivity", {sound:sound});
 			restartInactivityTimer();
 		} else if (game.modeIsAgentSee()) {
-			sound = Sounds.FISHING_KEEP_GOING;
+			sound = MW.Sounds.FISHING_KEEP_GOING;
 			that.tell("FishingGame.inactivity", {sound:sound});
 			restartInactivityTimer();
 		}

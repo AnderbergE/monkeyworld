@@ -205,13 +205,13 @@ function FishingView(fishingGame) {
 	
 	this.on("FishingGame.freeWrongOnes", function(msg) {
 		that.showBig(Strings.get("FISHING_FREE_WRONG_ONES").toUpperCase());
-		Sound.play(Sounds.FISHING_FREE_WRONG_ONES);
+		MW.Sound.play(MW.Sounds.FISHING_FREE_WRONG_ONES);
 	});
 	
 	this.on("FishingGame.catchingDone", function(msg) {
 		allowClicks = false;
 		that.showBig(Strings.get("YAY").toUpperCase());
-		Sound.play(Sounds.YAY);
+		MW.Sound.play(MW.Sounds.YAY);
 		this.setTimeout(function() {
 			catchingDone(msg.callback);
 		}, 2000);
@@ -578,7 +578,7 @@ function FishingView(fishingGame) {
 				fishingGame.turnOffClicks();
 			}
 			playedSplash = false;
-			Sound.play(Sounds.FISHING_SWOSH);
+			MW.Sound.play(MW.Sounds.FISHING_SWOSH);
 			var angle = getGoalAngle(fish);
 			var front = getFishFront(fish);
 			
@@ -627,7 +627,7 @@ function FishingView(fishingGame) {
 				fishGroup.attrs.centerOffset.x = mouth.x;
 			}
 			
-			Sound.play(Sounds.FISHING_WINDING);
+			MW.Sound.play(MW.Sounds.FISHING_WINDING);
 			animator.animateTo(
 				fishGroup.attrs,
 				{
@@ -655,13 +655,13 @@ function FishingView(fishingGame) {
 						var surface = config.POND.Y;
 						var aboveSurface = fishGroup.attrs.y < surface;
 						if (!splashed && aboveSurface) {
-							Sound.play(Sounds.FISHING_SPLASH);
+							MW.Sound.play(MW.Sounds.FISHING_SPLASH);
 							playedSplash = true;
 						}
 					},
 					onFinish: function()
 					{
-						Sound.stop(Sounds.FISHING_WINDING);
+						MW.Sound.stop(MW.Sounds.FISHING_WINDING);
 						throwFishInBasket(fish, done);
 					}
 				}
@@ -722,7 +722,7 @@ function FishingView(fishingGame) {
 					duration: { x: 1000, y: 1000, rotation: 1000 },
 					onFinish: function()
 					{
-						Sound.play(Sounds.FISHING_SPLASH);
+						MW.Sound.play(MW.Sounds.FISHING_SPLASH);
 						group.attrs.centerOffset.x = 0;
 						group.attrs.centerOffset.y = 0;
 						var pos = translateFish(fish);
@@ -743,7 +743,7 @@ function FishingView(fishingGame) {
 				}
 			);
 		} else {
-			Sound.play(Sounds.FISHING_NOT_THIS_ONE);
+			MW.Sound.play(MW.Sounds.FISHING_NOT_THIS_ONE);
 		}
 	};
 	
@@ -766,7 +766,7 @@ function FishingView(fishingGame) {
 	});
 	
 	this.on("FishingGame.inactivity", function(msg) {
-		Sound.play(msg.sound);
+		MW.Sound.play(msg.sound);
 	});
 	
 	function moveFish(fish) {
@@ -791,10 +791,23 @@ function FishingView(fishingGame) {
 		
 		shapeLayer.add(fishGroup);
 		
+		var getFishImage = function(num) {
+//			switch(num) {
+////			case 0: return MW.Images.FISH0; break;
+////			case 1: return MW.Images.FISH1; break;
+////			case 2: return MW.Images.FISH2; break;
+////			case 3: return MW.Images.FISH3; break;
+////			case 4: return MW.Images.FISH4; break;
+////			case 5: return MW.Images.FISH5; break;
+////			case 6: return MW.Images.FISH6; break;
+//			}
+			return 0;
+		};
+		
 		var image = new Kinetic.Image({
 			x: 0,
 			y: 0,
-			image: images["fish" + fish.getSpecies()],
+			image: getFishImage(fish.getSpecies),
 			width: fish.getScale() * fish.getWidth()*config.POND.WIDTH,
 			height: fish.getScale() * fish.getHeight()*config.POND.HEIGHT,
 			centerOffset: {
@@ -840,7 +853,8 @@ function FishingView(fishingGame) {
 	 */
 	function createPlant(layer, x, y) {
 		var image = new Kinetic.Image({
-			x: x+64, y: y+64, image: images["plant"],
+			x: x+64, y: y+64,
+//			image: MW.Images.PLANT,
 			width: 128, height: 128, centerOffset: { x: 64, y: 64 }
 		});
 		layer.add(image);
@@ -916,14 +930,14 @@ function FishingView(fishingGame) {
           }
         });
 
-		images["sky"].style.width = 300*stage._mwunit + "px";
+//		MW.Images.SKY.style.width = 300*stage._mwunit + "px";
 
-		basket = new Kinetic.Image({ x: config.BASKET.X, y: config.BASKET.Y, width: config.BASKET.WIDTH, height: config.BASKET.HEIGHT, image: images["basket"] });
+		basket = new Kinetic.Image({ x: config.BASKET.X, y: config.BASKET.Y, width: config.BASKET.WIDTH, height: config.BASKET.HEIGHT/*, image: MW.Images.BASKET*/ });
 		var sky = new Kinetic.Image({
 			x: config.POND.X,
 			y: config.SKY.Y * stage._mwunit,
-			width: config.POND.WIDTH,
-			image: images['sky']
+			width: config.POND.WIDTH
+//			image: MW.Images.SKY
 		});
 
 		outGroup.add(sky);
@@ -1006,7 +1020,7 @@ function FishingView(fishingGame) {
 		Log.debug("Start rolling view...", "view");
 		if (game.modeIsAgentDo() && that.game.getRound() === 1) {
 			that.showBig(Strings.get("MONKEYS_TURN").toUpperCase());
-			Sound.play(Sounds.NOW_MONKEY_SHOW_YOU);
+			MW.Sound.play(MW.Sounds.NOW_MONKEY_SHOW_YOU);
 			that.setTimeout(function() {
 				that.moveToMonkey(startGame);
 				switchToMonkey();
@@ -1018,10 +1032,10 @@ function FishingView(fishingGame) {
 	
 	var startGame = function() {
 		that.showBig(Strings.get("FISHING_CATCH_NUMBER", fishingGame.getTargetNumber()).toUpperCase());
-		Sound.play(Sounds.FISHING_CATCH);
+		MW.Sound.play(MW.Sounds.FISHING_CATCH);
 		that.setTimeout(function() {
 			Log.debug("Ready to play", "view");
-			Sound.play(Sounds["NUMBER_" + fishingGame.getTargetNumber()]);
+			MW.Sound.play(MW.Sounds["NUMBER_" + fishingGame.getTargetNumber()]);
 			that.evm.tell("FishingGame.started", null);
 		}, 700);
 	};
