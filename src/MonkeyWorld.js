@@ -1,4 +1,5 @@
 var game = null;
+
 window["egame"] = null;
 window.onload = function() {
 	game = new Game();
@@ -28,7 +29,6 @@ function Game() {
 //	/** @const */ var WIN_HEIGHT = 768;
 	
 	var settingsPanel = new SettingsPanel(Settings);
-	
 	Settings.setJSON(JSON.parse($.cookie("monkeyWorldSettings")));
 	
 	this["applySettings"] = function() {
@@ -119,7 +119,7 @@ function Game() {
 			width: 100 * stage._mwunit,
 			height: 20 * stage._mwunit,
 			fontSize: 11 * stage._mwunit,
-			text: Strings.get("SETTINGS"),
+			text: MW.Strings.get("SETTINGS"),
 			callback: function() {
 				that["showSettings"]();
 			}
@@ -130,7 +130,7 @@ function Game() {
 			width: 100 * stage._mwunit,
 			height: 20 * stage._mwunit,
 			fontSize: 11 * stage._mwunit,
-			text: Strings.get("RESTART"),
+			text: MW.Strings.get("RESTART"),
 			callback: function() {
 				//TODO: move this
 				that.restart();

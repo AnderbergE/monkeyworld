@@ -64,7 +64,6 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	/** @const @type {MW.NoMiniGameResult} */ var NO_RESULT       = new MW.NoMiniGameResult();
 	/** @const @type {GamerPlayer}         */ var GAMER           = newObject(GamerPlayer);
 	/** @const @type {MonkeyPlayer}        */ var AGENT           = newObject(MonkeyPlayer);
-	/** @const @type {AngelPlayer}         */ var ANGEL           = newObject(AngelPlayer);
 	
 	/** @const @type {MW.NoLearningTrack}     */ var NO_TRACK     = new MW.NoLearningTrack();
 	/** @const @type {MW.RegularLearningTrack}*/ var REGULAR_TRACK= new MW.RegularLearningTrack();
@@ -363,12 +362,6 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	 * @return {boolean}
 	 */
 	this.playerIsAgent = function() { return player === AGENT; };
-	
-	/**
-	 * Returns true if the current player is the guardian angel.
-	 * @return {boolean}
-	 */
-	this.playerIsAngel = function() { return player === ANGEL; };
 
 	/** @return {boolean} true if the current mode is Child Play */
 	this.modeIsChild = function() { return gameMode === MW.GameMode.CHILD_PLAY; };

@@ -1,6 +1,6 @@
-/** @enum {Object} */
-var Strings = {
+MW.Strings = (function() {
 	
+	var strings = {
 	"INIT_LOADING_SOUNDS": {
 		"sv": "Laddar ner ljud...",
 		"en": "Downloading sounds..."
@@ -450,17 +450,19 @@ var Strings = {
 		"sv": "Målnummer",
 		"en": "Target number"
 	}
+	};
 	
-};
-
-/**
- * @param {string} str
- * @param {...number} var_args
- */
-Strings.get = function(str, var_args) {
-	if (Strings[str] === undefined) return null;
-	var tmp = Strings[str][Settings.get("global", "language")];
-	for(var i = 1; i < arguments.length; i++) 
-	      tmp = tmp.replace("%"+i, arguments[i]);
-	return tmp;
-};
+	return {
+		/**
+		 * @param {string} str
+		 * @param {...number} var_args
+		 */
+		get: function(str, var_args) {
+			if (strings[str] === undefined) return null;
+			var tmp = strings[str][Settings.get("global", "language")];
+			for(var i = 1; i < arguments.length; i++) 
+			      tmp = tmp.replace("%"+i, arguments[i]);
+			return tmp;
+		}		
+	};
+})();

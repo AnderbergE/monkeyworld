@@ -97,7 +97,7 @@ function SettingsPanel(settings) {
 		var html = "";
 		if (pre === undefined) pre = ""; else pre += "_";
 		var lookFor = "SETTINGS_" + (pre + name).toUpperCase().replace("-", "_") + "_LABEL";
-		var title = Strings.get(lookFor);
+		var title = MW.Strings.get(lookFor);
 		if (title != null)
 			html += "<h" + level + ">" + title + "</h" + level + ">";
 		return html;
@@ -123,7 +123,7 @@ function SettingsPanel(settings) {
 	var _init = function() {
 		$("#settings-panel").append("<div id=\"settings-panel-content\">");
 		panel = $(SETTINGS_PANEL_ID);
-		panel.append("<h1>" + Strings.get("SETTINGS_LABEL") + "</h1>");
+		panel.append("<h1>" + MW.Strings.get("SETTINGS_LABEL") + "</h1>");
 		panel.append("<form>");
 		var settingsJSON = settings.json();
 		
@@ -138,9 +138,9 @@ function SettingsPanel(settings) {
 		var hidef = "window[" + gamestr + "][" + hidestr + "]()";
 		var applyf = "window[" + gamestr + "][" + applystr + "]()";
 		
-		panel.append("<button type=\"button\" onclick=\"" + hidef + "\">" + Strings.get("SETTINGS_CANCEL") + "</button>");
-		panel.append("<button type=\"button\" onclick=\"" + applyf + ";" + hidef + "\">" + Strings.get("SETTINGS_APPLY") + "</button>");
-		//panel.append("<button type=\"button\" onclick=\"game.hideSettings();\">" + Strings.get("SETTINGS_HIDE") + "</button>");
+		panel.append("<button type=\"button\" onclick=\"" + hidef + "\">" + MW.Strings.get("SETTINGS_CANCEL") + "</button>");
+		panel.append("<button type=\"button\" onclick=\"" + applyf + ";" + hidef + "\">" + MW.Strings.get("SETTINGS_APPLY") + "</button>");
+		//panel.append("<button type=\"button\" onclick=\"game.hideSettings();\">" + MW.Strings.get("SETTINGS_HIDE") + "</button>");
 		panel.append("</form>");
 		panel.append("</div>");
 	};

@@ -130,10 +130,10 @@ function MonkeyWorldView() {
 		});	
 		
 		view.on("Game.loadingSounds", function(msg) {
-			loadingText.setText(Strings.get("INIT_LOADING_SOUNDS"));
+			loadingText.setText(MW.Strings.get("INIT_LOADING_SOUNDS"));
 		});
 		view.on("Game.loadingImages", function(msg) {
-			loadingText.setText(Strings.get("INIT_LOADING_IMAGES"));
+			loadingText.setText(MW.Strings.get("INIT_LOADING_IMAGES"));
 		});
 		view.on("Game.loadingDone", function(msg) {
 			layer.remove(loadingText);

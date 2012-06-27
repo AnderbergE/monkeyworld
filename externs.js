@@ -270,6 +270,7 @@ Kinetic.Shape = function(config){};
 	/** @return {boolean} */
 	Kinetic.Shape.prototype.intersects = function(){};
 	
+	Kinetic.Shape.prototype.drawFunc = function(){};
 	Kinetic.Shape.prototype.drawFunc.fill = function(){};
 	Kinetic.Shape.prototype.drawFunc.stroke = function(){};
 	/**
@@ -507,8 +508,15 @@ function Tween() {};
 Tween.get = function(target, props) {};
 
 /**
+ * Removes all existing tweens for a target. This is called automatically by new tweens if the "override" prop is true.
+ * @param {Object} target
+ */
+Tween.removeTweens = function(target) {};
+
+/**
+ * Advances all tweens. This typically uses the Ticker class (when available), but you can call it manually if you prefer to use your own "heartbeat" implementation.
  * @static
- * @param {Number} delta The change in time in milliseconds since the last tick. Required unless all tweens have useTicks set to true.
+ * @param {number} delta The change in time in milliseconds since the last tick. Required unless all tweens have useTicks set to true.
  * @param {boolean} paused Indicates whether a global pause is in effect. Tweens with ignoreGlobalPause will ignore this, but all others will pause if this is true.
  */
 Tween.tick = function(delta, paused) {};
@@ -518,18 +526,27 @@ Tween.tick = function(delta, paused) {};
  * Numeric properties will be tweened from their current value in the tween to the target value. Non-numeric
  * properties will be set at the end of the specified duration.
  * @param {Object} props An object specifying property target values for this tween (Ex. {x:300} would tween the x property of the target to 300).
- * @param {Number} duration The duration of the wait in milliseconds (or in ticks if useTicks is true).
- * @param {Ease} ease The easing function to use for this tween.
+ * @param {number=} duration The duration of the wait in milliseconds (or in ticks if useTicks is true).
+ * @param {Ease=} ease The easing function to use for this tween.
  * @return {Tween} This tween instance (for chaining calls).
  **/
-Tween.to = function(props, duration, ease) {};
+Tween.prototype.to = function(props, duration, ease) {};
 
 /**
- * @param {Number} duration The duration of the wait in milliseconds (or in ticks if useTicks is true).
+ * Queues a wait (essentially an empty tween).
+ * @param {number} duration The duration of the wait in milliseconds (or in ticks if useTicks is true).
  */
-Tween.wait = function(duration) {};
+Tween.prototype.wait = function(duration) {};
 
-Tween.removeTweens = function(target) {};
+/**
+ * Queues an action to call the specified function. For example: myTween.wait(1000).call(myFunction); would call myFunction() after 1s.
+ * @param {Function} callback The function to call.
+ * @param {*=} params The parameters to call the function with. If this is omitted, then the function will be called with a single param pointing to this tween.
+ * @param {Object=} scope The scope to call the function in. If omitted, it will be called in the target's scope.
+ */
+Tween.prototype.call = function(callback, params, scope) {};
+
+/*============================================================================*/
 
 /**
  * @constructor

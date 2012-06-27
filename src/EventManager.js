@@ -189,8 +189,9 @@ function NoEventManager() {
 	/**
 	 * @param {string} type
 	 * @param {Object=} message
+	 * @param {boolean=} debug
 	 */
-	this.tell = function(type, message) {};
+	this.tell = function(type, message, debug) {};
 	
 	/**
 	 * @param {string} type

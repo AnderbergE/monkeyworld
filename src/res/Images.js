@@ -4,7 +4,7 @@
  * 
  * @enum {string}
  */
-MW.Images = {
+MW.ImageSources = {
 ///** @const */ "fish0": "fish/0.png",
 ///** @const */ "fish1": "fish/1.png",
 ///** @const */ "fish2": "fish/2.png",
@@ -41,6 +41,8 @@ MW.Images = {
 /** @const */ GIRAFF: "giraff.png"
 };
 
+MW.Images = {};
+
 MW.ImageHandler = (function() {
 	var imageHandler = {};
 	
@@ -57,9 +59,9 @@ MW.ImageHandler = (function() {
 	imageHandler.loadImages = function(callback) {
 		Log.debug("Loading images...", "images");
 		var loadedImages = 0;
-		var numImages = Object.size(MW.Images);
-		for (var src in MW.Images) {
-			var str = MW.Images[src];
+		var numImages = Object.size(MW.ImageSources);
+		for (var src in MW.ImageSources) {
+			var str = MW.ImageSources[src];
 			MW.Images[src] = new Image();
 	        MW.Images[src].onload = function(){
 	            if (++loadedImages >= numImages) {
