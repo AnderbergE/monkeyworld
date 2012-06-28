@@ -1,9 +1,9 @@
 /**
  * @constructor
- * @extends {Module}
+ * @extends {MW.Module}
  */
 MW.AgentChooser = function(done) {
-	Module.call(this);
+	MW.Module.call(this);
 	var chooser = this;
 	
 	var agents = [
@@ -27,4 +27,3 @@ MW.AgentChooser = function(done) {
 	};
 	
 };
-inherit (MW.AgentChooser, Module);

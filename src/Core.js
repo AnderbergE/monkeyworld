@@ -1,3 +1,4 @@
+
 var game = null;
 
 window["egame"] = null;
@@ -142,8 +143,6 @@ function Game() {
 	/** @type {MW.Game} */
 	var monkeyWorld = new MW.Game(stage, true, !MW.debug);
 	var evm = monkeyWorld.evm;
-	var noModule = new NoModule();
-	var modelModule = noModule;
 	
 	/**
 	 * FPS counter module
@@ -176,7 +175,7 @@ function Game() {
 		if (MW.debug)
 			fps.showFps(frame); // Update FPS display
 		evm.tell("frame", {frame:frame});
-		modelModule.onFrame(frame);
+//		modelModule.onFrame(frame);
 		gameLayer.draw();
 		if (stage._drawOverlayLayer) {
 			overlayLayer.draw();

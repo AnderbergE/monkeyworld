@@ -35,4 +35,3 @@ function GameView() {
 		
 	})(this);
 }
-inherit(GameView, ViewModule);

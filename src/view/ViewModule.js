@@ -1,10 +1,10 @@
 /**
  * @constructor
- * @extends {Module}
+ * @extends {MW.Module}
  */
 function ViewModule() {
 	Log.debug("Creating ViewModule", "object");
-	Module.call(this);
+	MW.Module.call(this);
 	var that = this;
 	var tweenController = new TweenController();
 	
@@ -149,6 +149,3 @@ function ViewModule() {
 		return this.stage;
 	};
 };
-
-inherit(ViewModule, Module);
-ViewModule.prototype.stage = null;

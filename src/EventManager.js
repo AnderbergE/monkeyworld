@@ -1,50 +1,7 @@
 /**
- * @interface
- */
-function GameEventListener() {};
-GameEventListener.prototype.notify = function(event) {};
-/**
- * @param {string} name
- */
-GameEventListener.prototype.forget = function(name) {};
-
-/**
- * @interface
- */
-function EventManager() {}
-
-EventManager.prototype.wevm = function() {};
-
-/**
- * @param {string} type
- * @param {Function} callback
- * @param {string} name
- */
-EventManager.prototype.on = function(type, callback, name) {};
-
-/**
- * @param {string} type
- * @param {Object=} message
- */
-EventManager.prototype.tell = function(type, message) {};
-
-/**
- * @param {string} type
- * @param {string} name
- */
-EventManager.prototype.off = function(type, name) {};
-
-/**
- * @param {string} name
- */
-EventManager.prototype.forget = function(name) {};
-
-
-/**
  * @constructor
- * @implements {EventManager}
  */
-function GameEventManager(stage) {
+MW.EventManager = function(stage) {
 	
 	/**
 	 * @type {Object.<string, Array>}
@@ -111,7 +68,6 @@ function GameEventManager(stage) {
 	 */
 	this.forget = function(name) {
 		if (telling > 0) {
-//			console.log("Can't forget " + name + " now.");
 			toForget.push(name);
 			return;
 		}
@@ -169,13 +125,13 @@ function GameEventManager(stage) {
             images[src].src = "../res/img/" + imageSources[src];
         }
 	};
-}
+};
 
 /**
  * @constructor
- * @implements {EventManager}
+ * @extends {MW.EventManager}
  */
-function NoEventManager() {
+MW.NoEventManager = function() {
 	
 	this.wevm = function() { return "NoEventManager"; };
 	

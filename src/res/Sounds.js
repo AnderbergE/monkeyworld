@@ -7,7 +7,10 @@
 MW.SoundEntry = function(soundFile, subtitle, instances) {
 	this.soundFile = soundFile;
 	this.subtitle = subtitle;
+	this._useSubtitle = subtitle != null;
 	this.instances = instances;
+	this.getSubtitle = function() { return this.subtitle; };
+	this.useSubtitle = function() { return this._useSubtitle; };
 };
 
 /**
@@ -194,20 +197,16 @@ MW.Sound = (function() {
 	 * @param {MW.SoundEntry} entry
 	 */
 	sound.play = function(entry) {
-		Log.notify("\"" + entry.subtitle + "\"", "sound");
+		var str = entry.getSubtitle();
+		Log.notify("\"" + str + "\"", "sounds");
 		var mute = false;
-		if (!mute && entry.soundFile != null) {
-			SoundJS.play(entry._key);
-		}
-		var str = MW.Strings.get(entry.subtitle);
-		if (str != null)
-			entry.subtitle = str;
 		
-		if (entry.subtitle != null) {
+		if (entry.useSubtitle()) {
+			console.log("hahaha");
 			var text = new Kinetic.Text({
 				x: subtitleLayer.getParent().attrs.width / 2,
 				y: subtitleLayer.getParent().attrs.height - 50,
-				text: entry.subtitle,
+				text: MW.Strings.get(str),
 				fontSize: 26,
 				fontFamily: "Nobile",
 				textFill: "white",
@@ -227,6 +226,9 @@ MW.Sound = (function() {
 				stage.pleaseDrawOverlayLayer();
 				removeSubtitle(text);
 			}, 3000);
+		}
+		if (!mute && entry.soundFile != null) {
+			SoundJS.play(entry._key);
 		}
 	};
 	

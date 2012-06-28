@@ -1,8 +1,8 @@
-/**
- * MonkeyWorld namespace
- * @namespace
- */
-var MW = {};
+///**
+// * MonkeyWorld namespace
+// * @namespace
+// */
+////var MW = {};
 
 MW.debug = false;
 MW.testing = false;
@@ -99,7 +99,7 @@ MW.GlobalObject = function(tag) {
 
 };
 
-MW.GlobalObject.prototype.evm  = new NoEventManager();
+MW.GlobalObject.prototype.evm  = new MW.NoEventManager();
 MW.GlobalObject.prototype.stage = new Kinetic.NoStage();
 MW.GlobalObject.prototype.game = null;
 

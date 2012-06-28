@@ -1,9 +1,9 @@
 /**
  * @constructor
- * @extends {Module}
+ * @extends {MW.Module}
  */
-function MiniGame() {
-	Module.call(this);
+function MiniGame() {//TODO: Rename to MW.Minigame
+	MW.Module.call(this);
 	var that = this;
 	
 	/** @private @type {MW.MiniGameRoundResult} */
@@ -70,7 +70,7 @@ function MiniGame() {
 	};
 
 	/**
-	 * @param {Player} player
+	 * @param {MW.Player} player
 	 * @param {Object=} res
 	 */
 	this.play = function(player, res) {
@@ -130,9 +130,6 @@ function MiniGame() {
 		this.tell("Game.roundDone");
 	};
 }
-
-inherit(MiniGame, Module);
-MiniGame.prototype.onFrame = function(frame) {};
 
 /**
  * @constructor

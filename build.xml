@@ -10,11 +10,18 @@
 		classname="com.google.javascript.jscomp.ant.CompileTask"
 		classpath="lib/closure/compiler.jar"/>
 
-	<target name="aggregate">
+	<target name="aggregate" depends="make_test">
 	    <concat destfile="${aggregate.dir}/aggregate.js">
-	        <!--<filelist dir="${source.dir}" files="${js.core}"/>-->
-	        <fileset dir="${source.dir}" includes="**/*.js" />
+	    	<filelist dir="${source.dir}" files="MW.js"/>
+	        <fileset dir="${source.dir}" includes="**/*.js" excludes="MW.js" />
 	    </concat>
+	</target>
+	
+	<target name="make_test">
+		<concat destfile="test/aggregate.js">
+	    	<filelist dir="${source.dir}" files="MW.js"/>
+			<fileset dir="${source.dir}" includes="**/*.js" excludes="Core.js,MW.js" />
+		</concat>
 	</target>
 	
 	<target name="html_uncompiled">

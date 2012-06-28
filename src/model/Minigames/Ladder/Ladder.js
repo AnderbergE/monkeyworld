@@ -208,4 +208,3 @@ function Ladder()
 		}
 	};
 }
-inherit(Ladder, MiniGame);

@@ -6,8 +6,8 @@
  * @extends {ViewModule}
  */
 function MonkeyWorldView() {
-	var stage = this.stage;
 	ViewModule.call(this);
+	var stage = this.stage;
 	this._tag = "MonkeyWorldView";
 	
 	var layer = stage._gameLayer;
@@ -149,4 +149,3 @@ function MonkeyWorldView() {
 
 	})(this);
 };
-inherit(MonkeyWorldView, ViewModule);

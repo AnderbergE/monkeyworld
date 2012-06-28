@@ -67,4 +67,3 @@ MW.MinigameHandlerView = function() {
 		
 	})(this);
 };
-inherit(MW.MinigameHandlerView, ViewModule);

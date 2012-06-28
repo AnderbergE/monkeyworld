@@ -160,4 +160,3 @@ function LadderView(tag, ladder)
 		}
 	});
 }
-inherit(LadderView, GameView);

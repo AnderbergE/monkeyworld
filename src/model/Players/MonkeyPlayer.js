@@ -1,10 +1,11 @@
 /**
  * MonkeyPlayer
- * @extends {Player}
+ * @extends {MW.Player}
  * @constructor
  */
 function MonkeyPlayer() {
 	Log.debug("Creating MonkeyPlayer", "player");
+	MW.Player.call(this, "MonkeyPlayer");
 	var that = this;
 	this.strategies = function() {};
 	
@@ -78,4 +79,3 @@ function MonkeyPlayer() {
 		});
 	};
 }
-MonkeyPlayer.prototype = new Player();

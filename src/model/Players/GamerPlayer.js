@@ -1,9 +1,10 @@
 /**
  * GamerPlayer
- * @extends {Player}
+ * @extends {MW.Player}
  * @constructor
  */
 function GamerPlayer() {
+	MW.Player.call(this, "GamerPlayer");
 	this.tag("GamerPlayer");
 	Log.debug("Creating GamerPlayer", "player");
 	this.strategies = function() {};
@@ -12,4 +13,4 @@ function GamerPlayer() {
 		
 	};
 }
-GamerPlayer.prototype = new Player();
+//GamerPlayer.prototype = new Player();

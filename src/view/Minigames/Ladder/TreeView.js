@@ -595,4 +595,3 @@ function TreeView(ladder) {
 	staticLayer.draw();
 	
 }
-inherit(TreeView, LadderView);

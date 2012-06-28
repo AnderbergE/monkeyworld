@@ -295,4 +295,3 @@ function MountainView(game) {
 		view.stage.remove(dynamicLayer);
 	};
 }
-inherit(MountainView, LadderView);

@@ -19,8 +19,8 @@ MW.MinigameHandler = function(minigameConstructor) {
  */
 MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	/** @const @type {MW.Game}      */ var that = this;
-	
-	this.evm = new GameEventManager(stage);
+	MW.GlobalObject.call(this, "Game");
+	this.evm = new MW.EventManager(stage);
 	this.stage = stage;
 	this.game = this;
 	
@@ -74,7 +74,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	/** @type {MiniGame}                   */ var miniGame        = NO_MINI_GAME;
 	/** @type {Function} @constructor      */ var miniGameView    = null;
 	/** @type {Function}                   */ var miniGameStarter = null;
-	/** @type {Player}                     */ var player          = GAMER;
+	/** @type {MW.Player}                  */ var player          = GAMER;
 	/** @type {number}                     */ var _round          = 1;
 	/** @type {MW.MiniGameResult}          */ var result          = NO_RESULT;
 	/** @type {number}                     */ var miniGameScore   = 0;
@@ -373,5 +373,3 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	this.modeIsAgentDo = function() { return gameMode === MW.GameMode.AGENT_DO; };
 	
 };
-
-MW.Game.prototype = new MW.GlobalObject("MonkeyWorld.Game");

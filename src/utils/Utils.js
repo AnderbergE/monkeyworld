@@ -1,15 +1,15 @@
-/**
- * @param {Function} childCtor
- * @param {Function} parentCtor
- */
-function inherit(childCtor, parentCtor) {
-	/** @constructor */
-	function tempCtor() {};
-	tempCtor.prototype = parentCtor.prototype;
-	childCtor.superClass_ = parentCtor.prototype;
-	childCtor.prototype = new tempCtor();
-	childCtor.prototype.constructor = childCtor;
-}
+///**
+// * @param {Function} childCtor
+// * @param {Function} parentCtor
+// */
+//function inherit(childCtor, parentCtor) {
+//	/** @constructor */
+//	function tempCtor() {};
+//	tempCtor.prototype = parentCtor.prototype;
+//	childCtor.superClass_ = parentCtor.prototype;
+//	childCtor.prototype = new tempCtor();
+//	childCtor.prototype.constructor = childCtor;
+//}
 
 
 var _uid = 0;

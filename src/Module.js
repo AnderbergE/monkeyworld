@@ -2,7 +2,7 @@
  * @constructor
  * @extends {MW.GlobalObject}
  */
-function Module() {
+MW.Module = function() {
 	MW.GlobalObject.call(this, "Module");
 	var module = this;
 	var timeoutController = new TimeoutController();
@@ -87,5 +87,4 @@ function Module() {
 			timeouts = new Array();
 		};
 	};
-}
-inherit(Module, MW.GlobalObject);
+};
