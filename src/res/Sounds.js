@@ -198,11 +198,10 @@ MW.Sound = (function() {
 	 */
 	sound.play = function(entry) {
 		var str = entry.getSubtitle();
-		Log.notify("\"" + str + "\"", "sounds");
+		Log.notify("\"" + str + "\"", "sound");
 		var mute = false;
 		
 		if (entry.useSubtitle()) {
-			console.log("hahaha");
 			var text = new Kinetic.Text({
 				x: subtitleLayer.getParent().attrs.width / 2,
 				y: subtitleLayer.getParent().attrs.height - 50,

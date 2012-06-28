@@ -1,16 +1,44 @@
 /**
  * @constructor
  * @extends {MW.GlobalObject}
+ * @param {string} tag
  */
-MW.Module = function() {
-	MW.GlobalObject.call(this, "Module");
+MW.Module = function(tag) {
+	MW.GlobalObject.call(this, tag);
 	var module = this;
 	var timeoutController = new TimeoutController();
 	
+	var tearDowns = new Array();
+	var setups = new Array();
+	
+	this.addTearDown = function(fnc) {
+		tearDowns.push(fnc);
+	};
+	
 	this.tearDown = function() {
-		Log.debug("Tearing down", "Module");
+		if (tearDowns === null)
+			throw "MW.TearDownAlreadyCalledException";
 		timeoutController.teardown();
-		module.tell(MW.Event.TEAR_DOWN);
+		module.forget();
+		for (var i = 0; i < tearDowns.length; i++) {
+			tearDowns[i]();
+			tearDowns[i] = null;
+		};
+		tearDowns = null;
+	};
+	
+	this.addSetup = function(fnc) {
+		setups.push(fnc);
+	};
+	
+	this.setup = function() {
+		if (setups === null)
+			throw "MW.SetupAlreadyCalledException";
+		for (var i = 0; i < setups.length; i++) {
+			setups[i]();
+			setups[i] = null;
+		};
+		setups = null;
 	};
 	
 	/**

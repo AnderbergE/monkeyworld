@@ -4,8 +4,8 @@
 	 * @param {MW.AgentChooser} chooser
 	 */
 	MW.AgentChooserView = function(chooser) {
-		ViewModule.call(this);
-		this.tag("AgentChooserView");
+		ViewModule.call(this, "AgentChooserView");
+//		this.tag("AgentChooserView");
 		
 		var view = this;
 		/** @type {Kinetic.Layer} */ var layer = null;
@@ -171,8 +171,8 @@
 		/**
 		 * Tear down the view
 		 */
-		view.on(MW.Event.TEAR_DOWN, function(msg) {
-			view.forget();
+		view.addTearDown(function() {
+			//view.forget();
 			view.stage.remove(layer);
 		});
 		

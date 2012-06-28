@@ -346,23 +346,17 @@ function TreeView(ladder) {
 		dynamicLayer.draw();
 	});
 
-	view.tearDown = function() {
+	view.addTearDown(function() {
 		Log.debug("Tearing down", this._tag);
 		view.getStage().remove(staticLayer);
-		view.getStage().remove(dynamicLayer);
-	};
+		view.getStage().remove(dynamicLayer);	
+	});
 
-//	TODO: Confirm that restart works without these lines
-//	view.on("Game.stopMiniGame", function() { tearDown(); });
-//	view.on("Game.roundDone", this.tearDown);
-	
 	view.interrupt = function() {
 		console.log("interrupt!");
 		view.removeTween(bird.attrs);
 	};
 	
-	view.setup = function() {};
-
 	var background = new Kinetic.Rect({
 		fill: {
 			start: {

@@ -6,9 +6,9 @@
  * @extends {ViewModule}
  */
 function MonkeyWorldView() {
-	ViewModule.call(this);
+	ViewModule.call(this, "MonkeyWorldView");
 	var stage = this.stage;
-	this._tag = "MonkeyWorldView";
+//	this._tag = "MonkeyWorldView";
 	
 	var layer = stage._gameLayer;
 	

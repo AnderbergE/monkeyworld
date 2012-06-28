@@ -4,9 +4,9 @@
  */
 function Ladder()
 {
-	MiniGame.call(this);
+	MiniGame.call(this, "Ladder");
 	/** @type {Ladder} */ var that = this;
-	this.tag("Ladder");
+//	this.tag("Ladder");
 	
 	/** @type {number} */ var minNumber = 1;
 	/** @type {number} */ var maxNumber = 6;

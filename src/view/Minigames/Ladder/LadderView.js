@@ -5,7 +5,7 @@
  */
 function LadderView(tag, ladder)
 {
-	GameView.call(this);
+	GameView.call(this, tag);
 	this.tag(tag);
 	Log.debug("Creating LadderView", "object");
 	var view = this;

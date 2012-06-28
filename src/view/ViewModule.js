@@ -1,24 +1,18 @@
 /**
  * @constructor
  * @extends {MW.Module}
+ * @param {string} tag
  */
-function ViewModule() {
-	Log.debug("Creating ViewModule", "object");
-	MW.Module.call(this);
+function ViewModule(tag) {
+	MW.Module.call(this, tag);
 	var that = this;
 	var tweenController = new TweenController();
 	
-	var tearDown = function() {
+	this.addTearDown(function() {
 		that.hideBig();
-		that.forget();
-		if (that.tearDown != undefined)
-			that.tearDown();
-	};
-	
-	this._setup = function() {
-		this.on("Game.stopMiniGame", function() { tearDown(); });
-		this.on("Game.roundDone", function() { tearDown(); });
-	};
+		Log.debug("Tearing down", "ViewModule");
+		tweenController.teardown();
+	});
 	
 	/**
 	 * @param {Object} target
@@ -33,14 +27,6 @@ function ViewModule() {
 	 */
 	this.removeTween = function(target) {
 		tweenController.removeTweens(target);
-	};
-	
-	var _oldTearDown = this.tearDown; 
-	this.tearDown = function() {
-		Log.debug("Tearing down", "ViewModule");
-		bigText.hide();
-		_oldTearDown();
-		tweenController.teardown();
 	};
 	
 	/**

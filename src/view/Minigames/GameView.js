@@ -1,9 +1,10 @@
 /**
  * @constructor
  * @extends {ViewModule}
+ * @param {string} tag
  */
-function GameView() {
-	ViewModule.call(this);
+function GameView(tag) {
+	ViewModule.call(this, tag);
 	/** @type {GameView}      */ var view  = this;
 	/** @type {Kinetic.Layer} */ var layer = view.stage._gameLayer;
 
@@ -23,13 +24,12 @@ function GameView() {
 			x: view.stage.getWidth() - 500,
 			y: 15
 		});
-		layer.add(text);
-		
+		layer.add(text);		
 		view.on(MW.Event.BACKEND_SCORE_UPDATE_MODE, function(msg) {
 			text.setText(label + " " + msg.backendScore);
 		});
 		
-		view.on(MW.Event.TEAR_DOWN, function(msg) {
+		view.addTearDown(function() {
 			layer.remove(text);
 		});
 		

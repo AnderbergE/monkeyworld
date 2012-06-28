@@ -16,6 +16,7 @@ $(document).ready(function(){
 	});
 	
 	test("Correct default state", function() {
+		this.mw.start();
 		ok(this.mw.modeIsChild());
 		ok(this.mw.playerIsGamer());
 	});

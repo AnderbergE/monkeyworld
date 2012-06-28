@@ -70,14 +70,17 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	/** @const @type {MW.MediumLearningTrack} */ var MEDIUM_TRACK = new MW.MediumLearningTrack();
 	/** @const @type {MW.FastLearningTrack}   */ var FAST_TRACK   = new MW.FastLearningTrack();
 	
-	/** @type {MW.GameMode}                */ var gameMode        = MW.GameMode.CHILD_PLAY; 
+	/** @type {MW.GameMode}                */ var gameMode        = MW.GameMode.AGENT_SEE; 
 	/** @type {MiniGame}                   */ var miniGame        = NO_MINI_GAME;
 	/** @type {Function} @constructor      */ var miniGameView    = null;
+	                                          var currentMiniGameView = null;
+	                                          var miniGameHandlerView = null;
 	/** @type {Function}                   */ var miniGameStarter = null;
 	/** @type {MW.Player}                  */ var player          = GAMER;
 	/** @type {number}                     */ var _round          = 1;
 	/** @type {MW.MiniGameResult}          */ var result          = NO_RESULT;
 	/** @type {number}                     */ var miniGameScore   = 0;
+	                                          var agentImage      = null;
 	
 	/** @type {MW.LearningTrack}              */ var _learningTrack  = REGULAR_TRACK;
 
@@ -178,14 +181,28 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 				gameMode = MW.GameMode.CHILD_PLAY;
 				player = GAMER;
 				stopMiniGame();
-				chooseMiniGame(function() {
-					startMiniGame();	
-				});
+				selectMinigame();
 			} else {
 				addRound();
 				startMiniGame();
 			}
 		}
+	};
+	
+	var selectMinigame = function() {
+		GameView.prototype.agentImage = agentImage;
+		result = new MW.MiniGameResult();
+		player = GAMER;
+		gameMode = MW.GameMode.CHILD_PLAY;
+//		minigameHandler = newObject(MW.MinigameHandler);
+		if (useViews)
+			miniGameHandlerView = newObject(MW.MinigameHandlerView);
+		chooseMiniGame(function() {
+			setMinigameScore(0);
+			setLearningTrack(REGULAR_TRACK);
+			startMiniGame();
+			that.tell(MW.Event.MINIGAME_STARTED, {}, true);
+		});
 	};
 	
 	var chooseMiniGame = function(callback) {
@@ -205,7 +222,6 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 		} else {
 			miniGameStarter = function() {
 				miniGame = newObject(gameLibrary[startGame].game);
-				console.log("NYTT SPEL " + miniGame.getBackendScore());
 				miniGameView = gameLibrary[startGame].view;	
 			};
 			callback();
@@ -220,20 +236,17 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 		miniGameStarter();
 		if (useViews) {
 			miniGameView.prototype.agentImage = GameView.prototype.agentImage;
-			var v = newObject(miniGameView, miniGame);
-			v._setup();
-			v.setup();
+			currentMiniGameView = newObject(miniGameView, miniGame);
+			currentMiniGameView.setup();
 			that.tell("Game.miniGameListenersInitiated");
 		}
-		that.tell("Game.initiate");
-		that.tell(MW.Event.MINIGAME_INITIATED);
 		if (gameMode === MW.GameMode.AGENT_DO) {
 			miniGame.play(player, result.getResult(_round).getActions());
 		} else {
 			miniGame.play(player);
 		}
+		// TODO: Remove this?
 		that.tell("Game.start", {}, true);
-		that.tell(MW.Event.MINIGAME_STARTED, {}, true);
 	};
 	
 	/**
@@ -241,6 +254,8 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	 */
 	var stopMiniGame = function() {
 		that.tell("Game.stopMiniGame");
+		if (useViews)
+			miniGameHandlerView.tearDown();
 		miniGame.stop();
 		delete miniGame;
 		miniGameScore = 0;
@@ -260,6 +275,9 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 			throw "MonkeyWorld.NoActiveMiniGameException";
 		}
 		this.tell("Game.stopMiniGame", {}, true);
+		miniGame.tearDown();
+		if (useViews)
+			currentMiniGameView.tearDown();
 		addMinigameScore(miniGame.getBackendScore());
 		getNextState();
 	};
@@ -293,29 +311,19 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	 */
 	this.start = function() {
 		var chooser = null;
-		var _start = function(agent) {
-			GameView.prototype.agentImage = agent;
-			result = new MW.MiniGameResult();
-			player = GAMER;
-//			minigameHandler = newObject(MW.MinigameHandler);
-			if (useViews) newObject(MW.MinigameHandlerView);
-			chooseMiniGame(function() {
-				setMinigameScore(0);
-				setLearningTrack(REGULAR_TRACK);
-				startMiniGame();
-			});
-		};
 		if (useAgentChooser) {
 			chooser = newObject(MW.AgentChooser, function(agent) {
 				chooser.tearDown();
-				_start(agent);
+				agentImage = agent;
+				selectMinigame();
 			});
 			if (useViews) {
 				newObject(MW.AgentChooserView, chooser).setup();
 				that.tell("Game.viewInitiated");
 			}
 		} else {
-			_start(MW.Images.MONKEY);
+			agentImage = MW.Images.MONKEY;
+			selectMinigame();
 		}
 	};
 	

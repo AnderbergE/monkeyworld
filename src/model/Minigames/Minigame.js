@@ -1,9 +1,10 @@
 /**
  * @constructor
  * @extends {MW.Module}
+ * @param {string} tag
  */
-function MiniGame() {//TODO: Rename to MW.Minigame
-	MW.Module.call(this);
+function MiniGame(tag) {//TODO: Rename to MW.Minigame
+	MW.Module.call(this, tag);
 	var that = this;
 	
 	/** @private @type {MW.MiniGameRoundResult} */
@@ -140,4 +141,4 @@ function NoMiniGame() {
 		throw "No implemented mini game";
 	};
 }
-NoMiniGame.prototype = new MiniGame();
+NoMiniGame.prototype = new MiniGame("NoMiniGame");

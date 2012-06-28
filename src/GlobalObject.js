@@ -4,7 +4,7 @@
 // */
 ////var MW = {};
 
-MW.debug = false;
+MW.debug = true;
 MW.testing = false;
 
 /**
@@ -12,7 +12,6 @@ MW.testing = false;
  */
 MW.Event = {
 	FRAME: "frame",
-	TEAR_DOWN: "tearDown",
 	MINIGAME_INITIATED: "miniGameInitiated",
 	MINIGAME_STARTED: "miniGameStarted",
 	MINIGAME_ENDED: "miniGameDone",

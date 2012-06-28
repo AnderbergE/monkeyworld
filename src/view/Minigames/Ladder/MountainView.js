@@ -87,7 +87,7 @@ function MountainView(game) {
 		X: 730, Y: 180, STEPX: 140, STEPY: 140, WIDTH: 2
 	};
 	
-	view.setup = function() {
+	view.addSetup(function() {
 		Log.debug("Setting up MountainView", "mt-view");
 		view.stage.add(staticLayer);
 		view.stage.add(dynamicLayer);
@@ -187,7 +187,7 @@ function MountainView(game) {
 		);
 		
 		staticLayer.draw();
-	};
+	});
 	
 	view.interrupt = function() {
 		resetButton();
@@ -287,11 +287,9 @@ function MountainView(game) {
 		}
 	});
 	
-	var oldTearDown = view.tearDown;
-	view.tearDown = function() {
-		oldTearDown();
+	this.addTearDown(function() {
 		Log.debug("Tearing down MountainView", this._tag);
 		view.stage.remove(staticLayer);
 		view.stage.remove(dynamicLayer);
-	};
+	});
 }

@@ -3,7 +3,7 @@
  * @extends {MW.Module}
  */
 MW.AgentChooser = function(done) {
-	MW.Module.call(this);
+	MW.Module.call(this, "AgentChooser");
 	var chooser = this;
 	
 	var agents = [
