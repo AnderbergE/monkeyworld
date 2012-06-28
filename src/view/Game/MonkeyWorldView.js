@@ -30,34 +30,38 @@ function MonkeyWorldView() {
 			var grid = Utils.gridizer(200, 200, 300, 100, 2);
 			
 			//for (var i = 0; i < games.length; i++) { (function(i) {
-			for (var gameObject in games) { (function() {
-				var game = games[gameObject];
-				var pos = grid.next();
-				var button = new Kinetic.Group(pos);
-				var rect = new Kinetic.Rect({
-					width: 280,
-					height: 100,
-					stroke: "black",
-					strokeWidth: 4
-				});
-				var text = new Kinetic.Text({
-					text: game.title,
-					fontSize: 20,
-					fontFamily: "sans-serif",
-					textFill: "black",
-					align: "center",
-					verticalAlign: "middle",
-					x: rect.getWidth() / 2,
-					y: rect.getHeight() / 2
-				});
-				button.add(rect);
-				button.add(text);
-				button.on("mousedown touchstart", function() {
-					rect.setFill("yellow");
-					callback(game);
-				});
-				buttons.push(button);
-				layer.add(button);
+			
+			for (var category in games) { (function() {
+				for (var i = 0; i < games[category].sum(); i++) { (function() {
+					console.log(games[category].variations[i]);
+					var game = games[category].variations[i];
+					var pos = grid.next();
+					var button = new Kinetic.Group(pos);
+					var rect = new Kinetic.Rect({
+						width: 280,
+						height: 100,
+						stroke: "black",
+						strokeWidth: 4
+					});
+					var text = new Kinetic.Text({
+						text: game.title,
+						fontSize: 20,
+						fontFamily: "sans-serif",
+						textFill: "black",
+						align: "center",
+						verticalAlign: "middle",
+						x: rect.getWidth() / 2,
+						y: rect.getHeight() / 2
+					});
+					button.add(rect);
+					button.add(text);
+					button.on("mousedown touchstart", function() {
+						rect.setFill("yellow");
+						callback(game);
+					});
+					buttons.push(button);
+					layer.add(button);
+				})();}
 			})();}
 		});
 		

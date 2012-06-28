@@ -1,9 +1,13 @@
 /**
  * @constructor
- * @param {Function} minigameConstructor
+ * @param {Object} configuration
+ * @param {MW.LearningTrack} learningTrack
  */
-MW.MinigameHandler = function(minigameConstructor) {
-	
+MW.MinigameLauncher = function(configuration, learningTrack) {
+	var _configuration = configuration;
+	var _learningTrack = learningTrack;
+	this.getConfiguration = function() { return _configuration; };
+	this.getLearningTrack = function() { return _learningTrack; };
 };
 
 /**
@@ -14,8 +18,7 @@ MW.MinigameHandler = function(minigameConstructor) {
  *                                         when testing.
  * @param {boolean=}      useAgentChooser  Defaults to true. Falsify when
  *                                         testing.
- * @param {string=}       startGame        Code of the game to begin play
- *                                         ("tree", "mountain" or "fishing").
+ * @param {Object=}       startGame        
  */
 MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	/** @const @type {MW.Game}      */ var that = this;
@@ -81,14 +84,22 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	/** @type {MW.MiniGameResult}          */ var result          = NO_RESULT;
 	/** @type {number}                     */ var miniGameScore   = 0;
 	                                          var agentImage      = null;
+	                                          var currentConfiguration = null;
 	
-	/** @type {MW.LearningTrack}              */ var _learningTrack  = REGULAR_TRACK;
+	/** @type {MW.LearningTrack}           */ var _learningTrack  = NO_TRACK;
+	/** @type {Array.<MW.MinigameLauncher>} */ var minigameArray = new Array();
 
 	/** @type {Object.<Object>} */
-	var gameLibrary = {
-		"tree": { title: "Tree Game", view: TreeView, game: Ladder },
-		"mountain": { title: "Mountain Game", view: MountainView, game: Ladder }
-	};
+//	var gameLibrary = {
+//		"tree": { title: "Tree Game", view: TreeView, game: Ladder },
+//		"mountain": { title: "Mountain Game", view: MountainView, game: Ladder }
+//	};
+
+	if (startGame != undefined) {
+		var h = new MW.MinigameLauncher(startGame, REGULAR_TRACK);
+		minigameArray.push(h);
+		console.log(h.getConfiguration());
+	}
 	
 	/*========================================================================*/
 	/*=== CONSTRUCTOR ========================================================*/
@@ -128,7 +139,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	 */
 	var setLearningTrack = function(learningTrack) {
 		_learningTrack = learningTrack;
-		that.tell(MW.Event.LEARNING_TRACK_UPDATE, { learningTrack: learningTrack });
+		that.tell(MW.Event.LEARNING_TRACK_UPDATE, { learningTrack: learningTrack }, true);
 	};
 	
 	/**
@@ -136,7 +147,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	 */
 	var getLearningTrack = function() {
 		return _learningTrack;
-	}
+	};
 	
 	/**
 	 * Add one round to the current mini game
@@ -146,12 +157,38 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	};
 	
 	/**
+	 * Decide when it's time and how to play the current game next time.
+	 */
+	var decideNextOfSameGame = function(config, score) {
+		if (score > 26 && score <= 30) {
+			//reps = 2;
+			// TODO: randomize this push
+			minigameArray.push(new MW.MinigameLauncher(config, FAST_TRACK));
+			minigameArray.push(new MW.MinigameLauncher(config, FAST_TRACK));
+		} else if (score > 22 && score <= 26 ) {
+			//reps = 3;
+			// TODO: randomize this push
+			minigameArray.push(new MW.MinigameLauncher(config, MEDIUM_TRACK));
+			minigameArray.push(new MW.MinigameLauncher(config, MEDIUM_TRACK));
+			minigameArray.push(new MW.MinigameLauncher(config, MEDIUM_TRACK));
+		} else if (score >= 0 && score <= 22) {
+			//reps = 5;
+			// TODO: randomize this push
+			minigameArray.push(new MW.MinigameLauncher(config, REGULAR_TRACK));
+			minigameArray.push(new MW.MinigameLauncher(config.category.variations[0], REGULAR_TRACK));
+			minigameArray.push(new MW.MinigameLauncher(config, REGULAR_TRACK));
+			minigameArray.push(new MW.MinigameLauncher(config, REGULAR_TRACK));
+			minigameArray.push(new MW.MinigameLauncher(config, REGULAR_TRACK));
+		} else {
+			throw "MW.NoSuchMinigameScore";
+		}
+	};
+	
+	/**
 	 * Set the current minigame score to <code>score</code>.
 	 */
 	var setMinigameScore = function(score) {
-		console.log("setMinigameScore" + score)
 		miniGameScore = score;
-		console.log("setMinigameScore" + miniGameScore)
 		that.tell(MW.Event.BACKEND_SCORE_UPDATE_MINIGAME, { score: miniGameScore });
 	};
 	
@@ -181,6 +218,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 				gameMode = MW.GameMode.CHILD_PLAY;
 				player = GAMER;
 				stopMiniGame();
+				decideNextOfSameGame(currentConfiguration, miniGameScore);
 				selectMinigame();
 			} else {
 				addRound();
@@ -199,32 +237,37 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 			miniGameHandlerView = newObject(MW.MinigameHandlerView);
 		chooseMiniGame(function() {
 			setMinigameScore(0);
-			setLearningTrack(REGULAR_TRACK);
 			startMiniGame();
 			that.tell(MW.Event.MINIGAME_STARTED, {}, true);
 		});
 	};
 	
 	var chooseMiniGame = function(callback) {
-		if (startGame === undefined) {
+		if (minigameArray.length > 0) {
+			var launcher = minigameArray[0];
+			minigameArray.splice(0);
+			var configuration = launcher.getConfiguration();
+			setLearningTrack(launcher.getLearningTrack());
+			currentConfiguration = configuration;
+			miniGameStarter = function() {
+				miniGame = newObject(configuration.game);
+				miniGameView = configuration.view;
+			};
+			callback();
+		} else if (startGame === undefined) {
 			that.tell("Game.showMiniGameChooser", {
 				callback: function(choice) {
+					currentConfiguration = choice;
 					miniGameStarter = function() {
 						that.tell("Game.hideMiniGameChooser");
-						console.log("NYTT SPEL");
 						miniGame = newObject(choice.game);
 						miniGameView = choice.view;					
 					};
+					setLearningTrack(REGULAR_TRACK);
 					callback();
 				},
-				games: gameLibrary
+				games: MW.MinigameConfiguration
 			});
-		} else {
-			miniGameStarter = function() {
-				miniGame = newObject(gameLibrary[startGame].game);
-				miniGameView = gameLibrary[startGame].view;	
-			};
-			callback();
 		}
 	};
 	

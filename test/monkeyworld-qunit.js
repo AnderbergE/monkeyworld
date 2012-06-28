@@ -7,7 +7,7 @@ $(document).ready(function(){
 
 	module("Monkey World", {
 		setup: function() {
-			this.mw = new MW.Game(null, false, false, "tree");
+			this.mw = new MW.Game(null, false, false, MW.MinigameConfiguration.LADDER.TREE);
 		},
 		teardown: function() {
 			this.mw.forget("test");
@@ -81,7 +81,7 @@ $(document).ready(function(){
 	
 	module("Game Module", {
 		setup: function() {
-			this.mw = new MW.Game(null, false, false, "tree");
+			this.mw = new MW.Game(null, false, false, MW.MinigameConfiguration.LADDER.TREE);
 			this.mw.on("Game.addBanana", function(msg) {
 				if (msg.callback != undefined) msg.callback();
 			}, "test");
@@ -102,11 +102,11 @@ $(document).ready(function(){
 	
 	module("Ladder", {
 		setup: function() {
-			this.mw = new MW.Game(null, false, false, "tree");
+			this.mw = new MW.Game(null, false, false, MW.MinigameConfiguration.LADDER.TREE);
 			//MW.GlobalObject.prototype.game = this.mw;
 			
 			this.getGame = function() {
-				var tmpGame = new MW.Game(null, false, false, "tree");
+				var tmpGame = new MW.Game(null, false, false, MW.MinigameConfiguration.LADDER.TREE);
 				MW.GlobalObject.prototype.game = this.mw;	
 			};
 		},
