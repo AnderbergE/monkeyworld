@@ -73,9 +73,12 @@ MW.EventManager = function(stage) {
 		}
 		var sum = 0;
 		for (var key in listeners) {
-			for (var i = 0; i < listeners[key].length; i++) {
+			var total = listeners[key].length;
+			for (var i = 0; i < total; i++) {
 				if (listeners[key][i]._caller === name) {
 					listeners[key].splice(i, 1);
+					i--;
+					total--;
 					sum++;
 				}
 			}
