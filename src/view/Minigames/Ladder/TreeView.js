@@ -24,20 +24,15 @@ function TreeView(ladder) {
 	view.agentSeeCorrect = MW.Sounds.LADDER_TREE_AGENT_SEE_CORRECT;
 	
 	var GROUND_HEIGHT = 100;
-	var LEFT_GROUND_WIDTH = view.getStage().getWidth() * 0.4;
-	var RIGHT_GROUND_WIDTH = view.getStage().getWidth() * 0.45;
-	var GROUND_FILL = "#F4A460";
-	var GROUND_STROKE = "#A52A2A";
-	var GROUND_STROKE_WIDTH = 4;
-	
+
 	var numpad = {
-		x: 1024 - 300,
-		y: 300,
-		buttonWidth: 100,
-		buttonHeight: 100,
-		buttonMargin: 20
+		x: 669,
+		y: 178,
+		buttonWidth: 74,
+		buttonHeight: 74,
+		buttonMargin: 10
 	};
-	
+
 	var allowNumpad = false;
 	var activeButton = null;
 	
@@ -51,14 +46,14 @@ function TreeView(ladder) {
 	/** @type {number} */ var stepWidth = 120;
 	/** @type {Object} */ var ladderBegin = {
 		/** @type {number} */ x: 130,
-		/** @type {number} */ y: view.getStage().getHeight() - GROUND_HEIGHT - stepHeight
+		/** @type {number} */ y: view.getStage().getHeight() - 100 - stepHeight
 	};
 	/** @type {number} */ var stepNarrowing = 10;
 	
 	
 	/** @const @type {Object.<Number>} */ var NEST = {
-		/** @const @type {number} */ x: 700,
-		/** @const @type {number} */ y: 130
+		/** @const @type {number} */ x: 320,
+		/** @const @type {number} */ y: 660
 	};
 	
 	/** @const @type {Object.<Number>} */ var DROP_ZONE = {
@@ -74,90 +69,95 @@ function TreeView(ladder) {
 	/** @type {Object.<Kinetic.Group>} */ var numpadGroups = {};
 	/** @type {Object.<Kinetic.Group>} */ var stepGroups = {};
 	
-	var BIRD = {x: NEST.x + 90, y: NEST.y};
+	var BIRD = {x: NEST.x, y: NEST.y};
 	
-	/** @type {Kinetic.Group} */ var bird = new Kinetic.Group({
-		x: BIRD.x, y: BIRD.y
+//	/** @type {Kinetic.Group} */ var bird = new Kinetic.Group({
+//		x: BIRD.x, y: BIRD.y
+//	});
+	
+	var bird = new Kinetic.Image({
+		image: MW.Images.TREEGAME_LIZARD,
+		x: BIRD.x, y: BIRD.y, rotation: Math.PI / 2, width: 135, height: 80
 	});
 	
-	var birdCirc = new Kinetic.Circle({
-		radius: 50,
-		fill: "blue"
-	});
-	var eyeball1 = new Kinetic.Image({
-		image: MW.Images.EYEBALL,
-		width: 30,
-		height: 30,
-		x: -50,
-		y: -40
-	});
-	var eyeball2 = new Kinetic.Image({
-		image: MW.Images.EYEBALL,
-		width: 30,
-		height: 30,
-		x: -30,
-		y: -40
-	});
-	var nosePos = {x:-48, y:-20};
-	var birdNose = new Kinetic.Shape({
-          drawFunc: function() {
-            var context = this.getContext();
-            context.beginPath();
-            context.moveTo(nosePos.x, nosePos.y);
-            context.quadraticCurveTo(nosePos.x - 20, nosePos.y - 10, nosePos.x - 30, nosePos.y + 10);
-            context.quadraticCurveTo(nosePos.x, nosePos.y + 10, nosePos.x, nosePos.y + 20);
-            context.closePath();
-            this.fill();
-            this.stroke();
-          },
-          fill: "#FFD700",
-          stroke: "#DAA520",
-          strokeWidth: 4
-        });
-	var wing = new Kinetic.Shape({
-          drawFunc: function() {
-            var context = this.getContext();
-            context.beginPath();
-            context.moveTo(0, 0);
-            context.moveTo(30, 0);
-            context.quadraticCurveTo(40, 80, 50, 100);
-            context.quadraticCurveTo(40, 80, 0, 0);
-            context.closePath();
-            this.fill();
-          },
-          fill: "#FFD700",
-          stroke: "#DAA520",
-          strokeWidth: 4
-        });
-	wing.attrs.scale.y = 0.2;
-	bird.add(birdCirc);
-	bird.add(birdNose);
-	bird.add(eyeball1);
-	bird.add(eyeball2);
-	bird.add(wing);
+//	var birdCirc = new Kinetic.Circle({
+//		radius: 50,
+//		fill: "blue"
+//	});
+//	var eyeball1 = new Kinetic.Image({
+//		image: MW.Images.EYEBALL,
+//		width: 30,
+//		height: 30,
+//		x: -50,
+//		y: -40
+//	});
+//	var eyeball2 = new Kinetic.Image({
+//		image: MW.Images.EYEBALL,
+//		width: 30,
+//		height: 30,
+//		x: -30,
+//		y: -40
+//	});
+//	var nosePos = {x:-48, y:-20};
+//	var birdNose = new Kinetic.Shape({
+//          drawFunc: function() {
+//            var context = this.getContext();
+//            context.beginPath();
+//            context.moveTo(nosePos.x, nosePos.y);
+//            context.quadraticCurveTo(nosePos.x - 20, nosePos.y - 10, nosePos.x - 30, nosePos.y + 10);
+//            context.quadraticCurveTo(nosePos.x, nosePos.y + 10, nosePos.x, nosePos.y + 20);
+//            context.closePath();
+//            this.fill();
+//            this.stroke();
+//          },
+//          fill: "#FFD700",
+//          stroke: "#DAA520",
+//          strokeWidth: 4
+//        });
+//	var wing = new Kinetic.Shape({
+//          drawFunc: function() {
+//            var context = this.getContext();
+//            context.beginPath();
+//            context.moveTo(0, 0);
+//            context.moveTo(30, 0);
+//            context.quadraticCurveTo(40, 80, 50, 100);
+//            context.quadraticCurveTo(40, 80, 0, 0);
+//            context.closePath();
+//            this.fill();
+//          },
+//          fill: "#FFD700",
+//          stroke: "#DAA520",
+//          strokeWidth: 4
+//        });
+//	wing.attrs.scale.y = 0.2;
+//	bird.add(birdCirc);
+//	bird.add(birdNose);
+//	bird.add(eyeball1);
+//	bird.add(eyeball2);
+//	bird.add(wing);
 	
-	var fly = true;
+//	var fly = true;
 	
 	/**
 	 * @param {number=} wingDir
 	 */
 	var moveWingRec = function(wingDir) {
-		if (wingDir === undefined) wingDir = 1;
-		view.getTween(wing.attrs.scale).to({y:wingDir*(-1)}, 500).call(function() {
-			if (fly) {
-				moveWingRec(wingDir * (-1));
-			}
-		});
+//		if (wingDir === undefined) wingDir = 1;
+//		view.getTween(wing.attrs.scale).to({y:wingDir*(-1)}, 500).call(function() {
+//			if (fly) {
+//				moveWingRec(wingDir * (-1));
+//			}
+//		});
 	};
 	
 	var moveWing = function() {
-		fly = true;
-		moveWingRec();
+//		fly = true;
+//		moveWingRec();
 	};
 	
 	var stopWing = function() {
-		fly = false;
-		view.getTween(wing.attrs.scale).to({y:0.2}, 500);
+//		fly = false;
+//		view.getTween(wing.attrs.scale).to({y:0.2}, 500);
 	};
 	
 	
@@ -240,7 +240,8 @@ function TreeView(ladder) {
 		treat.off("mousedown touchstart");
 		stopShakeTreat();
 		treat._circle.setFill("blue");
-		activeButton._rect.attrs.fill = buttonFill;
+		// TODO: Change to button image
+//		activeButton._rect.attrs.fill = buttonFill;
 		staticLayer.draw();
 		var balloons = new Kinetic.Image({
 			x: treat.getX() + 128,
@@ -271,8 +272,9 @@ function TreeView(ladder) {
 	
 	this.pick = function(number, callback) {
 		MW.Sound.play(MW.Sounds.CLICK);
-		numpadGroups[number]._rect._originalFill = numpadGroups[number]._rect.attrs.fill;
-		numpadGroups[number]._rect.setFill("red");
+		// TODO: Change to button image
+//		numpadGroups[number]._rect._originalFill = numpadGroups[number]._rect.attrs.fill;
+//		numpadGroups[number]._rect.setFill("red");
 		activeButton = numpadGroups[number]; 
 		staticLayer.draw();
 		callback();
@@ -300,7 +302,8 @@ function TreeView(ladder) {
 	view.on("Ladder.resetScene", function(msg) {
 		view.getTween(bird.attrs).to({x: BIRD.x, y: BIRD.y}, 3000).call(function() {
 			if (activeButton != null) {
-				activeButton._rect.attrs.fill = buttonFill;
+				// TODO: Change to button image
+//				activeButton._rect.attrs.fill = buttonFill;
 				staticLayer.draw();
 			}
 			if (msg.allowNumpad) allowNumpad = true;
@@ -404,6 +407,14 @@ function TreeView(ladder) {
 	}
 	dynamicLayer.add(bird);
 	
+	dynamicLayer.add(new Kinetic.Image({
+		image: MW.Images.TREEGAME_COVER,
+		width: MW.Images.TREEGAME_COVER.width / MW.Images.TREEGAME_BACKGROUND.width * view.getStage().getWidth(),
+		height: MW.Images.TREEGAME_COVER.height / MW.Images.TREEGAME_BACKGROUND.height * view.getStage().getHeight(),
+		x: 238,
+		y: 644
+	}));
+	
 	var numpadGrid = Utils.gridizer(
 		numpad.x, numpad.y,
 		numpad.buttonWidth + numpad.buttonMargin,
@@ -416,20 +427,19 @@ function TreeView(ladder) {
 		(function(i) {
 			var pos = numpadGrid.next();
 			var group = new Kinetic.Group(pos);
-			var rect = new Kinetic.Rect({
-				width: numpad.buttonWidth,
-				height: numpad.buttonHeight,
-				fill: buttonFill,
-				cornerRadius: 10,
-				strokeWidth: 4,
-				stroke: "orange",
+			
+			var button = new Kinetic.Image({
+				image: MW.Images.BUTTON_WOOD,
 				centerOffset: {
-					x: numpad.buttonWidth / 2,
-					y: numpad.buttonHeight / 2
-				}
+					x: MW.Images.BUTTON_WOOD.width / 2,
+					y: MW.Images.BUTTON_WOOD.height / 2
+				},
+				width: numpad.buttonWidth,
+				height: numpad.buttonHeight
 			});
-			group.add(rect);
-			group._rect = rect;
+			
+			group.add(button);
+			group._button = button;
 			var text = new Kinetic.Text({
 				text: i,
 				fontSize: 60,

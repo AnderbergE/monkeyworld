@@ -39,7 +39,10 @@ MW.ImageSources = {
 /** @const */ ELEPHANT: "elephant.png",
 /** @const */ LION: "lion.png",
 /** @const */ GIRAFF: "giraff.png",
-/** @const */ TREEGAME_BACKGROUND: "minigames/treegame/background.png"
+/** @const */ TREEGAME_BACKGROUND:   "minigames/treegame/background.png",
+/** @const */ TREEGAME_COVER:        "minigames/treegame/cover.png",
+/** @const */ TREEGAME_LIZARD:       "minigames/treegame/lizard.png",
+/** @const */ BUTTON_WOOD: "buttons/wood.png"
 };
 
 MW.Images = {};
