@@ -358,7 +358,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 		if (useAgentChooser) {
 			chooser = newObject(MW.AgentChooser, function(agent) {
 				chooser.tearDown();
-				if (chooserView != null) {
+				if (chooserView != null)
 					chooserView.tearDown();
 				agentImage = agent;
 				selectMinigame();

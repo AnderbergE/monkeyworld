@@ -47,7 +47,7 @@ function TreeView(ladder) {
 	view.getStage().add(staticLayer);
 	view.getStage().add(dynamicLayer);
 
-	/** @type {number} */ var stepHeight = 90;
+	/** @type {number} */ var stepHeight = 80;
 	/** @type {number} */ var stepWidth = 120;
 	/** @type {Object} */ var ladderBegin = {
 		/** @type {number} */ x: 130,
@@ -135,15 +135,6 @@ function TreeView(ladder) {
 	bird.add(eyeball1);
 	bird.add(eyeball2);
 	bird.add(wing);
-	
-	var birdNest = new Kinetic.Image({
-		image: MW.Images.BIRDNEST,
-		x: NEST.x,
-		y: NEST.y,
-		width: 180,
-		height: 130
-	});
-	
 	
 	var fly = true;
 	
@@ -357,66 +348,15 @@ function TreeView(ladder) {
 		view.removeTween(bird.attrs);
 	};
 	
-	var background = new Kinetic.Rect({
-		fill: {
-			start: {
-				x: 0,
-				y: 0
-			},
-			end: {
-				x: view.getStage().getWidth(),
-				y: view.getStage().getHeight()
-			},
-			colorStops: [0, '#87CEFA', 0.6, '#87CEFA', 1, '#6A5ACD']
-		},
+	var background = new Kinetic.Image({
+		image: MW.Images.TREEGAME_BACKGROUND,
 		x: 0,
 		y: 0,
-        width: view.getStage().getWidth(),
-        height: view.getStage().getHeight()
+		width: view.getStage().getWidth(),
+		height: view.getStage().getHeight()
 	});
-	
-	var leftGround = new Kinetic.Shape({
-		drawFunc: function() {
-			var context = this.getContext();
-			context.beginPath();
-			context.moveTo(0, view.getStage().getHeight() - GROUND_HEIGHT);
-			context.lineTo(LEFT_GROUND_WIDTH, view.getStage().getHeight() - GROUND_HEIGHT);
-			context.quadraticCurveTo(
-				LEFT_GROUND_WIDTH - 80, view.getStage().getHeight() - GROUND_HEIGHT*0.8,
-				LEFT_GROUND_WIDTH - 100, view.getStage().getHeight());
-			context.lineTo(0, view.getStage().getHeight());
-			context.closePath();
-			this.fill();
-			this.stroke();
-		},
-		fill: GROUND_FILL,
-		stroke: GROUND_STROKE,
-		strokeWidth: GROUND_STROKE_WIDTH
-	});
-	
-	var rightGround = new Kinetic.Shape({
-		drawFunc: function() {
-			var context = this.getContext();
-			context.beginPath();
-			context.moveTo(view.getStage().getWidth(), view.getStage().getHeight() - GROUND_HEIGHT);
-			context.lineTo(view.getStage().getWidth() - RIGHT_GROUND_WIDTH, view.getStage().getHeight() - GROUND_HEIGHT);
-			context.quadraticCurveTo(
-				view.getStage().getWidth() - RIGHT_GROUND_WIDTH + 80, view.getStage().getHeight() - GROUND_HEIGHT*0.8,
-				view.getStage().getWidth() - RIGHT_GROUND_WIDTH + 100, view.getStage().getHeight());
-			context.lineTo(view.getStage().getWidth(), view.getStage().getHeight());
-			context.closePath();
-			this.fill();
-			this.stroke();
-		},
-		fill: GROUND_FILL,
-		stroke: GROUND_STROKE,
-		strokeWidth: GROUND_STROKE_WIDTH
-	});
-	
+
 	staticLayer.add(background);
-	staticLayer.add(leftGround);
-	staticLayer.add(rightGround);
-	staticLayer.add(birdNest);
 
 	view.addInterruptButtons(dynamicLayer);
 	
@@ -442,7 +382,6 @@ function TreeView(ladder) {
 				stepWidth - stepNarrowing, stepHeight,
 				stepNarrowing, stepHeight
 			],
-			fill: "#A52A2A",
 			stroke: "#5C4033",
 			strokeWidth: 5
 		});
@@ -461,59 +400,8 @@ function TreeView(ladder) {
 		group.add(poly);
 		group.add(text);
 		stepGroups[number] = group;
-		staticLayer.add(group);
+//		staticLayer.add(group);
 	}
-	
-	var central = {
-		x: 200,
-		y: ladderBegin.y - (ladder.getLadder().length - 1) * stepHeight
-	};
-	
-	var crown = new Kinetic.Shape({
-		drawFunc: function() {
-			var context = this.getContext();
-			context.beginPath();
-			context.moveTo(central.x, central.y);
-			
-			//
-			context.bezierCurveTo(
-				central.x - 50, central.y - 60,
-				central.x - 100, central.y - 90,
-				central.x - 250, central.y + 80);
-			context.bezierCurveTo(
-					central.x - 70, central.y - 20,
-					central.x - 50, central.y - 30,
-					central.x - 10, central.y + 10);
-			
-			//
-			context.bezierCurveTo(
-					central.x - 50, central.y - 60,
-					central.x - 100, central.y - 150,
-					central.x - 250, central.y - 180);
-			context.bezierCurveTo(
-					central.x - 70, central.y - 150,
-					central.x - 50, central.y - 60,
-					central.x - 10, central.y - 10);
-			
-			//
-			context.bezierCurveTo(
-					central.x + 50, central.y - 60,
-					central.x + 100, central.y - 90,
-					central.x + 250, central.y + 80);
-			context.bezierCurveTo(
-					central.x + 70, central.y - 20,
-					central.x + 50, central.y - 30,
-					central.x + 10, central.y + 10);
-			
-			context.closePath();
-			this.fill();
-			this.stroke();
-		},
-		fill: "#556B2F",
-		stroke: "#006400",
-		strokeWidth: 4
-	});
-	staticLayer.add(crown);
 	dynamicLayer.add(bird);
 	
 	var numpadGrid = Utils.gridizer(
