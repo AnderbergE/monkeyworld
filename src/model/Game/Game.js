@@ -354,14 +354,18 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	 */
 	this.start = function() {
 		var chooser = null;
+		var chooserView = null;
 		if (useAgentChooser) {
 			chooser = newObject(MW.AgentChooser, function(agent) {
 				chooser.tearDown();
+				if (chooserView != null) {
+					chooserView.tearDown();
 				agentImage = agent;
 				selectMinigame();
 			});
 			if (useViews) {
-				newObject(MW.AgentChooserView, chooser).setup();
+				chooserView = newObject(MW.AgentChooserView, chooser);
+				chooserView.setup();
 				that.tell("Game.viewInitiated");
 			}
 		} else {
