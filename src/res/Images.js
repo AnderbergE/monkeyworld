@@ -40,9 +40,18 @@ MW.ImageSources = {
 /** @const */ LION: "lion.png",
 /** @const */ GIRAFF: "giraff.png",
 /** @const */ TREEGAME_BACKGROUND:   "minigames/treegame/background.png",
-/** @const */ TREEGAME_COVER:        "minigames/treegame/cover.png",
+/** @const */ TREEGAME_COVER:        "minigames/treegame/lizard_cover.png",
 /** @const */ TREEGAME_LIZARD:       "minigames/treegame/lizard.png",
-/** @const */ BUTTON_WOOD: "buttons/wood.png"
+/** @const */ BUTTON_WOOD: "buttons/wood.png",
+/** @const */ BUTTON_WOOD_SELECTED: "buttons/wood-selected.png",
+/** @const */ DOTS_1: "numbers/dots/prick-1.png",
+/** @const */ DOTS_2: "numbers/dots/prick-2.png",
+/** @const */ DOTS_3: "numbers/dots/prick-3.png",
+/** @const */ DOTS_4: "numbers/dots/prick-4.png",
+/** @const */ DOTS_5: "numbers/dots/prick-5.png",
+/** @const */ DOTS_6: "numbers/dots/prick-6.png",
+/** @const */ CLOUD: "cloud.png",
+/** @const */ WATERDROP: "waterdrop.png"
 };
 
 MW.Images = {};

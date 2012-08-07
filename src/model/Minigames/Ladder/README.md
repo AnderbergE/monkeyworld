@@ -1,7 +1,7 @@
 Ladder Games
 ============
 
-Here is the overall structure fo the Ladder Games described. This includes the
+Here is the overall structure for the Ladder Games described. This includes the
 Tree Game and the Mountain Game.
 
 Event Order
