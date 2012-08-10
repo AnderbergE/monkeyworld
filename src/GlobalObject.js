@@ -10,21 +10,6 @@ MW.testing = false;
 /**
  * @enum {string}
  */
-MW.Event = {
-	FRAME: "frame",
-	MINIGAME_INITIATED: "miniGameInitiated",
-	MINIGAME_STARTED: "miniGameStarted",
-	MINIGAME_ENDED: "miniGameDone",
-	LEARNING_TRACK_UPDATE: "learningTrackUpdate",
-	BACKEND_SCORE_UPDATE_MODE: "backendScoreUpdateMode",
-	BACKEND_SCORE_UPDATE_MINIGAME: "backendScoreGameUpdateMiniGame"/*,
-	BACKEND_SCORE_HIDE: "backendScoreHide",
-	BACKEND_SCORE_SHOW: "backendScoreShow"	*/
-};
-
-/**
- * @enum {string}
- */
 MW.GameMode = {
 	CHILD_PLAY: "Child Play",
 	AGENT_SEE: "Monkey See",
@@ -45,6 +30,15 @@ Kinetic.NoStage.getWidth = function(){};
 MW.GlobalObject = function(tag) {
 	this._tag = tag;
 	var that = this;
+	
+	document.onkeypress = function(event) {
+		console.log(event.keyCode);
+		if (event.keyCode === 115) {
+			that.tell(MW.Event.PITCHER_LEVEL_ADD, {level:2},true);
+		} else if (event.keyCode === 100) {
+			that.tell("shakeParcel", true);
+		}
+	};
 	
 	/**
 	 * Register a listener to the event manager.

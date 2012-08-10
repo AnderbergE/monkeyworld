@@ -26,6 +26,31 @@ MW.Strings = (function() {
 		"en": "Yay!"
 	},
 	
+	"INTRO_1": {
+		"sv": "Hej! De här vännerna behöver din hjälp",
+		"en": "Hello! These friends need your help"
+	},
+	
+	"INTRO_2": {
+		"sv": "med att få deras trädgård att växa.",
+		"en": "to make their garden grow."
+	},
+	
+	"INTRO_3": {
+		"sv": "Om du kan lära din vän hur man spelar spelen",
+		"en": "If you can teach your friend how to do the games"
+	},
+	
+	"INTRO_4": {
+		"sv": "kan han eller hon samla vattendroppar -",
+		"en": "he or she can collect water drops -"
+	},
+	
+	"INTRO_5": {
+		"sv": "- för att få deras trädgård att växa.",
+		"en": "- to make their garden grow again."
+	},
+	
 	"THANKS_FOR_CHOOSING_ME": {
 		"sv": "Ja! Tack för att du valde mig!",
 		"en": "Yay! Thanks for choosing me!"

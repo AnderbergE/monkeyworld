@@ -10,10 +10,9 @@
  *    max        - max number, default 6
  *    step       - step number, default 1
  *    width      - number of buttons in width, default 2
- *    background - 
  *    button     -
  *    buttonActive -
- *    buttonMargin
+ *    buttonMargin -
  *    buttonOffset - offset from top left corner, where the first button appears
  *    pushed       - button pushed callback, number passed as argument
  *    representations
@@ -42,12 +41,6 @@ MW.Numpad = function(config) {
 	
 	var group = new Kinetic.Group({ x: config.x, y: config.y });
 	
-	if (config.background != undefined) {
-		group.add(new Kinetic.Image({
-			image: config.background
-		}));
-	}
-	
 	for (var i = config.min; i <= config.max; i += config.step) { (function(i) {
 		var pos = grid.next();
 		var buttonGroup = new Kinetic.Group({
@@ -57,6 +50,12 @@ MW.Numpad = function(config) {
 			image: config.button,
 			width: config.buttonWidth,
 			height: config.buttonHeight,
+			shadow: {
+			      color: 'black',
+			      blur: 10,
+			      offset: [3, 3],
+			      alpha: 0.5
+			    }
 		});
 		var representation = new Kinetic.Image({
 			image: config.representations[i],
@@ -79,7 +78,7 @@ MW.Numpad = function(config) {
 				button.attrs.image = config.buttonActive;
 			}
 		};
-		buttonGroup.on("mousedown touchstart", pushFunction);
+		buttonGroup.on("mousedown touchstart", function () { pushFunction(null, false); });
 		buttonGroup.add(button);
 		buttonGroup.add(representation);
 		button.push = pushFunction;
@@ -91,7 +90,6 @@ MW.Numpad = function(config) {
 		for (var i = config.min; i <= config.max; i += config.step) {
 			buttons[i].attrs.image = config.button;
 		}
-		lock = false;
 	};
 	
 	group.lock = function() {

@@ -114,6 +114,10 @@ Kinetic.Container = function() {};
 		Kinetic.Node.prototype.setX = function(x) {};
 		/** @param {number} y */
 		Kinetic.Node.prototype.setY = function(y) {};
+		/** @return {number} */
+		Kinetic.Node.prototype.getY = function() {};
+		/** @return {number} */
+		Kinetic.Node.prototype.getX = function() {};
 		Kinetic.Node.prototype.callback = function() {};
 		Kinetic.Node.prototype.duration = function() {};
 		Kinetic.Node.prototype.easing = function() {};

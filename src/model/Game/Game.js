@@ -305,6 +305,18 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 		miniGame = NO_MINI_GAME;
 		that.tell(MW.Event.MINIGAME_ENDED);
 	};
+	
+	var playIntroduction = function(callback) {
+		if (useViews && !MW.debug) {
+			var introductionView = newObject(MW.IntroductionView, function () {
+				introductionView.tearDown();
+				callback();
+			});
+			introductionView.setup();
+		} else {
+			callback();
+		}
+	};
 
 	/*========================================================================*/
 	/*=== PUBLIC =============================================================*/
@@ -355,23 +367,26 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	this.start = function() {
 		var chooser = null;
 		var chooserView = null;
-		if (useAgentChooser) {
-			chooser = newObject(MW.AgentChooser, function(agent) {
-				chooser.tearDown();
-				if (chooserView != null)
-					chooserView.tearDown();
-				agentImage = agent;
+		
+		playIntroduction(/* then */function () {
+			if (useAgentChooser) {
+				chooser = newObject(MW.AgentChooser, function(agent) {
+					chooser.tearDown();
+					if (chooserView != null)
+						chooserView.tearDown();
+					agentImage = agent;
+					selectMinigame();
+				});
+				if (useViews) {
+					chooserView = newObject(MW.AgentChooserView, chooser);
+					chooserView.setup();
+					that.tell("Game.viewInitiated");
+				}
+			} else {
+				agentImage = MW.Images.MONKEY;
 				selectMinigame();
-			});
-			if (useViews) {
-				chooserView = newObject(MW.AgentChooserView, chooser);
-				chooserView.setup();
-				that.tell("Game.viewInitiated");
 			}
-		} else {
-			agentImage = MW.Images.MONKEY;
-			selectMinigame();
-		}
+		});
 	};
 	
 	/**

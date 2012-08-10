@@ -65,7 +65,14 @@ MW.Module = function(tag) {
 	this.clearTimeout = function(id) {
 		timeoutController.clearTimeout(id);
 	};
-	
+
+	/**
+	 * @param {number} id
+	 */
+	this.clearInterval = function(id) {
+		timeoutController.clearInterval(id);
+	};
+
 	/**
 	 * @constructor
 	 * @private
@@ -91,7 +98,7 @@ MW.Module = function(tag) {
 		 * @returns {number}
 		 */
 		this.setInterval = function(fnc, time) {
-			var handler = setTimeout(fnc, time);
+			var handler = setInterval(fnc, time);
 			timeouts.push(handler);
 			return handler;
 		};
@@ -102,6 +109,14 @@ MW.Module = function(tag) {
 		this.clearTimeout = function(id) {
 			timeouts.remove(id);
 			clearTimeout(id);
+		};
+		
+		/**
+		 * @param {number} id
+		 */
+		this.clearInterval = function(id) {
+			timeouts.remove(id);
+			clearInterval(id);
 		};
 		
 		/**

@@ -23,6 +23,8 @@ function Ladder()
 	/** @type {boolean} */ var birdHasTreat = false;
 	/** @type {boolean} */ var interruptable = false;
 	
+	/** @type {number} */ var round = 0;
+	
 	for (var i = minNumber, j = 0; i <= maxNumber; i += stepNumber)
 		ladder[j++] = i;
 	
@@ -67,6 +69,7 @@ function Ladder()
 	
 	var placeTreat = function() {
 		setTargetNumber();
+		round++;
 		that.tell("Ladder.placeTarget", {
 			callback: function() {
 				that.tell("Ladder.readyToPick", {}, MW.debug);
@@ -174,6 +177,26 @@ function Ladder()
 			return ladder[pos];
 	};
 	
+	/**
+	 * @return {number} the maximum number of treats that the player can get
+	 * @const
+	 */
+	this.getMaximumTreats = function () {
+		return maxTreats;
+	};
+
+	/**
+	 * @return {number} the current round number, which is >= 1 if the minigame
+	 *                  has started
+	 */
+	this.getRoundNumber = function () {
+		if (round === 0) {
+			throw "MinigameNotStartedException";
+		} else {
+			return round;
+		}
+	};
+
 	/**
 	 * Gets the ladder with its numbers
 	 * @returns {Array.<number>}

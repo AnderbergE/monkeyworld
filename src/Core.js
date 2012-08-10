@@ -47,8 +47,8 @@ function Game() {
 	
 	var stageConfig = {
         container: 'container',
-        width: 1024,
-        height: 768
+        width: 1010,
+        height: 660
 	};
 	var stage = new Kinetic.Stage(stageConfig);
 //	var resizeGame = function() {

@@ -30,7 +30,13 @@ MW.Sounds = {
 	WHICH_ONE_DO_YOU_THINK_IT_IS:    new MW.SoundEntry(null, "WHICH_ONE_DO_YOU_THINK_IT_IS"),
 	MONKEY_HMM:                      new MW.SoundEntry(null, "MONKEY_HMM"),
 	MAGIC_CHIMES:                    new MW.SoundEntry("51710__bristolstories__u-chimes3_short", null),
-	
+
+	INTRO_1:                         new MW.SoundEntry(null, "INTRO_1"),
+	INTRO_2:                         new MW.SoundEntry(null, "INTRO_2"),
+	INTRO_3:                         new MW.SoundEntry(null, "INTRO_3"),
+	INTRO_4:                         new MW.SoundEntry(null, "INTRO_4"),
+	INTRO_5:                         new MW.SoundEntry(null, "INTRO_5"),
+
 	LADDER_LOOKS_FUN:                new MW.SoundEntry(null, "LADDER_LOOKS_FUN"),
 	LADDER_SHOW_ME:                  new MW.SoundEntry(null, "LADDER_SHOW_ME"),
 	LADDER_MY_TURN:                  new MW.SoundEntry(null, "LADDER_MY_TURN"),

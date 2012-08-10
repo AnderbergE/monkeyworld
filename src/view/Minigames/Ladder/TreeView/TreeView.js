@@ -8,10 +8,13 @@ function TreeView(ladder) {
 	LadderView.call(this, "TreeView", ladder);
 	var
 		view = this,
+		scale = 1 / 2.083168317,
 		i,
 		numpad,
 		helper,
+		shakeHandler,
 		shakeTreat,
+		treats = [],
 		background,
 		staticLayer,
 		dynamicLayer,
@@ -27,9 +30,9 @@ function TreeView(ladder) {
 		ladderStepPolygon,
 		config = {
 			tree: {
-				x: 130,
-				y: view.getStage().getHeight() - 100 - 80,
-				stepHeight: 80,
+				x: 120,
+				y: view.getStage().getHeight() - 160,
+				stepHeight: 70,
 				stepWidth: 120,
 				stepNarrowing: 10
 			},
@@ -45,8 +48,18 @@ function TreeView(ladder) {
 				offsetWidth: 75
 			},
 			helper: {
-				x: 320,
-				y: 660
+				x: 240,
+				y: 680
+			},
+			treatGrid: {
+				"1": { x: 100, y: 40, rotation: -Math.PI / 9 },
+				"2": { x: 100, y: 100, rotation: Math.PI / 11 },
+				"3": { x: 200, y: 40, rotation: -Math.PI / 12 },
+				"4": { x: 200, y: 100, rotation: Math.PI / 9 }
+			},
+			numpad: {
+				x: 609,
+				y: 120
 			}
 		};
 
@@ -66,13 +79,13 @@ function TreeView(ladder) {
 	view.agentSeeCorrect = MW.Sounds.LADDER_TREE_AGENT_SEE_CORRECT;
 
 	numpad = new MW.Numpad({
-		x: 609,
-		y: 120,
+		x: config.numpad.x,
+		y: config.numpad.y,
 		button: MW.Images.BUTTON_WOOD,
 		buttonActive: MW.Images.BUTTON_WOOD_SELECTED,
-		buttonWidth: 74,
-		buttonHeight: 74,
-		buttonMargin: 10,
+		buttonWidth: MW.Images.BUTTON_WOOD.width,
+		buttonHeight: MW.Images.BUTTON_WOOD.height,
+		buttonMargin: 15,
 		pushed: function (i) {
 			if (view.game.playerIsGamer()) {
 				ladder.pick(i);
@@ -95,7 +108,7 @@ function TreeView(ladder) {
 			"5": MW.Images.DOTS_5,
 			"6": MW.Images.DOTS_6
 		},
-		representationsScale: 0.9
+		representationsScale: 0.75
 	});
 	numpad.lock();
 
@@ -104,71 +117,37 @@ function TreeView(ladder) {
 	view.getStage().add(staticLayer);
 	view.getStage().add(dynamicLayer);
 
-	helper = new Kinetic.Image({
-		image: MW.Images.TREEGAME_LIZARD,
+	helper = new Kinetic.MW.Lizard({
 		x: config.helper.x,
 		y: config.helper.y,
-		rotation: Math.PI / 2,
-		width: 135,
-		height: 80
+		scale: scale
 	});
 
 	shakeTreat = function () {
-		var
-			ox = treat.getX(),
-			oy = treat.getY(),
-			time = 100,
-			offset = 5,
-			waitTime = 4000;
-		view.getTween(treat.attrs)
-			.to({ x: ox - offset }, time)
-			.to({ x: ox + offset }, time)
-			.to({ x: ox - offset }, time)
-			.to({ x: ox + offset }, time)
-			.to({ x: ox - offset }, time)
-			.to({ x: ox + offset }, time)
-			.to({ x: ox - offset }, time)
-			.to({ x: ox + offset }, time)
-			.to({ x: ox - offset }, time)
-			.to({ x: ox }, time);
-		view.getTween(treat.attrs)
-			.to({ y: oy - offset }, time)
-			.to({ y: oy + offset }, time)
-			.to({ y: oy - offset }, time)
-			.to({ y: oy + offset }, time)
-			.to({ y: oy - offset }, time)
-			.to({ y: oy + offset }, time)
-			.to({ y: oy - offset }, time)
-			.to({ y: oy + offset }, time)
-			.to({ y: oy - offset }, time)
-			.to({ y: oy }, time).wait(waitTime)
-			.call(function () { shakeTreat(); });
+		shakeHandler = view.setInterval(function () {
+			treat.shake(view);
+		}, 4000);
 	};
 
 	stopShakeTreat = function () {
-		view.removeTween(treat.attrs);
+		view.clearInterval(shakeHandler);
 	};
 
 	addOnMouseActionToTreat = function () {
-		treat.on("mousedown touchstart", function () {
-			ladder.openTreat();
-		});
+		treat.onClick(ladder.openTreat);
 	};
 
 	createTreat = function (callback) {
-		treat = new Kinetic.Group({ x: config.tree.x, y: config.tree.y });
-		var treatCircle = new Kinetic.Circle({
-			x: config.tree.stepWidth - 20,
-			y: config.tree.stepHeight / 2,
-			radius: config.tree.stepHeight / 2 - 10,
-			fill: "red",
-			stroke: "#440000",
-			strokeWidth: 4
-		});
-		treat.circle = treatCircle;
-		treat.add(treatCircle);
-		view.getTween(treat.attrs).to({ y: stepGroups[ladder.getTargetNumber()].getY() }, 1000).call(callback);
-		dynamicLayer.add(treat);
+		console.log(treats);
+		treat = treats[ladder.getRoundNumber() - 1];
+		view.getTween(treat.attrs).wait(2000).to({
+			x: 250,
+			y: 150,
+			rotation: 2 * Math.PI
+		}, 1000).to({ rotation: 0 }).to({
+			y: stepGroups[ladder.getTargetNumber()].getY() + 25,
+			rotation: 2 * Math.PI * (7 - ladder.getTargetNumber())
+		}, 1000).to({ rotation: 0 }).call(callback);
 	};
 
 	/**
@@ -177,7 +156,7 @@ function TreeView(ladder) {
 	view.confirmTarget = function (msg) {
 		treat.off("mousedown touchstart");
 		stopShakeTreat();
-		treat.circle.setFill("blue");
+		treat.open();
 		numpad.release();
 		staticLayer.draw();
 		var balloons = new Kinetic.Image({
@@ -225,7 +204,7 @@ function TreeView(ladder) {
 	 * Helper movers to the ladder
 	 */
 	view.on("Ladder.approachLadder", function (msg) {
-		view.getTween(helper.attrs).to({x: 300, y: stepGroups[msg.number].getY()}, 5500).call(msg.callback);
+		view.getTween(helper.attrs).to({y: stepGroups[msg.number].getY()}, 1000 * msg.number).call(msg.callback);
 	});
 
 	/**
@@ -245,30 +224,15 @@ function TreeView(ladder) {
 	 * Helper drops the treat
 	 */
 	view.on("Ladder.getTarget", function (msg) {
-		var
-			TIME_TO_DROP_ZONE = 2000,
-			flyTo = {
-				x: config.dropZone.x + config.dropZone.offsetWidth * dropZoneOffset,
-				y: config.dropZone.y - config.dropZone.height
-			},
-			dropAt = {
-				x: flyTo.x,
-				y: flyTo.y
-			};
-		flyTo.x += 170;
-		view.getTween(helper.attrs).to(flyTo, TIME_TO_DROP_ZONE).call(function () {
-			view.getTween(treat.attrs).to({
-				x: config.dropZone.x + config.dropZone.offsetWidth * dropZoneOffset,
-				y: config.dropZone.y
-			}, 500).call(function () {
-				if (!view.game.modeIsAgentDo()) {
-					addOnMouseActionToTreat();
-					shakeTreat();
-				}
-			});
-		});
-		view.getTween(treat.attrs).to(dropAt, TIME_TO_DROP_ZONE).call(function () {
-			msg.callback();
+//		treat.moveToTop();
+		view.getTween(treat.attrs).to({
+			x: config.dropZone.x + config.dropZone.offsetWidth * dropZoneOffset,
+			y: config.dropZone.y
+		}, 2000).call(msg.callback).call(function () {
+			if (!view.game.modeIsAgentDo()) {
+				addOnMouseActionToTreat();
+				shakeTreat();
+			}
 		});
 	});
 
@@ -290,13 +254,17 @@ function TreeView(ladder) {
 	background = new Kinetic.Image({
 		image: MW.Images.TREEGAME_BACKGROUND,
 		x: 0,
-		y: 0,
-		width: view.getStage().getWidth(),
-		height: view.getStage().getHeight()
+		y: view.getStage().getHeight() - MW.Images.TREEGAME_BACKGROUND.height,
+		width: MW.Images.TREEGAME_BACKGROUND.width,
+		height: MW.Images.TREEGAME_BACKGROUND.height
 	});
 
 	staticLayer.add(background);
-
+	staticLayer.add(new Kinetic.Image({
+		image: MW.Images.TREEGAME_TREEDOTS,
+		x: 144,
+		y: 167
+	}));
 	view.addInterruptButtons(dynamicLayer);
 
 	view.on("Ladder.helpAgent", function () {
@@ -309,29 +277,57 @@ function TreeView(ladder) {
 			x: config.tree.x,
 			y: config.tree.y - i * config.tree.stepHeight
 		});
-		ladderStepPolygon = new Kinetic.Polygon({
-			points: [
-				0, 0,
-				config.tree.stepWidth, 0,
-				config.tree.stepWidth - config.tree.stepNarrowing, config.tree.stepHeight,
-				config.tree.stepNarrowing, config.tree.stepHeight
-			],
-			stroke: "#5C4033",
-			strokeWidth: 5
-		});
-		ladderStepGroup.add(ladderStepPolygon);
+//		ladderStepPolygon = new Kinetic.Polygon({
+//			points: [
+//				0, 0,
+//				config.tree.stepWidth, 0,
+//				config.tree.stepWidth - config.tree.stepNarrowing, config.tree.stepHeight,
+//				config.tree.stepNarrowing, config.tree.stepHeight
+//			],
+//			stroke: "#5C4033",
+//			strokeWidth: 5
+//		});
+//		ladderStepGroup.add(ladderStepPolygon);
 		stepGroups[ladderStepNumber] = ladderStepGroup;
+//		staticLayer.add(ladderStepGroup);
+//		staticLayer.draw();
 	}
+
 	dynamicLayer.add(helper);
 
 	dynamicLayer.add(new Kinetic.Image({
 		image: MW.Images.TREEGAME_COVER,
-		width: MW.Images.TREEGAME_COVER.width / MW.Images.TREEGAME_BACKGROUND.width * view.getStage().getWidth(),
-		height: MW.Images.TREEGAME_COVER.height / MW.Images.TREEGAME_BACKGROUND.height * view.getStage().getHeight(),
-		x: 158,
-		y: 643
+		width: MW.Images.TREEGAME_COVER.width,
+		height: MW.Images.TREEGAME_COVER.height,
+		x: 184,
+		y: view.getStage().getHeight() - MW.Images.TREEGAME_COVER.height
 	}));
 
+	/**
+	 * Hang the treats in the crown
+	 */
+	(function (view) {
+		var
+			max = ladder.getMaximumTreats(),
+			parcel;
+		for (i = 0; i < max; i += 1) {
+			parcel = new Kinetic.MW.Parcel({
+				x: config.treatGrid[i + 1].x,
+				y: config.treatGrid[i + 1].y,
+				rotation: config.treatGrid[i + 1].rotation,
+				type: (i % 3) + 1,
+				scale: scale
+			});
+			dynamicLayer.add(parcel);
+			treats.push(parcel);
+		}
+	}) (this);
+
+	staticLayer.add(new Kinetic.Image({
+		x: config.numpad.x - 180,
+		y: config.numpad.y - 280,
+		image: MW.Images.NUMPAD_WOOD
+	}));
 	dynamicLayer.add(numpad);
 
 	view.addAgent(
