@@ -19,6 +19,7 @@ function TreeView(ladder) {
 		staticLayer,
 		dynamicLayer,
 		tellMyTurn = false,
+		currentPick,
 		stopShakeTreat,
 		treat = null,
 		createTreat,
@@ -49,7 +50,7 @@ function TreeView(ladder) {
 			},
 			helper: {
 				x: 240,
-				y: 680
+				y: 580
 			},
 			treatGrid: {
 				"1": { x: 100, y: 40, rotation: -Math.PI / 9 },
@@ -121,7 +122,7 @@ function TreeView(ladder) {
 		x: config.helper.x,
 		y: config.helper.y,
 		scale: scale
-	});
+	}, view);
 
 	shakeTreat = function () {
 		shakeHandler = view.setInterval(function () {
@@ -204,14 +205,44 @@ function TreeView(ladder) {
 	 * Helper movers to the ladder
 	 */
 	view.on("Ladder.approachLadder", function (msg) {
-		view.getTween(helper.attrs).to({y: stepGroups[msg.number].getY()}, 1000 * msg.number).call(msg.callback);
+		currentPick = msg.number;
+		helper.startWalk();
+		view.getTween(helper.attrs).to({
+			y: config.helper.y - 100
+		}, 2000).to({
+			rotation: -Math.PI / 8,
+			x: config.helper.x - 25,
+		}, 1000).to({
+			rotation: 0,
+			y: config.helper.y - 170
+		}, 1000).to({
+			y: stepGroups[msg.number].getY()
+		}, 500 * msg.number).call(function () {
+			helper.stopWalk();
+			msg.callback();
+		});
 	});
 
 	/**
 	 * Helper moves to its home
 	 */
 	view.on("Ladder.resetScene", function (msg) {
-		view.getTween(helper.attrs).to({x: config.helper.x, y: config.helper.y}, 3000).call(function () {
+		helper.startWalk();
+		view.getTween(helper.attrs).to({
+			y: config.helper.y - 170
+		}, 1000).to({
+			rotation: -Math.PI / 16,
+			x: config.helper.x,
+			y: config.helper.y - 70
+		}, 1000).to({
+			rotation: 0,
+			y: config.helper.y - 50
+		}, 1000).to({
+			rotation: 0,
+			x: config.helper.x,
+			y: config.helper.y
+		}, 500 * currentPick).call(function () {
+			helper.stopWalk();
 			numpad.release();
 			if ((msg.allowNumpad && view.game.modeIsChild()) || view.game.modeIsAgentSee()) {
 				numpad.unlock();
@@ -224,7 +255,6 @@ function TreeView(ladder) {
 	 * Helper drops the treat
 	 */
 	view.on("Ladder.getTarget", function (msg) {
-//		treat.moveToTop();
 		view.getTween(treat.attrs).to({
 			x: config.dropZone.x + config.dropZone.offsetWidth * dropZoneOffset,
 			y: config.dropZone.y
