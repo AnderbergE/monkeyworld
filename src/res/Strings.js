@@ -47,8 +47,23 @@ MW.Strings = (function() {
 	},
 	
 	"INTRO_5": {
-		"sv": "- för att få deras trädgård att växa.",
-		"en": "- to make their garden grow again."
+		"sv": "- för att få deras trädgård att växa -",
+		"en": "- to make their garden grow again -"
+	},
+	
+	"INTRO_GARDEN_1": {
+		"sv": "- från det här...",
+		"en": "- from this..."
+	},
+	
+	"INTRO_GARDEN_2": {
+		"sv": "...till det här!",
+		"en": "...to this!"
+	},
+	
+	"CHOOSE_YOUR_FRIEND": {
+		"sv": "Börja med att välja vilken vän du vill hjälpa!",
+		"en": "First, choose the friend you would like to teach!"
 	},
 	
 	"THANKS_FOR_CHOOSING_ME": {
@@ -74,6 +89,21 @@ MW.Strings = (function() {
 	"MAYBE_THAT_WORKS": {
 		"sv": "Okej, vi testar och ser om det är rätt.",
 		"en": "OK, let's see if this works."
+	},
+	
+	"YAY_HELPED_ME_GET_WATER_DROP_1": {
+		"sv": "Hurra! Du hjälpte mig att få en vattendroppe",
+		"en": "Yay! You helped me get a water drop"
+	},
+	
+	"YAY_HELPED_ME_GET_WATER_DROP_2": {
+		"sv": "till min trädgård, så den kan växa!",
+		"en": "for my garden to grow again!"
+	},
+	
+	"LETS_FILL_THE_BUCKET": {
+		"sv": "Kom igen och fyll kannan!",
+		"en": "Let's fill the bucket!"
 	},
 	
 	"WHICH_ONE_DO_YOU_THINK_IT_IS": {

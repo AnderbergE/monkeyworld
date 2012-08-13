@@ -20,7 +20,7 @@ Kinetic.MW.Lizard = function (config, view) {
 	group.add(image);
 	
 	group.startWalk = function () {
-		var INTERVAL = 400;
+		var INTERVAL = 280;
 		image.attrs.image = MW.Images.TREEGAME_LIZARD_STEP2;
 		walkInterval = view.setInterval(function () {
 			image.attrs.image = MW.Images.TREEGAME_LIZARD_STEP1;

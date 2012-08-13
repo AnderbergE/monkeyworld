@@ -161,6 +161,7 @@ MW.AgentChooserView = function(chooser) {
 			var pos = buttonGrid.next();
 			buttons.add(new Button(agents[i], pos.x, pos.y));
 		}
+		MW.Sound.play(MW.Sounds.CHOOSE_YOUR_FRIEND);
 	};
 
 	/**

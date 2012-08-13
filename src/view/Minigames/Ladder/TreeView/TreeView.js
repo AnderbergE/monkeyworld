@@ -137,6 +137,13 @@ function TreeView(ladder) {
 	addOnMouseActionToTreat = function () {
 		treat.onClick(ladder.openTreat);
 	};
+	
+	view.on(MW.Event.PITCHER_LEVEL_ADD_BEFORE, function (msg) {
+		view.tell(MW.Event.PITCHER_LEVEL_SET_DROP_ORIGIN, {
+			x: treats[ladder.getRoundNumber() - 1].getX(),
+			y: treats[ladder.getRoundNumber() - 1].getY()
+		});
+	});
 
 	createTreat = function (callback) {
 		console.log(treats);
@@ -161,7 +168,7 @@ function TreeView(ladder) {
 		numpad.release();
 		staticLayer.draw();
 		var balloons = new Kinetic.Image({
-			x: treat.getX() + 128,
+			x: treat.getX(),
 			y: treat.getY(),
 			image: MW.Images.BALLOONS,
 			width: 128,
@@ -177,7 +184,7 @@ function TreeView(ladder) {
 		});
 		dynamicLayer.add(balloons);
 		view.getTween(balloons.attrs.scale).to({ x: 1, y: 1 }, 500).call(function () {
-			view.getTween(balloons.attrs).to({ y: 100 }, 2000).call(msg.callback);
+			view.getTween(balloons.attrs).to({ y: 20 }, 2000).call(msg.callback);
 		});
 	};
 
@@ -202,17 +209,16 @@ function TreeView(ladder) {
 	};
 
 	/**
-	 * Helper movers to the ladder
+	 * Helper movers up the ladder
 	 */
 	view.on("Ladder.approachLadder", function (msg) {
 		currentPick = msg.number;
-		helper.startWalk();
 		view.getTween(helper.attrs).to({
 			y: config.helper.y - 100
 		}, 2000).to({
 			rotation: -Math.PI / 8,
-			x: config.helper.x - 25,
-		}, 1000).to({
+			x: config.helper.x - 25
+		}, 1000).call(helper.startWalk).to({
 			rotation: 0,
 			y: config.helper.y - 170
 		}, 1000).to({
@@ -230,7 +236,7 @@ function TreeView(ladder) {
 		helper.startWalk();
 		view.getTween(helper.attrs).to({
 			y: config.helper.y - 170
-		}, 1000).to({
+		}, 500 * currentPick).call(helper.stopWalk).to({
 			rotation: -Math.PI / 16,
 			x: config.helper.x,
 			y: config.helper.y - 70
@@ -241,8 +247,7 @@ function TreeView(ladder) {
 			rotation: 0,
 			x: config.helper.x,
 			y: config.helper.y
-		}, 500 * currentPick).call(function () {
-			helper.stopWalk();
+		}, 2000).call(function () {
 			numpad.release();
 			if ((msg.allowNumpad && view.game.modeIsChild()) || view.game.modeIsAgentSee()) {
 				numpad.unlock();

@@ -13,6 +13,8 @@ MW.ImageSources = {
 /** @const */ ELEPHANT: "elephant.png",
 /** @const */ LION: "lion.png",
 /** @const */ GIRAFF: "giraff.png",
+/** @const */ GARDEN_BG: "bg-garden.png",
+/** @const */ GARDEN_SAD_BG: "bg-sadgarden.png",
 /** @const */ TREEGAME_BACKGROUND:   "minigames/treegame/background.png",
 /** @const */ TREEGAME_TREEDOTS:   "minigames/treegame/treedots.png",
 /** @const */ TREEGAME_COVER:        "minigames/treegame/lizard_cover.png",

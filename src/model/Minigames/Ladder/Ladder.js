@@ -89,20 +89,21 @@ function Ladder()
 	
 	this.openTreat = function() {
 		collectedTreats++;
-		that.tell("Ladder.confirmTarget", {
-			callback: function() {
-				/*
-				 * End round if gamer has maximum number of treats, OR if
-				 * gamer has tried at least minTries times and has at least
-				 * minTreats.
-				 */
-				if (collectedTreats === maxTreats || (tries >= minTries && collectedTreats >= minTreats))
-					that.tell("Ladder.cheer", { callback: function() { that.roundDone(); } }, MW.debug);
-				else {
-					placeTreat();
-				}
+		var callback = function () {
+			if (collectedTreats === maxTreats || (tries >= minTries && collectedTreats >= minTreats))
+				that.tell("Ladder.cheer", { callback: function() { that.roundDone(); } }, MW.debug);
+			else {
+				placeTreat();
 			}
-		}, MW.debug);
+		};
+		if (!that.game.modeIsChild()) {
+			that.game.addWaterDrop(callback);
+		} else {
+			that.tell("Ladder.confirmTarget", {
+				getTreat: that.game.modeIsChild(),
+				callback: callback
+			}, MW.debug);
+		}
 	};
 	
 	/** @type {number} */ var lastHelpAttempt = 0;

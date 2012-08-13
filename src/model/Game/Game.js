@@ -85,6 +85,8 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	/** @type {number}                     */ var miniGameScore   = 0;
 	                                          var agentImage      = null;
 	                                          var currentConfiguration = null;
+	                                          var waterDrops      = 0;
+	                                          var gardenVerdure   = 0;
 	
 	/** @type {MW.LearningTrack}           */ var _learningTrack  = NO_TRACK;
 	/** @type {Array.<MW.MinigameLauncher>} */ var minigameArray = new Array();
@@ -108,7 +110,8 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	if (useViews === undefined) useViews = true;
 	if (useAgentChooser === undefined) useAgentChooser = true;
 	//this.on("frame", function(msg) { miniGame.onFrame(msg.frame); });
-	if (useViews) newObject(MonkeyWorldView);
+	if (useViews)
+		newObject(MonkeyWorldView);
 
 	
 	/*========================================================================*/
@@ -233,8 +236,10 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 		player = GAMER;
 		gameMode = MW.GameMode.CHILD_PLAY;
 //		minigameHandler = newObject(MW.MinigameHandler);
-		if (useViews)
+		if (useViews) {
 			miniGameHandlerView = newObject(MW.MinigameHandlerView);
+			miniGameHandlerView.setup();
+		}
 		chooseMiniGame(function() {
 			setMinigameScore(0);
 			startMiniGame();
@@ -295,7 +300,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	/**
 	 * Stop the current mini game.
 	 */
-	var stopMiniGame = function() {
+	var stopMiniGame = function () {
 		that.tell("Game.stopMiniGame");
 		if (useViews)
 			miniGameHandlerView.tearDown();
@@ -305,16 +310,54 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 		miniGame = NO_MINI_GAME;
 		that.tell(MW.Event.MINIGAME_ENDED);
 	};
+
+	var waterGarden = function (callback) {
+		console.log(waterGarden);
+		var afterWatering = function () {
+			gardenVerdure += waterDrops;
+			waterDrops = 0;
+			that.tell(MW.Event.PITCHER_LEVEL_RESET);
+			gardenView.tearDown();
+			if (callback != undefined)
+				callback();
+		};
+		if (useViews) {
+			var gardenView = newObject(MW.GardenView);
+			gardenView.setup();
+			that.tell("Game.waterGarden", { callback: function () {
+				afterWatering();
+			}}, true);
+		} else {
+			afterWatering();
+		}
+	};
+
+	var demonstrateGarden = function (callback) {
+		if (useViews) {
+			var gardenView = newObject(MW.GardenView);
+			gardenView.setup();
+			that.tell("Game.viewInitiated");
+			that.tell("Game.demonstrateGarden", { callback: function () {
+				gardenView.tearDown();
+				callback();				
+			}});
+		} else {
+			callback();
+		}
+	};
 	
-	var playIntroduction = function(callback) {
+	var playIntroduction = function (callback) {
 		if (useViews && !MW.debug) {
 			var introductionView = newObject(MW.IntroductionView, function () {
 				introductionView.tearDown();
-				callback();
+				demonstrateGarden(callback)
+//				callback();
 			});
 			introductionView.setup();
+			that.tell("Game.viewInitiated");
 		} else {
-			callback();
+//			callback();
+			demonstrateGarden(callback);
 		}
 	};
 
@@ -409,7 +452,27 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 		this.stop();
 		this.start();
 	};
-	
+
+	this.addWaterDrop = function (callback) {
+		console.log("addWaterDrop");
+		that.tell(MW.Event.PITCHER_LEVEL_ADD_BEFORE);
+		that.tell(MW.Event.PITCHER_LEVEL_ADD, { callback: callback });
+		waterDrops += 1;
+		console.log(waterDrops);
+		if (waterDrops === 6) {
+			console.log("OK");
+			waterGarden();
+		}
+	};
+
+	this.getWaterDrops = function () {
+		return waterDrops;
+	};
+
+	this.getGardenVerdure = function () {
+		return gardenVerdure;
+	};
+
 	/**
 	 * Returns the current mini game.
 	 * @return {MiniGame|NoMiniGame}

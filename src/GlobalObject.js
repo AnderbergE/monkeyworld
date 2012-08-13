@@ -4,7 +4,7 @@
 // */
 ////var MW = {};
 
-MW.debug = true;
+MW.debug = false;
 MW.testing = false;
 
 /**
@@ -34,7 +34,7 @@ MW.GlobalObject = function(tag) {
 	document.onkeypress = function(event) {
 		console.log(event.keyCode);
 		if (event.keyCode === 115) {
-			that.tell(MW.Event.PITCHER_LEVEL_ADD, {level:2},true);
+			that.tell(MW.Event.PITCHER_LEVEL_ADD, { x:20, y:100 },true);
 		} else if (event.keyCode === 100) {
 			that.tell("shakeParcel", true);
 		}

@@ -39,7 +39,7 @@ Kinetic.MW.Parcel = function (config) {
 
 	/**
 	 * Shakes the parcel
-	 * @param {MW.ViewModule}
+	 * @param {MW.ViewModule} view
 	 */
 	group.shake = function (view) {
 		var
