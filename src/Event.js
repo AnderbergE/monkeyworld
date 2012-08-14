@@ -13,5 +13,8 @@ MW.Event = {
 	PITCHER_LEVEL_ADD: "setPitcherLevel",
 	PITCHER_LEVEL_SET_DROP_ORIGIN: "setPitcherLevelSetDropOrigin",
 	PITCHER_LEVEL_RESET: "resetPitcherLevel",
-	TREE_GAME_SET_PARCELS: "treeGameSetParcels"
+	TREE_GAME_SET_PARCELS: "treeGameSetParcels",
+	
+	WATER_GARDEN: "Game.waterGarden",
+	GARDEN_WATERED: "Game.gardenWatered"
 };

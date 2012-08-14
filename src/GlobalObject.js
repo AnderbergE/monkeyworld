@@ -31,14 +31,14 @@ MW.GlobalObject = function(tag) {
 	this._tag = tag;
 	var that = this;
 	
-	document.onkeypress = function(event) {
-		console.log(event.keyCode);
-		if (event.keyCode === 115) {
-			that.tell(MW.Event.PITCHER_LEVEL_ADD, { x:20, y:100 },true);
-		} else if (event.keyCode === 100) {
-			that.tell("shakeParcel", true);
-		}
-	};
+//	document.onkeypress = function(event) {
+//		console.log(event.keyCode);
+//		if (event.keyCode === 115) {
+//			that.tell(MW.Event.PITCHER_LEVEL_ADD, { x:20, y:100 },true);
+//		} else if (event.keyCode === 100) {
+//			that.tell("shakeParcel", true);
+//		}
+//	};
 	
 	/**
 	 * Register a listener to the event manager.

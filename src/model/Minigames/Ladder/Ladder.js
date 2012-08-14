@@ -6,7 +6,6 @@ function Ladder()
 {
 	MiniGame.call(this, "Ladder");
 	/** @type {Ladder} */ var that = this;
-//	this.tag("Ladder");
 	
 	/** @type {number} */ var minNumber = 1;
 	/** @type {number} */ var maxNumber = 6;
@@ -105,7 +104,7 @@ function Ladder()
 			}, MW.debug);
 		}
 	};
-	
+
 	/** @type {number} */ var lastHelpAttempt = 0;
 	/** @type {number} */ var timesHelped = 0;
 	/** @const @type {number} */ var MAX_HELP = 4;

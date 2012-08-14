@@ -59,8 +59,8 @@ function TreeView(ladder) {
 				"4": { x: 200, y: 100, rotation: Math.PI / 9 }
 			},
 			numpad: {
-				x: 609,
-				y: 120
+				x: 409,
+				y: 180
 			}
 		};
 
@@ -87,19 +87,19 @@ function TreeView(ladder) {
 		buttonWidth: MW.Images.BUTTON_WOOD.width,
 		buttonHeight: MW.Images.BUTTON_WOOD.height,
 		buttonMargin: 15,
-		pushed: function (i) {
-			if (view.game.playerIsGamer()) {
-				ladder.pick(i);
-			} else if (view.game.playerIsAgent() && !tellMyTurn) {
-				tellMyTurn = true;
-				MW.Sound.play(MW.Sounds.NO_MY_TURN);
+		forbid: function (i) {
+			tellMyTurn = true;
+			MW.Sound.play(MW.Sounds.NO_MY_TURN);
+			view.setTimeout(function () {
+				MW.Sound.play(MW.Sounds.BUT_YOU_CAN_INTERRUPT);
 				view.setTimeout(function () {
-					MW.Sound.play(MW.Sounds.BUT_YOU_CAN_INTERRUPT);
-					view.setTimeout(function () {
-						tellMyTurn = false;
-					}, 2000);
+					tellMyTurn = false;
 				}, 2000);
-			}
+			}, 2000);
+		},
+		pushed: function (i) {
+			if (view.game.playerIsGamer())
+				ladder.pick(i);
 		},
 		representations: {
 			"1": MW.Images.DOTS_1,
@@ -184,7 +184,7 @@ function TreeView(ladder) {
 		});
 		dynamicLayer.add(balloons);
 		view.getTween(balloons.attrs.scale).to({ x: 1, y: 1 }, 500).call(function () {
-			view.getTween(balloons.attrs).to({ y: 20 }, 2000).call(msg.callback);
+			view.getTween(balloons.attrs).to({ y: 200 }, 2000).call(msg.callback);
 		});
 	};
 
@@ -367,7 +367,7 @@ function TreeView(ladder) {
 
 	view.addAgent(
 		view.getStage().getWidth() - 500,
-		view.getStage().getHeight() - 200 - view.agentImage.height,
+		view.getStage().getHeight() - 200 - view.game.getAgentView().standing().height,
 		dynamicLayer
 	);
 	staticLayer.draw();

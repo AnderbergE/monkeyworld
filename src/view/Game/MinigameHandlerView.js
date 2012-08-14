@@ -15,12 +15,12 @@ MW.MinigameHandlerView = function () {
 		/** @const @type {string} */ var label = "Backend Score (current minigame):";
 		var text = new Kinetic.Text({
 			text: label,
-			fontSize: 16,
+			fontSize: 12,
 			fontFamily: "sans-serif",
 			textFill: "black",
 			align: "left",
 			verticalAlign: "middle",
-			x: view.stage.getWidth() - 500,
+			x: view.stage.getWidth() - 700,
 			y: 35
 		});
 		view.on(MW.Event.BACKEND_SCORE_UPDATE_MINIGAME, function(msg) {
@@ -44,12 +44,12 @@ MW.MinigameHandlerView = function () {
 		/** @const @type {string} */ var label = "Learning track (current game):";
 		var text = new Kinetic.Text({
 			text: label,
-			fontSize: 16,
+			fontSize: 12,
 			fontFamily: "sans-serif",
 			textFill: "black",
 			align: "left",
 			verticalAlign: "middle",
-			x: view.stage.getWidth() - 500,
+			x: view.stage.getWidth() - 700,
 			y: 55
 		});
 		view.on(MW.Event.MINIGAME_STARTED, function(msg) {

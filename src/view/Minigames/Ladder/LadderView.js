@@ -29,21 +29,13 @@ function LadderView(tag, ladder)
 	
 	this.addAgent = function(x, y, layer) {
 		agent = new Kinetic.Image({
-			image: view.agentImage,
+			image: view.game.getAgentView().standing(),
 			x: view.getStage().getWidth() + 10,
 			y: y
 		});
 		layer.add(agent);
 		
-		if (view.game.modeIsChild()) {
-			var peekAgent = function() {
-				view.setTimeout(function() {
-					view.getTween(agent.attrs).to({x:view.getStage().getWidth() - 100, rotation: -Math.PI/5}, 1000)
-					.wait(2000).to({x:view.getStage().getWidth() + 10}, 1000).call(function(){peekAgent();});
-				}, 2000);
-			};
-			peekAgent();
-		} else if (view.game.modeIsAgentSee() || view.game.modeIsAgentDo()) {
+		if (view.game.modeIsAgentSee() || view.game.modeIsAgentDo()) {
 			agent.setX(x);		
 		}
 		

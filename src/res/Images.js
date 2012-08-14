@@ -36,7 +36,11 @@ MW.ImageSources = {
 /** @const */ CLOUD: "moln.png",
 /** @const */ WATERDROP: "vattendroppe.png",
 /** @const */ PITCHER: "vattenkanna.png",
-/** @const */ PITCHER_BOTTOM: "vattenkanna-botten.png"
+/** @const */ PITCHER_BOTTOM: "vattenkanna-botten.png",
+
+/** @const */ AGENT_FACE_NORMAL_MOUSE: "agents/mouse/facials/m-normal.png",
+/** @const */ AGENT_FACE_HAPPY_MOUSE:  "agents/mouse/facials/m-glad.png",
+/** @const */ AGENT_FACE_SURPRISED_MOUSE: "agents/mouse/facials/m-suprised.png"
 };
 
 MW.Images = {};

@@ -72,11 +72,13 @@ MW.Numpad = function(config) {
 		});
 		var pushFunction = function(event, force) {
 			if (force === undefined) force = false;
-			if (force || !publicLock) {
+			if (!force && publicLock) {
+				config.forbid(i);
+			} else if (force || !publicLock) {
 				group.lock();
 				config.pushed(i);
 				button.attrs.image = config.buttonActive;
-			}
+			} 
 		};
 		buttonGroup.on("mousedown touchstart", function () { pushFunction(null, false); });
 		buttonGroup.add(button);

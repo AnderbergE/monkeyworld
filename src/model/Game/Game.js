@@ -83,10 +83,10 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	/** @type {number}                     */ var _round          = 1;
 	/** @type {MW.MiniGameResult}          */ var result          = NO_RESULT;
 	/** @type {number}                     */ var miniGameScore   = 0;
-	                                          var agentImage      = null;
 	                                          var currentConfiguration = null;
 	                                          var waterDrops      = 0;
 	                                          var gardenVerdure   = 0;
+	                                          var agentView       = null;
 	
 	/** @type {MW.LearningTrack}           */ var _learningTrack  = NO_TRACK;
 	/** @type {Array.<MW.MinigameLauncher>} */ var minigameArray = new Array();
@@ -231,7 +231,6 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	};
 	
 	var selectMinigame = function() {
-		GameView.prototype.agentImage = agentImage;
 		result = new MW.MiniGameResult();
 		player = GAMER;
 		gameMode = MW.GameMode.CHILD_PLAY;
@@ -283,7 +282,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 		that.evm.print();
 		miniGameStarter();
 		if (useViews) {
-			miniGameView.prototype.agentImage = GameView.prototype.agentImage;
+//			miniGameView.prototype.agentImage = GameView.prototype.agentImage;
 			currentMiniGameView = newObject(miniGameView, miniGame);
 			currentMiniGameView.setup();
 			that.tell("Game.miniGameListenersInitiated");
@@ -312,28 +311,36 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	};
 
 	var waterGarden = function (callback) {
-		console.log(waterGarden);
 		var afterWatering = function () {
 			gardenVerdure += waterDrops;
 			waterDrops = 0;
 			that.tell(MW.Event.PITCHER_LEVEL_RESET);
 			gardenView.tearDown();
+			that.tell(MW.Event.GARDEN_WATERED);
 			if (callback != undefined)
 				callback();
 		};
 		if (useViews) {
 			var gardenView = newObject(MW.GardenView);
 			gardenView.setup();
-			that.tell("Game.waterGarden", { callback: function () {
+			that.tell(MW.Event.WATER_GARDEN, { callback: function () {
 				afterWatering();
 			}}, true);
 		} else {
 			afterWatering();
 		}
 	};
-
+	document.onkeypress = function(event) {
+		console.log(event.keyCode);
+		if (event.keyCode === 100) {
+			waterGarden();
+		} else if (event.keyCode === 115) {
+			that.addWaterDrop();
+		}
+	};
+	
 	var demonstrateGarden = function (callback) {
-		if (useViews) {
+		if (useViews && !MW.debug) {
 			var gardenView = newObject(MW.GardenView);
 			gardenView.setup();
 			that.tell("Game.viewInitiated");
@@ -404,6 +411,10 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 		return miniGameScore;
 	};
 	
+	this.getAgentView = function () {
+		return agentView;
+	};
+	
 	/**
 	 * Start the Monkey World game
 	 */
@@ -417,7 +428,8 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 					chooser.tearDown();
 					if (chooserView != null)
 						chooserView.tearDown();
-					agentImage = agent;
+//					agentImage = agent;
+					agentView = new agent.view();
 					selectMinigame();
 				});
 				if (useViews) {
@@ -426,7 +438,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 					that.tell("Game.viewInitiated");
 				}
 			} else {
-				agentImage = MW.Images.MONKEY;
+				agentView = new MW.MonkeyAgentView();
 				selectMinigame();
 			}
 		});
@@ -456,13 +468,17 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	this.addWaterDrop = function (callback) {
 		console.log("addWaterDrop");
 		that.tell(MW.Event.PITCHER_LEVEL_ADD_BEFORE);
-		that.tell(MW.Event.PITCHER_LEVEL_ADD, { callback: callback });
+		that.tell(MW.Event.PITCHER_LEVEL_ADD, { callback: function () {
+			if (waterDrops === 6) {
+				console.log("OK");
+				waterGarden(callback);
+			} else {
+				if (callback != undefined)
+					callback();
+			}
+		}});
 		waterDrops += 1;
 		console.log(waterDrops);
-		if (waterDrops === 6) {
-			console.log("OK");
-			waterGarden();
-		}
 	};
 
 	this.getWaterDrops = function () {

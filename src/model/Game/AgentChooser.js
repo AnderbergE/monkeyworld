@@ -7,17 +7,18 @@ MW.AgentChooser = function(done) {
 	var chooser = this;
 	
 	var agents = [
-		MW.Images.MONKEY,
-		MW.Images.LION,
-		MW.Images.ELEPHANT,
-		MW.Images.GIRAFF];
-	
+		{ model: MW.MonkeyAgent, view: MW.MonkeyAgentView },
+		{ model: MW.MouseAgent, view: MW.MouseAgentView },
+		{ model: MW.MonkeyAgent, view: MW.MonkeyAgentView },
+		{ model: MW.MonkeyAgent, view: MW.MonkeyAgentView }
+	];
+
 	/**
 	 * Get an array representing the available agents.
 	 * @returns {Array}
 	 */
 	chooser.getAgents = function() { return agents; };
-	
+
 	/**
 	 * Choose an agent
 	 * @param agent
@@ -25,5 +26,4 @@ MW.AgentChooser = function(done) {
 	chooser.choose = function(agent) {
 		done(agent);
 	};
-	
 };

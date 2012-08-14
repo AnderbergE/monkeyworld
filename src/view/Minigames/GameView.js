@@ -16,12 +16,12 @@ function GameView(tag) {
 		var label = "Backend Score (current mode):";
 		var text = new Kinetic.Text({
 			text: label,
-			fontSize: 16,
+			fontSize: 12,
 			fontFamily: "sans-serif",
 			textFill: "black",
 			align: "left",
 			verticalAlign: "middle",
-			x: view.stage.getWidth() - 500,
+			x: view.stage.getWidth() - 700,
 			y: 15
 		});
 		layer.add(text);		
@@ -30,6 +30,28 @@ function GameView(tag) {
 		});
 		view.addTearDown(function() {
 			layer.remove(text);
+		});
+	})(this);
+
+	/**
+	 * Show the face of the agent in the top right corner in child play mode
+	 */
+	(function (view) {
+		var faceImageObj = view.game.getAgentView().normalFace();
+		var faceImage = new Kinetic.Image({
+			image: faceImageObj,
+			x: view.getStage().getWidth() - faceImageObj.width - 15,
+			y: 12,
+			scale: 0.5
+		});
+		view.on(MW.Event.MINIGAME_STARTED, function(msg) {
+			if (view.game.modeIsChild()) {
+				layer.add(faceImage);
+			} else
+				console.log(faceImage);
+		});
+		view.addTearDown(function() {
+			layer.remove(faceImage);
 		});
 	})(this);
 }
