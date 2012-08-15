@@ -445,7 +445,35 @@ SoundObject.prototype.autoPlay = function() {};
 
 
 function console() {};
-console.log = function(msg) {};
+/**
+ * @param {*} obj1
+ * @param {...} objs
+ */
+console.log = function (obj1, objs) {};
+
+/**
+ * @param {*} obj1
+ * @param {...} objs
+ */
+console.warn = function (obj1, objs) {};
+
+/**
+ * @param {*} obj1
+ * @param {...} objs
+ */
+console.debug = function (obj1, objs) {};
+
+/**
+ * @param {*} obj1
+ * @param {...} objs
+ */
+console.error = function (obj1, objs) {};
+
+/**
+ * @param {*} obj1
+ * @param {...} objs
+ */
+console.info = function (obj1, objs) {};
 
 /*============================================================================*/
 

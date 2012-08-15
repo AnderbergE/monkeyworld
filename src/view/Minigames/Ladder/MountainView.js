@@ -1,7 +1,7 @@
 /**
  * @constructor
  * @extends {LadderView}
- * @param {Ladder} game
+ * @param {MW.LadderMinigame} game
  */
 function MountainView(game) {
 	/** @type {MountainView} */ var view = this;

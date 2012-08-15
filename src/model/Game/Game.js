@@ -36,11 +36,11 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	 */
 	var newObject = function(object, arg1, arg2, arg3, arg4) {
 		/*
-		 * TODO: Think real hard about if this is a good way to give everyone
-		 * access to the EventManager, MW.Game and Kinetic.Stage objects. If
-		 * using ordinary constructors instead, this whole method is not
-		 * necessary any more, since the caller can use the keyword 'new'
-		 * instead.
+		 * TODO: Think real hard about if this is a good way to give
+		 * everyone access to the EventManager, MW.Game and
+		 * Kinetic.Stage objects. If using ordinary constructors
+		 * instead, this whole method is not necessary any more, since 
+		 * the caller can use the keyword 'new' instead.
 		 */
 		object.prototype.evm = that.evm;
 		object.prototype.game = that;
@@ -63,8 +63,11 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 		return tmp;
 	};
 	
-	/** @const @type {MiniGame}            */ var NO_MINI_GAME    = new NoMiniGame();
-	/** @const @type {MW.NoMiniGameResult} */ var NO_RESULT       = new MW.NoMiniGameResult();
+	var
+		/** @const @type {MW.Minigame} */
+		NO_MINI_GAME    = new MW.NoMinigame(),
+		/** @const @type {MW.NoMiniGameResult} */
+		NO_RESULT       = new MW.NoMiniGameResult();
 	/** @const @type {GamerPlayer}         */ var GAMER           = newObject(GamerPlayer);
 	/** @const @type {MonkeyPlayer}        */ var AGENT           = newObject(MonkeyPlayer);
 	
@@ -74,7 +77,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	/** @const @type {MW.FastLearningTrack}   */ var FAST_TRACK   = new MW.FastLearningTrack();
 	
 	/** @type {MW.GameMode}                */ var gameMode        = MW.GameMode.AGENT_SEE; 
-	/** @type {MiniGame}                   */ var miniGame        = NO_MINI_GAME;
+	/** @type {MW.Minigame}                */ var miniGame        = NO_MINI_GAME;
 	/** @type {Function} @constructor      */ var miniGameView    = null;
 	                                          var currentMiniGameView = null;
 	                                          var miniGameHandlerView = null;
@@ -91,11 +94,6 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	/** @type {MW.LearningTrack}           */ var _learningTrack  = NO_TRACK;
 	/** @type {Array.<MW.MinigameLauncher>} */ var minigameArray = new Array();
 
-	/** @type {Object.<Object>} */
-//	var gameLibrary = {
-//		"tree": { title: "Tree Game", view: TreeView, game: Ladder },
-//		"mountain": { title: "Mountain Game", view: MountainView, game: Ladder }
-//	};
 
 	if (startGame != undefined) {
 		var h = new MW.MinigameLauncher(startGame, REGULAR_TRACK);
@@ -103,9 +101,9 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 		console.log(h.getConfiguration());
 	}
 	
-	/*========================================================================*/
-	/*=== CONSTRUCTOR ========================================================*/
-	/*========================================================================*/
+	/*====================================================================*/
+	/*=== CONSTRUCTOR ====================================================*/
+	/*====================================================================*/
 	
 	if (useViews === undefined) useViews = true;
 	if (useAgentChooser === undefined) useAgentChooser = true;
@@ -114,15 +112,15 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 		newObject(MonkeyWorldView);
 
 	
-	/*========================================================================*/
-	/*=== PRIVATE ============================================================*/
-	/*========================================================================*/
+	/*====================================================================*/
+	/*=== PRIVATE ========================================================*/
+	/*====================================================================*/
 	
 	/**
-	 * Set the current round to specified number. It is recommended to use this
-	 * function above accessing the _round variable directly, since this
-	 * function will make boundary checks. It throws an exception if the upper
-	 * or lower round boundary is violated. 
+	 * Set the current round to specified number. It is recommended to use
+	 * this function above accessing the _round variable directly, since
+	 * this function will make boundary checks. It throws an exception if
+	 * the upper or lower round boundary is violated. 
 	 * @param {number} round
 	 */
 	var setRound = function(round) {
@@ -233,7 +231,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	var selectMinigame = function() {
 		result = new MW.MiniGameResult();
 		player = GAMER;
-		gameMode = MW.GameMode.CHILD_PLAY;
+		gameMode = MW.GameMode.AGENT_SEE;
 //		minigameHandler = newObject(MW.MinigameHandler);
 		if (useViews) {
 			miniGameHandlerView = newObject(MW.MinigameHandlerView);
@@ -279,21 +277,20 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	 * Start the current mini game.
 	 */
 	var startMiniGame = function() {
-		that.evm.print();
+		//that.evm.print();
 		miniGameStarter();
+		miniGame.setup();
 		if (useViews) {
-//			miniGameView.prototype.agentImage = GameView.prototype.agentImage;
 			currentMiniGameView = newObject(miniGameView, miniGame);
 			currentMiniGameView.setup();
 			that.tell("Game.miniGameListenersInitiated");
 		}
 		if (gameMode === MW.GameMode.AGENT_DO) {
-			miniGame.play(player, result.getResult(_round).getActions());
+			var actions = result.getResult(_round).getActions();
+			miniGame.play(player, actions);
 		} else {
 			miniGame.play(player);
 		}
-		// TODO: Remove this?
-		that.tell("Game.start", {}, true);
 	};
 	
 	/**
@@ -304,12 +301,16 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 		if (useViews)
 			miniGameHandlerView.tearDown();
 		miniGame.stop();
+		miniGame.tearDown();
 		delete miniGame;
 		miniGameScore = 0;
 		miniGame = NO_MINI_GAME;
 		that.tell(MW.Event.MINIGAME_ENDED);
 	};
 
+	/**
+	 * @param {Function=} callback
+	 */
 	var waterGarden = function (callback) {
 		var afterWatering = function () {
 			gardenVerdure += waterDrops;
@@ -323,9 +324,11 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 		if (useViews) {
 			var gardenView = newObject(MW.GardenView);
 			gardenView.setup();
-			that.tell(MW.Event.WATER_GARDEN, { callback: function () {
-				afterWatering();
-			}}, true);
+			that.tell(MW.Event.WATER_GARDEN, {
+				callback: function () {
+					afterWatering();
+				}
+			});
 		} else {
 			afterWatering();
 		}
@@ -344,43 +347,47 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 			var gardenView = newObject(MW.GardenView);
 			gardenView.setup();
 			that.tell("Game.viewInitiated");
-			that.tell("Game.demonstrateGarden", { callback: function () {
-				gardenView.tearDown();
-				callback();				
-			}});
+			that.tell("Game.demonstrateGarden", {
+				callback: function () {
+					gardenView.tearDown();
+					callback();				
+				}
+			});
 		} else {
 			callback();
 		}
 	};
-	
+
 	var playIntroduction = function (callback) {
 		if (useViews && !MW.debug) {
-			var introductionView = newObject(MW.IntroductionView, function () {
-				introductionView.tearDown();
-				demonstrateGarden(callback)
-//				callback();
-			});
+			var introductionView = newObject(
+				MW.IntroductionView,
+				function () {
+					introductionView.tearDown();
+					demonstrateGarden(callback)
+				}
+			);
 			introductionView.setup();
 			that.tell("Game.viewInitiated");
 		} else {
-//			callback();
 			demonstrateGarden(callback);
 		}
 	};
 
-	/*========================================================================*/
-	/*=== PUBLIC =============================================================*/
-	/*========================================================================*/
+	/*====================================================================*/
+	/*=== PUBLIC =========================================================*/
+	/*====================================================================*/
 	
 	/**
 	 * Tell the game that a mini game has finished
 	 */
 	this.miniGameDone = function() {
 		if (miniGame === NO_MINI_GAME) {
-			throw "MonkeyWorld.NoActiveMiniGameException";
+			throw {
+				name: "MonkeyWorld.NoActiveMiniGameException",
+				message: "There is no active minigame"
+			};
 		}
-		this.tell("Game.stopMiniGame", {}, true);
-		miniGame.tearDown();
 		if (useViews)
 			currentMiniGameView.tearDown();
 		addMinigameScore(miniGame.getBackendScore());
@@ -424,14 +431,16 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 		
 		playIntroduction(/* then */function () {
 			if (useAgentChooser) {
-				chooser = newObject(MW.AgentChooser, function(agent) {
-					chooser.tearDown();
-					if (chooserView != null)
-						chooserView.tearDown();
-//					agentImage = agent;
-					agentView = new agent.view();
-					selectMinigame();
-				});
+				chooser = newObject(
+					MW.AgentChooser,
+					function(agent) {
+						chooser.tearDown();
+						if (chooserView != null)
+							chooserView.tearDown();
+						agentView = new agent.view();
+						selectMinigame();
+					}
+				);
 				if (useViews) {
 					chooserView = newObject(MW.AgentChooserView, chooser);
 					chooserView.setup();
@@ -443,7 +452,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 			}
 		});
 	};
-	
+
 	/**
 	 * Stops the Monkey World game
 	 */
@@ -455,8 +464,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 		result = NO_RESULT;
 		this.tell("Game.stop");
 	};
-	
-	
+
 	/**
 	 * Restart the Monkey World game.
 	 */
@@ -491,34 +499,48 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 
 	/**
 	 * Returns the current mini game.
-	 * @return {MiniGame|NoMiniGame}
+	 * @return {MW.Minigame|MW.NoMinigame}
 	 */
 	this.getMiniGame = function() {
 		return miniGame;
 	};
-	
-	this.setAgentAsPlayer = function() { player = AGENT; };
-	this.setGamerAsPlayer = function() { player = GAMER; };
-	
+
+	this.setAgentAsPlayer = function() {
+		player = AGENT;
+	};
+
+	this.setGamerAsPlayer = function() {
+		player = GAMER;
+	};
+
 	/**
 	 * Returns true if the current player is the gamer.
 	 * @return {boolean}
 	 */
-	this.playerIsGamer = function() { return player === GAMER; };
-	
+	this.playerIsGamer = function() {
+		return player === GAMER;
+	};
+
 	/**
 	 * Returns true if the current player is the teachable agent.
 	 * @return {boolean}
 	 */
-	this.playerIsAgent = function() { return player === AGENT; };
+	this.playerIsAgent = function() {
+		return player === AGENT;
+	};
 
 	/** @return {boolean} true if the current mode is Child Play */
-	this.modeIsChild = function() { return gameMode === MW.GameMode.CHILD_PLAY; };
-	
+	this.modeIsChild = function() {
+		return gameMode === MW.GameMode.CHILD_PLAY;
+	};
+
 	/** @return {boolean} true if the current mode is Agent See */
-	this.modeIsAgentSee = function() { return gameMode === MW.GameMode.AGENT_SEE;};
-	
+	this.modeIsAgentSee = function() {
+		return gameMode === MW.GameMode.AGENT_SEE;
+	};
+
 	/** @return {boolean} true if the current mode is Agent Do */
-	this.modeIsAgentDo = function() { return gameMode === MW.GameMode.AGENT_DO; };
-	
+	this.modeIsAgentDo = function() {
+		return gameMode === MW.GameMode.AGENT_DO;
+	};
 };

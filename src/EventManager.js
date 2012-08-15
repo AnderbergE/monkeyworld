@@ -114,6 +114,33 @@ MW.EventManager = function(stage) {
 		}
 	};
 	
+	this.tellArguments = function (next, wait, type, args) {
+		var debug = true;
+		telling++;
+		var bucket = listeners[type];
+		if (bucket != undefined) {
+			for (var i = 0; i < bucket.length; i++) {
+				var callback = bucket[i];
+				if (debug != undefined && debug)
+					Log.debug("      " + bucket[i]._caller);
+				callback(next, args);
+				if (!wait)
+					next();
+			}
+		}
+		telling--;
+		if (telling == 0 && toForget.length > 0) {
+			for (var i = 0; i < toForget.length; i++) {
+				this.forget(toForget[i]);
+			}
+			toForget = new Array();
+		}
+	};
+
+	this.tellWait = function (type, callback, message) {
+		this.tellArguments(callback, true, type, message);
+	};
+	
 	this.loadImages = function(imageSources, images, callback) {
 		Log.debug("Loading images...", "view");
 		var loadedImages = 0;

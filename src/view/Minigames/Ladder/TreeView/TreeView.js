@@ -1,7 +1,7 @@
 /**
  * @constructor
  * @extends {LadderView}
- * @param {Ladder} ladder
+ * @param {MW.LadderMinigame} ladder
  */
 function TreeView(ladder) {
 	"use strict";
@@ -118,6 +118,7 @@ function TreeView(ladder) {
 	view.getStage().add(staticLayer);
 	view.getStage().add(dynamicLayer);
 
+	/** @type {Kinetic.MW.Lizard} */
 	helper = new Kinetic.MW.Lizard({
 		x: config.helper.x,
 		y: config.helper.y,
@@ -145,6 +146,22 @@ function TreeView(ladder) {
 		});
 	});
 
+	view.on(MW.Event.MG_LADDER_IGNORE_INPUT, function () {
+		numpad.ignore();
+	});
+	
+	view.on(MW.Event.MG_LADDER_ACKNOWLEDGE_INPUT, function () {
+		numpad.acknowledge();
+	});
+	
+	view.on(MW.Event.MG_LADDER_ALLOW_GAMER_INPUT, function () {
+		numpad.unlock();
+	});
+	
+	view.on(MW.Event.MG_LADDER_FORBID_GAMER_INPUT, function () {
+		numpad.lock();
+	});
+
 	createTreat = function (callback) {
 		console.log(treats);
 		treat = treats[ladder.getRoundNumber() - 1];
@@ -161,8 +178,8 @@ function TreeView(ladder) {
 	/**
 	 * Open the treat
 	 */
-	view.confirmTarget = function (msg) {
-		treat.off("mousedown touchstart");
+	view.confirmTarget = function (callback) {
+		treat.offClick();
 		stopShakeTreat();
 		treat.open();
 		numpad.release();
@@ -184,35 +201,23 @@ function TreeView(ladder) {
 		});
 		dynamicLayer.add(balloons);
 		view.getTween(balloons.attrs.scale).to({ x: 1, y: 1 }, 500).call(function () {
-			view.getTween(balloons.attrs).to({ y: 200 }, 2000).call(msg.callback);
+			view.getTween(balloons.attrs).to({ y: 200 }, 2000).call(callback);
 		});
 	};
 
-	view.on("Ladder.placeTarget", function (msg) {
+	/**
+	 * Drop a target from the tree crown. 
+	 */
+	view.on(MW.Event.MG_LADDER_PLACE_TARGET, function (callback, msg) {
 		dropZoneOffset += 1;
-		createTreat(msg.callback);
-		if (view.game.modeIsChild() || view.game.modeIsAgentSee()) {
-			numpad.unlock();
-		}
+		createTreat(callback);
 	});
 
-	this.pick = function (number, callback) {
-		MW.Sound.play(MW.Sounds.CLICK);
-		if (view.game.playerIsAgent()) {
-			numpad.push(number);
-		}
-		callback();
-	};
-
-	this.getStickPoint = function (number) {
-		return numpad.getButtonPosition(number);
-	};
-
 	/**
-	 * Helper movers up the ladder
+	 * Helper approaches the target
 	 */
-	view.on("Ladder.approachLadder", function (msg) {
-		currentPick = msg.number;
+	view.on(MW.Event.MG_LADDER_HELPER_APPROACH_TARGET, function (callback) {
+		currentPick = ladder.getChosenNumber();
 		view.getTween(helper.attrs).to({
 			y: config.helper.y - 100
 		}, 2000).to({
@@ -222,17 +227,17 @@ function TreeView(ladder) {
 			rotation: 0,
 			y: config.helper.y - 170
 		}, 1000).to({
-			y: stepGroups[msg.number].getY()
-		}, 500 * msg.number).call(function () {
+			y: stepGroups[currentPick].getY()
+		}, 500 * currentPick).call(function () {
 			helper.stopWalk();
-			msg.callback();
+			callback();
 		});
 	});
 
 	/**
 	 * Helper moves to its home
 	 */
-	view.on("Ladder.resetScene", function (msg) {
+	view.on(MW.Event.MG_LADDER_RESET_SCENE, function (callback, msg) {
 		helper.startWalk();
 		view.getTween(helper.attrs).to({
 			y: config.helper.y - 170
@@ -249,21 +254,18 @@ function TreeView(ladder) {
 			y: config.helper.y
 		}, 2000).call(function () {
 			numpad.release();
-			if ((msg.allowNumpad && view.game.modeIsChild()) || view.game.modeIsAgentSee()) {
-				numpad.unlock();
-			}
-			msg.callback();
+			callback();
 		});
 	});
 
 	/**
 	 * Helper drops the treat
 	 */
-	view.on("Ladder.getTarget", function (msg) {
+	view.on("Ladder.getTarget", function (callback) {
 		view.getTween(treat.attrs).to({
 			x: config.dropZone.x + config.dropZone.offsetWidth * dropZoneOffset,
 			y: config.dropZone.y
-		}, 2000).call(msg.callback).call(function () {
+		}, 2000).call(callback).call(function () {
 			if (!view.game.modeIsAgentDo()) {
 				addOnMouseActionToTreat();
 				shakeTreat();
@@ -271,7 +273,7 @@ function TreeView(ladder) {
 		});
 	});
 
-	view.on("frame", function () {
+	view.on(MW.Event.FRAME, function () {
 		dynamicLayer.draw();
 	});
 
@@ -281,9 +283,7 @@ function TreeView(ladder) {
 	});
 
 	view.interrupt = function () {
-		console.log("interrupt!");
 		view.removeTween(helper.attrs);
-		numpad.unlock();
 	};
 
 	background = new Kinetic.Image({
@@ -303,7 +303,7 @@ function TreeView(ladder) {
 	view.addInterruptButtons(dynamicLayer);
 
 	view.on("Ladder.helpAgent", function () {
-		numpad.unlock();
+
 	});
 
 	for (i = 0; i < ladder.getLadder().length; i += 1) {
@@ -338,6 +338,19 @@ function TreeView(ladder) {
 		y: view.getStage().getHeight() - MW.Images.TREEGAME_COVER.height
 	}));
 
+
+	this.pick = function (number, callback) {
+		MW.Sound.play(MW.Sounds.CLICK);
+		if (view.game.playerIsAgent()) {
+			numpad.push(number);
+		}
+		callback();
+	};
+
+	this.getStickPoint = function (number) {
+		return numpad.getButtonPosition(number);
+	};
+	
 	/**
 	 * Hang the treats in the crown
 	 */

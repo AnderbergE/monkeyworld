@@ -27,11 +27,9 @@ MW.MinigameHandlerView = function () {
 			text.setText(label + " " + msg.score);
 		});
 		view.on(MW.Event.MINIGAME_STARTED, function(msg) {
-			console.log("added be total score text");
 			layer.add(text);
 		});
 		view.addTearDown(function() {
-			console.log("remove be total score text");
 			layer.remove(text);
 		});
 	})(this);
@@ -53,14 +51,12 @@ MW.MinigameHandlerView = function () {
 			y: 55
 		});
 		view.on(MW.Event.MINIGAME_STARTED, function(msg) {
-			console.log("added learning track text");
 			layer.add(text);
 		});
 		view.on(MW.Event.LEARNING_TRACK_UPDATE, function(msg) {
 			text.setText(label + " " + msg.learningTrack.name());
 		});
 		view.addTearDown(function() {
-			console.log("remove learning track text");
 			layer.remove(text);
 		});
 	})(this);
@@ -132,13 +128,11 @@ MW.MinigameHandlerView = function () {
 			dropOrigin.y = msg.y;
 		});
 		view.on(MW.Event.PITCHER_LEVEL_ADD, function (msg) {
-			console.log("Drop origin", dropOrigin);
 			var x2 = pitcherImage.getX() + pitcherImage.getWidth() / 2;
 			var y2 = pitcherImage.getY() + pitcherImage.getHeight() - dropImage.getHeight();
 			var velocity = 200; /* px/s */
 			var distance = Math.sqrt(Math.pow(dropOrigin.x - x2, 2) + Math.pow(dropOrigin.y - y2, 2));
 			var time = distance / velocity * 1000;
-			console.log(velocity, distance, time);
 			dropImage.setX(dropOrigin.x);
 			dropImage.setY(dropOrigin.y);
 			dropImage.setAlpha(1);

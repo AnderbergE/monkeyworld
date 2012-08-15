@@ -1,9 +1,9 @@
 /**
- * @param {number} type (type of parcel, 1-3)
- * @param {number} x
- * @param {number} y
  * @extends {Kinetic.Node}
  * @constructor
+ * @param {Object} config
+ *                   Properties inherited from Kinetic.Node, except for:
+ *                   {number} config.type (1-3)
  */
 Kinetic.MW.Parcel = function (config) {
 
@@ -23,7 +23,7 @@ Kinetic.MW.Parcel = function (config) {
 	image = new Kinetic.Image({
 		image: imageObj,
 		width: imageObj.width,
-		height: imageObj.heigh,
+		height: imageObj.height,
 		centerOffset: {
 			x: imageObj.width / 2,
 			y: imageObj.height / 2
@@ -39,7 +39,7 @@ Kinetic.MW.Parcel = function (config) {
 
 	/**
 	 * Shakes the parcel
-	 * @param {MW.ViewModule} view
+	 * @param {ViewModule} view
 	 */
 	group.shake = function (view) {
 		var

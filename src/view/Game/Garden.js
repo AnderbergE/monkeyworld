@@ -3,7 +3,7 @@
  * @extends {ViewModule}
  */
 MW.GardenView = function () {
-	ViewModule.call(this);
+	ViewModule.call(this, "GardenView");
 	var
 		view = this,
 		sadBackground,
@@ -63,7 +63,6 @@ MW.GardenView = function () {
 	 */
 	setVerdure = function () {
 		var verdure = view.game.getGardenVerdure();
-		console.log("set verdure", verdure);
 	};
 
 	view.on(MW.Event.FRAME, function (msg) {

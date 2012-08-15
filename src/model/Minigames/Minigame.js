@@ -3,9 +3,14 @@
  * @extends {MW.Module}
  * @param {string} tag
  */
-function MiniGame(tag) {//TODO: Rename to MW.Minigame
+MW.Minigame = function (tag) {
 	MW.Module.call(this, tag);
-	var that = this;
+	var
+		that = this,
+		startFunctions = [],
+		stopFunctions = [],
+		started = false,
+		stopped = false;
 	
 	/** @private @type {MW.MiniGameRoundResult} */
 	var roundResult = null;
@@ -24,6 +29,44 @@ function MiniGame(tag) {//TODO: Rename to MW.Minigame
 	
 	this.popAction = function() {
 		roundResult.popAction();
+	};
+	
+	/**
+	 * @param {Function} fnc
+	 */
+	this.addStart = function (fnc) {
+		startFunctions.push(fnc);
+	};
+
+	/**
+	 * @param {Function} fnc
+	 */	
+	this.addStop = function (fnc) {
+		stopFunctions.push(fnc);
+	};
+	
+	this.start = function () {
+		if (started)
+			throw {
+				name: "MW.MinigameModuleAlreadyStarted",
+				message: "This minigame module (" + tag + ") " +
+				         "has already been started."
+			};
+		started = true;
+		while (startFunctions.length > 0)
+			(startFunctions.shift())();
+	};
+	
+	this.stop = function () {
+		if (stopped)
+			throw {
+				name: "MW.MinigameModuleAlreadyStopped",
+				message: "This minigame module (" + tag + ") " +
+				         "has already been stopped."
+			};
+		stopped = true;
+		while (stopFunctions.length > 0)
+			(stopFunctions.shift())();
 	};
 	
 	var subtractBackendScore = function() {
@@ -56,18 +99,15 @@ function MiniGame(tag) {//TODO: Rename to MW.Minigame
 	};
 	
 	/**
-	 * Call this function to tell the engine that the mini game round is over.
-	 * The message "Game.roundDone" will be broadcasted, allowing views to tear
-	 * down. Then the engine will control if another round should be played,
-	 * (restarting the mini game in another game mode) or if it is time to play
-	 * another mini game.
+	 * Call this function to tell the engine that the mini game round is
+	 * over.
 	 * @protected
 	 */
 	this.roundDone = function() {
 		Log.debug("Round done", "game");
-		this.tell("Game.roundDone");
-		this.tell("Game.nextRound");
-		this.game.miniGameDone();
+		that.tell("Game.roundDone");
+		that.tell("Game.nextRound");
+		that.game.miniGameDone();
 	};
 
 	/**
@@ -85,11 +125,19 @@ function MiniGame(tag) {//TODO: Rename to MW.Minigame
 	
 	var _agentIsInterrupted = false;
 	var _agentIsBeingHelped = false;
+	var interruptHandlers = [];
 	
 	this.interruptAgent = function() {
 		_agentIsInterrupted = true;
 		_strategy.interrupt();
 		that.game.setGamerAsPlayer();
+		for (var i = 0; i < interruptHandlers.length; i += 1) {
+			interruptHandlers[i]();
+		}
+	};
+
+	this.addAgentInterruptedHandler = function (fnc) {
+		interruptHandlers.push(fnc);
 	};
 	
 	this.resumeAgent = function() {
@@ -126,19 +174,16 @@ function MiniGame(tag) {//TODO: Rename to MW.Minigame
 	this.agentIsBeingHelped = function() {
 		return _agentIsBeingHelped;
 	};
-	
-	this.stop = function() {
-		this.tell("Game.roundDone");
-	};
 }
 
 /**
  * @constructor
- * @extends {MiniGame}
+ * @extends {MW.Minigame}
  */
-function NoMiniGame() {
+MW.NoMinigame = function () {
 	this.play = function() {
 		throw "No implemented mini game";
 	};
 }
-NoMiniGame.prototype = new MiniGame("NoMiniGame");
+MW.NoMinigame.prototype = new MW.Minigame("NoMiniGame");
+

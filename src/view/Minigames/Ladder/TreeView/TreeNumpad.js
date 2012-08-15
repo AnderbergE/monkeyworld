@@ -32,6 +32,7 @@ MW.Numpad = function(config) {
 	
 	var buttons = [];
 	var publicLock = false;
+	var ignore = false;
 	
 	var grid = new Utils.gridizer(
 		config.buttonOffset.x, config.buttonOffset.y,
@@ -72,6 +73,7 @@ MW.Numpad = function(config) {
 		});
 		var pushFunction = function(event, force) {
 			if (force === undefined) force = false;
+			if (ignore) return;
 			if (!force && publicLock) {
 				config.forbid(i);
 			} else if (force || !publicLock) {
@@ -86,6 +88,7 @@ MW.Numpad = function(config) {
 		button.push = pushFunction;
 		group.add(buttonGroup);
 		buttons[i] = button;
+		buttons[i].group_ = buttonGroup;
 	})(i)};
 	
 	group.release = function() {
@@ -102,8 +105,19 @@ MW.Numpad = function(config) {
 		publicLock = false;
 	};
 	
+	group.ignore = function () {
+		ignore = true;
+	};
+	
+	group.acknowledge = function () {
+		ignore = false;
+	};
+	
 	group.getButtonPosition = function(i) {
-		return { x: buttons[i].getX(), y: buttons[i].getY() };
+		return {
+			x: group.getX() + buttons[i].group_.getX() + buttons[i].getWidth() / 2,
+			y: group.getY() + buttons[i].group_.getY() + buttons[i].getHeight() / 2
+		};
 	};
 	
 	group.push = function(i) {

@@ -17,7 +17,11 @@ MW.Module = function(tag) {
 	
 	this.tearDown = function() {
 		if (tearDowns === null)
-			throw "MW.TearDownAlreadyCalledException";
+			throw {
+				name: "MW.TearDownAlreadyCalledException",
+				message: "This module (" + tag + ") has " +
+				         "already been teared down."
+			};
 		timeoutController.teardown();
 		module.forget();
 		for (var i = 0; i < tearDowns.length; i++) {
@@ -33,7 +37,11 @@ MW.Module = function(tag) {
 	
 	this.setup = function() {
 		if (setups === null)
-			throw "MW.SetupAlreadyCalledException";
+			throw {
+				name: "MW.SetupAlreadyCalledException",
+				message: "This module (" + tag + ") has " +
+				         "already been setted up."
+			};
 		for (var i = 0; i < setups.length; i++) {
 			setups[i]();
 			setups[i] = null;

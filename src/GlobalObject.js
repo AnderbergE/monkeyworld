@@ -4,7 +4,7 @@
 // */
 ////var MW = {};
 
-MW.debug = false;
+MW.debug = true;
 MW.testing = false;
 
 /**
@@ -77,6 +77,26 @@ MW.GlobalObject = function(tag) {
 		if (debug != undefined && debug)
 			Log.debug("Out: " + type, this._tag);
 		this.evm.tell(type, msg, debug);
+	};
+	
+	this.tellWait = function (type, callback, msg) {
+		Log.debug("Out: " + type, this._tag);
+		this.evm.tellWait(type, callback, msg);
+	};
+
+	this.sendable_ = function (waitable, event, var_args) {
+		return function (callback) {
+			Log.debug("Out: " + event, this._tag);
+			that.evm.tellArguments(callback, waitable, event, var_args);
+		};
+	};
+	
+	this.sendable = function (event, var_args) {
+		return that.sendable_(false, event, var_args);
+	};
+	
+	this.waitable = function (event, var_args) {
+		return that.sendable_(true, event, var_args);
 	};
 	
 	this.wevm = function() {

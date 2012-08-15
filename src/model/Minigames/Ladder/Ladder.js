@@ -1,163 +1,267 @@
 /**
  * @constructor
- * @extends {MiniGame}
+ * @extends {MW.Minigame}
  */
-function Ladder()
-{
-	MiniGame.call(this, "Ladder");
-	/** @type {Ladder} */ var that = this;
-	
-	/** @type {number} */ var minNumber = 1;
-	/** @type {number} */ var maxNumber = 6;
-	/** @type {number} */ var stepNumber = 1;
-	/** @type {Array.<number>} */ var ladder = new Array(maxNumber - minNumber + 1);
-	/** @type {number} */ var settingsTargetNumber = Settings.get("miniGames", "ladder", "targetNumber");
-	/** @type {number} */ var targetNumber = Utils.getRandomInt(minNumber, maxNumber);
-	
-	/** @type {number} */ var minTreats = 1;
-	/** @type {number} */ var maxTreats = 3;
-	/** @type {number} */ var tries = 0;
-	/** @type {number} */ var minTries = 3;
-	/** @type {number} */ var collectedTreats = 0;
-	/** @type {boolean} */ var birdHasTreat = false;
-	/** @type {boolean} */ var interruptable = false;
-	
-	/** @type {number} */ var round = 0;
-	
-	for (var i = minNumber, j = 0; i <= maxNumber; i += stepNumber)
-		ladder[j++] = i;
-	
-	
-	var setTargetNumber = function() {
-		targetNumber = Utils.getRandomInt(minNumber, maxNumber);
-	};
-	
-	var disallowInterrupt = function() {
+MW.LadderMinigame = function () {
+	"use strict";
+	MW.Minigame.call(this, "Ladder");
+	var
+		ladder = this,
+		minNumber = 1,
+		maxNumber = 6,
+		stepNumber = 1,
+		ladderArray = [],
+		targetNumber = Utils.getRandomInt(minNumber, maxNumber),
+		chosenNumber = null,
+		/** @const */
+		minTreats = 1,
+		/** @const */
+		maxTreats = 3,
+		tries = 0,
+		/** @const */
+		minTries = 3,
+		collectedTreats = 0,
+		birdHasTreat = false,
+		interruptable = false,
+		round = 0,
+		lastHelpAttempt = 0,
+		timesHelped = 0,
+		/** @const */
+		MAX_HELP = 4;
+
+	ladder.addSetup(function () {
+		var i, j = 0;
+		for (i = minNumber; i <= maxNumber; i += stepNumber) {
+			ladderArray[j] = i;
+			j += 1;
+		}
+	});
+
+	/**
+	 * Agent interrupts will not be handled when generated.
+	 * @private
+	 */
+	function disallowInterrupt() {
 		interruptable = false;
-		if (that.game.modeIsAgentDo()) {
-			that.tell("Ladder.disallowInterrupt");
+		if (ladder.game.modeIsAgentDo()) {
+			ladder.tell(MW.Event.MG_LADDER_FORBID_INTERRUPT);
 		}
-	};
-	
-	var allowInterrupt = function(callback) {
+	}
+
+	/**
+	 * Agent interrupts will be handled when generated.
+	 * @private
+	 */
+	function allowInterrupt(callback) {
 		interruptable = true;
-		if (that.game.modeIsAgentDo() && !that.agentIsInterrupted()) {
-			that.tell("Ladder.allowInterrupt", { callback: callback });
-		} else callback();
-	};
-	
-	var birdHasFlewn = function(correct) { return function() {
-		disallowInterrupt();
-		if (correct) {
-			birdHasTreat = true;
-			dropTreat(function() {
-				that.addAction("correct");
-				birdHasTreat = false;
-			});
+		if (ladder.game.modeIsAgentDo() && !ladder.agentIsInterrupted()) {
+			ladder.tellWait(MW.Event.MG_LADDER_ALLOW_INTERRUPT, callback);
 		} else {
-			that.tell("Ladder.resetScene", {
-				callback: function() {
-					that.reportMistake();
-					that.tell("Ladder.incorrect");
-					if (timesHelped >= MAX_HELP) that.tell("Ladder.agentSuggestSolution");
-					that.addAction("incorrect");
-				},
-				allowNumpad: true});
+			callback();
 		}
-	};};
-	
-	var placeTreat = function() {
-		setTargetNumber();
-		round++;
-		that.tell("Ladder.placeTarget", {
-			callback: function() {
-				that.tell("Ladder.readyToPick", {}, MW.debug);
+	}
+
+	/**
+	 * Make a new treat ready to be targeted.
+	 * @private
+	 */
+	function placeTreat() {
+		targetNumber = Utils.getRandomInt(minNumber, maxNumber);
+		round += 1;
+		Utils.chain(
+			ladder.waitable(MW.Event.MG_LADDER_PLACE_TARGET),
+			function () {
+				ladder.tell(MW.Event.MG_LADDER_READY_TO_PICK);
+				ladder.tell(MW.Event.MG_LADDER_ACKNOWLEDGE_INPUT, {}, true);
+				if (!ladder.game.modeIsAgentDo()) {
+					ladder.tell(MW.Event.MG_LADDER_ALLOW_GAMER_INPUT, {}, true);
+				}
 			}
-		}, MW.debug);
-	};
-	
-	var dropTreat = function(callback) {
-		that.tell("Ladder.getTarget", {
-			callback: function() {
-				that.tell("Ladder.resetScene", { callback: callback }, MW.debug);
-				that.tell("Ladder.hasTarget", {}, MW.debug);
-			},
-			allowNumpad: false
-		}, MW.debug);
-	};
-	
-	this.openTreat = function() {
-		collectedTreats++;
-		var callback = function () {
-			if (collectedTreats === maxTreats || (tries >= minTries && collectedTreats >= minTreats))
-				that.tell("Ladder.cheer", { callback: function() { that.roundDone(); } }, MW.debug);
-			else {
-				placeTreat();
+		)();
+	}
+
+	/**
+	 * When a mistake has been done.
+	 * @private
+	 * @param {Function} callback
+	 */
+	function mistake(callback) {
+		ladder.tell(MW.Event.MG_LADDER_ACKNOWLEDGE_INPUT, {}, true);
+		if (!ladder.game.modeIsAgentDo())
+			ladder.tell(MW.Event.MG_LADDER_ALLOW_GAMER_INPUT);
+		ladder.reportMistake();
+		ladder.tell("Ladder.incorrect");
+		if (timesHelped >= MAX_HELP) {
+			ladder.tell("Ladder.agentSuggestSolution");
+		}
+		ladder.addAction("incorrect");
+		callback();
+	}
+
+	/**
+	 * @private
+	 * @param {Function} callback
+	 */
+	function gotCorrectTarget(callback) {
+		birdHasTreat = true;
+		Utils.chain(
+			ladder.waitable(MW.Event.MG_LADDER_GET_TARGET),
+			ladder.waitable(MW.Event.MG_LADDER_RESET_SCENE),
+			ladder.sendable(MW.Event.MG_LADDER_HAS_TARGET),
+			function () {
+				ladder.addAction("correct");
+				birdHasTreat = false;
+				callback();
 			}
-		};
-		if (!that.game.modeIsChild()) {
-			that.game.addWaterDrop(callback);
+		)();
+	}
+
+	/**
+	 * @private
+	 * @param {Function} callback
+	 */
+	function gotIncorrectTarget(callback) {
+		ladder.tellWait(
+			MW.Event.MG_LADDER_RESET_SCENE,
+			function () { mistake(callback); }
+		);
+	}
+
+	/**
+	 * @private
+	 */
+	function checkEndOfRound() {
+		var
+			hasMaxTreats = collectedTreats === maxTreats,
+			enoughTries = tries >= minTries,
+			enoughTreats = collectedTreats >= minTreats;
+
+		if (hasMaxTreats || (enoughTries && enoughTreats)) {
+			console.log("checkok");
+			Utils.chain(
+				ladder.waitable(MW.Event.MG_LADDER_CHEER),
+				ladder.roundDone
+			)();
 		} else {
-			that.tell("Ladder.confirmTarget", {
-				getTreat: that.game.modeIsChild(),
-				callback: callback
-			}, MW.debug);
+					console.log("placetreat");
+			placeTreat();
+		}
+	}
+
+	/**
+	 * Open a collected treat
+	 * @private
+	 */
+	this.openTreat = function () {
+		collectedTreats += 1;
+		if (!ladder.game.modeIsChild()) {
+			ladder.game.addWaterDrop(checkEndOfRound);
+		} else {
+			ladder.tellWait(
+				MW.Event.MG_LADDER_CONFIRM_TARGET,
+				checkEndOfRound
+			);
 		}
 	};
 
-	/** @type {number} */ var lastHelpAttempt = 0;
-	/** @type {number} */ var timesHelped = 0;
-	/** @const @type {number} */ var MAX_HELP = 4;
-	
 	/**
 	 * Pick a number
+	 * @public
 	 * @param {number} number
 	 */
-	this.pick = function(number) {
-		tries++;
-		allowInterrupt(function() {
-			that.tell("Ladder.picked", {
+	this.pick = function (number) {
+		chosenNumber = number;
+		tries += 1;
+		Utils.chain(
+			allowInterrupt,
+			ladder.waitable(MW.Event.MG_LADDER_PICKED, {
 				number: number,
-				correct: number === targetNumber,
-				callback: function() {
-					if (that.agentIsBeingHelped()) {
-						timesHelped++;
-					} else {
-						timesHelped = 0;
-					}
-					if (that.agentIsBeingHelped() && number === targetNumber) {
-						that.helpedAgent();
-					}
-					that.tell("Ladder.approachLadder", {
-						number: number,
-						callback: function() {
-							birdHasFlewn(number === targetNumber)();
-							
-							if (number < targetNumber && that.game.modeIsAgentDo() && !that.agentIsInterrupted() && !that.agentIsBeingHelped()) that.tell("Ladder.agentTooLow");
-							if (number > targetNumber && that.game.modeIsAgentDo() && !that.agentIsInterrupted() && !that.agentIsBeingHelped()) that.tell("Ladder.agentTooHigh");
-							
-							if (number < targetNumber && (that.game.modeIsAgentSee() || that.agentIsInterrupted() || that.agentIsBeingHelped())) that.tell("Ladder.tooLow");
-							if (number > targetNumber && (that.game.modeIsAgentSee() || that.agentIsInterrupted() || that.agentIsBeingHelped())) that.tell("Ladder.tooHigh");
-							//if (number === targetNumber && (that.game.modeIsAgentSee() || that.agentIsInterrupted() || that.agentIsBeingHelped())) that.tell("Ladder.justRight");
-						}
-					}, MW.debug);
-					if (number === targetNumber && number < lastHelpAttempt && (that.agentIsInterrupted() || that.agentIsBeingHelped())) that.tell("Ladder.betterBecauseSmaller");
-					if (number === targetNumber && number > lastHelpAttempt && (that.agentIsInterrupted() || that.agentIsBeingHelped())) that.tell("Ladder.betterBecauseBigger");
-					if (number != targetNumber && (that.agentIsInterrupted() || that.agentIsBeingHelped())) that.tell("Ladder.hmm");
-					if (that.game.modeIsAgentDo()) {
-						lastHelpAttempt = number;
-					}
-					
-					var agentDoAndNotHelpingAgent = that.game.modeIsAgentDo() && !that.agentIsBeingHelped();
-					var agentBeingHelpedCorrectly = that.agentIsBeingHelped() && number === targetNumber;
-					
-					if (agentDoAndNotHelpingAgent || agentBeingHelpedCorrectly)
-						that.resumeAgent();
+				correct: number === targetNumber
+			}),
+			ladder.sendable(MW.Event.MG_LADDER_IGNORE_INPUT),
+			function (next) {
+				if (ladder.agentIsBeingHelped()) {
+					timesHelped += 1;
+				} else {
+					timesHelped = 0;
 				}
-			}, MW.debug);
-		});
+				if (ladder.agentIsBeingHelped() && number === targetNumber) {
+					ladder.helpedAgent();
+				}
+				next();
+			},
+			function (next) {
+				if (number === targetNumber &&
+				    number < lastHelpAttempt &&
+				    (ladder.agentIsInterrupted() ||
+				     ladder.agentIsBeingHelped())) {
+					ladder.tell("Ladder.betterBecauseSmaller");
+				}
+
+				if (number === targetNumber &&
+				    number > lastHelpAttempt &&
+				    (ladder.agentIsInterrupted() ||
+				     ladder.agentIsBeingHelped())) {
+					ladder.tell("Ladder.betterBecauseBigger");
+				}
+
+				if (number !== targetNumber &&
+				   (ladder.agentIsInterrupted() ||
+				    ladder.agentIsBeingHelped())) {
+					ladder.tell("Ladder.hmm");
+				}
+
+				if (ladder.game.modeIsAgentDo()) {
+					lastHelpAttempt = number;
+				}
+
+				if ((ladder.game.modeIsAgentDo() && !ladder.agentIsBeingHelped()) ||
+				    (ladder.agentIsBeingHelped() && number === targetNumber)) {
+					ladder.resumeAgent();
+					ladder.tell(MW.Event.MG_LADDER_FORBID_GAMER_INPUT, {}, true);
+				}
+				next();
+			},
+			ladder.waitable(MW.Event.MG_LADDER_HELPER_APPROACH_TARGET),
+			function (next) {
+				disallowInterrupt();
+				if (number === targetNumber) {
+					gotCorrectTarget(next);
+				} else {
+					gotIncorrectTarget(next);
+				}
+				if (number < targetNumber &&
+				    ladder.game.modeIsAgentDo() &&
+				    !ladder.agentIsInterrupted() &&
+				    !ladder.agentIsBeingHelped()) {
+					ladder.tell("Ladder.agentTooLow");
+				   }
+
+				if (number > targetNumber &&
+				    ladder.game.modeIsAgentDo() &&
+				    !ladder.agentIsInterrupted() &&
+				    !ladder.agentIsBeingHelped()) {
+					ladder.tell("Ladder.agentTooHigh");
+				}
+
+				if (number < targetNumber &&
+				   (ladder.game.modeIsAgentSee() ||
+				    ladder.agentIsInterrupted() ||
+				    ladder.agentIsBeingHelped())) {
+					ladder.tell("Ladder.tooLow");
+				}
+
+				if (number > targetNumber &&
+				   (ladder.game.modeIsAgentSee() ||
+				    ladder.agentIsInterrupted() ||
+				    ladder.agentIsBeingHelped())) {
+					ladder.tell("Ladder.tooHigh");
+				}
+				chosenNumber = null;
+			}
+		)();
 	};
-	
+
 	/**
 	 * Returns the target number.
 	 * @returns {number}
@@ -165,18 +269,35 @@ function Ladder()
 	this.getTargetNumber = function() {
 		return targetNumber;
 	};
-	
+
 	/**
 	 * @return {number} a number on the ladder which isn't the target number.
 	 */
 	this.getIncorrectNumber = function() {
-		var pos = Utils.getRandomInt(0, ladder.length - 1);
-		if (ladder[pos] === targetNumber)
+		var pos = Utils.getRandomInt(0, ladderArray.length - 1);
+		if (ladderArray[pos] === targetNumber) {
 			return this.getIncorrectNumber();
-		else
-			return ladder[pos];
+		}
+		return ladderArray[pos];
 	};
-	
+
+	/**
+	 * @return {number} the number that has been chosen
+	 */
+	this.getChosenNumber = function () {
+		if (chosenNumber === null) {
+			throw {
+				name: "No number chosen yet",
+				game: "Ladder",
+				message: "A chosen number was asked for in " + 
+				         "the Ladder Game, but no number has " +
+				         "yet been chosen by the user or the " +
+				         "agent."
+			};
+		}
+		return chosenNumber;
+	};
+
 	/**
 	 * @return {number} the maximum number of treats that the player can get
 	 * @const
@@ -186,8 +307,8 @@ function Ladder()
 	};
 
 	/**
-	 * @return {number} the current round number, which is >= 1 if the minigame
-	 *                  has started
+	 * @return {number} the current round number, which is >= 1 if the
+	 *                  minigame has started
 	 */
 	this.getRoundNumber = function () {
 		if (round === 0) {
@@ -202,32 +323,38 @@ function Ladder()
 	 * @returns {Array.<number>}
 	 */
 	this.getLadder = function() {
-		return ladder;
+		return ladderArray;
 	};
-	
-	var _oldInterruptAgent = this.interruptAgent;
-	this.interruptAgent = function() {
-		if (interruptable && that.game.playerIsAgent()) {
+
+	this.addAgentInterruptedHandler(function () {
+		if (interruptable && ladder.game.modeIsAgentDo()) {
 			disallowInterrupt();
-			_oldInterruptAgent();
-			that.popAction();
+			ladder.popAction();
 			if (!birdHasTreat) {
-				that.tell("Ladder.interrupt");
-				that.tell("Ladder.resetScene", { callback: function() {
-					
-				}});
+				ladder.tell("Ladder.interrupt", {});
+				ladder.tellWait(MW.Event.MG_LADDER_RESET_SCENE, function() {
+					ladder.tell(MW.Event.MG_LADDER_ALLOW_GAMER_INPUT, {}, true);
+					ladder.tell(MW.Event.MG_LADDER_ACKNOWLEDGE_INPUT, {}, true);
+				});
 			}
 		}
-	};
-	
-	this.start = function() {
-		that.tell("Ladder.start");
-		if (that.game.modeIsAgentSee()) {
-			that.tell("Ladder.introduceAgent", { callback: placeTreat });
-		} else if (that.game.modeIsAgentDo()) {
-			that.tell("Ladder.startAgent", { callback: placeTreat });
+	});
+
+	this.addStart(function () {
+		ladder.tell(MW.Event.MG_LADDER_IGNORE_INPUT, {}, true);
+		ladder.tell(MW.Event.MG_LADDER_FORBID_GAMER_INPUT, {}, true);
+		ladder.tell("Ladder.start");
+		if (ladder.game.modeIsAgentSee()) {
+			ladder.tellWait("Ladder.introduceAgent", placeTreat );
+		} else if (ladder.game.modeIsAgentDo()) {
+			ladder.tellWait("Ladder.startAgent", placeTreat );
 		} else {
 			placeTreat();
 		}
-	};
+	});
+
+	this.addStop(function () {
+		ladder.tell("Game.roundDone");
+	});
 }
+

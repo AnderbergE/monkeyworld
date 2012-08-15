@@ -10,8 +10,8 @@ Kinetic.MW.Lizard = function (config, view) {
 		image,
 		walkInterval,
 		walkTimeout;
-	
-	var image = new Kinetic.Image({
+
+	image = new Kinetic.Image({
 		image: MW.Images.TREEGAME_LIZARD_STANDING,
 		width: MW.Images.TREEGAME_LIZARD_STANDING.width,
 		height: MW.Images.TREEGAME_LIZARD_STANDING.height
@@ -19,7 +19,7 @@ Kinetic.MW.Lizard = function (config, view) {
 	
 	group.add(image);
 	
-	group.startWalk = function () {
+	this.startWalk = function () {
 		var INTERVAL = 280;
 		image.attrs.image = MW.Images.TREEGAME_LIZARD_STEP2;
 		walkInterval = view.setInterval(function () {
@@ -30,11 +30,13 @@ Kinetic.MW.Lizard = function (config, view) {
 		}, INTERVAL);
 	};
 	
-	group.stopWalk = function () {
+	this.stopWalk = function () {
 		view.clearInterval(walkInterval);
 		view.clearTimeout(walkTimeout);
 		image.attrs.image = MW.Images.TREEGAME_LIZARD_STANDING;
 	};
 	
+	group.startWalk = this.startWalk;
+	group.stopWalk = this.stopWalk;
 	return group;
 };

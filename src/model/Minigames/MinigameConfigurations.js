@@ -6,12 +6,12 @@ MW.MinigameConfiguration = (function() {
 		/** @enum {Object} */
 		LADDER: {
 			TREE: {
-				game: Ladder,
+				game: MW.LadderMinigame,
 				view: TreeView,
 				title: "Tree Game"
 			},
 			MOUNTAIN: {
-				game: Ladder,
+				game: MW.LadderMinigame,
 				view: MountainView,
 				title: "Mountain Game"
 			}

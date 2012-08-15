@@ -10,7 +10,7 @@ function MonkeyPlayer() {
 	this.strategies = function() {};
 	
 	/**
-	 * @param {Ladder} game
+	 * @param {MW.LadderMinigame} game
 	 * @param {Array=} result
 	 */
 	this.strategies["Ladder"] = function(game, result) {

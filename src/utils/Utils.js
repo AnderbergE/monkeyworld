@@ -28,8 +28,21 @@ Object.size = function(obj) {
 /** @constructor */
 function _Log () {
 	console.log("Creating Log");
-	function write(type, msg, tag) {
+	/**
+	 * @param {string} type
+	 * @param {string} msg
+	 * @param {string} tag
+	 * @param {Function} output
+	 */
+	function write(type, msg, tag, logger, output) {
 		if (tag === undefined) {
+			tag = "";
+		} else if (typeof tag !== "string") {
+			/*
+			 * The Google Closure compiler sometimes turns the tag
+			 * argument into something else when it should be
+			 * undefined.
+			 */
 			tag = "";
 		}
 		if (tag != "evm" && tag != "sound") {
@@ -40,24 +53,28 @@ function _Log () {
 				tag = " " + tag;
 			}
 			//tag += " ";
-			console.log(type + " " + tag + " " + msg);
+			output.call(logger, type + " " + tag + " " + msg);
 		}
 	};
 	
+	/**
+	 * @param {string} msg
+	 * @param {string} tag
+	 */
 	this.debug = function(msg, tag) {
-		write("DEBUG  ", msg, tag);
+		write("DEBUG  ", msg, tag, console, console.debug);
 	};
 	
 	this.warning = function(msg, tag) {
-		write("WARNING", msg, tag);
+		write("WARNING", msg, tag, console, console.warn);
 	};
 	
 	this.notify = function(msg, tag) {
-		write("NOTIFY ", msg, tag);
+		write("NOTIFY ", msg, tag, console, console.info);
 	};
 	
 	this.error = function(msg, tag) {
-		write("ERROR  ", msg, tag);
+		write("ERROR  ", msg, tag, console, console.error);
 	};
 }
 
@@ -78,6 +95,32 @@ var Utils = new (/** @constructor */function() {
 
 	this.isNumber = function(n) {
 		return ! isNaN (n-0);
+	};
+
+	/**
+	 * @param {...Function} var_args
+	 */
+	this.chain = function (var_args) {
+		var fnc_arguments = arguments;
+		return function (input_args) {
+			var i, queue = [], next = null, first = true;
+			for (i = 0; i < fnc_arguments.length; i += 1) {
+				queue.push(fnc_arguments[i]);
+			}
+			/**
+			 * @param {...} args
+			 */
+			next = function (args) {
+				if (first) {
+					args = input_args;
+					first = false;
+				}
+				var fnc = (queue.shift());
+				if (fnc != undefined)
+					fnc(next, args);
+			};
+			next();
+		};
 	};
 
 	this.bezier = function(percent,C1,C2,C3,C4) {
