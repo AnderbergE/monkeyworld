@@ -59,7 +59,7 @@ function TreeView(ladder) {
 				"4": { x: 200, y: 100, rotation: Math.PI / 9 }
 			},
 			numpad: {
-				x: 500,
+				x: 550,
 				y: 180
 			}
 		};
@@ -169,7 +169,7 @@ function TreeView(ladder) {
 		console.log(treats);
 		treat = treats[ladder.getRoundNumber() - 1];
 		view.getTween(treat.attrs).wait(2000).to({
-			x: 250,
+			x: 100,
 			y: 150,
 			rotation: 2 * Math.PI
 		}, 1000).to({ rotation: 0 }).to({
@@ -232,14 +232,22 @@ function TreeView(ladder) {
 		}, 2000).to({
 			rotation: -Math.PI / 8,
 			x: config.helper.x - 25
-		}, 1000).call(helper.startWalk).to({
-			rotation: 0,
-			y: config.helper.y - 170
-		}, 1000).to({
-			y: stepGroups[currentPick].getY()
-		}, 500 * currentPick).call(function () {
-			helper.stopWalk();
-			callback();
+		}, 1000).call(function () {
+		console.log(currentPick);
+			if (currentPick > 1) {
+				helper.startWalk()
+				view.getTween(helper.attrs).to({
+					rotation: 0,
+					y: config.helper.y - 170
+				}, 1000).to({
+					y: stepGroups[currentPick].getY()
+				}, 500 * currentPick).call(function () {
+					helper.stopWalk();
+					callback();
+				});
+			} else {
+				callback();
+			}
 		});
 	});
 
@@ -271,14 +279,22 @@ function TreeView(ladder) {
 	 * Helper drops the treat
 	 */
 	view.on("Ladder.getTarget", function (callback) {
-		view.getTween(treat.attrs).to({
-			x: config.dropZone.x + config.dropZone.offsetWidth * dropZoneOffset,
-			y: config.dropZone.y
-		}, 2000).call(callback).call(function () {
-			if (!view.game.modeIsAgentDo()) {
-				addOnMouseActionToTreat();
-				shakeTreat();
-			}
+		helper.tongueOut(function () {
+			var done_ = 0, done = function () {
+				done_ += 1;
+				if (done_ === 2)
+					callback();
+			};
+			helper.tongueIn(done);
+			view.getTween(treat.attrs).to({
+				x: config.dropZone.x + config.dropZone.offsetWidth * dropZoneOffset,
+				y: config.dropZone.y
+			}, 2000).call(done).call(function () {
+				if (!view.game.modeIsAgentDo()) {
+					addOnMouseActionToTreat();
+					shakeTreat();
+				}
+			});
 		});
 	});
 

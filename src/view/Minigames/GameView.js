@@ -24,12 +24,24 @@ function GameView(tag) {
 			x: view.stage.getWidth() - 700,
 			y: 15
 		});
-		layer.add(text);		
+		layer.add(text);
+		var on = true, running = on;
 		view.on(MW.Event.BACKEND_SCORE_UPDATE_MODE, function(msg) {
 			text.setText(label + " " + msg.backendScore);
 		});
+		view.on(MW.Event.TRIGGER_SCORE, function () {
+			if (running && !on) {
+				layer.add(text);
+				on = true;
+			} else if (running && on) {
+				layer.remove(text);
+				on = false;
+			}
+		});
 		view.addTearDown(function() {
 			layer.remove(text);
+			running = false;
+			on = false;
 		});
 	})(this);
 

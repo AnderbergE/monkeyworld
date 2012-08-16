@@ -9,14 +9,27 @@ Kinetic.MW.Lizard = function (config, view) {
 		group = new Kinetic.Group(config),
 		image,
 		walkInterval,
-		walkTimeout;
+		walkTimeout,
+		mouthInterval = 500,
+		tongueInterval = 500,
+		tongueImage;
 
 	image = new Kinetic.Image({
 		image: MW.Images.TREEGAME_LIZARD_STANDING,
 		width: MW.Images.TREEGAME_LIZARD_STANDING.width,
 		height: MW.Images.TREEGAME_LIZARD_STANDING.height
 	});
-	
+
+	tongueImage = new Kinetic.Image({
+		image: MW.Images.TREEGAME_LIZARD_TONGUE1,
+		width: MW.Images.TREEGAME_LIZARD_TONGUE1.width,
+		height: MW.Images.TREEGAME_LIZARD_TONGUE1.height,
+		visible: false,
+		x: -170,
+		y: -200
+	});
+
+	group.add(tongueImage);
 	group.add(image);
 	
 	this.startWalk = function () {
@@ -36,7 +49,69 @@ Kinetic.MW.Lizard = function (config, view) {
 		image.attrs.image = MW.Images.TREEGAME_LIZARD_STANDING;
 	};
 	
+	function openMouth(callback) {
+		view.getTween(image.attrs)
+		.to({ image: MW.Images.TREEGAME_LIZARD_MOUTH1 })
+		.wait(mouthInterval)
+		.to({ image: MW.Images.TREEGAME_LIZARD_MOUTH2 })
+		.wait(mouthInterval)
+		.to({ image: MW.Images.TREEGAME_LIZARD_MOUTH3 })
+		.wait(mouthInterval)
+		.to({ image: MW.Images.TREEGAME_LIZARD_MOUTH4 })
+		.call(callback);
+	}
+
+	function closeMouth(callback) {
+		view.getTween(image.attrs)
+		.to({ image: MW.Images.TREEGAME_LIZARD_MOUTH4 })
+		.wait(mouthInterval)
+		.to({ image: MW.Images.TREEGAME_LIZARD_MOUTH3 })
+		.wait(mouthInterval)
+		.to({ image: MW.Images.TREEGAME_LIZARD_MOUTH2 })
+		.wait(mouthInterval)
+		.to({ image: MW.Images.TREEGAME_LIZARD_MOUTH1 })
+		.wait(mouthInterval)
+		.to({ image: MW.Images.TREEGAME_LIZARD_STANDING })
+		.call(callback);
+	}
+
+	function tongueOut(callback) {
+		tongueImage.show();
+		view.getTween(tongueImage.attrs)
+		.to({ image: MW.Images.TREEGAME_LIZARD_TONGUE2 })
+		.wait(tongueInterval)
+		.to({ image: MW.Images.TREEGAME_LIZARD_TONGUE3 })
+		.wait(tongueInterval)
+		.to({ image: MW.Images.TREEGAME_LIZARD_TONGUE4 })
+		.wait(tongueInterval)
+		.to({ image: MW.Images.TREEGAME_LIZARD_TONGUE5 })
+		.wait(tongueInterval)
+		.call(callback);
+	}
+
+	function tongueIn(callback) {
+		view.getTween(tongueImage.attrs)
+		.to({ image: MW.Images.TREEGAME_LIZARD_TONGUE4 })
+		.wait(tongueInterval)
+		.to({ image: MW.Images.TREEGAME_LIZARD_TONGUE3 })
+		.wait(tongueInterval)
+		.to({ image: MW.Images.TREEGAME_LIZARD_TONGUE2 })
+		.wait(tongueInterval)
+		.to({ image: MW.Images.TREEGAME_LIZARD_TONGUE1 })
+		.wait(tongueInterval)
+		.to({ visible: false })
+		.call(callback);
+	}
+
 	group.startWalk = this.startWalk;
 	group.stopWalk = this.stopWalk;
+	group.tongueOut = function (callback) {
+		openMouth(function () { tongueOut(callback); });
+	};
+
+	group.tongueIn = function (callback) {
+		tongueIn(function () { closeMouth(callback); });
+	}
+
 	return group;
 };

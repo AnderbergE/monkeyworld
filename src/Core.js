@@ -159,6 +159,18 @@ function Game() {
 			x: 0,
 			y: 0
 		});
+		var on = true;
+		evm.on(MW.Event.TRIGGER_FPS, function () {
+			if (on) {
+				console.info("Turning off FPS display");
+				gameLayer.remove(fpsText);
+				on = false;
+			} else {
+				console.info("Turning on FPS display");
+				gameLayer.add(fpsText);
+				on = true;
+			}
+		}, "game");
 		gameLayer.add(fpsText);
 		return {
 		showFps: function(frame) {
@@ -230,6 +242,9 @@ function Game() {
 		}, 50);
 		
 		MW.Sound.setStage(stage);
+		evm.on(MW.Event.TRIGGER_SUBTITLES, function () {
+			MW.Sound.triggerSubtitles();
+		}, "game");
 		preload.loadManifest(MW.Sound.getSources());
 	};
 	

@@ -163,6 +163,7 @@ MW.Sound = (function() {
 	var subtitleLayer = null;
 	var subtitles = new Array();
 	var soundSources = null;
+	var subtitlesOn = true;
 	
 	sound.setStage = function(s) { stage = s; subtitleLayer = stage._subtitleLayer; };
 	
@@ -213,7 +214,7 @@ MW.Sound = (function() {
 		Log.notify("\"" + str + "\"", "sound");
 		var mute = false;
 		
-		if (entry.useSubtitle()) {
+		if (subtitlesOn && entry.useSubtitle()) {
 			var text = new Kinetic.Text({
 				x: 0,
 				y: subtitleLayer.getParent().attrs.height - 50,
@@ -249,7 +250,17 @@ MW.Sound = (function() {
 	sound.stop = function(entry) {
 		SoundJS.stop(entry._key);
 	};
-	
+
+	sound.triggerSubtitles = function () {
+		if (subtitlesOn) {
+			subtitlesOn = false;
+			console.info("Turning off subtitles");
+		} else {
+			subtitlesOn = true;
+			console.info("Turning on subtitles");
+		}
+	};
+
 	return sound;
 })();
-//var Sound = new _Sound();
+

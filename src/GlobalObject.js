@@ -31,14 +31,19 @@ MW.GlobalObject = function(tag) {
 	this._tag = tag;
 	var that = this;
 	
-//	document.onkeypress = function(event) {
-//		console.log(event.keyCode);
-//		if (event.keyCode === 115) {
-//			that.tell(MW.Event.PITCHER_LEVEL_ADD, { x:20, y:100 },true);
-//		} else if (event.keyCode === 100) {
-//			that.tell("shakeParcel", true);
-//		}
-//	};
+	document.onkeypress = function(event) {
+		if (event.keyCode === 117/* U */) {
+			that.tell(MW.Event.TRIGGER_SUBTITLES);
+		} else if (event.keyCode === 105/* I */) {
+			that.tell(MW.Event.TRIGGER_SCORE);
+		} else if (event.keyCode === 111/* O */) {
+			that.tell(MW.Event.TRIGGER_FPS);
+		} else if (event.keyCode === 115) {
+			that.tell(MW.Event.PITCHER_LEVEL_ADD, { callback: function () {} });
+		} else {
+			console.info("Unhandles key: " + event.keyCode);
+		}
+	};
 	
 	/**
 	 * Register a listener to the event manager.

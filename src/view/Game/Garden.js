@@ -92,6 +92,7 @@ MW.GardenView = function () {
 		setTimeout(function () {
 			view.getTween(pitcherImage.attrs).to({ rotation: Math.PI / 3 });
 			setTimeout(function () {
+				// TODO: use TweenJS insted?
 				waterPolygon.transitionTo({
 					points: {
 						0: { x: (newY - m1) / k1, y: newY },

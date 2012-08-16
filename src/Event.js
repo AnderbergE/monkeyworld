@@ -3,6 +3,11 @@
  */
 MW.Event = {
 	FRAME: "frame",
+	
+	TRIGGER_SUBTITLES: "TRIGGER_SUBTITLES",
+	TRIGGER_SCORE:     "TRIGGER_SCORE",
+	TRIGGER_FPS:       "TRIGGER_FPS",
+	
 	MINIGAME_INITIATED: "miniGameInitiated",
 	MINIGAME_STARTED: "miniGameStarted",
 	MINIGAME_ENDED: "miniGameDone",

@@ -333,14 +333,6 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 			afterWatering();
 		}
 	};
-	document.onkeypress = function(event) {
-		console.log(event.keyCode);
-		if (event.keyCode === 100) {
-			waterGarden();
-		} else if (event.keyCode === 115) {
-			that.addWaterDrop();
-		}
-	};
 	
 	var demonstrateGarden = function (callback) {
 		if (useViews && !MW.debug) {

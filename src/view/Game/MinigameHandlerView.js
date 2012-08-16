@@ -23,13 +23,30 @@ MW.MinigameHandlerView = function () {
 			x: view.stage.getWidth() - 700,
 			y: 35
 		});
+		var on = false;
+		var running = false;
 		view.on(MW.Event.BACKEND_SCORE_UPDATE_MINIGAME, function(msg) {
 			text.setText(label + " " + msg.score);
 		});
 		view.on(MW.Event.MINIGAME_STARTED, function(msg) {
+			on = true;
+			running = true;
 			layer.add(text);
 		});
+		view.on(MW.Event.TRIGGER_SCORE, function () {
+			if (running && !on) {
+				layer.add(text);
+				on = true;
+				console.info("Turning off backend score display");
+			} else if (running && on) {
+				layer.remove(text);
+				on = false;
+				console.info("Turning on backend score display");
+			}
+		});
 		view.addTearDown(function() {
+			running = false;
+			on = false;
 			layer.remove(text);
 		});
 	})(this);
@@ -50,13 +67,27 @@ MW.MinigameHandlerView = function () {
 			x: view.stage.getWidth() - 700,
 			y: 55
 		});
+		var on = false, running = false;
 		view.on(MW.Event.MINIGAME_STARTED, function(msg) {
 			layer.add(text);
+			running = true;
+			on = true;
 		});
 		view.on(MW.Event.LEARNING_TRACK_UPDATE, function(msg) {
 			text.setText(label + " " + msg.learningTrack.name());
 		});
+		view.on(MW.Event.TRIGGER_SCORE, function () {
+			if (running && !on) {
+				layer.add(text);
+				on = true;
+			} else if (running && on) {
+				layer.remove(text);
+				on = false;
+			}
+		});
 		view.addTearDown(function() {
+			running = false;
+			on = false;
 			layer.remove(text);
 		});
 	})(this);
@@ -84,7 +115,8 @@ MW.MinigameHandlerView = function () {
 				},
 				width: MW.Images.WATERDROP.width,
 				height: MW.Images.WATERDROP.height,
-				visible: false
+				visible: false,
+				rotation: Math.PI
 			});
 			pitcherBottomImage = new Kinetic.Image({
 				image: MW.Images.PITCHER_BOTTOM,
@@ -138,20 +170,35 @@ MW.MinigameHandlerView = function () {
 			dropImage.setAlpha(1);
 			dropImage.show();
 			MW.Sound.play(MW.Sounds.YAY_HELPED_ME_GET_WATER_DROP_1);
+			MW.Sound.play(MW.Sounds.YAY_HELPED_ME_GET_WATER_DROP_2);
 			view.setTimeout(function () {
-				MW.Sound.play(MW.Sounds.YAY_HELPED_ME_GET_WATER_DROP_2);
-				view.setTimeout(function () {
-					MW.Sound.play(MW.Sounds.LETS_FILL_THE_BUCKET);
-				}, 2000)
-			}, 2000);
-			view.getTween(dropImage.attrs).to({
+				MW.Sound.play(MW.Sounds.LETS_FILL_THE_BUCKET);
+			}, 2000)
+			view.getTween(dropImage.attrs)
+			.to({
+				x: x2 - 50,
+				y: y2
+			}, time * 1.2)
+			.to({
+				rotation: 4 * Math.PI / 3,
+				x: x2 - 50,
+				y: y2 - 30
+			}, time * 0.4)
+			.to({
+				rotation: 5 * Math.PI / 3,
+				x: x2 - 25,
+				y: y2 - 25
+			}, time * 0.4)
+			.to({
+				rotation: 6 * Math.PI / 3,
 				x: x2,
 				y: y2
-			}, time).call(function () {
+			}, time * 0.4).call(function () {
 				pitcherBottomImage.show();
 				view.getTween(waterRect.attrs).to({ height: waterRect.getHeight() - levelHeight }, 1000);
 				view.getTween(dropImage.attrs).to({ alpha: 0 }, 1000).wait(1000).call(function () {
 					dropImage.hide();
+					dropImage.setRotation(Math.PI);
 					if (msg.callback != undefined)
 						msg.callback();
 				});
