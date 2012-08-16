@@ -155,12 +155,11 @@ MW.LadderMinigame = function () {
 	this.openTreat = function () {
 		collectedTreats += 1;
 		if (!ladder.game.modeIsChild()) {
+			ladder.tell(MW.Event.MG_LADDER_CONFIRM_TARGET);
 			ladder.game.addWaterDrop(checkEndOfRound);
 		} else {
-			ladder.tellWait(
-				MW.Event.MG_LADDER_CONFIRM_TARGET,
-				checkEndOfRound
-			);
+			ladder.tellWait(MW.Event.MG_LADDER_CONFIRM_TARGET);
+			ladder.tellWait(MW.Event.MG_LADDER_GET_TREAT, checkEndOfRound);
 		}
 	};
 

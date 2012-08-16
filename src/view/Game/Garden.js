@@ -27,7 +27,7 @@ MW.GardenView = function () {
 		});
 		pitcherImage = new Kinetic.Image({
 			image: MW.Images.PITCHER,
-			centerOffset: {
+			offset: {
 				x: MW.Images.PITCHER.width / 2,
 				y: MW.Images.PITCHER.height / 2
 			}
@@ -40,7 +40,7 @@ MW.GardenView = function () {
 				{ x: 41, y: 63 },
 				{ x: 15, y: 17 }
 		    ],
-			centerOffset: {
+			offset: {
 				x: MW.Images.PITCHER.width / 2,
 				y: MW.Images.PITCHER.height / 2
 			},

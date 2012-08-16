@@ -215,19 +215,19 @@ MW.Sound = (function() {
 		
 		if (entry.useSubtitle()) {
 			var text = new Kinetic.Text({
-				x: subtitleLayer.getParent().attrs.width / 2,
+				x: 0,
 				y: subtitleLayer.getParent().attrs.height - 50,
 				text: MW.Strings.get(str),
 				fontSize: 26,
 				fontFamily: "Nobile",
 				textFill: "white",
-				fill: "black",
-				stroke: "black",
-				strokeWidth: 15,
 				textStroke: "black",
 				align: "center",
+				fontStyle: "bold",
+				width: subtitleLayer.getParent().getWidth(),
+				height: 50,
 				verticalAlign: "middle",
-				textStrokeWidth: 1
+				textStrokeWidth: 2
 			});
 			addSubtitle(text);
 			subtitleLayer.add(text);

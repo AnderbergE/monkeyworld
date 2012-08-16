@@ -49,10 +49,12 @@ function MonkeyWorldView() {
 						fontFamily: "sans-serif",
 						textFill: "black",
 						align: "center",
-						verticalAlign: "middle",
-						x: rect.getWidth() / 2,
-						y: rect.getHeight() / 2
+						verticalAlign: "center",
+						width: 280,
+						height: 100,
+						y: 40
 					});
+					text.setAlign("center");
 					button.add(rect);
 					button.add(text);
 					button.on("mousedown touchstart", function() {
@@ -94,7 +96,7 @@ function MonkeyWorldView() {
 			width: BAR_CONFIG.WIDTH + BAR_CONFIG.MARGIN,
 			height: BAR_CONFIG.HEIGHT + BAR_CONFIG.MARGIN,
 			cornerRadius: 10,
-			centerOffset: {
+			offset: {
 				x: (BAR_CONFIG.WIDTH + BAR_CONFIG.MARGIN) / 2,
 				y: (BAR_CONFIG.HEIGHT + BAR_CONFIG.MARGIN) / 2
 			},
@@ -107,7 +109,7 @@ function MonkeyWorldView() {
 			y: stage.getHeight() / 2,
 			width: 0,
 			height: BAR_CONFIG.HEIGHT,
-			centerOffset: {
+			offset: {
 				x: BAR_CONFIG.WIDTH / 2,
 				y: BAR_CONFIG.HEIGHT / 2
 			},
@@ -122,8 +124,10 @@ function MonkeyWorldView() {
 			textStrokeFill: "black",
 			text: "Monkey World Demo",
 			align: "center",
+			width: stage.getWidth(),
+			height: 50,
 			y: stage.getHeight()/2 - 50,
-			x: stage.getWidth()/2
+			x: 0
 		});
 		
 		view.on("Game.showLoadingScreen", function(msg) {

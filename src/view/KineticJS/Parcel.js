@@ -24,7 +24,7 @@ Kinetic.MW.Parcel = function (config) {
 		image: imageObj,
 		width: imageObj.width,
 		height: imageObj.height,
-		centerOffset: {
+		offset: {
 			x: imageObj.width / 2,
 			y: imageObj.height / 2
 		},

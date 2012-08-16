@@ -17,10 +17,10 @@ function LadderView(tag, ladder)
 	
 	this.addInterruptButtons = function(layer) {
 		stopButton = new Kinetic.Image({
-			image: MW.Images.SYMBOL_STOP, x: 750, y: 700, centerOffset: {x:64,y:64}, alpha: 0
+			image: MW.Images.SYMBOL_STOP, x: 750, y: 700, offset: {x:64,y:64}, alpha: 0
 		});
 		continueButton = new Kinetic.Image({
-			image: MW.Images.SYMBOL_CHECK, x: 900, y: 700, centerOffset: {x:64,y:64}, alpha: 0
+			image: MW.Images.SYMBOL_CHECK, x: 900, y: 700, offset: {x:64,y:64}, alpha: 0
 		});
 		
 		layer.add(stopButton);
@@ -102,12 +102,14 @@ function LadderView(tag, ladder)
 		view.setTimeout(callback, 1500);
 	});
 	
-	view.on(MW.Event.MG_LADDER_CONFIRM_TARGET, function(callback) {
-		if (view.game.modeIsAgentSee())
-			MW.Sound.play(view.agentSeeCorrect);
-		view.confirmTarget(callback);
+	view.on(MW.Event.MG_LADDER_GET_TREAT, function(callback) {
+		view.getTreat(callback);		
 	});
-	
+
+	view.on(MW.Event.MG_LADDER_CONFIRM_TARGET, function() {
+		view.confirmTarget();
+	});
+
 	view.on("Ladder.betterBecauseBigger", function(msg) { MW.Sound.play(view.betterBigger); });
 	view.on("Ladder.betterBecauseSmaller", function(msg) { MW.Sound.play(view.betterSmaller); });
 	view.on("Ladder.hmm", function(msg) { MW.Sound.play(MW.Sounds.MAYBE_THAT_WORKS); });

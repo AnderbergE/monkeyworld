@@ -112,7 +112,7 @@ MW.AgentChooserView = function(chooser) {
 			cornerRadius: 10,
 			strokeWidth: 4,
 			stroke: "white",
-			centerOffset: {
+			offset: {
 				x: CONFIG.BUTTON.WIDTH / 2,
 				y: CONFIG.BUTTON.HEIGHT / 2
 			}
@@ -123,7 +123,7 @@ MW.AgentChooserView = function(chooser) {
 		var agentView = new agent.view();
 		var img = new Kinetic.Image({
 			image: agentView.happyFace(),
-			centerOffset: {
+			offset: {
 				x: agentView.happyFace().width / 2,
 				y: agentView.happyFace().height / 2
 			}

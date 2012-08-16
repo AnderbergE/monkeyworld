@@ -56,7 +56,7 @@ function ViewModule(tag) {
 				bigShowing.setPosition(that.stage.attrs.width/2, 150 * that.stage._mwunit); 
 			} else {
 				bigShowing = new Kinetic.Text({
-					x: that.stage.attrs.width/2,
+					x: 0,
 					y: 150,
 					text: text,
 					fontSize: 26,
@@ -64,6 +64,7 @@ function ViewModule(tag) {
 					textFill: "white",
 					textStroke: "black",
 					align: "center",
+					width: that.stage.getWidth(),
 					verticalAlign: "middle",
 					scale: {x:0.001,y:0.001},
 					textStrokeWidth: 1

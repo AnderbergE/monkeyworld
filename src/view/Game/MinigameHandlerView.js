@@ -78,7 +78,7 @@ MW.MinigameHandlerView = function () {
 			});
 			dropImage = new Kinetic.Image({
 				image: MW.Images.WATERDROP,
-				centerOffset: {
+				offset: {
 					x: MW.Images.WATERDROP.width / 2,
 					y: 0
 				},

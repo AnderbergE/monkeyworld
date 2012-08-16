@@ -55,7 +55,7 @@ function MountainView(game) {
 		fill: "blue",
 		stroke: "black",
 		strokeWidth: 4,
-		centerOffset: {
+		offset: {
 			x: FRIEND_CONFIG.WIDTH / 2,
 			y: FRIEND_CONFIG.HEIGHT
 		}

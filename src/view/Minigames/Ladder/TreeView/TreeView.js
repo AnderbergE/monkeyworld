@@ -59,7 +59,7 @@ function TreeView(ladder) {
 				"4": { x: 200, y: 100, rotation: Math.PI / 9 }
 			},
 			numpad: {
-				x: 409,
+				x: 500,
 				y: 180
 			}
 		};
@@ -126,12 +126,15 @@ function TreeView(ladder) {
 	}, view);
 
 	shakeTreat = function () {
+		console.log("Called shakeTreat");
 		shakeHandler = view.setInterval(function () {
-			treat.shake(view);
+			console.log("shakeHandler");
+			treats[ladder.getRoundNumber() - 1].shake(view);
 		}, 4000);
 	};
 
 	stopShakeTreat = function () {
+		console.log("Called stopShakeTreat");
 		view.clearInterval(shakeHandler);
 	};
 
@@ -184,13 +187,19 @@ function TreeView(ladder) {
 		treat.open();
 		numpad.release();
 		staticLayer.draw();
+	};
+
+	/**
+	 * Get a treat from the latest catched parcel
+	 */
+	view.getTreat = function (callback) {
 		var balloons = new Kinetic.Image({
 			x: treat.getX(),
 			y: treat.getY(),
 			image: MW.Images.BALLOONS,
 			width: 128,
 			height: 128,
-			centerOffset: {
+			offset: {
 				x: 64,
 				y: 64
 			},
@@ -350,7 +359,14 @@ function TreeView(ladder) {
 	this.getStickPoint = function (number) {
 		return numpad.getButtonPosition(number);
 	};
-	
+
+	staticLayer.add(new Kinetic.Image({
+		x: config.numpad.x - 180,
+		y: config.numpad.y - 280,
+		image: MW.Images.NUMPAD_WOOD
+	}));
+	dynamicLayer.add(numpad);
+
 	/**
 	 * Hang the treats in the crown
 	 */
@@ -371,16 +387,9 @@ function TreeView(ladder) {
 		}
 	}) (this);
 
-	staticLayer.add(new Kinetic.Image({
-		x: config.numpad.x - 180,
-		y: config.numpad.y - 280,
-		image: MW.Images.NUMPAD_WOOD
-	}));
-	dynamicLayer.add(numpad);
-
 	view.addAgent(
-		view.getStage().getWidth() - 500,
-		view.getStage().getHeight() - 200 - view.game.getAgentView().standing().height,
+		view.getStage().getWidth() - 200,
+		view.getStage().getHeight() - 100 - view.game.getAgentView().standing().height,
 		dynamicLayer
 	);
 	staticLayer.draw();

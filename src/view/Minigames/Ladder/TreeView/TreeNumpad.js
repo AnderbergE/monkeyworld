@@ -33,6 +33,12 @@ MW.Numpad = function(config) {
 	var buttons = [];
 	var publicLock = false;
 	var ignore = false;
+	var shadow = {
+		color: 'black',
+		blur: 10,
+		offset: [3, 3],
+		alpha: 0.5
+	};
 	
 	var grid = new Utils.gridizer(
 		config.buttonOffset.x, config.buttonOffset.y,
@@ -51,12 +57,7 @@ MW.Numpad = function(config) {
 			image: config.button,
 			width: config.buttonWidth,
 			height: config.buttonHeight,
-			shadow: {
-			      color: 'black',
-			      blur: 10,
-			      offset: [3, 3],
-			      alpha: 0.5
-			    }
+			shadow: shadow
 		});
 		var representation = new Kinetic.Image({
 			image: config.representations[i],
@@ -64,7 +65,7 @@ MW.Numpad = function(config) {
 				x: config.representationsScale,
 				y: config.representationsScale
 			},
-			centerOffset: {
+			offset: {
 				x: config.representations[i].width / 2,
 				y: config.representations[i].height / 2
 			},
@@ -80,6 +81,7 @@ MW.Numpad = function(config) {
 				group.lock();
 				config.pushed(i);
 				button.attrs.image = config.buttonActive;
+				button.attrs.shadow = null;
 			} 
 		};
 		buttonGroup.on("mousedown touchstart", function () { pushFunction(null, false); });
@@ -94,6 +96,8 @@ MW.Numpad = function(config) {
 	group.release = function() {
 		for (var i = config.min; i <= config.max; i += config.step) {
 			buttons[i].attrs.image = config.button;
+			console.log("shadow", shadow);
+			buttons[i].setShadow(shadow);
 		}
 	};
 	
