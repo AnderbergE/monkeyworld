@@ -27,29 +27,23 @@ function LadderView(tag, ladder)
 		layer.add(continueButton);
 	};
 	
-	this.addAgent = function(x, y, layer) {
-		agent = new Kinetic.Image({
-			image: view.game.getAgentView().standing(),
-			x: view.getStage().getWidth() + 10,
-			y: y
-		});
-		layer.add(agent);
-		
-		if (view.game.modeIsAgentSee() || view.game.modeIsAgentDo()) {
-			agent.setX(x);		
-		}
-		
-		if (view.game.modeIsAgentDo()) {
-			stick = new Kinetic.Line({
-				points: [660, 570, STICK_ORIGIN.x, STICK_ORIGIN.y],
-				stroke: "brown",
-				strokeWidth: 2,
-				lineCap: "round"
-			});
-			layer.add(stick);
+	this.addAgent = function(x, y, scale, layer) {
+		if (!view.game.modeIsChild()) {
+			agent = new view.game.getAgentView().getBody(x, y);
+			agent.setScale(scale);
+			layer.add(agent);
+			if (view.game.modeIsAgentDo()) {
+				stick = new Kinetic.Line({
+					points: [660, 570, STICK_ORIGIN.x, STICK_ORIGIN.y],
+					stroke: "brown",
+					strokeWidth: 2,
+					lineCap: "round"
+				});
+				layer.add(stick);
+			}
 		}
 	};
-	
+
 	view.on("Ladder.interrupt", function(msg) {
 		if (view.game.modeIsAgentDo()) {
 			view.removeTween(stick.attrs.points[1]);
@@ -98,7 +92,7 @@ function LadderView(tag, ladder)
 	});
 	
 	view.on(MW.Event.MG_LADDER_CHEER, function(callback) {
-		view.showBig("YAY!");
+		MW.Sound.play(MW.Sounds.YAY);
 		view.setTimeout(callback, 1500);
 	});
 	

@@ -10,8 +10,8 @@ Kinetic.MW.Lizard = function (config, view) {
 		image,
 		walkInterval,
 		walkTimeout,
-		mouthInterval = 500,
-		tongueInterval = 500,
+		mouthInterval = 200,
+		tongueInterval = 200,
 		tongueImage;
 
 	image = new Kinetic.Image({
@@ -25,8 +25,12 @@ Kinetic.MW.Lizard = function (config, view) {
 		width: MW.Images.TREEGAME_LIZARD_TONGUE1.width,
 		height: MW.Images.TREEGAME_LIZARD_TONGUE1.height,
 		visible: false,
-		x: -170,
-		y: -200
+		x: -170 + 279,
+		y: -200 + 281,
+		offset: {
+			x: 279,
+			y: 281
+		}
 	});
 
 	group.add(tongueImage);
@@ -85,7 +89,6 @@ Kinetic.MW.Lizard = function (config, view) {
 		.to({ image: MW.Images.TREEGAME_LIZARD_TONGUE4 })
 		.wait(tongueInterval)
 		.to({ image: MW.Images.TREEGAME_LIZARD_TONGUE5 })
-		.wait(tongueInterval)
 		.call(callback);
 	}
 

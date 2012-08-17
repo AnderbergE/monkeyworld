@@ -126,15 +126,12 @@ function TreeView(ladder) {
 	}, view);
 
 	shakeTreat = function () {
-		console.log("Called shakeTreat");
 		shakeHandler = view.setInterval(function () {
-			console.log("shakeHandler");
 			treats[ladder.getRoundNumber() - 1].shake(view);
 		}, 4000);
 	};
 
 	stopShakeTreat = function () {
-		console.log("Called stopShakeTreat");
 		view.clearInterval(shakeHandler);
 	};
 
@@ -233,17 +230,24 @@ function TreeView(ladder) {
 			rotation: -Math.PI / 8,
 			x: config.helper.x - 25
 		}, 1000).call(function () {
-		console.log(currentPick);
+		console.log(stepGroups[2].getY());
 			if (currentPick > 1) {
-				helper.startWalk()
 				view.getTween(helper.attrs).to({
 					rotation: 0,
-					y: config.helper.y - 170
-				}, 1000).to({
-					y: stepGroups[currentPick].getY()
-				}, 500 * currentPick).call(function () {
-					helper.stopWalk();
-					callback();
+					y: 430
+				}, 1000).call(function () {
+					if (currentPick > 2) {
+						helper.startWalk();
+						view.getTween(helper.attrs).to({
+							y: stepGroups[currentPick].getY()
+						}, 500 * currentPick).call(function () {
+							helper.stopWalk();
+							callback();
+						});
+					} else {
+						helper.stopWalk();
+						callback();
+					}
 				});
 			} else {
 				callback();
@@ -255,24 +259,39 @@ function TreeView(ladder) {
 	 * Helper moves to its home
 	 */
 	view.on(MW.Event.MG_LADDER_RESET_SCENE, function (callback, msg) {
-		helper.startWalk();
-		view.getTween(helper.attrs).to({
-			y: config.helper.y - 170
-		}, 500 * currentPick).call(helper.stopWalk).to({
-			rotation: -Math.PI / 16,
-			x: config.helper.x,
-			y: config.helper.y - 70
-		}, 1000).to({
-			rotation: 0,
-			y: config.helper.y - 50
-		}, 1000).to({
-			rotation: 0,
-			x: config.helper.x,
-			y: config.helper.y
-		}, 2000).call(function () {
-			numpad.release();
-			callback();
-		});
+		var step1 = function (next) {
+			helper.startWalk();
+			view.getTween(helper.attrs).to({
+				y: 430
+			}, 500 * currentPick).call(helper.stopWalk).call(next);
+		};
+		var step2 = function (next) {
+			view.getTween(helper.attrs).to({
+				rotation: -Math.PI / 16,
+				x: config.helper.x,
+				y: config.helper.y - 70
+			}, 1000).to({
+				rotation: 0,
+				y: config.helper.y - 50
+			}, 1000).call(next);
+		};
+		var step3 = function () {
+			view.getTween(helper.attrs).to({
+				rotation: 0,
+				x: config.helper.x,
+				y: config.helper.y
+			}, 2000).call(function () {
+				numpad.release();
+				callback();
+			});
+		};
+		if (currentPick > 2) {
+			step1(function () { step2(step3); });
+		} else if (currentPick > 1) {
+			step2(step3);
+		} else {
+			step3();
+		}
 	});
 
 	/**
@@ -285,11 +304,17 @@ function TreeView(ladder) {
 				if (done_ === 2)
 					callback();
 			};
-			helper.tongueIn(done);
 			view.getTween(treat.attrs).to({
+				x: treat.getX() + 30,
+				y: treat.getY() - 30
+			}).wait(200).call(function () {
+				MW.Sound.play(MW.Sounds.LADDER_TREE_TONGUE);
+				helper.tongueIn(done);
+			}).to({
 				x: config.dropZone.x + config.dropZone.offsetWidth * dropZoneOffset,
-				y: config.dropZone.y
-			}, 2000).call(done).call(function () {
+				y: config.dropZone.y,
+				rotation: 3 * Math.PI
+			}, 2000).to({ rotation: 0 }).call(done).call(function () {
 				if (!view.game.modeIsAgentDo()) {
 					addOnMouseActionToTreat();
 					shakeTreat();
@@ -383,6 +408,15 @@ function TreeView(ladder) {
 	}));
 	dynamicLayer.add(numpad);
 
+	var agentView = view.game.getAgentView();
+	var agentScale = 0.8;
+	view.addAgent(
+		view.getStage().getWidth() - 248,
+		view.getStage().getHeight() - 100 - agentScale * (agentView.feetOffset() - agentView.bodyOffset().y),
+		agentScale,
+		dynamicLayer
+	);
+
 	/**
 	 * Hang the treats in the crown
 	 */
@@ -402,11 +436,5 @@ function TreeView(ladder) {
 			treats.push(parcel);
 		}
 	}) (this);
-
-	view.addAgent(
-		view.getStage().getWidth() - 200,
-		view.getStage().getHeight() - 100 - view.game.getAgentView().standing().height,
-		dynamicLayer
-	);
 	staticLayer.draw();
 }

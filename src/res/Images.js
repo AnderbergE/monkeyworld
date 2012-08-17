@@ -47,6 +47,9 @@ MW.ImageSources = {
 /** @const */ PITCHER: "vattenkanna.png",
 /** @const */ PITCHER_BOTTOM: "vattenkanna-botten.png",
 
+/** @const */ AGENT_MOUSE_NORMAL:      "agents/mouse/normal.png",
+/** @const */ AGENT_MOUSE_NORMAL_NO_ARM: "agents/mouse/normal-no-arm.png",
+/** @const */ AGENT_MOUSE_HEAD: "agents/mouse/head.png",
 /** @const */ AGENT_FACE_NORMAL_MOUSE: "agents/mouse/facials/m-normal.png",
 /** @const */ AGENT_FACE_HAPPY_MOUSE:  "agents/mouse/facials/m-glad.png",
 /** @const */ AGENT_FACE_SURPRISED_MOUSE: "agents/mouse/facials/m-suprised.png"

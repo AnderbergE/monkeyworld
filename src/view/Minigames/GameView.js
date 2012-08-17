@@ -50,17 +50,12 @@ function GameView(tag) {
 	 */
 	(function (view) {
 		var faceImageObj = view.game.getAgentView().normalFace();
-		var faceImage = new Kinetic.Image({
-			image: faceImageObj,
-			x: view.getStage().getWidth() - faceImageObj.width - 15,
-			y: 12,
-			scale: 0.5
-		});
-		view.on(MW.Event.MINIGAME_STARTED, function(msg) {
+		var faceImage = new view.game.getAgentView().getFace(view.getStage().getWidth() - faceImageObj.width - 30, 12);
+		faceImage.setScale(0.5);
+		view.addSetup(function() {
 			if (view.game.modeIsChild()) {
 				layer.add(faceImage);
-			} else
-				console.log(faceImage);
+			}
 		});
 		view.addTearDown(function() {
 			layer.remove(faceImage);

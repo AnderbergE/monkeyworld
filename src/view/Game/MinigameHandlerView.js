@@ -183,17 +183,18 @@ MW.MinigameHandlerView = function () {
 				rotation: 4 * Math.PI / 3,
 				x: x2 - 50,
 				y: y2 - 30
-			}, time * 0.4)
+			}, 300)
 			.to({
 				rotation: 5 * Math.PI / 3,
 				x: x2 - 25,
 				y: y2 - 25
-			}, time * 0.4)
+			}, 300)
 			.to({
 				rotation: 6 * Math.PI / 3,
 				x: x2,
 				y: y2
-			}, time * 0.4).call(function () {
+			}, 300).call(function () {
+				MW.Sound.play(MW.Sounds.DRIP);
 				pitcherBottomImage.show();
 				view.getTween(waterRect.attrs).to({ height: waterRect.getHeight() - levelHeight }, 1000);
 				view.getTween(dropImage.attrs).to({ alpha: 0 }, 1000).wait(1000).call(function () {

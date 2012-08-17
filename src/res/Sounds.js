@@ -34,6 +34,7 @@ MW.Sounds = {
 	WHICH_ONE_DO_YOU_THINK_IT_IS:    new MW.SoundEntry(null, "WHICH_ONE_DO_YOU_THINK_IT_IS"),
 	MONKEY_HMM:                      new MW.SoundEntry(null, "MONKEY_HMM"),
 	MAGIC_CHIMES:                    new MW.SoundEntry("51710__bristolstories__u-chimes3_short", null),
+	DRIP:                            new MW.SoundEntry("25879__acclivity__drip1", null),
 
 	INTRO_1:                         new MW.SoundEntry(null, "INTRO_1"),
 	INTRO_2:                         new MW.SoundEntry(null, "INTRO_2"),
@@ -62,6 +63,7 @@ MW.Sounds = {
 	LADDER_TREE_AGENT_PLAY_TOO_LOW:         new MW.SoundEntry(null, "LADDER_TREE_AGENT_PLAY_TOO_LOW"),
 	LADDER_TREE_AGENT_PLAY_TOO_HIGH:   new MW.SoundEntry(null, "LADDER_TREE_AGENT_PLAY_TOO_HIGH"),
 	LADDER_TREE_AGENT_SEE_CORRECT:        new MW.SoundEntry(null, "LADDER_TREE_AGENT_SEE_CORRECT"),
+	LADDER_TREE_TONGUE:                    new MW.SoundEntry("34208__acclivity__tongueclick1", null),
 	
 	LADDER_MOUNTAIN_IM_DOWN_HERE:    new MW.SoundEntry(null, "LADDER_MOUNTAIN_IM_DOWN_HERE"),
 	LADDER_MOUNTAIN_IM_UP_HERE:      new MW.SoundEntry(null, "LADDER_MOUNTAIN_IM_UP_HERE"),

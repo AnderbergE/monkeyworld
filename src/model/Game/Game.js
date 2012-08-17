@@ -231,6 +231,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	var selectMinigame = function() {
 		result = new MW.MiniGameResult();
 		player = GAMER;
+//		gameMode = MW.GameMode.CHILD_PLAY;
 		gameMode = MW.GameMode.AGENT_SEE;
 //		minigameHandler = newObject(MW.MinigameHandler);
 		if (useViews) {
@@ -439,7 +440,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 					that.tell("Game.viewInitiated");
 				}
 			} else {
-				agentView = new MW.MonkeyAgentView();
+				agentView = new MW.MouseAgentView();
 				selectMinigame();
 			}
 		});

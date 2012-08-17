@@ -9,7 +9,7 @@ window.onload = function() {
 
 
 WebFontConfig = {
-  google: { families: [ 'Nunito::latin', 'Doppio+One::latin', 'Nobile:400,700:latin' ] }
+  google: { families: [ 'Nunito::latin', 'Doppio+One::latin', 'Nobile:400,700:latin', 'Galindo::latin' ] }
 };
 (function() {
   var wf = document.createElement('script');
