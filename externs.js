@@ -97,6 +97,10 @@ Kinetic.Container = function() {};
 		Kinetic.Node.prototype.moveUp = function() {};
 		Kinetic.Node.prototype.moveDown = function() {};
 		Kinetic.Node.prototype.setZIndex = function( zIndex ) {};
+		/**
+		 * @param {Object} shadowObject
+		 */
+		Kinetic.Node.prototype.setShadow = function(shadowObject) {};
 		Kinetic.Node.prototype.draggable = function( bool ) {};
 		Kinetic.Node.prototype.draggableX = function( bool ) {};
 		Kinetic.Node.prototype.draggableY = function( bool ) {};
@@ -376,6 +380,10 @@ Kinetic.Text = function(config){};
  * @param {string} text
  */
 Kinetic.Text.prototype.setText = function(text){};
+/**
+ * @param {string} align
+ */
+Kinetic.Text.prototype.setAlign = function(align){};
 Kinetic.Text.prototype.text = function(){};
 Kinetic.Text.prototype.fontSize = function(){};
 Kinetic.Text.prototype.fontFamily = function(){};
