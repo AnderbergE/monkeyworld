@@ -173,11 +173,11 @@ MW.LadderMinigame = function () {
 		tries += 1;
 		Utils.chain(
 			allowInterrupt,
-			ladder.sendable(MW.Event.MG_LADDER_IGNORE_INPUT),
 			ladder.waitable(MW.Event.MG_LADDER_PICKED, {
 				number: number,
 				correct: number === targetNumber
 			}),
+			ladder.sendable(MW.Event.MG_LADDER_IGNORE_INPUT),
 			function (next) {
 				if (ladder.agentIsBeingHelped()) {
 					timesHelped += 1;
@@ -330,9 +330,9 @@ MW.LadderMinigame = function () {
 			disallowInterrupt();
 			ladder.popAction();
 			if (!birdHasTreat) {
+				ladder.tell(MW.Event.MG_LADDER_ALLOW_GAMER_INPUT, {}, true);
 				ladder.tell("Ladder.interrupt", {});
 				ladder.tellWait(MW.Event.MG_LADDER_RESET_SCENE, function() {
-					ladder.tell(MW.Event.MG_LADDER_ALLOW_GAMER_INPUT, {}, true);
 					ladder.tell(MW.Event.MG_LADDER_ACKNOWLEDGE_INPUT, {}, true);
 				});
 			}
