@@ -76,7 +76,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	/** @const @type {MW.MediumLearningTrack} */ var MEDIUM_TRACK = new MW.MediumLearningTrack();
 	/** @const @type {MW.FastLearningTrack}   */ var FAST_TRACK   = new MW.FastLearningTrack();
 	
-	/** @type {MW.GameMode}                */ var gameMode        = MW.GameMode.AGENT_SEE; 
+	/** @type {MW.GameMode}                */ var gameMode        = MW.GameMode.CHILD_PLAY; 
 	/** @type {MW.Minigame}                */ var miniGame        = NO_MINI_GAME;
 	/** @type {Function} @constructor      */ var miniGameView    = null;
 	                                          var currentMiniGameView = null;
@@ -231,8 +231,8 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	var selectMinigame = function() {
 		result = new MW.MiniGameResult();
 		player = GAMER;
-//		gameMode = MW.GameMode.CHILD_PLAY;
-		gameMode = MW.GameMode.AGENT_SEE;
+		gameMode = MW.GameMode.CHILD_PLAY;
+//		gameMode = MW.GameMode.AGENT_SEE;
 //		minigameHandler = newObject(MW.MinigameHandler);
 		if (useViews) {
 			miniGameHandlerView = newObject(MW.MinigameHandlerView);
