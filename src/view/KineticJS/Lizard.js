@@ -108,13 +108,15 @@ Kinetic.MW.Lizard = function (config, view) {
 
 	group.startWalk = this.startWalk;
 	group.stopWalk = this.stopWalk;
-	group.tongueOut = function (callback) {
+	this.tongueOut = function (callback) {
 		openMouth(function () { tongueOut(callback); });
 	};
 
-	group.tongueIn = function (callback) {
+	this.tongueIn = function (callback) {
 		tongueIn(function () { closeMouth(callback); });
 	}
+	group.tongueIn = this.tongueIn;
+	group.tongueOut = this.tongueOut;
 
 	return group;
 };
