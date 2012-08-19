@@ -250,6 +250,7 @@ function MountainView(game) {
 	};
 
 	this.pick = function(number, callback) {
+		allowNumpad = false;
 		var b = balloonGroups[number - 1]._balloons;
 		var g = balloonGroups[number - 1];
 		
