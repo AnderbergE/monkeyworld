@@ -178,7 +178,7 @@ function TreeView(ladder) {
 	/**
 	 * Open the treat
 	 */
-	view.confirmTarget = function (callback) {
+	view.confirmTarget = function () {
 		treat.offClick();
 		stopShakeTreat();
 		treat.open();
