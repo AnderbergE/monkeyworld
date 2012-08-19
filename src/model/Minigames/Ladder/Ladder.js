@@ -173,11 +173,11 @@ MW.LadderMinigame = function () {
 		tries += 1;
 		Utils.chain(
 			allowInterrupt,
+			ladder.sendable(MW.Event.MG_LADDER_IGNORE_INPUT),
 			ladder.waitable(MW.Event.MG_LADDER_PICKED, {
 				number: number,
 				correct: number === targetNumber
 			}),
-			ladder.sendable(MW.Event.MG_LADDER_IGNORE_INPUT),
 			function (next) {
 				if (ladder.agentIsBeingHelped()) {
 					timesHelped += 1;
