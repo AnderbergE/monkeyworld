@@ -17,10 +17,10 @@ function LadderView(tag, ladder)
 	
 	this.addInterruptButtons = function(layer) {
 		stopButton = new Kinetic.Image({
-			image: MW.Images.SYMBOL_STOP, x: 750, y: 700, offset: {x:64,y:64}, alpha: 0
+			image: MW.Images.SYMBOL_STOP, x: 750, y: 600, offset: {x:64,y:64}, alpha: 0
 		});
 		continueButton = new Kinetic.Image({
-			image: MW.Images.SYMBOL_CHECK, x: 900, y: 700, offset: {x:64,y:64}, alpha: 0
+			image: MW.Images.SYMBOL_CHECK, x: 900, y: 600, offset: {x:64,y:64}, alpha: 0
 		});
 		
 		layer.add(stopButton);
