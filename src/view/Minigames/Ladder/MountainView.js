@@ -104,7 +104,8 @@ function MountainView(game) {
 		cage.add(new Kinetic.Polygon({
 			points: [0, 0,
 			         CAGE_CONFIG.WIDTH, 0,
-			         CAGE_CONFIG.WIDTH + CAGE_CONFIG.SLOPE, -CAGE_CONFIG.HEIGHT,
+			         CAGE_CONFIG.WIDTH + CAGE_CONFIG.SLOPE, -
+			         CAGE_CONFIG.HEIGHT,
 			         -CAGE_CONFIG.SLOPE, -CAGE_CONFIG.HEIGHT],
 			fill: "#993300",
 			stroke: "black",
@@ -112,14 +113,24 @@ function MountainView(game) {
 		}));
 		
 		var balloonGrid = new Utils.gridizer(
-			BALLOON_GRID.X, BALLOON_GRID.Y, BALLOON_GRID.STEPX, BALLOON_GRID.STEPY, BALLOON_GRID.WIDTH
+			BALLOON_GRID.X,
+			BALLOON_GRID.Y,
+			BALLOON_GRID.STEPX,
+			BALLOON_GRID.STEPY,
+			BALLOON_GRID.WIDTH
 		);
 		
 		for (var i = 0; i < 6; i++) {
 			(function(i) {
 				var pos = balloonGrid.next();
-				var group = new Kinetic.Group({ x: pos.x, y: pos.y });
-				var balloons = new Kinetic.Group({ x: 40, y: 40 });
+				var group = new Kinetic.Group({
+					x: pos.x,
+					y: pos.y
+				});
+				var balloons = new Kinetic.Group({
+					x: 40,
+					y: 40
+				});
 				var rect = new Kinetic.Rect({
 					width: BALLOON_GRID.STEPX,
 					height: BALLOON_GRID.STEPY,
@@ -132,19 +143,25 @@ function MountainView(game) {
 				var r = 0;
 				for (var j = 0; j <= i; j++) {
 					if (j === 3) r++;
-					balloons.add(new Kinetic.Balloon(j*30 - 2.7*r*30, r*30));
+					balloons.add(new Kinetic.Balloon(
+						j * 30 - 2.7 * r * 30,
+						r * 30
+					));
 				}
 				group.add(balloons);
 				group._rect = rect;
 				group._balloons = balloons;
 				
 				group.on("mousedown touchstart", function() {
-					if (allowNumpad && view.game.playerIsGamer()) {
-						allowNumpad = false;
+					if (allowNumpad &&
+					    view.game.playerIsGamer()) {
 						game.pick(i + 1);
-					} else if (view.game.playerIsAgent() && !tellMyTurn) {
+					} else if (view.game.playerIsAgent() &&
+					           !tellMyTurn) {
 						tellMyTurn = true;
-						MW.Sound.play(MW.Sounds.NO_MY_TURN);
+						MW.Sound.play(
+							MW.Sounds.NO_MY_TURN
+						);
 						setTimeout(function() {
 							MW.Sound.play(MW.Sounds.BUT_YOU_CAN_INTERRUPT);
 							setTimeout(function() {
@@ -153,20 +170,20 @@ function MountainView(game) {
 						}, 2000);
 					}
 				});
-				
 				dynamicLayer.add(group);
 			})(i);
 		};
-		
+
 		staticLayer.add(mountain);
-		
+
 		var ladder = game.getLadder();
 		for (var i = 0; i < ladder.length; i++) {
 			var line = new Kinetic.Line({
 				points: [
 					LADDER_CONFIG.X - i * LADDER_CONFIG.SLOPE,
 					LADDER_CONFIG.Y - i * LADDER_CONFIG.HEIGHT,
-					LADDER_CONFIG.X - i * LADDER_CONFIG.SLOPE + LADDER_CONFIG.WIDTH,
+					LADDER_CONFIG.X - i * LADDER_CONFIG.SLOPE 
+					+ LADDER_CONFIG.WIDTH,
 					LADDER_CONFIG.Y - i * LADDER_CONFIG.HEIGHT
 				],
 				stroke: "black",
@@ -179,29 +196,49 @@ function MountainView(game) {
 		dynamicLayer.add(cage);
 		view.on("frame", function() { dynamicLayer.draw(); });
 		view.addInterruptButtons(dynamicLayer);
-		
+
+		var agentView = view.game.getAgentView();
+		var agentScale = 0.8;
 		view.addAgent(
 			view.getStage().getWidth() - 500,
-			LADDER_CONFIG.Y,
+			view.getStage().getHeight() - 50 -
+			  agentScale *
+			  (agentView.feetOffset() - agentView.bodyOffset().y),
+			agentScale,
 			dynamicLayer
 		);
-		
+
 		staticLayer.draw();
 	});
-	
+
 	view.interrupt = function() {
-		resetButton();
+		if (resetButton != null) resetButton();
 		view.removeTween(cage.attrs);
 		view.getTween(cage.attrs).to({x:CAGE_CONFIG.X,y:CAGE_CONFIG.Y});
 	};
-	
-	view.on("Ladder.placeTarget", function(msg) {
+
+	view.on(MW.Event.MG_LADDER_PLACE_TARGET, function(callback, msg) {
 		var level = game.getTargetNumber() - 1;
 		friend.setX(LADDER_CONFIG.X - level * LADDER_CONFIG.SLOPE);
 		friend.setY(LADDER_CONFIG.Y - level * LADDER_CONFIG.HEIGHT);
 		friend.show();
+		callback();
+	});
+	
+	view.on(MW.Event.MG_LADDER_IGNORE_INPUT, function () {
+		allowNumpad = false;
+	});
+	
+	view.on(MW.Event.MG_LADDER_ACKNOWLEDGE_INPUT, function () {
 		allowNumpad = true;
-		msg.callback();
+	});
+	
+	view.on(MW.Event.MG_LADDER_ALLOW_GAMER_INPUT, function () {
+		// TODO: Implement
+	});
+	
+	view.on(MW.Event.MG_LADDER_FORBID_GAMER_INPUT, function () {
+		// TODO: Implement
 	});
 	
 	this.getStickPoint = function(number) {
@@ -211,7 +248,7 @@ function MountainView(game) {
 			y: r.getY() + r._rect.getHeight() / 2
 		};
 	};
-	
+
 	this.pick = function(number, callback) {
 		var b = balloonGroups[number - 1]._balloons;
 		var g = balloonGroups[number - 1];
@@ -230,7 +267,10 @@ function MountainView(game) {
 		
 		var yOffset = -110;
 		var xOffset = 20;
-		view.getTween(b.attrs).to({x: - Math.abs(CAGE_CONFIG.X - g.getX()) + xOffset, y: CAGE_CONFIG.Y - g.getY() + yOffset }, 4000).call(function() {
+		view.getTween(b.attrs).to({
+			x: - Math.abs(CAGE_CONFIG.X - g.getX()) + xOffset,
+			y: CAGE_CONFIG.Y - g.getY() + yOffset }, 4000)
+		.call(function() {
 			b.moveTo(cage);
 			b.setX(xOffset);
 			b.setY(yOffset);
@@ -238,45 +278,81 @@ function MountainView(game) {
 			callback();
 		});
 	};
-	
-	view.on("Ladder.approachLadder", function(msg) {
+
+	view.on(MW.Event.MG_LADDER_HELPER_APPROACH_TARGET, function(callback) {
+		var number = game.getChosenNumber();
 		view.getTween(cage.attrs).to({
-			x: (LADDER_CONFIG.X - (msg.number - 1) * LADDER_CONFIG.SLOPE + LADDER_CONFIG.WIDTH),
-			y: (LADDER_CONFIG.Y - (msg.number - 1) * LADDER_CONFIG.HEIGHT)
-		}, 2000).call(msg.callback);
+			x: (LADDER_CONFIG.X - (number - 1) *
+			    LADDER_CONFIG.SLOPE + LADDER_CONFIG.WIDTH),
+			y: (LADDER_CONFIG.Y - (number - 1) *
+			    LADDER_CONFIG.HEIGHT)
+		}, 2000).call(callback);
 	});
-	
-	view.on("Ladder.getTarget", function(msg) {
+
+	view.on(MW.Event.MG_LADDER_GET_TARGET, function(callback, msg) {
 		var friendOffsetX = CAGE_CONFIG.WIDTH / 2;
 		var friendOffsetY = -FRIEND_CONFIG.HEIGHT / 2;
 		MW.Sound.play(MW.Sounds.LADDER_MOUNTAIN_YOU_SAVED_ME);
 		view.setTimeout(function() {
 			MW.Sound.play(MW.Sounds.LADDER_MOUNTAIN_IM_HUNGRY);
 		}, 2000);
-		view.getTween(friend.attrs).to({ x: cage.getX() + friendOffsetX, y: cage.getY() + friendOffsetY }, 1000).call(function() {
+		view.getTween(friend.attrs).to({
+			x: cage.getX() + friendOffsetX,
+			y: cage.getY() + friendOffsetY
+		}, 1000).call(function() {
 			var time = 3000;
-			view.getTween(cage.attrs).to({x:CAGE_CONFIG.X, y: CAGE_CONFIG.Y}, time);
-			view.getTween(friend.attrs).to({x:CAGE_CONFIG.X + friendOffsetX, y: CAGE_CONFIG.Y + friendOffsetY}, time).call(function() {
-				view.getTween(friend.attrs).to({x:CAGE_CONFIG.X + CAGE_CONFIG.WIDTH + FRIEND_CONFIG.WIDTH, y: CAGE_CONFIG.Y}, 2000).call(msg.callback);
+			view.getTween(cage.attrs).to({
+				x: CAGE_CONFIG.X,
+				y: CAGE_CONFIG.Y
+			}, time);
+			view.getTween(friend.attrs).to({
+				x: CAGE_CONFIG.X + friendOffsetX,
+				y: CAGE_CONFIG.Y + friendOffsetY
+			}, time).call(function() {
+				view.getTween(friend.attrs).to({
+					x: CAGE_CONFIG.X +
+					   CAGE_CONFIG.WIDTH +
+					   FRIEND_CONFIG.WIDTH,
+					y: CAGE_CONFIG.Y
+				}, 2000).call(callback);
 			});
 		});
 	});
 	
-	view.on("Ladder.hasTarget", function(msg) {
+	view.on(MW.Event.MG_LADDER_HAS_TARGET, function(msg) {
 		if (!view.game.modeIsAgentDo())
 			game.openTreat();
 		
 	});
-	
-	view.confirmTarget = function(msg) {
-		msg.callback();
+
+	/**
+	 * Called by the LadderView when the player confirms the target, e.g. by
+	 * clicking on it.
+	 */
+	view.confirmTarget = function () {
+		/*
+		 * The target can not be confirmed (clicked on) by the player in
+		 * this version of the Ladder minigame, so nothing is done here.
+		 */
+	};
+
+	/**
+	 * Called when something is about to pop out from the target treat.
+	 */
+	view.getTreat = function (callback) {
+		/*
+		 * In this version of the Ladder minigame, no treat is given
+		 * to the player (except the water), so control is just handed
+		 * back to the minigame model right away, by calling the
+		 * callback function:
+		 */
+		callback();
 	};
 	
-	view.on("Ladder.resetScene", function(msg) {
+	view.on(MW.Event.MG_LADDER_RESET_SCENE, function(callback, msg) {
 		var whenDone = function() {
 			if (resetButton != null) resetButton();
-			if (msg.allowNumpad) allowNumpad = true;
-			msg.callback();
+			callback();
 		};
 		if (cage.getY() != CAGE_CONFIG.Y) {
 			view.getTween(cage.attrs).to({
