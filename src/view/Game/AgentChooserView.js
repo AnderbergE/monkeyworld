@@ -122,10 +122,10 @@ MW.AgentChooserView = function(chooser) {
 		g._agent = agent;
 		var agentView = new agent.view();
 		var img = new Kinetic.Image({
-			image: agentView.happyFace(),
+			image: agentView.head(),
 			offset: {
-				x: agentView.happyFace().width / 2,
-				y: agentView.happyFace().height / 2
+				x: agentView.head().width / 2,
+				y: agentView.head().height / 2
 			}
 		});
 		g.add(img);
