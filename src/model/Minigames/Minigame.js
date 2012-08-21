@@ -118,7 +118,6 @@ MW.Minigame = function (tag) {
 		backendScore = 10;
 		that.tell(MW.Event.BACKEND_SCORE_UPDATE_MODE, { backendScore: backendScore }, true);
 		roundResult = new MW.MiniGameRoundResult();
-		console.log(this._tag);
 		_strategy = new player.strategies[this._tag](this, res);
 		this.start();
 	};

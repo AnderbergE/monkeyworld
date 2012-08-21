@@ -22,7 +22,7 @@ function MonkeyPlayer() {
 		Log.debug("Will make mistake on try number " + intentionalMistakePosition + 1, "agent");
 		var tries = 0;
 		
-		that.on("Ladder.readyToPick", function(msg) {
+		that.on(MW.Event.MG_LADDER_READY_TO_PICK, function(msg) {
 			play(resultPosition++);
 		});
 		
@@ -68,7 +68,7 @@ function MonkeyPlayer() {
 			}, 2000);
 		};
 		
-		that.on("Ladder.hasTarget", function(msg) {
+		that.on(MW.Event.MG_LADDER_HAS_TARGET, function(msg) {
 			setTimeout(function() {
 				game.openTreat();	
 			}, 1500);

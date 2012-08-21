@@ -39,7 +39,9 @@ function GameView(tag) {
 			}
 		});
 		view.addTearDown(function() {
-			layer.remove(text);
+			if (on) {
+				layer.remove(text);
+			}
 			running = false;
 			on = false;
 		});

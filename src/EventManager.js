@@ -140,21 +140,6 @@ MW.EventManager = function(stage) {
 	this.tellWait = function (type, callback, message) {
 		this.tellArguments(callback, true, type, message);
 	};
-	
-	this.loadImages = function(imageSources, images, callback) {
-		Log.debug("Loading images...", "view");
-		var loadedImages = 0;
-		var numImages = Object.size(imageSources);
-		for (var src in imageSources) {
-            images[src] = new Image();
-            images[src].onload = function(){
-                if (++loadedImages >= numImages) {
-                	callback();
-                }
-            };
-            images[src].src = "../res/img/" + imageSources[src];
-        }
-	};
 };
 
 /**

@@ -231,8 +231,8 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	var selectMinigame = function() {
 		result = new MW.MiniGameResult();
 		player = GAMER;
-		gameMode = MW.GameMode.CHILD_PLAY;
-//		gameMode = MW.GameMode.AGENT_SEE;
+//		gameMode = MW.GameMode.CHILD_PLAY;
+		gameMode = MW.GameMode.AGENT_SEE;
 //		minigameHandler = newObject(MW.MinigameHandler);
 		if (useViews) {
 			miniGameHandlerView = newObject(MW.MinigameHandlerView);
@@ -467,11 +467,9 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	};
 
 	this.addWaterDrop = function (callback) {
-		console.log("addWaterDrop");
 		that.tell(MW.Event.PITCHER_LEVEL_ADD_BEFORE);
 		that.tell(MW.Event.PITCHER_LEVEL_ADD, { callback: function () {
 			if (waterDrops === 6) {
-				console.log("OK");
 				waterGarden(callback);
 			} else {
 				if (callback != undefined)
@@ -479,7 +477,6 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 			}
 		}});
 		waterDrops += 1;
-		console.log(waterDrops);
 	};
 
 	this.getWaterDrops = function () {

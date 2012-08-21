@@ -163,7 +163,6 @@ function TreeView(ladder) {
 	});
 
 	createTreat = function (callback) {
-		console.log(treats);
 		treat = treats[ladder.getRoundNumber() - 1];
 		view.getTween(treat.attrs).wait(2000).to({
 			x: 100,
@@ -220,6 +219,31 @@ function TreeView(ladder) {
 	});
 
 	/**
+	 * Picked a number on the numpad
+	 */
+	view.on(MW.Event.MG_LADDER_PICKED, function(callback) {
+		if (view.game.modeIsAgentDo() && !ladder.agentIsInterrupted() && !ladder.agentIsBeingHelped()) {
+			var pos = view.getStickPoint(ladder.getChosenNumber());
+			MW.Sound.play(MW.Sounds.IM_GOING_TO_PICK_THIS_ONE);
+			var reset = null;
+			view.setTimeout(function () {
+				reset = view.game.getAgentView().pointAt(ladder.getChosenNumber(), function () {
+					view.setTimeout(function () {
+						if (!ladder.agentIsInterrupted()) {
+							view.pick(ladder.getChosenNumber(), callback);
+							view.setTimeout(function () {
+								reset(function () {});
+							}, 1000);
+						}
+					}, 3000);
+				});
+			}, 1500);
+		} else {
+			view.pick(ladder.getChosenNumber(), callback);
+		}
+	});
+
+	/**
 	 * Helper approaches the target
 	 */
 	view.on(MW.Event.MG_LADDER_HELPER_APPROACH_TARGET, function (callback) {
@@ -230,7 +254,6 @@ function TreeView(ladder) {
 			rotation: -Math.PI / 8,
 			x: config.helper.x - 25
 		}, 1000).call(function () {
-		console.log(stepGroups[2].getY());
 			if (currentPick > 1) {
 				view.getTween(helper.attrs).to({
 					rotation: 0,
@@ -297,7 +320,7 @@ function TreeView(ladder) {
 	/**
 	 * Helper drops the treat
 	 */
-	view.on("Ladder.getTarget", function (callback) {
+	view.on(MW.Event.MG_LADDER_GET_TARGET, function (callback) {
 		helper.tongueOut(function () {
 			var done_ = 0, done = function () {
 				done_ += 1;

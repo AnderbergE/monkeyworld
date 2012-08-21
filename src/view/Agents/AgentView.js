@@ -3,25 +3,40 @@
  */
 MW.AgentView = function() {
 	var view = this;
+	var bodyGroup = null;
+	var bodyImage = null;
+	var bodyImageOriginal = null;
+	var bodyFace = null;
+	var bodyView = null;
+	var leftArmImage = null;
+	var bodyX = null, bodyY = null;
+	var resetting = false;
 	/**
 	 * @return {Kinetic.Node}
 	 */
-	this.getBody = function (x, y) {
-		var group = new Kinetic.Group({ x: x, y: y });
-		var body = new Kinetic.Image({
-			image: view.standing(),
-			offset: view.bodyOffset(),
-			width: view.standing().width,
-			height: view.standing().height
+	this.getBody = function (v, x, y) {
+		bodyView = v;
+		bodyX = x; bodyY = y;
+		bodyGroup = new Kinetic.Group({ x: bodyX, y: bodyY });
+		bodyImage = new Kinetic.Image({
+			image: view.standing()
 		});
-		var face = new Kinetic.Image({
+		bodyImageOriginal = bodyImage;
+		bodyFace = new Kinetic.Image({
 			image: view.normalFace(),
 			x: view.faceOffset().x,
 			y: view.faceOffset().y
 		});
-		group.add(body);
-		group.add(face);
-		return group;
+		leftArmImage = new Kinetic.Image({
+			image: view.pointAtArmArray()[0],
+			x: view.pointAtArmOffset().x,
+			y: view.pointAtArmOffset().y,
+			visible: false
+		});
+		bodyGroup.add(bodyImage);
+		bodyGroup.add(bodyFace);
+		bodyGroup.add(leftArmImage);
+		return bodyGroup;
 	};
 
 	this.getFace = function (x, y) {
@@ -39,6 +54,93 @@ MW.AgentView = function() {
 		group.add(head);
 		group.add(face);
 		return group;
+	};
+
+	/**
+	 * @return {Function} a reset function
+	 */
+	this.pointAt = function (number, callback) {
+		var
+			waitingTime = 200,
+			rollbackable = null,
+			images = [
+				view.pointAtArmArray()[0],
+				view.pointAtArmArray()[1],
+				view.pointAtArmArray()[2],
+				view.pointAtArmArray()[3],
+				view.pointAtButtonArray()[number - 1]
+			],
+			reset = false,
+			resetCallback = null,
+			i = 0,
+			rolling = false;
+		bodyImage.setImage(view.standingNoLeftArm());
+		leftArmImage.show();
+		var rollbackable = function () {
+			rolling = true;
+			leftArmImage.setImage(images[i]);
+			bodyView.setTimeout(function () {
+				if (!reset && i < images.length) {
+					i += 1;
+					rollbackable();
+				} else if (reset && i >= 0) {
+					i -= 1;
+					rollbackable();
+				} else if (i === images.length) {
+					callback();
+					rolling = false;
+				} else if (reset && i === -1) {
+					bodyImage.setImage(view.standing());
+					leftArmImage.hide();
+					if (resetCallback !== null && resetCallback !== undefined) {
+						resetCallback();
+					}
+					rolling = false;
+				}
+			}, waitingTime);
+		};
+		rollbackable();
+		var resetFunction = function (done) {
+			resetCallback = done;
+			reset = true;
+			if (!rolling) {
+				rollbackable();
+			}
+		};
+		this.resetFunction = resetFunction;
+		return resetFunction;
+	};
+
+	this.interruptPointAt = function () {
+		this.resetFunction();
+	};
+
+	this.stopDance = function () {
+		bodyView.removeTween(bodyImage.attrs);
+		bodyImage.setImage(view.standing());
+		bodyGroup.setX(bodyX);
+		bodyGroup.setY(bodyY);
+		bodyImage.setWidth(view.standing().width);
+		bodyImage.setHeight(view.standing().height);
+		bodyFace.show();
+	};
+
+	this.dance = function () {
+		var wait = 400;
+		bodyFace.hide();
+		bodyGroup.setX(bodyX + view.danceOffset().x);
+		bodyGroup.setY(bodyY + view.danceOffset().y);
+		bodyImage.setImage(view.danceArray()[0]);
+		bodyImage.setWidth(view.danceArray()[0].width);
+		bodyImage.setHeight(view.danceArray()[0].height);
+		bodyView.getTween(bodyImage.attrs)
+		.to({ image: view.danceArray()[0] })
+		.wait(wait)
+		.to({ image: view.danceArray()[1] })
+		.wait(wait)
+		.to({ image: view.danceArray()[2] })
+		.wait(wait)
+		.call(view.dance);
 	};
 };
 

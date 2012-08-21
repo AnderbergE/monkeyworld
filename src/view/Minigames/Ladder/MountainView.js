@@ -280,6 +280,31 @@ function MountainView(game) {
 		});
 	};
 
+	/**
+	 * Picked a number on the numpad
+	 */
+	view.on(MW.Event.MG_LADDER_PICKED, function(callback) {
+		if (view.game.modeIsAgentDo() && !game.agentIsInterrupted() && !game.agentIsBeingHelped()) {
+			var pos = view.getStickPoint(game.getChosenNumber());
+			MW.Sound.play(MW.Sounds.IM_GOING_TO_PICK_THIS_ONE);
+			var reset = null;
+			view.setTimeout(function () {
+				reset = view.game.getAgentView().pointAt(game.getChosenNumber(), function () {
+					view.setTimeout(function () {
+						if (!game.agentIsInterrupted()) {
+							view.pick(game.getChosenNumber(), callback);
+							view.setTimeout(function () {
+								reset(function () {});
+							}, 1000);
+						}
+					}, 3000);
+				});
+			}, 1500);
+		} else {
+			view.pick(game.getChosenNumber(), callback);
+		}
+	});
+
 	view.on(MW.Event.MG_LADDER_HELPER_APPROACH_TARGET, function(callback) {
 		var number = game.getChosenNumber();
 		view.getTween(cage.attrs).to({

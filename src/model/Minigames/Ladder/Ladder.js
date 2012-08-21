@@ -104,6 +104,7 @@ MW.LadderMinigame = function () {
 	 */
 	function gotCorrectTarget(callback) {
 		birdHasTreat = true;
+		console.log("gotCorrectTarget");
 		Utils.chain(
 			ladder.waitable(MW.Event.MG_LADDER_GET_TARGET),
 			ladder.waitable(MW.Event.MG_LADDER_RESET_SCENE),
@@ -121,6 +122,7 @@ MW.LadderMinigame = function () {
 	 * @param {Function} callback
 	 */
 	function gotIncorrectTarget(callback) {
+		console.log("gotIncorrectTarget");
 		ladder.tellWait(
 			MW.Event.MG_LADDER_RESET_SCENE,
 			function () { mistake(callback); }
@@ -137,13 +139,11 @@ MW.LadderMinigame = function () {
 			enoughTreats = collectedTreats >= minTreats;
 
 		if (hasMaxTreats || (enoughTries && enoughTreats)) {
-			console.log("checkok");
 			Utils.chain(
 				ladder.waitable(MW.Event.MG_LADDER_CHEER),
 				ladder.roundDone
 			)();
 		} else {
-					console.log("placetreat");
 			placeTreat();
 		}
 	}
@@ -329,9 +329,10 @@ MW.LadderMinigame = function () {
 		if (interruptable && ladder.game.modeIsAgentDo()) {
 			disallowInterrupt();
 			ladder.popAction();
+			tries -= 1;
 			if (!birdHasTreat) {
 				ladder.tell(MW.Event.MG_LADDER_ALLOW_GAMER_INPUT, {}, true);
-				ladder.tell("Ladder.interrupt", {});
+				ladder.tell(MW.Event.MG_LADDER_INTERRUPT, {});
 				ladder.tellWait(MW.Event.MG_LADDER_RESET_SCENE, function() {
 					ladder.tell(MW.Event.MG_LADDER_ACKNOWLEDGE_INPUT, {}, true);
 				});
@@ -342,11 +343,11 @@ MW.LadderMinigame = function () {
 	this.addStart(function () {
 		ladder.tell(MW.Event.MG_LADDER_IGNORE_INPUT, {}, true);
 		ladder.tell(MW.Event.MG_LADDER_FORBID_GAMER_INPUT, {}, true);
-		ladder.tell("Ladder.start");
+//		ladder.tell("Ladder.start");
 		if (ladder.game.modeIsAgentSee()) {
-			ladder.tellWait("Ladder.introduceAgent", placeTreat );
+			ladder.tellWait(MW.Event.MG_LADDER_INTRODUCE_AGENT, placeTreat );
 		} else if (ladder.game.modeIsAgentDo()) {
-			ladder.tellWait("Ladder.startAgent", placeTreat );
+			ladder.tellWait(MW.Event.MG_LADDER_START_AGENT, placeTreat );
 		} else {
 			placeTreat();
 		}

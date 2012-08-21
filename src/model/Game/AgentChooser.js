@@ -7,10 +7,10 @@ MW.AgentChooser = function(done) {
 	var chooser = this;
 	
 	var agents = [
-		{ model: MW.MonkeyAgent, view: MW.MonkeyAgentView },
-		{ model: MW.MouseAgent, view: MW.MouseAgentView },
-		{ model: MW.MonkeyAgent, view: MW.MonkeyAgentView },
-		{ model: MW.MonkeyAgent, view: MW.MonkeyAgentView }
+		{ model: MW.MonkeyAgent, headView: MW.MonkeyAgentView, bodyView: MonkeyAgentView },
+		{ model: MW.MouseAgent, headView: MW.MouseAgentHeadView, bodyView: MouseAgentBodyView },
+		{ model: MW.MonkeyAgent, headView: MW.MonkeyAgentView, bodyView: MonkeyAgentView },
+		{ model: MW.MonkeyAgent, headView: MW.MonkeyAgentView, bodyView: MonkeyAgentView }
 	];
 
 	/**
@@ -27,3 +27,4 @@ MW.AgentChooser = function(done) {
 		done(agent);
 	};
 };
+

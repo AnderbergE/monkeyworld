@@ -12,8 +12,6 @@ function LadderView(tag, ladder)
 	var stopButton = null;
 	var continueButton = null;
 	var agent = null;
-	/** @type {Kinetic.Line} */ var stick = null;
-	var STICK_ORIGIN = {x:800, y: 650};
 	
 	this.addInterruptButtons = function(layer) {
 		stopButton = new Kinetic.Image({
@@ -29,32 +27,21 @@ function LadderView(tag, ladder)
 	
 	this.addAgent = function(x, y, scale, layer) {
 		if (!view.game.modeIsChild()) {
-			agent = new view.game.getAgentView().getBody(x, y);
+			agent = new view.game.getAgentView().getBody(view, x, y);
 			agent.setScale(scale);
 			layer.add(agent);
-			if (view.game.modeIsAgentDo()) {
-				stick = new Kinetic.Line({
-					points: [660, 570, STICK_ORIGIN.x, STICK_ORIGIN.y],
-					stroke: "brown",
-					strokeWidth: 2,
-					lineCap: "round"
-				});
-				layer.add(stick);
-			}
 		}
 	};
 
-	view.on("Ladder.interrupt", function(msg) {
-		if (view.game.modeIsAgentDo()) {
-			view.removeTween(stick.attrs.points[1]);
-			view.getTween(stick.attrs.points[1]).to(STICK_ORIGIN,1000).call(function() {
-				MW.Sound.play(MW.Sounds.WHICH_ONE_DO_YOU_THINK_IT_IS);
-			});
-		}
+	view.on(MW.Event.MG_LADDER_INTERRUPT, function(msg) {
 		view.interrupt();
+		if (view.game.modeIsAgentDo()) {
+			view.game.getAgentView().interruptPointAt();
+			MW.Sound.play(MW.Sounds.WHICH_ONE_DO_YOU_THINK_IT_IS);
+		}
 	});
 	
-	view.on("Ladder.introduceAgent", function(callback) {
+	view.on(MW.Event.MG_LADDER_INTRODUCE_AGENT, function(callback) {
 		MW.Sound.play(MW.Sounds.LADDER_LOOKS_FUN);
 		view.setTimeout(function() {
 			MW.Sound.play(MW.Sounds.LADDER_SHOW_ME);
@@ -82,7 +69,7 @@ function LadderView(tag, ladder)
 		continueButton.off("mousedown touchstart");
 	});
 	
-	view.on("Ladder.startAgent", function(callback) {
+	view.on(MW.Event.MG_LADDER_START_AGENT, function(callback) {
 		MW.Sound.play(MW.Sounds.LADDER_MY_TURN);
 		view.setTimeout(function() {
 			callback();
@@ -93,7 +80,11 @@ function LadderView(tag, ladder)
 	
 	view.on(MW.Event.MG_LADDER_CHEER, function(callback) {
 		MW.Sound.play(MW.Sounds.YAY);
-		view.setTimeout(callback, 1500);
+		view.game.getAgentView().dance();
+		view.setTimeout(function () {
+			view.game.getAgentView().stopDance();
+			view.setTimeout(callback, 1500);
+		}, 3000);
 	});
 	
 	view.on(MW.Event.MG_LADDER_GET_TREAT, function(callback) {
@@ -132,19 +123,4 @@ function LadderView(tag, ladder)
 	
 	view.on("Ladder.agentTooLow", function(msg) { MW.Sound.play(view.agentTooLow); });
 	view.on("Ladder.agentTooHigh", function(msg) { MW.Sound.play(view.agentTooHigh); });
-	
-	/**
-	 * Picked a number on the numpad
-	 */
-	view.on("Ladder.picked", function(callback, msg) {
-		if (view.game.modeIsAgentDo() && !ladder.agentIsInterrupted() && !ladder.agentIsBeingHelped()) {
-			var pos = view.getStickPoint(msg.number);
-			MW.Sound.play(MW.Sounds.IM_GOING_TO_PICK_THIS_ONE);
-			view.getTween(stick.attrs.points[1]).wait(1500).to(pos,3000).wait(3000).call(function() {
-				view.pick(msg.number, callback);
-			}).wait(1000).to(STICK_ORIGIN,1000);
-		} else {
-			view.pick(msg.number, callback);
-		}
-	});
 }

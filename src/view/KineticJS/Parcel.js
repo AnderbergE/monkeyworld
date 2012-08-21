@@ -24,16 +24,17 @@ Kinetic.MW.Parcel = function (config) {
 		image: imageObj,
 		width: imageObj.width,
 		height: imageObj.height,
+		scale: 0.6 + (1.0 - 0.6) * Math.random(),
 		offset: {
 			x: imageObj.width / 2,
 			y: imageObj.height / 2
-		},
+		}/*,
 		shadow: {
 		      color: 'black',
 		      blur: 10,
 		      offset: [3, 3],
 		      alpha: 0.5
-		    }
+		    }*/
 	});
 	group.add(image);
 

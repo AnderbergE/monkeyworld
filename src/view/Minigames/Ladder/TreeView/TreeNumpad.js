@@ -96,7 +96,6 @@ MW.Numpad = function(config) {
 	group.release = function() {
 		for (var i = config.min; i <= config.max; i += config.step) {
 			buttons[i].attrs.image = config.button;
-			console.log("shadow", shadow);
 			buttons[i].setShadow(shadow);
 		}
 	};
