@@ -30,6 +30,9 @@ MW.ImageSources = {
 /** @const */ TREEGAME_LIZARD_TONGUE3: "minigames/treegame/lizard/tongue/tongue-3.png",
 /** @const */ TREEGAME_LIZARD_TONGUE4: "minigames/treegame/lizard/tongue/tongue-4.png",
 /** @const */ TREEGAME_LIZARD_TONGUE5: "minigames/treegame/lizard/tongue/tongue-last.png",
+/** @const */ TREEGAME_LIZARD_HOLE1: "minigames/treegame/lizard/hole/1.png",
+/** @const */ TREEGAME_LIZARD_HOLE2: "minigames/treegame/lizard/hole/2.png",
+/** @const */ TREEGAME_LIZARD_HOLE3: "minigames/treegame/lizard/hole/3.png",
 /** @const */ NUMPAD_WOOD:     "nrpad.png",
 /** @const */ PARCEL_1:       "minigames/treegame/paket-1.png",
 /** @const */ PARCEL_2:       "minigames/treegame/paket-2.png",
@@ -52,7 +55,20 @@ MW.ImageSources = {
 /** @const */ AGENT_MOUSE_HEAD: "agents/mouse/head.png",
 /** @const */ AGENT_FACE_NORMAL_MOUSE: "agents/mouse/facials/m-normal.png",
 /** @const */ AGENT_FACE_HAPPY_MOUSE:  "agents/mouse/facials/m-glad.png",
-/** @const */ AGENT_FACE_SURPRISED_MOUSE: "agents/mouse/facials/m-suprised.png"
+/** @const */ AGENT_FACE_SURPRISED_MOUSE: "agents/mouse/facials/m-suprised.png",
+/** @const */ AGENT_DANCE_MOUSE_1: "agents/mouse/dance/1.png",
+/** @const */ AGENT_DANCE_MOUSE_2: "agents/mouse/dance/2.png",
+/** @const */ AGENT_DANCE_MOUSE_3: "agents/mouse/dance/3.png",
+/** @const */ AGENT_ARM_POINT_1: "agents/mouse/pointing/arm-1.png",
+/** @const */ AGENT_ARM_POINT_2: "agents/mouse/pointing/arm-2.png",
+/** @const */ AGENT_ARM_POINT_3: "agents/mouse/pointing/arm-3.png",
+/** @const */ AGENT_ARM_POINT_4: "agents/mouse/pointing/arm-4.png",
+/** @const */ AGENT_ARM_POINT_AT_1: "agents/mouse/pointing/prickpek-1.png",
+/** @const */ AGENT_ARM_POINT_AT_2: "agents/mouse/pointing/prickpek-2.png",
+/** @const */ AGENT_ARM_POINT_AT_3: "agents/mouse/pointing/prickpek-3.png",
+/** @const */ AGENT_ARM_POINT_AT_4: "agents/mouse/pointing/prickpek-4.png",
+/** @const */ AGENT_ARM_POINT_AT_5: "agents/mouse/pointing/prickpek-5.png",
+/** @const */ AGENT_ARM_POINT_AT_6: "agents/mouse/pointing/prickpek-6.png"
 };
 
 MW.Images = {};
