@@ -46,8 +46,10 @@ MW.MinigameHandlerView = function () {
 		});
 		view.addTearDown(function() {
 			running = false;
+			if (on) {
+				layer.remove(text);
+			}
 			on = false;
-			layer.remove(text);
 		});
 	})(this);
 
@@ -87,8 +89,10 @@ MW.MinigameHandlerView = function () {
 		});
 		view.addTearDown(function() {
 			running = false;
+			if (on) {
+				layer.remove(text);
+			}
 			on = false;
-			layer.remove(text);
 		});
 	})(this);
 
