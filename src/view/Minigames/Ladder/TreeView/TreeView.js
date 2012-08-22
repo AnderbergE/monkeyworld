@@ -433,31 +433,35 @@ function TreeView(ladder) {
 
 	var agentView = view.game.getAgentView();
 	var agentScale = 0.8;
-	view.addAgent(
-		view.getStage().getWidth() - 248,
-		view.getStage().getHeight() - 100 - agentScale * (agentView.feetOffset() - agentView.bodyOffset().y),
-		agentScale,
-		dynamicLayer
-	);
+	
+	view.addSetup(function () {
+		view.addAgent(
+			view.getStage().getWidth() - 248,
+			view.getStage().getHeight() - 100 - agentScale * (agentView.feetOffset() - agentView.bodyOffset().y),
+			agentScale,
+			dynamicLayer
+		);
 
-	/**
-	 * Hang the treats in the crown
-	 */
-	(function (view) {
-		var
-			max = ladder.getMaximumTreats(),
-			parcel;
-		for (i = 0; i < max; i += 1) {
-			parcel = new Kinetic.MW.Parcel({
-				x: config.treatGrid[i + 1].x,
-				y: config.treatGrid[i + 1].y,
-				rotation: config.treatGrid[i + 1].rotation,
-				type: (i % 3) + 1,
-				scale: scale
-			});
-			dynamicLayer.add(parcel);
-			treats.push(parcel);
-		}
-	}) (this);
+
+		/**
+		 * Hang the treats in the crown
+		 */
+		(function (view) {
+			var
+				max = ladder.getMaximumTreats(),
+				parcel;
+			for (i = 0; i < max; i += 1) {
+				parcel = new Kinetic.MW.Parcel({
+					x: config.treatGrid[i + 1].x,
+					y: config.treatGrid[i + 1].y,
+					rotation: config.treatGrid[i + 1].rotation,
+					type: (i % 3) + 1,
+					scale: scale
+				});
+				dynamicLayer.add(parcel);
+				treats.push(parcel);
+			}
+		}) (this);
+	});
 	staticLayer.draw();
 }

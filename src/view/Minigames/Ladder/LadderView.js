@@ -27,9 +27,10 @@ function LadderView(tag, ladder)
 	
 	this.addAgent = function(x, y, scale, layer) {
 		if (!view.game.modeIsChild()) {
-			agent = new view.game.getAgentView().getBody(view, x, y);
-			agent.setScale(scale);
-			layer.add(agent);
+			//agent = new view.game.getAgentView().getBody(view, x, y);
+			view.setInitialAgentPosition(x, y);
+			view.getAgentBody().setScale(scale);
+			layer.add(view.getAgentBody());
 		}
 	};
 
@@ -40,17 +41,7 @@ function LadderView(tag, ladder)
 			MW.Sound.play(MW.Sounds.WHICH_ONE_DO_YOU_THINK_IT_IS);
 		}
 	});
-	
-	view.on(MW.Event.MG_LADDER_INTRODUCE_AGENT, function(callback) {
-		MW.Sound.play(MW.Sounds.LADDER_LOOKS_FUN);
-		view.setTimeout(function() {
-			MW.Sound.play(MW.Sounds.LADDER_SHOW_ME);
-			view.setTimeout(function() {
-				callback();
-			}, 2000);
-		}, 2000);
-	});
-	
+
 	view.on(MW.Event.MG_LADDER_ALLOW_INTERRUPT, function(callback) {
 		stopButton.on("mousedown touchstart", function() {
 			view.getTween(stopButton.attrs).to({rotation: 8*Math.PI}, 1200).to({rotation:0});
@@ -80,11 +71,17 @@ function LadderView(tag, ladder)
 	
 	view.on(MW.Event.MG_LADDER_CHEER, function(callback) {
 		MW.Sound.play(MW.Sounds.YAY);
-		view.game.getAgentView().dance();
-		view.setTimeout(function () {
-			view.game.getAgentView().stopDance();
-			view.setTimeout(callback, 1500);
-		}, 3000);
+		if (!view.game.modeIsChild()) {
+			view.game.getAgentView().dance();
+			view.setTimeout(function () {
+				view.game.getAgentView().stopDance();
+				view.setTimeout(callback, 1500);
+			}, 3000);
+		} else {
+			view.setTimeout(callback, 4000);
+			//view.game.evm.print();
+			//callback();
+		}
 	});
 	
 	view.on(MW.Event.MG_LADDER_GET_TREAT, function(callback) {

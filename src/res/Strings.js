@@ -76,6 +76,21 @@ MW.Strings = (function() {
 		"en": "Are you ready to teach monkey?"
 	},
 	
+	"SYSTEM_FIRST_YOU_PLAY": {
+		"sv": "Först är det du som spelar spelet!",
+		"en": "First, you play the game!"
+	},
+	
+	"SYSTEM_WELL_DONE": {
+		"sv": "Bra gjort!",
+		"en": "Well done!"
+	},
+	
+	"SYSTEM_TIME_TO_TEACH_FRIEND": {
+		"sv": "Nu är det dags att lära din vän hur man gör!",
+		"en": "Now it's time to teach your friend!"
+	},
+	
 	"NO_MY_TURN": {
 		"sv": "Glöm inte att det är MIN tur nu!",
 		"en": "Remember it’s MY turn now!"
@@ -84,6 +99,21 @@ MW.Strings = (function() {
 	"BUT_YOU_CAN_INTERRUPT": {
 		"sv": "Men du kan avbryta mig om jag gör fel.",
 		"en": "But you can interrupt me if I'm making a mistake."
+	},
+	
+	"AGENT_BUCKET_IS_FULL": {
+		"sv": "Hurra! Nu är min kanna full och vi kan besöka min trädgård!",
+		"en": "Wow! Now my bucket is full and we are ready to visit my garden!"
+	},
+	
+	"AGENT_NEED_MORE_WATER": {
+		"sv": "Jag behöver mer vatten till trädgården!",
+		"en": "I still need more water to fix my garden!"
+	},
+	
+	"AGENT_LETS_KEEP_PLAYING": {
+		"sv": "Vi fortsätter spela.",
+		"en": "Let’s keep playing.",
 	},
 	
 	"MAYBE_THAT_WORKS": {
@@ -99,6 +129,11 @@ MW.Strings = (function() {
 	"YAY_HELPED_ME_GET_WATER_DROP_2": {
 		"sv": "till min trädgård, så den kan växa!",
 		"en": "for my garden to grow again!"
+	},
+	
+	"YAY_HELPED_ME_GET_WATER": {
+		"sv": "Hurra! Tack för hjälpen! Nu fick jag lite vatten till min trädgård!",
+		"en": "Woo! Thank you for helping me! Now I have some water for my garden!"
 	},
 	
 	"LETS_FILL_THE_BUCKET": {

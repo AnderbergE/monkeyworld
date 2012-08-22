@@ -231,17 +231,17 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	var selectMinigame = function() {
 		result = new MW.MiniGameResult();
 		player = GAMER;
-//		gameMode = MW.GameMode.CHILD_PLAY;
-		gameMode = MW.GameMode.AGENT_SEE;
-//		minigameHandler = newObject(MW.MinigameHandler);
-		if (useViews) {
-			miniGameHandlerView = newObject(MW.MinigameHandlerView);
-			miniGameHandlerView.setup();
-		}
+		gameMode = MW.GameMode.CHILD_PLAY;
+//		gameMode = MW.GameMode.AGENT_SEE;
+
 		chooseMiniGame(function() {
+			if (useViews) {
+				console.log("creätar minigamehandlerviwe");
+				miniGameHandlerView = newObject(MW.MinigameHandlerView);
+				miniGameHandlerView.setup();
+			}
 			setMinigameScore(0);
 			startMiniGame();
-			that.tell(MW.Event.MINIGAME_STARTED, {}, true);
 		});
 	};
 	
@@ -250,13 +250,13 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 			var launcher = minigameArray[0];
 			minigameArray.splice(0);
 			var configuration = launcher.getConfiguration();
-			setLearningTrack(launcher.getLearningTrack());
 			currentConfiguration = configuration;
 			miniGameStarter = function() {
 				miniGame = newObject(configuration.game);
 				miniGameView = configuration.view;
 			};
 			callback();
+			setLearningTrack(launcher.getLearningTrack());
 		} else if (startGame === undefined) {
 			that.tell("Game.showMiniGameChooser", {
 				callback: function(choice) {
@@ -266,8 +266,8 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 						miniGame = newObject(choice.game);
 						miniGameView = choice.view;					
 					};
-					setLearningTrack(REGULAR_TRACK);
 					callback();
+					setLearningTrack(REGULAR_TRACK);
 				},
 				games: MW.MinigameConfiguration
 			});
@@ -278,7 +278,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	 * Start the current mini game.
 	 */
 	var startMiniGame = function() {
-		//that.evm.print();
+		that.evm.print();
 		miniGameStarter();
 		miniGame.setup();
 		if (useViews) {
@@ -286,11 +286,21 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 			currentMiniGameView.setup();
 			that.tell("Game.miniGameListenersInitiated");
 		}
-		if (gameMode === MW.GameMode.AGENT_DO) {
-			var actions = result.getResult(_round).getActions();
-			miniGame.play(player, actions);
+		that.tell(MW.Event.MINIGAME_INITIATED, {}, true);
+		var todo = function () {
+			if (gameMode === MW.GameMode.AGENT_DO) {
+				var actions = result.getResult(_round).getActions();
+				miniGame.play(player, actions);
+			} else {
+				miniGame.play(player);
+			}
+
+			that.tell(MW.Event.MINIGAME_STARTED, {}, true);
+		};
+		if (useViews) {
+			that.tellWait(MW.Event.INTRODUCE_AGENT, todo);
 		} else {
-			miniGame.play(player);
+			todo();
 		}
 	};
 	
@@ -381,9 +391,13 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 				message: "There is no active minigame"
 			};
 		}
-		if (useViews)
+		if (useViews) {
+			console.log("Tear down: ", currentMiniGameView);
 			currentMiniGameView.tearDown();
+		}
+		//miniGame.tearDown();
 		addMinigameScore(miniGame.getBackendScore());
+		//that.evm.print();
 		getNextState();
 	};
 	

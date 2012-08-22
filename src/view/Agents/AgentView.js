@@ -56,6 +56,24 @@ MW.AgentView = function() {
 		return group;
 	};
 
+	this.jumpDown = function (x, y) {
+		bodyX = x;
+		bodyY = y;
+		bodyView.getTween(bodyGroup.attrs).to({ alpha: 1, x: x, y: y }, 2000);
+	};
+	
+	this.showBody = function () {
+		bodyGroup.setAlpha(1);
+		bodyGroup.show();
+	};
+
+	this.moveBody = function (x, y) {
+		bodyX = x;
+		bodyY = y;
+		bodyGroup.setX(x);
+		bodyGroup.setY(y);
+	};
+
 	/**
 	 * @return {Function} a reset function
 	 */

@@ -30,6 +30,7 @@ MW.Sounds = {
 	MAYBE_THAT_WORKS:                new MW.SoundEntry(null, "MAYBE_THAT_WORKS"),
 	YAY_HELPED_ME_GET_WATER_DROP_1:  new MW.SoundEntry(null, "YAY_HELPED_ME_GET_WATER_DROP_1"),
 	YAY_HELPED_ME_GET_WATER_DROP_2:  new MW.SoundEntry(null, "YAY_HELPED_ME_GET_WATER_DROP_2"),
+	YAY_HELPED_ME_GET_WATER:         new MW.SoundEntry(null, "YAY_HELPED_ME_GET_WATER"),
 	LETS_FILL_THE_BUCKET:            new MW.SoundEntry(null, "LETS_FILL_THE_BUCKET"),
 	WHICH_ONE_DO_YOU_THINK_IT_IS:    new MW.SoundEntry(null, "WHICH_ONE_DO_YOU_THINK_IT_IS"),
 	MONKEY_HMM:                      new MW.SoundEntry(null, "MONKEY_HMM"),
@@ -43,6 +44,14 @@ MW.Sounds = {
 	INTRO_5:                         new MW.SoundEntry(null, "INTRO_5"),
 	INTRO_GARDEN_1:                  new MW.SoundEntry(null, "INTRO_GARDEN_1"),
 	INTRO_GARDEN_2:                  new MW.SoundEntry(null, "INTRO_GARDEN_2"),
+
+	SYSTEM_FIRST_YOU_PLAY:           new MW.SoundEntry(null, "SYSTEM_FIRST_YOU_PLAY"),
+	SYSTEM_WELL_DONE:                new MW.SoundEntry(null, "SYSTEM_WELL_DONE"),
+	SYSTEM_TIME_TO_TEACH_FRIEND:     new MW.SoundEntry(null, "SYSTEM_TIME_TO_TEACH_FRIEND"),
+	
+	AGENT_BUCKET_IS_FULL:            new MW.SoundEntry(null, "AGENT_BUCKET_IS_FULL"),
+	AGENT_NEED_MORE_WATER:           new MW.SoundEntry(null, "AGENT_NEED_MORE_WATER"),
+	AGENT_LETS_KEEP_PLAYING:         new MW.SoundEntry(null, "AGENT_LETS_KEEP_PLAYING"),
 
 	LADDER_LOOKS_FUN:                new MW.SoundEntry(null, "LADDER_LOOKS_FUN"),
 	LADDER_SHOW_ME:                  new MW.SoundEntry(null, "LADDER_SHOW_ME"),
@@ -221,7 +230,7 @@ MW.Sound = (function() {
 				x: 0,
 				y: subtitleLayer.getParent().attrs.height - 50,
 				text: MW.Strings.get(str),
-				fontSize: 26,
+				fontSize: 20,
 				fontFamily: "Nobile",
 				textFill: "white",
 				textStroke: "black",

@@ -18,6 +18,7 @@ MW.Event = {
 	PITCHER_LEVEL_ADD: "setPitcherLevel",
 	PITCHER_LEVEL_SET_DROP_ORIGIN: "setPitcherLevelSetDropOrigin",
 	PITCHER_LEVEL_RESET: "resetPitcherLevel",
+	INTRODUCE_AGENT: "INTRODUCE_AGENT",
 	
 //	MG_TREE_GAME_SET_PARCELS: "treeGameSetParcels",
 	MG_LADDER_PLACE_TARGET:           "MG_LADDER_PLACE_TARGET",

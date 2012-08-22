@@ -139,10 +139,7 @@ MW.LadderMinigame = function () {
 			enoughTreats = collectedTreats >= minTreats;
 
 		if (hasMaxTreats || (enoughTries && enoughTreats)) {
-			Utils.chain(
-				ladder.waitable(MW.Event.MG_LADDER_CHEER),
-				ladder.roundDone
-			)();
+			ladder.tellWait(MW.Event.MG_LADDER_CHEER, ladder.roundDone);
 		} else {
 			placeTreat();
 		}
@@ -344,9 +341,7 @@ MW.LadderMinigame = function () {
 		ladder.tell(MW.Event.MG_LADDER_IGNORE_INPUT, {}, true);
 		ladder.tell(MW.Event.MG_LADDER_FORBID_GAMER_INPUT, {}, true);
 //		ladder.tell("Ladder.start");
-		if (ladder.game.modeIsAgentSee()) {
-			ladder.tellWait(MW.Event.MG_LADDER_INTRODUCE_AGENT, placeTreat );
-		} else if (ladder.game.modeIsAgentDo()) {
+		if (ladder.game.modeIsAgentDo()) {
 			ladder.tellWait(MW.Event.MG_LADDER_START_AGENT, placeTreat );
 		} else {
 			placeTreat();

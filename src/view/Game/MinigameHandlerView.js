@@ -28,7 +28,7 @@ MW.MinigameHandlerView = function () {
 		view.on(MW.Event.BACKEND_SCORE_UPDATE_MINIGAME, function(msg) {
 			text.setText(label + " " + msg.score);
 		});
-		view.on(MW.Event.MINIGAME_STARTED, function(msg) {
+		view.addSetup(function () {
 			on = true;
 			running = true;
 			layer.add(text);
@@ -70,7 +70,7 @@ MW.MinigameHandlerView = function () {
 			y: 55
 		});
 		var on = false, running = false;
-		view.on(MW.Event.MINIGAME_STARTED, function(msg) {
+		view.addSetup(function () {
 			layer.add(text);
 			running = true;
 			on = true;
@@ -148,7 +148,7 @@ MW.MinigameHandlerView = function () {
 			layer.remove(pitcherBottomImage);
 			layer.remove(waterRect);
 		});
-		view.on(MW.Event.MINIGAME_STARTED, function (msg) {
+		view.addSetup(function () {
 			pitcherImage.show();
 			var level = view.game.getWaterDrops();
 			if (level > 0)
@@ -173,11 +173,15 @@ MW.MinigameHandlerView = function () {
 			dropImage.setY(dropOrigin.y);
 			dropImage.setAlpha(1);
 			dropImage.show();
-			MW.Sound.play(MW.Sounds.YAY_HELPED_ME_GET_WATER_DROP_1);
-			MW.Sound.play(MW.Sounds.YAY_HELPED_ME_GET_WATER_DROP_2);
-			view.setTimeout(function () {
-				MW.Sound.play(MW.Sounds.LETS_FILL_THE_BUCKET);
-			}, 2000)
+			if (view.game.modeIsAgentSee()) {
+				MW.Sound.play(MW.Sounds.YAY_HELPED_ME_GET_WATER);
+			} else if (view.game.modeIsAgentDo()) {
+				MW.Sound.play(MW.Sounds.YAY_HELPED_ME_GET_WATER_DROP_1);
+				MW.Sound.play(MW.Sounds.YAY_HELPED_ME_GET_WATER_DROP_2);
+				view.setTimeout(function () {
+					MW.Sound.play(MW.Sounds.LETS_FILL_THE_BUCKET);
+				}, 2000)
+			}
 			view.getTween(dropImage.attrs)
 			.to({
 				x: x2 - 50,
