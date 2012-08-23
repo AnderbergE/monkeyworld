@@ -59,7 +59,7 @@ function TreeView(ladder) {
 				"4": { x: 200, y: 100, rotation: Math.PI / 9 }
 			},
 			numpad: {
-				x: 550,
+				x: 565,
 				y: 180
 			}
 		};
