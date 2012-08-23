@@ -33,7 +33,7 @@ MW.ImageSources = {
 /** @const */ TREEGAME_LIZARD_HOLE1: "minigames/treegame/lizard/hole/1.png",
 /** @const */ TREEGAME_LIZARD_HOLE2: "minigames/treegame/lizard/hole/2.png",
 /** @const */ TREEGAME_LIZARD_HOLE3: "minigames/treegame/lizard/hole/3.png",
-/** @const */ NUMPAD_WOOD:     "nrpad.png",
+/** @const */ NUMPAD_WOOD:     "minigames/treegame/nrpad.png",
 /** @const */ PARCEL_1:       "minigames/treegame/paket-1.png",
 /** @const */ PARCEL_2:       "minigames/treegame/paket-2.png",
 /** @const */ PARCEL_3:       "minigames/treegame/paket-3.png",
