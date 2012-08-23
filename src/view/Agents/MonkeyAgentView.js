@@ -33,12 +33,12 @@ MW.MonkeyAgentView = function() {
 	};
 	this.pointAtButtonArray = function () {
 			return [
-			MW.Images.AGENT_ARM_POINT_AT_1,
-			MW.Images.AGENT_ARM_POINT_AT_2,
-			MW.Images.AGENT_ARM_POINT_AT_3,
-			MW.Images.AGENT_ARM_POINT_AT_4,
+			MW.Images.AGENT_ARM_POINT_AT_6,
 			MW.Images.AGENT_ARM_POINT_AT_5,
-			MW.Images.AGENT_ARM_POINT_AT_6
+			MW.Images.AGENT_ARM_POINT_AT_4,
+			MW.Images.AGENT_ARM_POINT_AT_3,
+			MW.Images.AGENT_ARM_POINT_AT_2,
+			MW.Images.AGENT_ARM_POINT_AT_1
 		];
 	};
 	this.blinkArray = function () {
@@ -89,12 +89,12 @@ MW.MouseAgentView = function () {
 	};
 	this.pointAtButtonArray = function () {
 			return [
-			MW.Images.AGENT_ARM_POINT_AT_1,
-			MW.Images.AGENT_ARM_POINT_AT_2,
-			MW.Images.AGENT_ARM_POINT_AT_3,
-			MW.Images.AGENT_ARM_POINT_AT_4,
+			MW.Images.AGENT_ARM_POINT_AT_6,
 			MW.Images.AGENT_ARM_POINT_AT_5,
-			MW.Images.AGENT_ARM_POINT_AT_6
+			MW.Images.AGENT_ARM_POINT_AT_4,
+			MW.Images.AGENT_ARM_POINT_AT_3,
+			MW.Images.AGENT_ARM_POINT_AT_2,
+			MW.Images.AGENT_ARM_POINT_AT_1
 		];
 	};
 	this.blinkArray = function () {
