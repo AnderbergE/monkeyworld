@@ -119,42 +119,29 @@ MW.GardenView = function () {
 		setTimeout(function () {
 			view.getTween(pitcherImage.attrs).to({ rotation: Math.PI / 3 });
 			setTimeout(function () {
-				// TODO: use TweenJS insted?
-				waterPolygon.transitionTo({
-					points: {
-						0: { x: (newY - m1) / k1, y: newY },
-						1: { x: (newY - m2) / k2, y: newY }
-					},
-					duration: 3,
-					callback: function () {
+				view.getTween(waterPolygon.attrs.points[0])
+				.to({ x: (newY - m1) / k1, y: newY }, 3000);
+				view.getTween(waterPolygon.attrs.points[1])
+				.to({ x: (newY - m2) / k2, y: newY }, 3000).call(function () {
 					var k3 = (p[3].y - p[4].y) / (p[3].x - p[4].x);
 					var m3 = p[3].y - k3 * p[3].x;
 					newY += p[3].y - p[2].y;
-						waterPolygon.transitionTo({
-							points: {
-								0: { x: (newY - m3) / k3, y: newY },
-								1: { x: (newY - m2) / k2, y: newY }
-							},
-							duration: 3,
-							callback: function () {
-								newY += p[3].y - p[2].y;
-								var k4 = (p[2].y - p[3].y) / (p[2].x - p[3].x);
-								var m4 = p[2].y - k4 * p[2].x;
-								waterPolygon.transitionTo({
-									points: {
-										0: { x: (newY - m3) / k3, y: newY },
-										1: { x: (newY - m3) / k3, y: newY }
-									},
-									duration: 2,
-									callback: function () {
-										setTimeout(function () {
-											msg.callback();
-										}, 3000);
-									}
-								});
-							}
+					view.getTween(waterPolygon.attrs.points[0])
+					.to({ x: (newY - m3) / k3, y: newY }, 3000);
+					view.getTween(waterPolygon.attrs.points[1])
+					.to({ x: (newY - m2) / k2, y: newY }, 3000).call(function () {
+						newY += p[3].y - p[2].y;
+						var k4 = (p[2].y - p[3].y) / (p[2].x - p[3].x);
+						var m4 = p[2].y - k4 * p[2].x;
+						view.getTween(waterPolygon.attrs.points[0])
+						.to({ x: (newY - m3) / k3, y: newY }, 2000);
+						view.getTween(waterPolygon.attrs.points[1])
+						.to({ x: (newY - m3) / k3, y: newY }, 2000).call(function () {
+							view.setTimeout(function () {
+								msg.callback();
+							}, 3000);
 						});
-					}
+					});
 				});
 			}, 1000);
 		}, 1000);
