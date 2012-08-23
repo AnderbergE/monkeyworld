@@ -113,7 +113,7 @@ MW.Strings = (function() {
 	
 	"AGENT_LETS_KEEP_PLAYING": {
 		"sv": "Vi fortsätter spela.",
-		"en": "Let’s keep playing.",
+		"en": "Let’s keep playing."
 	},
 	
 	"MAYBE_THAT_WORKS": {

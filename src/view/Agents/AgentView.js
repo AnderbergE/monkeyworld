@@ -109,7 +109,7 @@ MW.AgentView = function() {
 			rolling = false;
 		bodyImage.setImage(view.standingNoLeftArm());
 		leftArmImage.show();
-		var rollbackable = function () {
+		rollbackable = function () {
 			rolling = true;
 			leftArmImage.setImage(images[i]);
 			bodyView.setTimeout(function () {
