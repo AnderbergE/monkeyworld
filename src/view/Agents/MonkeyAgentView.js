@@ -93,5 +93,9 @@ MW.MouseAgentView = function () {
 			MW.Images.AGENT_BLINK_MOUSE_3
 		];
 	};
+	
+	this.talk = function () {
+		return MW.Images.AGENT_TALK_MOUSE;
+	};
 };
 

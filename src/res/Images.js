@@ -62,6 +62,7 @@ MW.ImageSources = {
 /** @const */ AGENT_BLINK_MOUSE_1: "agents/mouse/facials/blink/1.png",
 /** @const */ AGENT_BLINK_MOUSE_2: "agents/mouse/facials/blink/2.png",
 /** @const */ AGENT_BLINK_MOUSE_3: "agents/mouse/facials/blink/3.png",
+/** @const */ AGENT_TALK_MOUSE: "agents/mouse/facials/m-prat.png",
 /** @const */ AGENT_ARM_POINT_1: "agents/mouse/pointing/arm-1.png",
 /** @const */ AGENT_ARM_POINT_2: "agents/mouse/pointing/arm-2.png",
 /** @const */ AGENT_ARM_POINT_3: "agents/mouse/pointing/arm-3.png",

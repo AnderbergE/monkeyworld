@@ -8,9 +8,15 @@ MW.AgentView = function() {
 	var bodyImageOriginal = null;
 	var bodyFace = null;
 	var bodyView = null;
+	var faceView = null;
 	var leftArmImage = null;
 	var bodyX = null, bodyY = null;
 	var resetting = false;
+	var face = null;
+	var headBlink = null;
+	var talkInterval = null;
+	var talkTimeout = null;
+
 	/**
 	 * @return {Kinetic.Node}
 	 */
@@ -39,20 +45,29 @@ MW.AgentView = function() {
 		return bodyGroup;
 	};
 
-	this.getFace = function (x, y) {
+	this.getFace = function (v, x, y) {
+		faceView = v;
 		var group = new Kinetic.Group({ x: x, y: y });
 		var head = new Kinetic.Image({
 			image: view.head(),
 			width: view.head().width,
 			height: view.head().height
 		});
-		var face = new Kinetic.Image({
+		face = new Kinetic.Image({
 			image: view.normalFace(),
+			x: view.faceOffset().x,
+			y: view.faceOffset().y
+		});
+		headBlink = new Kinetic.Image({
+			image: view.blinkArray()[0],
+			visible: false,
 			x: view.faceOffset().x,
 			y: view.faceOffset().y
 		});
 		group.add(head);
 		group.add(face);
+		group.add(headBlink);
+		
 		return group;
 	};
 
@@ -159,6 +174,33 @@ MW.AgentView = function() {
 		.to({ image: view.danceArray()[2] })
 		.wait(wait)
 		.call(view.dance);
+	};
+
+	this.faceBlink = function () {
+		faceView.setInterval(function () {
+			headBlink.show();
+			faceView.getTween(headBlink.attrs)
+			.to({ image: view.blinkArray()[1] }, 100)
+			.to({ image: view.blinkArray()[2] }, 100)
+			.to({ image: view.blinkArray()[1] }, 100)
+			.to({ image: view.blinkArray()[0] }, 100)
+			.call(function () { headBlink.hide(); });
+		}, 5000);
+	};
+
+	this.startTalk = function () {
+		talkInterval = bodyView.setInterval(function () {
+			bodyFace.setImage(view.talk());
+			talkTimeout = bodyView.setTimeout(function () {
+				bodyFace.setImage(view.normalFace());
+			}, 250);
+		}, 500);
+	};
+	
+	this.stopTalk = function () {
+		bodyView.clearInterval(talkInterval);
+		bodyView.clearTimeout(talkTimeout);
+		bodyFace.setImage(view.normalFace());
 	};
 };
 

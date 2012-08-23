@@ -55,6 +55,7 @@ function GameView(tag) {
 	(function (view) {
 		var faceImageObj = view.game.getAgentView().normalFace();
 		var faceImage = new view.game.getAgentView().getFace(
+			view,
 			view.getStage().getWidth() - faceImageObj.width - 30,
 			12
 		);
@@ -62,6 +63,7 @@ function GameView(tag) {
 		view.addSetup(function() {
 			if (view.game.modeIsChild()) {
 				layer.add(faceImage);
+				view.game.getAgentView().faceBlink();
 				view.on(MW.Event.INTRODUCE_AGENT, function (callback) {
 					MW.Sound.play(MW.Sounds.SYSTEM_FIRST_YOU_PLAY);
 					setTimeout(callback, 2000);
@@ -82,9 +84,13 @@ function GameView(tag) {
 							view.getTween(faceImage.attrs).to({ alpha: 0 }, 2000);
 							view.game.getAgentView().jumpDown(agentX, agentY);
 							view.setTimeout(function () {
+								view.game.getAgentView().startTalk();
 								MW.Sound.play(MW.Sounds.LADDER_LOOKS_FUN);
 								view.setTimeout(function() {
 									MW.Sound.play(MW.Sounds.LADDER_SHOW_ME);
+									view.setTimeout(function () {
+										view.game.getAgentView().stopTalk();
+									}, 1500);
 									view.setTimeout(callback, 2000);
 								}, 2000);
 							}, 2000);
