@@ -189,12 +189,13 @@ MW.AgentView = function() {
 	};
 
 	this.startTalk = function () {
+		bodyFace.setImage(view.talk());
 		talkInterval = bodyView.setInterval(function () {
-			bodyFace.setImage(view.talk());
+			bodyFace.setImage(view.normalFace());
 			talkTimeout = bodyView.setTimeout(function () {
-				bodyFace.setImage(view.normalFace());
-			}, 250);
-		}, 500);
+				bodyFace.setImage(view.talk());
+			}, 200);
+		}, 400);
 	};
 	
 	this.stopTalk = function () {
