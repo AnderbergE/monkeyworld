@@ -14,13 +14,14 @@ function LadderView(tag, ladder)
 	var agent = null;
 	
 	this.addInterruptButtons = function(layer) {
-		stopButton = new Kinetic.Image({
-			image: MW.Images.SYMBOL_STOP, x: 750, y: 600, offset: {x:64,y:64}, alpha: 0
+		stopButton = new Kinetic.MW.NoButton(view, {
+			x: 750, y: 600, alpha: 0
 		});
-		continueButton = new Kinetic.Image({
-			image: MW.Images.SYMBOL_CHECK, x: 900, y: 600, offset: {x:64,y:64}, alpha: 0
+		continueButton = new Kinetic.MW.YesButton(view, {
+			x: 900, y: 600, alpha: 0
 		});
-		
+		stopButton.setScale(0.7);
+		continueButton.setScale(0.7);
 		layer.add(stopButton);
 		layer.add(continueButton);
 	};
@@ -44,12 +45,14 @@ function LadderView(tag, ladder)
 
 	view.on(MW.Event.MG_LADDER_ALLOW_INTERRUPT, function(callback) {
 		stopButton.on("mousedown touchstart", function() {
-			view.getTween(stopButton.attrs).to({rotation: 8*Math.PI}, 1200).to({rotation:0});
+			//view.getTween(stopButton.attrs).to({rotation: 8*Math.PI}, 1200).to({rotation:0});
+			stopButton.animate();
 			MW.Sound.play(MW.Sounds.BIKE_HORN);
 			ladder.interruptAgent();
 		});
 		continueButton.on("mousedown touchstart", function() {
-			view.getTween(continueButton.attrs).to({rotation: 8*Math.PI}, 1200).to({rotation:0});
+			//view.getTween(continueButton.attrs).to({rotation: 8*Math.PI}, 1200).to({rotation:0});
+			continueButton.animate();
 			MW.Sound.play(MW.Sounds.TADA);
 		});
 		callback();
