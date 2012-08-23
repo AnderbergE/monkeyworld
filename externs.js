@@ -400,6 +400,12 @@ Kinetic.Text.prototype.strokeWidth = function(){};
  * @extends {Kinetic.Shape}
  */
 Kinetic.Image = function(config){};
+/** @param {Image} image **/
+Kinetic.Image.prototype.setImage = function (image) {};
+/** @param {number} width **/
+Kinetic.Image.prototype.setWidth = function (width) {};
+/** @param {number} height **/
+Kinetic.Image.prototype.setHeight = function (height) {};
 
 /*============================================================================*/
 /**
