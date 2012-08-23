@@ -73,7 +73,34 @@ MW.GardenView = function () {
 		happyBackground.setAlpha(0);
 		layer.add(sadBackground);
 		layer.add(happyBackground);
-		setTimeout(function () {
+		var skipButton = new Kinetic.Group({ x: 10, y: 10 });
+		
+		var skipRect = new Kinetic.Rect({
+			width: 100,
+			height: 30,
+			fill: "gray"
+		});
+		
+		var skipText = new Kinetic.Text({
+			text: "Skip",
+			width: 100,
+			height: 30,
+			y: 10,
+			align: "center",
+			fontFamily: "Arial",
+			textFill: "black"
+		});
+
+		skipButton.add(skipRect);
+		skipButton.add(skipText);
+		
+		skipButton.on("mousedown touchstart", function () {
+			msg.callback();
+		});
+
+		layer.add(skipButton);
+		
+		view.setTimeout(function () {
 			MW.Sound.play(MW.Sounds.INTRO_GARDEN_2);
 			view.getTween(sadBackground.attrs).to({ alpha: 0 }, 2000);
 			view.getTween(happyBackground.attrs).to({ alpha: 1 }, 2000).wait(3000).call(msg.callback);

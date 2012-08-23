@@ -365,9 +365,14 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 		if (useViews && !MW.debug) {
 			var introductionView = newObject(
 				MW.IntroductionView,
-				function () {
-					introductionView.tearDown();
-					demonstrateGarden(callback)
+				function (skipGarden) {
+					if (!skipGarden) {
+						introductionView.tearDown();
+						demonstrateGarden(callback);
+					} else {
+						introductionView.tearDown();
+						callback();
+					}
 				}
 			);
 			introductionView.setup();

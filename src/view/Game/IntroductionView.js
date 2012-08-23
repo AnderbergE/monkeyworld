@@ -36,14 +36,40 @@ MW.IntroductionView = function (callback) {
 		var mouse4 = mouseView4.getBody(view, 700, 200);
 		layer.add(mouse4);
 		mouseView4.dance();
-		mouse4.setScale(0.7);	
+		mouse4.setScale(0.7);
+		
+		var skipButton = new Kinetic.Group({ x: 10, y: 10 });
+		
+		var skipRect = new Kinetic.Rect({
+			width: 100,
+			height: 30,
+			fill: "gray"
+		});
+		
+		var skipText = new Kinetic.Text({
+			text: "Skip",
+			width: 100,
+			height: 30,
+			y: 10,
+			align: "center",
+			fontFamily: "Arial",
+			textFill: "black"
+		});
+
+		skipButton.add(skipRect);
+		skipButton.add(skipText);
+		
+		skipButton.on("mousedown touchstart", function () {
+			callback(true);
+		});
+		layer.add(skipButton);
 
 		view.setTimeout(function () { MW.Sound.play(MW.Sounds.INTRO_1); }, 2000);
 		view.setTimeout(function () { MW.Sound.play(MW.Sounds.INTRO_2); }, 2000);
 		view.setTimeout(function () { MW.Sound.play(MW.Sounds.INTRO_3); }, 7000);
 		view.setTimeout(function () { MW.Sound.play(MW.Sounds.INTRO_4); }, 7000);
 		view.setTimeout(function () { MW.Sound.play(MW.Sounds.INTRO_5); }, 12000);
-		view.setTimeout(function () { callback(); }, 14000);
+		view.setTimeout(function () { callback(false); }, 14000);
 	});
 
 	view.addTearDown(function () {
