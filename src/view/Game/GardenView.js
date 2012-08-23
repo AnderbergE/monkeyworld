@@ -115,9 +115,9 @@ MW.GardenView = function () {
 		var newY = p[0].y + yOffset;
 		var m1 = p[0].y - k1 * p[0].x;
 		var m2 = p[2].y - k2 * p[2].x;
+		pitcherImage.setRotation(Math.PI / 3);
 		pitcherGroup.show();
 		setTimeout(function () {
-			view.getTween(pitcherImage.attrs).to({ rotation: Math.PI / 3 });
 			setTimeout(function () {
 				view.getTween(waterPolygon.attrs.points[0])
 				.to({ x: (newY - m1) / k1, y: newY }, 3000);
