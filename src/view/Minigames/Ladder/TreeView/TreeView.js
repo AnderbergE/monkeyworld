@@ -282,39 +282,45 @@ function TreeView(ladder) {
 	 * Helper moves to its home
 	 */
 	view.on(MW.Event.MG_LADDER_RESET_SCENE, function (callback, msg) {
-		var step1 = function (next) {
-			helper.startWalk();
-			view.getTween(helper.attrs).to({
-				y: 430
-			}, 500 * currentPick).call(helper.stopWalk).call(next);
-		};
-		var step2 = function (next) {
-			view.getTween(helper.attrs).to({
-				rotation: -Math.PI / 16,
-				x: config.helper.x,
-				y: config.helper.y - 70
-			}, 1000).to({
-				rotation: 0,
-				y: config.helper.y - 50
-			}, 1000).call(next);
-		};
-		var step3 = function () {
-			view.getTween(helper.attrs).to({
-				rotation: 0,
-				x: config.helper.x,
-				y: config.helper.y
-			}, 2000).call(function () {
-				numpad.release();
-				callback();
-			});
-		};
-		if (currentPick > 2) {
-			step1(function () { step2(step3); });
-		} else if (currentPick > 1) {
-			step2(step3);
-		} else {
-			step3();
+		var timeout = 0;
+		if (currentPick !== ladder.getTargetNumber()) {
+			timeout = 2000;
 		}
+		view.setTimeout(function () {
+			var step1 = function (next) {
+				helper.startWalk();
+				view.getTween(helper.attrs).to({
+					y: 430
+				}, 500 * currentPick).call(helper.stopWalk).call(next);
+			};
+			var step2 = function (next) {
+				view.getTween(helper.attrs).to({
+					rotation: -Math.PI / 16,
+					x: config.helper.x,
+					y: config.helper.y - 70
+				}, 1000).to({
+					rotation: 0,
+					y: config.helper.y - 50
+				}, 1000).call(next);
+			};
+			var step3 = function () {
+				view.getTween(helper.attrs).to({
+					rotation: 0,
+					x: config.helper.x,
+					y: config.helper.y
+				}, 2000).call(function () {
+					numpad.release();
+					callback();
+				});
+			};
+			if (currentPick > 2) {
+				step1(function () { step2(step3); });
+			} else if (currentPick > 1) {
+				step2(step3);
+			} else {
+				step3();
+			}
+		}, timeout);
 	});
 
 	/**
