@@ -370,8 +370,8 @@ function TreeView(ladder) {
 	staticLayer.add(background);
 	staticLayer.add(new Kinetic.Image({
 		image: MW.Images.TREEGAME_TREEDOTS,
-		x: 144,
-		y: 167
+		x: 145,
+		y: 161
 	}));
 	view.addInterruptButtons(dynamicLayer);
 
