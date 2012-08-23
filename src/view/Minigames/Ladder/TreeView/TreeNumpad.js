@@ -48,7 +48,7 @@ MW.Numpad = function(config) {
 	
 	var group = new Kinetic.Group({ x: config.x, y: config.y });
 	
-	for (var i = config.min; i <= config.max; i += config.step) { (function(i) {
+	for (var i = config.max; i >= config.min; i -= config.step) { (function(i) {
 		var pos = grid.next();
 		var buttonGroup = new Kinetic.Group({
 			x: pos.x, y: pos.y
