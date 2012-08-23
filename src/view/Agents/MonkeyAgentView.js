@@ -52,6 +52,10 @@ MW.MonkeyAgentView = function() {
 	this.talk = function () {
 		return MW.Images.AGENT_TALK_MOUSE;
 	};
+
+	this.falling = function () {
+		return MW.Images.AGENT_FALLING_MOUSE;
+	}
 };
 
 /**
@@ -108,5 +112,8 @@ MW.MouseAgentView = function () {
 	this.talk = function () {
 		return MW.Images.AGENT_TALK_MOUSE;
 	};
+	this.falling = function () {
+		return MW.Images.AGENT_FALLING_MOUSE;
+	}
 };
 

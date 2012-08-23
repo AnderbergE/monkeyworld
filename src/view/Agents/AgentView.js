@@ -74,7 +74,15 @@ MW.AgentView = function() {
 	this.jumpDown = function (x, y) {
 		bodyX = x;
 		bodyY = y;
-		bodyView.getTween(bodyGroup.attrs).to({ alpha: 1, x: x, y: y }, 2000);
+		bodyImage.setImage(view.falling());
+		bodyFace.hide();
+		bodyGroup.setScale(0.7);
+		bodyView.getTween(bodyGroup.attrs.scale).to({ x: 0.85, y: 0.85}, 800);
+		bodyView.getTween(bodyGroup.attrs.scale).to({ x: 1, y: 1}, 800);
+		bodyView.getTween(bodyGroup.attrs).to({ alpha: 1}, 400).to({ x: x, y: y }, 3000).call(function () {
+			bodyImage.setImage(view.standing());
+			bodyFace.show();
+		});
 	};
 	
 	this.showBody = function () {
