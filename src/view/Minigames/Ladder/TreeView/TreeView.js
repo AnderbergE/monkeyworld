@@ -49,7 +49,7 @@ function TreeView(ladder) {
 				offsetWidth: 75
 			},
 			helper: {
-				x: 240,
+				x: 244,
 				y: 580
 			},
 			treatGrid: {
@@ -122,7 +122,7 @@ function TreeView(ladder) {
 	helper = new Kinetic.MW.Lizard({
 		x: config.helper.x,
 		y: config.helper.y,
-		scale: scale
+		scale: scale * 0.7
 	}, view);
 
 	shakeTreat = function () {
@@ -407,7 +407,7 @@ function TreeView(ladder) {
 		image: MW.Images.TREEGAME_COVER,
 		width: MW.Images.TREEGAME_COVER.width,
 		height: MW.Images.TREEGAME_COVER.height,
-		x: 184,
+		x: 182,
 		y: view.getStage().getHeight() - MW.Images.TREEGAME_COVER.height
 	}));
 
