@@ -147,7 +147,7 @@ MW.LadderMinigame = function () {
 
 	/**
 	 * Open a collected treat
-	 * @private
+	 * @public
 	 */
 	this.openTreat = function () {
 		collectedTreats += 1;
