@@ -41,6 +41,17 @@ MW.MonkeyAgentView = function() {
 			MW.Images.AGENT_ARM_POINT_AT_6
 		];
 	};
+	this.blinkArray = function () {
+		return [
+			MW.Images.AGENT_BLINK_MOUSE_1,
+			MW.Images.AGENT_BLINK_MOUSE_2,
+			MW.Images.AGENT_BLINK_MOUSE_3
+		];
+	};
+	
+	this.talk = function () {
+		return MW.Images.AGENT_TALK_MOUSE;
+	};
 };
 
 /**
