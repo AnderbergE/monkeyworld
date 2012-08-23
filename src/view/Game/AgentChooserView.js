@@ -12,7 +12,7 @@ MW.AgentChooserView = function(chooser) {
 		/** @const @type {Object.<number>} */
 		GRID: {
 			/** @const */ X: 363,
-			/** @const */ Y: 230,
+			/** @const */ Y: 150,
 			/** @const */ WIDTH: 2
 		},
 		/** @const @type {Object.<number>} */
@@ -121,13 +121,8 @@ MW.AgentChooserView = function(chooser) {
 		g._rect = rect;
 		g._agent = agent;
 		var agentView = new agent.view();
-		var img = new Kinetic.Image({
-			image: agentView.head(),
-			offset: {
-				x: agentView.head().width / 2,
-				y: agentView.head().height / 2
-			}
-		});
+		var img = agentView.getFace(view, -110, -60);
+		img.setScale(0.9);
 		g.add(img);
 		g.on("mousedown touchstart", function() {
 			MW.Sound.play(MW.Sounds.CLICK);
