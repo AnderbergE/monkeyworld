@@ -9,6 +9,20 @@ MW.ImageSources = {
 /** @const */ BALLOONS: "balloons.png",
 /** @const */ SYMBOL_STOP: "Symbol-Stop.png",
 /** @const */ SYMBOL_CHECK: "Symbol-Check.png",
+
+/** @const */ BUTTON_NO_1: "yesno/no1.png",
+/** @const */ BUTTON_NO_2: "yesno/no2.png",
+/** @const */ BUTTON_NO_3: "yesno/no3.png",
+/** @const */ BUTTON_NO_4: "yesno/no4.png",
+/** @const */ BUTTON_NO_5: "yesno/no5.png",
+/** @const */ BUTTON_NO_6: "yesno/no6.png",
+/** @const */ BUTTON_NO_7: "yesno/no7.png",
+
+/** @const */ BUTTON_YES_1: "yesno/yes1.png",
+/** @const */ BUTTON_YES_2: "yesno/yes2.png",
+/** @const */ BUTTON_YES_3: "yesno/yes3.png",
+/** @const */ BUTTON_YES_4: "yesno/yes4.png",
+
 /** @const */ JUNGLEBG: "Jungle_Bkg.png",
 /** @const */ ELEPHANT: "elephant.png",
 /** @const */ LION: "lion.png",
