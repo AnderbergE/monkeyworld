@@ -1,7 +1,8 @@
 /**
  * @extends {Kinetic.Node}
- * @param {MW.ViewModule}
+ * @param {ViewModule} view
  * @param {Object} config
+ * @constructor
  */
 Kinetic.MW.NoButton = function (view, config) {
 	config.image = MW.Images.BUTTON_NO_1;
@@ -12,7 +13,7 @@ Kinetic.MW.NoButton = function (view, config) {
 		y: 64
 	};
 	var image = new Kinetic.Image(config);
-	function animate() {
+	this.animate = function () {
 		var interval = 300;
 		view.getTween(image.attrs)
 		.to({ image: MW.Images.BUTTON_NO_2 }).wait(interval)
@@ -32,6 +33,6 @@ Kinetic.MW.NoButton = function (view, config) {
 		.to({ image: MW.Images.BUTTON_NO_7 }).wait(interval)
 		.to({ image: MW.Images.BUTTON_NO_1 }).wait(interval);
 	}
-	image.animate = animate;
+	image.animate = this.animate;
 	return image;
 };
