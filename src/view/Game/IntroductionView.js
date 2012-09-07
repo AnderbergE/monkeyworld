@@ -1,9 +1,9 @@
 /**
  * @constructor
- * @extends {ViewModule}
+ * @extends {MW.ViewModule}
  */
 MW.IntroductionView = function (callback) {
-	ViewModule.call(this, "IntroductionView");
+	MW.ViewModule.call(this, "IntroductionView");
 	var
 		view = this,
 		stage,

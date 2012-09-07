@@ -3,7 +3,7 @@
  * @extends {MW.Module}
  * @param {string} tag
  */
-function ViewModule(tag) {
+MW.ViewModule = function(tag) {
 	MW.Module.call(this, tag);
 	var that = this;
 	var tweenController = new TweenController();

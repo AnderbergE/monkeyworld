@@ -1,11 +1,11 @@
 /**
  * @constructor
- * @extends {GameView}
+ * @extends {MW.MinigameView}
  * @param {MW.LadderMinigame} ladder
  */
 function LadderView(tag, ladder)
 {
-	GameView.call(this, tag);
+	MW.MinigameView.call(this, tag);
 	this.tag(tag);
 	Log.debug("Creating LadderView", "object");
 	var view = this;

@@ -1,9 +1,3 @@
-///**
-// * MonkeyWorld namespace
-// * @namespace
-// */
-////var MW = {};
-
 MW.debug = false;
 MW.testing = false;
 

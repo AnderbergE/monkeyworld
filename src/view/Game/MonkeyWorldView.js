@@ -3,10 +3,10 @@
  * system confirmation.
  * 
  * @constructor
- * @extends {ViewModule}
+ * @extends {MW.ViewModule}
  */
 function MonkeyWorldView() {
-	ViewModule.call(this, "MonkeyWorldView");
+	MW.ViewModule.call(this, "MonkeyWorldView");
 	var stage = this.stage;
 //	this._tag = "MonkeyWorldView";
 	

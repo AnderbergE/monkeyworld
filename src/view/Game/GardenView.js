@@ -1,9 +1,9 @@
 /**
  * @constructor
- * @extends {ViewModule}
+ * @extends {MW.ViewModule}
  */
 MW.GardenView = function () {
-	ViewModule.call(this, "GardenView");
+	MW.ViewModule.call(this, "GardenView");
 	var
 		view = this,
 		sadBackground,

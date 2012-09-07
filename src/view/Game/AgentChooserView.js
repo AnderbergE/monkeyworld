@@ -1,10 +1,10 @@
 /**
  * @constructor
- * @extends {ViewModule}
+ * @extends {MW.ViewModule}
  * @param {MW.AgentChooser} chooser
  */
 MW.AgentChooserView = function(chooser) {
-	ViewModule.call(this, "AgentChooserView");
+	MW.ViewModule.call(this, "AgentChooserView");
 	var view = this;
 	/** @type {Kinetic.Layer} */ var layer = null;
 	/** @const @type {Object.<number>} */

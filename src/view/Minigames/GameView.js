@@ -1,11 +1,11 @@
 /**
  * @constructor
- * @extends {ViewModule}
+ * @extends {MW.ViewModule}
  * @param {string} tag
  */
-function GameView(tag) {
+MW.MinigameView = function(tag) {
 	// TODO: Rename this object to MinigameView
-	ViewModule.call(this, tag);
+	MW.ViewModule.call(this, tag);
 	var agentBody = null, agentX = 0, agentY = 0;
 	/** @type {GameView}      */ var view  = this;
 	/** @type {Kinetic.Layer} */ var layer = view.stage._gameLayer;
