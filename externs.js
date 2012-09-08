@@ -12,6 +12,17 @@ function KineticFrameConfig(frame) {};
 KineticFrame.timeDiff = function() {};
 
 /**
+ * Stage
+ * v3.8.2
+ * Instantiates a new Stage object. Parameter container can be a DOM id or a
+ * DOM element.
+ * @constructor
+ * @extends {Kinetic.Node}
+ * @param {Object} config
+ */
+Kinetic.Stage = function(config){};
+
+/**
 * @param {*} frameconfig
 */
 Kinetic.Stage.prototype.onFrame = function(frameconfig){};
@@ -130,16 +141,7 @@ Kinetic.Container = function() {};
 		 */
 		Kinetic.Node.prototype.transitionTo = function(config) {};
 	
-/**
- * Stage
- * v3.8.2
- * Instantiates a new Stage object. Parameter container can be a DOM id or a
- * DOM element.
- * @constructor
- * @extends {Kinetic.Node}
- * @param {Object} config
- */
-Kinetic.Stage = function(config){};
+
 Kinetic.Stage.prototype.width = function() {};
 Kinetic.Stage.prototype.height = function() {};
 Kinetic.Stage.prototype.container = function() {};
