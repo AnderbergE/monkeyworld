@@ -7,6 +7,7 @@ $(document).ready(function(){
 
 	module("Monkey World", {
 		setup: function() {
+			console.log(MW);
 			this.mw = new MW.Game(null, false, false, MW.MinigameConfiguration.LADDER.TREE);
 		},
 		teardown: function() {
@@ -124,26 +125,26 @@ $(document).ready(function(){
 	
 	test("Pick one number", function() {
 		var that = this, ladder, picked = false;
-		this.mw.on("Ladder.start", function(msg) {
-			ladder = that.mw.getMiniGame();
-			ladder.pick(1);
-		});
-		this.mw.on("Ladder.picked", function(msg) {
+		this.mw.on(MW.Event.MG_LADDER_PICKED, function(msg) {
 			equal(ladder.getChosenNumber(), 1, "Number 1 should've been picked");
 			picked = true;
 		}, "test");
 		this.mw.start();
+		ladder = that.mw.getMiniGame();
+		ladder.pick(1);
 		ok(picked, "A number should've been picked");
 	});
 	
 	test("Pick incorrect number", function() {
 		var that = this;
-		this.mw.on(MW.Event.MG_LADDER_PLACE_TARGET, function (callback) { callback(); });
+		this.mw.on(MW.Event.MG_LADDER_PLACE_TARGET, function (callback) {
+			callback();
+		}, "test");
 		this.mw.on(MW.Event.MG_LADDER_READY_TO_PICK, function () {
 			var ladder = that.mw.getMiniGame();
 			ladder.pick(ladder.getIncorrectNumber());
 		}, "test");
-		this.mw.on("Ladder.picked", function(callback, msg) {
+		this.mw.on(MW.Event.MG_LADDER_PICKED, function(callback, msg) {
 			ok(!msg.correct, "Should've picked incorrect number");
 			callback();
 		}, "test");
@@ -151,12 +152,17 @@ $(document).ready(function(){
 	});
 	
 	test("Pick target number", function() {
-		this.mw.start();
-		var ladder = this.mw.getMiniGame();
-		this.mw.on("Ladder.picked", function(msg) {
-			equal(ladder.getChosenNumber(), ladder.getTargetNumber(), "Should've picked target number");
+		var that = this;
+		this.mw.on(MW.Event.MG_LADDER_PLACE_TARGET, function (callback) {
+			callback();
 		}, "test");
-		ladder.pick(ladder.getTargetNumber());
+		this.mw.on(MW.Event.MG_LADDER_READY_TO_PICK, function() {
+			that.mw.getMiniGame().pick(that.mw.getMiniGame().getTargetNumber());
+		}, "test");
+		this.mw.on(MW.Event.MG_LADDER_PICKED, function(msg) {
+			equal(that.mw.getMiniGame().getChosenNumber(), that.mw.getMiniGame().getTargetNumber(), "Should've picked target number");
+		}, "test");
+		this.mw.start();
 	});
 	
 	test("Get treat", 17, function() {
@@ -166,9 +172,6 @@ $(document).ready(function(){
 		var toNest = false;
 		var ladder = null;
 		var that = this;
-		this.mw.on("Ladder.start", function(msg) {
-			ladder = that.mw.getMiniGame();
-		}, "test");
 		this.mw.on(MW.Event.MG_LADDER_PLACE_TARGET, function (callback) {
 			ok(!placed, "1. Shouldn't have placed target yet");
 			ok(!picked, "2. Shouldn't have registerd number yet");
@@ -178,12 +181,13 @@ $(document).ready(function(){
 			callback();
 		}, "test");
 		this.mw.on(MW.Event.MG_LADDER_READY_TO_PICK, function() {
+			ladder = that.mw.getMiniGame();
 			ok(placed, "5. Should have placed target");
 			ok(!picked, "6. Shouldn't have registerd number yet");
 			ok(!toLadder, "7. Shouldn't been to ladder yet");
 			ok(!toNest, "8.  Should not be back at nest");
 			ladder.pick(ladder.getTargetNumber());
-			ok(toNest, "17.  Should be back at nest");
+			//ok(toNest, "17.  Should be back at nest");
 		}, "test");
 		this.mw.on(MW.Event.MG_LADDER_PICKED, function (callback) {
 			ok(!picked, "9. Shouldn't have registerd number yet");
@@ -193,11 +197,12 @@ $(document).ready(function(){
 			callback();
 		}, "test");
 		this.mw.on(MW.Event.MG_LADDER_HELPER_APPROACH_TARGET, function (callback) {
+			ok(false);
 			ok(picked, "12. Should have registerd number");
 			ok(!toLadder, "13. Shouldn't been to ladder yet");
 			ok(!toNest, "14. Shouldn't be back at nest yet");
 			toLadder = true;
-			callback();
+			//callback();
 		}, "test");
 		this.mw.on(MW.Event.MG_LADDER_GET_TARGET, function (callback) {
 			callback();
@@ -206,10 +211,11 @@ $(document).ready(function(){
 			ok(toLadder, "15. Should have been to ladder");
 			ok(!toNest, "16. Shouldn't be back at nest yet");
 			toNest = true;
-			callback();
+			//callback();
 		}, "test");
 
 		this.mw.start();
+
 	});
 	
 	test("Scoring subtract to zero", function() {
@@ -217,21 +223,19 @@ $(document).ready(function(){
 		var ladder = null;
 		var tries = 16;
 		var expected = 10;
-		mw.on("Ladder.start", function(msg) {
+		mw.on(MW.Event.MG_LADDER_PLACE_TARGET, function(cb) {
 			ladder = mw.getMiniGame();
 			equal(ladder.getBackendScore(), expected, "BE score start at " + expected);
+			cb();
 		}, "test");
-		mw.on("Ladder.placeTarget", function(msg) {
-			msg.callback();
-		}, "test");
-		mw.on("Ladder.readyToPick", function(msg) {
+		mw.on(MW.Event.MG_LADDER_READY_TO_PICK, function(msg) {
 			ladder.pick(ladder.getIncorrectNumber());
 		}, "test");
-		mw.on("Ladder.picked", function(msg) {
+		mw.on(MW.Event.MG_LADDER_PICKED, function(callback, msg) {
 			if (!msg.correct) {
 				if (expected > 0) expected--;
 			}
-			msg.callback();
+			callback();
 		}, "test");
 		mw.on("Ladder.incorrect", function(msg) {
 			tries--;
@@ -239,20 +243,20 @@ $(document).ready(function(){
 			equal(ladder.getBackendScore(), expected, "BE score " + expected + " after picked wrong");
 			ladder.pick(pickNumber);
 		});
-		mw.on("Ladder.approachLadder", function(msg) {
-			msg.callback();
+		mw.on(MW.Event.MG_LADDER_HELPER_APPROACH_TARGET, function(cb) {
+			cb();
 		}, "test");
-		mw.on("Ladder.hasTarget", function(msg) {
+		mw.on(MW.Event.MG_LADDER_HAS_TARGET, function(msg) {
 			ladder.openTreat();
 		});
-		mw.on("Ladder.confirmTarget", function(msg) {
-			msg.callback();
+		mw.on(MW.Event.MG_LADDER_CONFIRM_TARGET, function(cb) {
+			cb();
 		}, "test");
-		mw.on("Ladder.resetScene", function(msg) {
-			msg.callback();
+		mw.on(MW.Event.MG_LADDER_RESET_SCENE, function(cb) {
+			cb();
 		}, "test");
-		mw.on("Ladder.getTarget", function(msg) {
-			msg.callback();
+		mw.on(MW.Event.MG_LADDER_GET_TREAT, function(cb) {
+			cb();
 		}, "test");
 		mw.start();
 	});
