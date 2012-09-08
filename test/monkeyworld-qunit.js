@@ -266,44 +266,43 @@ $(document).ready(function(){
 		var ladder = null;
 		var tries = 5;
 		var expected = 10;
-		mw.on("Ladder.start", function(msg) {
+		mw.on(MW.Event.MG_LADDER_PLACE_TARGET, function(cb) {
 			ladder = mw.getMiniGame();
 			equal(ladder.getBackendScore(), expected, "BE score start at " + expected);
+			cb();
 		}, "test");
-		mw.on("Ladder.placeTarget", function(msg) {
-			msg.callback();
-		}, "test");
-		mw.on("Ladder.readyToPick", function(msg) {
+		mw.on(MW.Event.MG_LADDER_READY_TO_PICK, function(msg) {
 			ladder.pick(ladder.getIncorrectNumber());
 		}, "test");
-		mw.on("Ladder.picked", function(msg) {
+		mw.on(MW.Event.MG_LADDER_PICKED, function(cb, msg) {
 			if (!msg.correct) {
 				if (expected > 0) expected--;
 			}
-			msg.callback();
+			cb();
 		}, "test");
 		mw.on("Ladder.incorrect", function(msg) {
+		
 			tries--;
 			var pickNumber = tries == 0 ? ladder.getTargetNumber() : ladder.getIncorrectNumber();
 			equal(ladder.getBackendScore(), expected, "BE score " + expected + " after picked wrong");
 			ladder.pick(pickNumber);
-		});
-		mw.on("Ladder.approachLadder", function(msg) {
-			msg.callback();
 		}, "test");
-		mw.on("Ladder.hasTarget", function(msg) {
+		mw.on(MW.Event.MG_LADDER_HELPER_APPROACH_TARGET, function(cb) {
+			cb();
+		}, "test");
+		mw.on(MW.Event.MG_LADDER_HAS_TARGET, function(msg) {
 			ladder.openTreat();
 		});
-		mw.on("Ladder.confirmTarget", function(msg) {
-			msg.callback();
+		mw.on(MW.Event.MG_LADDER_CONFIRM_TARGET, function(cb) {
+			cb();
 		}, "test");
-		mw.on("Ladder.resetScene", function(msg) {
+		mw.on(MW.Event.MG_LADDER_RESET_SCENE, function(cb) {
 			if (tries === 0)
 				equal(ladder.getBackendScore(), expected, "BE score " + expected + " after correct pick");
-			msg.callback();
+			cb();
 		}, "test");
-		mw.on("Ladder.getTarget", function(msg) {
-			msg.callback();
+		mw.on(MW.Event.MG_LADDER_GET_TARGET, function(cb) {
+			cb();
 		}, "test");
 		mw.start();
 	});
@@ -311,35 +310,33 @@ $(document).ready(function(){
 	test("Global scoring", function() {
 		var mw = this.mw;
 		var ladder = null;
-		mw.on("Ladder.start", function(msg) {
+		mw.on(MW.Event.MG_LADDER_PLACE_TARGET, function(cb) {
 			ladder = mw.getMiniGame();
+			cb();
 		}, "test");
-		mw.on("Ladder.placeTarget", function(msg) {
-			msg.callback();
-		}, "test");
-		mw.on("Ladder.readyToPick", function(msg) {
+		mw.on(MW.Event.MG_LADDER_READY_TO_PICK, function() {
 			ladder.pick(ladder.getIncorrectNumber());
 		}, "test");
-		mw.on("Ladder.picked", function(msg) {
-			msg.callback();
+		mw.on(MW.Event.MG_LADDER_PICKED, function(cb) {
+			cb();
 		}, "test");
 		mw.on("Ladder.incorrect", function(msg) {
 			
 		});
-		mw.on("Ladder.approachLadder", function(msg) {
-			msg.callback();
+		mw.on(MW.Event.MG_LADDER_HELPER_APPROACH_TARGET, function(cb) {
+			cb();
 		}, "test");
-		mw.on("Ladder.hasTarget", function(msg) {
+		mw.on(MW.Event.MG_LADDER_HAS_TARGET, function(msg) {
 			ladder.openTreat();
 		});
-		mw.on("Ladder.confirmTarget", function(msg) {
-			msg.callback();
+		mw.on(MW.Event.MG_LADDER_CONFIRM_TARGET, function(cb) {
+			cb();
 		}, "test");
-		mw.on("Ladder.resetScene", function(msg) {
-			msg.callback();
+		mw.on(MW.Event.MG_LADDER_RESET_SCENE, function(cb) {
+			cb();
 		}, "test");
-		mw.on("Ladder.getTarget", function(msg) {
-			msg.callback();
+		mw.on(MW.Event.MG_LADDER_GET_TARGET, function(cb) {
+			cb();
 		}, "test");
 		equal(mw.getScore(), 0, "Backend score starts at zero");
 		mw.start();
