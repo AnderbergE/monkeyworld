@@ -2,6 +2,5 @@
 *.*~
 
 ### Generated files ###
-html/
 build/
-
+build_uncompiled/
