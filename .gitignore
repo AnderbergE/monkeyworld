@@ -4,3 +4,5 @@
 ### Generated files ###
 build/
 build_uncompiled/
+aggregate.js
+test/aggregate.js
