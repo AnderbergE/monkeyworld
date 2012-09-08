@@ -1,8 +1,9 @@
-<project name="MonkeyWorld" default="compile">
+<project name="MonkeyWorld" default="uncompiled">
 
 	<property name="lib" value="lib" />
 	<property name="source.dir" value="src" />
-	<property name="build.dir" value="html" />
+	<property name="build.compiled.dir" value="build" />
+	<property name="build.uncompiled.dir" value="build_uncompiled" />
 	<property name="aggregate.dir" value="." />
 
 	<taskdef
@@ -24,15 +25,11 @@
 		</concat>
 	</target>
 	
-	<target name="html_uncompiled">
-	
-	</target>
-	
 	<target name="compile" depends="aggregate">
 		<jscomp
 			compilationLevel="advanced"
 			debug="false"
-			output="html/monkeyworld.js"
+			output="${build.compiled.dir}/monkeyworld.js"
 			warning="verbose">
 
 			<externs dir=".">
@@ -44,8 +41,28 @@
 			</sources>
 		</jscomp>
 		
-		<copy todir="${build.dir}" file="${source.dir}/html/index.html" />
-		<copy todir="${build.dir}" file="${source.dir}/html/style.css" />
+		<copy todir="${build.compiled.dir}" file="${source.dir}/html/index.html" />
+		<copy todir="${build.compiled.dir}" file="${source.dir}/html/style.css" />
+	</target>
+	
+		<taskdef
+		name="aggregate_mw"
+		classname="MWBuilder"
+		classpath="lib/mw-builder.jar" />
+	
+	<target name="uncompiled">
+		<aggregate_mw
+			output="index.html"
+			build_path="${build.uncompiled.dir}"
+			src_path="${source.dir}"
+			lib_path="lib"
+			res_path="../res"
+			title="MWorld"
+		>
+			<headtag text="&lt;link href='http://fonts.googleapis.com/css?family=Gloria+Hallelujah' rel='stylesheet' type='text/css' />" />
+			<headtag text="&lt;link href='http://fonts.googleapis.com/css?family=Short+Stack' rel='stylesheet' type='text/css' />" />
+		</aggregate_mw>
+		<copy todir="${build.uncompiled.dir}" file="${source.dir}/html/style.css" />
 	</target>
 
 </project>
