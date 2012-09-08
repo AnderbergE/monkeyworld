@@ -2,7 +2,7 @@
  * @extends {Kinetic.Node}
  * @constructor
  * @param {Object} config
- * @param {ViewModule} view
+ * @param {MW.ViewModule} view
  */
 Kinetic.MW.Lizard = function (config, view) {
 	var

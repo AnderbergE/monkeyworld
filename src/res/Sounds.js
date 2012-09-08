@@ -200,9 +200,15 @@ MW.Sound = (function() {
 			var entry = MW.Sounds[key];
 			MW.Sounds[key]._key = key;
 			if (entry.soundFile != null) {
+				var soundPath = null;
+				if (MW.resPath !== undefined) {
+					soundPath = MW.resPath + "/sound/"
+				} else {
+					soundPath = "../res/sound/"
+				}
 				var e = {
 					id: key,
-					src: "../res/sound/" + entry.soundFile + ".ogg|" + "../res/sound/" + entry.soundFile + ".mp3"
+					src: soundPath + entry.soundFile + ".ogg|" + "../res/sound/" + entry.soundFile + ".mp3"
 				};
 				if (entry.instances != undefined) {
 					e.data = entry.instances;

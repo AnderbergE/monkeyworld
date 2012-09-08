@@ -65,7 +65,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	
 	var
 		/** @const @type {MW.Minigame} */
-		NO_MINI_GAME    = new MW.NoMinigame(),
+		NO_MINI_GAME    = null,
 		/** @const @type {MW.NoMiniGameResult} */
 		NO_RESULT       = new MW.NoMiniGameResult();
 	/** @const @type {GamerPlayer}         */ var GAMER           = newObject(GamerPlayer);
@@ -508,7 +508,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 
 	/**
 	 * Returns the current mini game.
-	 * @return {MW.Minigame|MW.NoMinigame}
+	 * @return {MW.Minigame}
 	 */
 	this.getMiniGame = function() {
 		return miniGame;

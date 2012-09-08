@@ -1,6 +1,6 @@
 /**
  * @extends {Kinetic.Node}
- * @param {ViewModule} view
+ * @param {MW.ViewModule} view
  * @param {Object} config
  * @constructor
  */

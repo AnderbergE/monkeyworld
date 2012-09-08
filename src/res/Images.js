@@ -118,7 +118,11 @@ MW.ImageHandler = (function() {
 	            }
 	            _img_progress = loadedImages / _img_total;
 	        };
-	        MW.Images[src].src = "../res/img/" + str;
+	        if (MW.resPath !== undefined) {
+			MW.Images[src].src = MW.resPath + "/img/" + str;
+		} else {
+			MW.Images[src].src = "../res/img/" + str;
+		}
 	    }
 	};
 	return imageHandler;

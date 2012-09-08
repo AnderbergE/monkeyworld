@@ -7,11 +7,11 @@ MW.MinigameView = function(tag) {
 	// TODO: Rename this object to MinigameView
 	MW.ViewModule.call(this, tag);
 	var agentBody = null, agentX = 0, agentY = 0;
-	/** @type {GameView}      */ var view  = this;
+	/** @type {MW.MinigameView}      */ var view  = this;
 	/** @type {Kinetic.Layer} */ var layer = view.stage._gameLayer;
 	/**
 	 * Show the current backend score of a mini game.
-	 * @param {GameView} view
+	 * @param {MW.MinigameView} view
 	 */
 	(function (view) {
 		/** @const */

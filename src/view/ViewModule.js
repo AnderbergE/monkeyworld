@@ -58,7 +58,7 @@ MW.ViewModule = function(tag) {
 			}
 		};
 	};
-	/** @this {ViewModule} */
+	/** @this {MW.ViewModule} */
 	this.getStage = function() {
 		return this.stage;
 	};

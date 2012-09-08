@@ -175,14 +175,3 @@ MW.Minigame = function (tag) {
 	};
 }
 
-/**
- * @constructor
- * @extends {MW.Minigame}
- */
-MW.NoMinigame = function () {
-	this.play = function() {
-		throw "No implemented mini game";
-	};
-}
-MW.NoMinigame.prototype = new MW.Minigame("NoMiniGame");
-
