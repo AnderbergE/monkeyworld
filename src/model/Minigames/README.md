@@ -31,6 +31,7 @@ The basic skeleton for the model file is:
      */
     MW.MyMinigame = function () {
     	"use strict";
+    	var myMinigame = this;
     	Minigame.call(this, "MyMinigame");
     	// attributes
 
@@ -44,10 +45,43 @@ The basic skeleton for the model file is:
      
      	this.start = function () {
      		// called when the minigame starts
+     		myMinigame.tell("SOME_EVENT");
+     		myMinigame.tellWait("SOME_OTHER_EVENT", function () {
+     			// this function will run when the view has called
+     			// the callback function
+     		});
      	};
-     }
+     };
 
 
 View
 ----
+The basic skeleton for the view file is:
 
+     /**
+      * @constructor
+      * @extends {MW.MinigameView}
+      * @param {MW.MyMinigameView} myMinigame
+      */
+     MW.MyMinigameView = function () {
+        "use strict";
+        this.addSetup(function () {
+    		// performed before minigame starts, lika a constructor
+    	});
+
+    	this.addTeardown(function () {
+     		// performed when minigame ends
+     	});
+     
+        this.on("SOME_EVENT", function () {
+        	// do something when SOME_EVENT is observed
+        });
+        
+        this.on("SOME_OTHER_EVENT", function (callback) {
+        	// perform animation or something time consuming when
+        	// SOME_OTHER_EVENT is obeserved
+        	// ...
+        	// call the callback when done, so the model can continue
+        	callback();
+        });
+     };
