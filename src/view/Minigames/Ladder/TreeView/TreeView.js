@@ -1,6 +1,6 @@
 /**
  * @constructor
- * @extends {LadderView}
+ * @extends {MW.LadderView}
  * @param {MW.LadderMinigame} ladder
  */
 MW.TreeView = function(ladder) {

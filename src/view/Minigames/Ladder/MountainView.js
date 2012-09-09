@@ -1,10 +1,10 @@
 /**
  * @constructor
- * @extends {LadderView}
+ * @extends {MW.LadderView}
  * @param {MW.LadderMinigame} game
  */
 MW.MountainView = function(game) {
-	/** @type {MountainView} */ var view = this;
+	/** @type {MW.MountainView} */ var view = this;
 	MW.LadderView.call(this, "MtView", game);
 	Log.debug("Constructing MountainView", this._tag);
 	
