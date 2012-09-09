@@ -11,3 +11,7 @@ There are two options to build the game for use in a web browser:
 ## Run ##
 After building, the uncompiled version (build alternative 1) can be run by running `build_uncompiled/index.html` in a HTML5 compatible web browser. The compiled version (build alternative 2) is run by using `build/index.html` in the same way.
 
+
+## Additional documentation ##
+ * [Documentation for adding minigames](https://github.com/qtoden/monkeyworld/tree/master/src/model/Minigames)
+ 
