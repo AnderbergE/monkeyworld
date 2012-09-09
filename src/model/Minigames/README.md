@@ -21,6 +21,34 @@ For a minigame called MyMinigame, two files should be created:
 Then edit the file /src/model/Minigames/MinigameConfiguration.js to make the
 engine able to recognize the new minigame.
 
+Configuration File:
+-------------------
+In `/src/model/Minigames/MinigameConfiguration.js`:
+
+    /** @enum {Object} */
+    var collection = {
+    /** @enum {Object} */
+       LADDER: {
+          TREE: {
+             game: MW.LadderMinigame,
+             view: MW.TreeView,
+             title: "Tree Game"
+          },
+          MOUNTAIN: {
+             game: MW.LadderMinigame,
+             view: MW.MountainView,
+             title: "Mountain Game"
+          }
+       },
+       MY_MINIGAME: {
+          MY_MINIGAME: {
+             game: MW.MyMinigame,
+             view: MW.MyMinigameView,
+             title: "My Minigame"
+          }
+       }
+    };
+
 Model
 -----
 The basic skeleton for the model file is:
@@ -30,28 +58,49 @@ The basic skeleton for the model file is:
      * @extends {MW.Minigame}
      */
     MW.MyMinigame = function () {
-    	"use strict";
-    	var myMinigame = this;
-    	Minigame.call(this, "MyMinigame");
-    	// attributes
+       "use strict";
+       var myMinigame = this;
+       Minigame.call(this, "MyMinigame");
+    
+       // Attributes
+       var someAttribute = 2;
+    
+       this.addSetup(function () {
+          // Performed before minigame starts, lika a constructor.
+       });
 
-    	this.addSetup(function () {
-    		// performed before minigame starts, lika a constructor
-    	});
-
-    	this.addTeardown(function () {
-     		// performed when minigame ends
-     	});
+       this.addTeardown(function () {
+          // Performed when minigame ends.
+       });
      
-     	this.start = function () {
-     		// called when the minigame starts
-     		myMinigame.tell("SOME_EVENT");
-     		myMinigame.tellWait("SOME_OTHER_EVENT", function () {
-     			// this function will run when the view has called
-     			// the callback function
-     		});
-     	};
-     };
+       this.addStart(function () {
+          // Performed when the minigame starts.
+     
+          // Broadcast a event called "SOME_EVENT".
+          myMinigame.tell("SOME_EVENT");
+     
+          // Broadcast a event called "SOME_OTHER_EVENT", and wait until
+          // the observer has called a callback function. Good if the
+          // model needs to wait for an animation in the view.
+          myMinigame.tellWait("SOME_OTHER_EVENT", function () {
+          // this function will run when the view has called
+          // the callback function
+          
+          Access general game state through the `game` member:
+          if (myMinigame.game.modeIsAgentDo()) {
+             // mode is "Agent Do"
+          }
+          
+       });
+    
+       this.addStop(function () {
+          // called when the minigame ends
+       });
+     	
+       this.somePublicFunction = function () {
+          // Do something.
+       };
+    };
 
 
 View
@@ -63,25 +112,81 @@ The basic skeleton for the view file is:
       * @extends {MW.MinigameView}
       * @param {MW.MyMinigameView} myMinigame
       */
-     MW.MyMinigameView = function () {
+     MW.MyMinigameView = function (myMinigame) {
         "use strict";
+
         this.addSetup(function () {
-    		// performed before minigame starts, lika a constructor
+    	   // Performed before minigame starts, lika a constructor.
     	});
 
     	this.addTeardown(function () {
-     		// performed when minigame ends
+     	   // Performed when minigame ends.
      	});
      
         this.on("SOME_EVENT", function () {
-        	// do something when SOME_EVENT is observed
+           // Do something when SOME_EVENT is observed.
+           // ...
+           // Access and change the minigame state using the model's public
+           // functions:
+           myMinigame.somePublicFunction();
+           
+           // If the agent should be interrupted when in Agent See mode, use the
+           // build in function:
+           myMinigame.interruptAgent();
+           // Resume the agent again with `myMinigame.resumeAgent()`.
         });
         
         this.on("SOME_OTHER_EVENT", function (callback) {
-        	// perform animation or something time consuming when
-        	// SOME_OTHER_EVENT is obeserved
-        	// ...
-        	// call the callback when done, so the model can continue
-        	callback();
+           // Perform animation or something time consuming when
+           // SOME_OTHER_EVENT is obeserved.
+           // ...
+           // Call the callback when done, so the model can continue:
+           callback();
         });
      };
+
+Recording and accessing the player's actions
+--------------------------------------------
+In Child Play Mode, the player's actions can be recorded. In Agent See Mode,
+these actions can be accessed by the agent.
+
+In the model file (`src/model/Minigames/MyMinigame/MyMinigame.js`), use the
+function `addAction`:
+
+    // ...
+    function someFunctionCalledBySomething() {
+       // Doing something...
+       // Noticing some action worth recording:
+       myMinigame.addAction("nameOfAction");
+    };
+    // ...
+
+In the agent strategy file (`src/model/Players/AgentPlayer.js`):
+
+    this.strategies["MyMinigame"] = function(minigame, result) {
+       // attributes
+       var someAttribute = 9;
+       
+       this.on("SOME_EVENT", function () {
+          // The agent can also listen for events.
+          
+          // Access the first recorded action:
+          var firstAction = result[0];
+          
+          // Use second action:
+          if (result[1] === "nameOfAction") {
+             // Then change the state of the minigame, using its public
+             // functions:
+             myMinigame.somePublicFunction();
+          }
+       });
+       
+       this.interrupt = function () {
+          // Performed when the agent is interrupted.
+       };
+       
+       this.resume = function () {
+          // Performed when the agent resumes after interruption.
+       };
+    };
+
