@@ -32,7 +32,7 @@ function MonkeyWorldView() {
 			//for (var i = 0; i < games.length; i++) { (function(i) {
 			
 			for (var category in games) { (function() {
-				for (var i = 0; i < games[category].sum(); i++) { (function() {
+				for (var i = 0; i < games[category].sum; i++) { (function() {
 					var game = games[category].variations[i];
 					var pos = grid.next();
 					var button = new Kinetic.Group(pos);

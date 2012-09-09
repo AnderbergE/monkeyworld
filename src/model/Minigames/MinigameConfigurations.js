@@ -28,8 +28,7 @@ MW.MinigameConfiguration = (function() {
 			i++;
 		}
 		k.variations = arr;
-		k.sum = function() { return i; };
+		k.sum = i;
 	}
-	
 	return collection;
 })();
