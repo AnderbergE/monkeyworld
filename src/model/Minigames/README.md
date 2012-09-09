@@ -76,10 +76,10 @@ The basic skeleton for the model file is:
        this.addStart(function () {
           // Performed when the minigame starts.
      
-          // Broadcast a event called "SOME_EVENT".
+          // Broadcast an event called "SOME_EVENT".
           myMinigame.tell("SOME_EVENT");
      
-          // Broadcast a event called "SOME_OTHER_EVENT", and wait until
+          // Broadcast an event called "SOME_OTHER_EVENT", and wait until
           // the observer has called a callback function. Good if the
           // model needs to wait for an animation in the view.
           myMinigame.tellWait("SOME_OTHER_EVENT", function () {
