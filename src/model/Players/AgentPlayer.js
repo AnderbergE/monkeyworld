@@ -6,7 +6,7 @@
 MW.AgentPlayer = function() {
 	Log.debug("Creating AgentPlayer", "player");
 	MW.Player.call(this, "AgentPlayer");
-	var that = this;
+	var agent = this;
 	this.strategies = function() {};
 	
 	/**
@@ -14,7 +14,7 @@ MW.AgentPlayer = function() {
 	 * @param {Array=} result
 	 */
 	this.strategies["Ladder"] = function(game, result) {
-		Log.debug("Applying MonkeyPlayer's strategy to the Ladder", "player");
+		Log.debug("Applying AgentPlayer's strategy to the Ladder", "player");
 		
 		var resultPosition = 0;
 		var interrupted = false;
@@ -22,11 +22,11 @@ MW.AgentPlayer = function() {
 		Log.debug("Will make mistake on try number " + intentionalMistakePosition + 1, "agent");
 		var tries = 0;
 		
-		that.on(MW.Event.MG_LADDER_READY_TO_PICK, function(msg) {
+		agent.on(MW.Event.MG_LADDER_READY_TO_PICK, function(msg) {
 			play(resultPosition++);
 		});
 		
-		that.on("Ladder.incorrect", function(msg) {
+		agent.on("Ladder.incorrect", function(msg) {
 			if (game.agentIsInterrupted()) return;
 			/** @const @type {number} */ var MAX_AGENT_TRIES = 4;
 			if (tries < MAX_AGENT_TRIES) {
@@ -39,7 +39,7 @@ MW.AgentPlayer = function() {
 			}
 		});
 		
-		that.on("Ladder.correct", function(msg) {
+		agent.on("Ladder.correct", function(msg) {
 			tries = 0;
 		});
 		
@@ -68,14 +68,14 @@ MW.AgentPlayer = function() {
 			}, 2000);
 		};
 		
-		that.on(MW.Event.MG_LADDER_HAS_TARGET, function(msg) {
+		agent.on(MW.Event.MG_LADDER_HAS_TARGET, function(msg) {
 			setTimeout(function() {
 				game.openTreat();	
 			}, 1500);
 		});
 		
-		that.on("Game.stopMiniGame", function(msg) {
-			that.forget();
+		agent.on("Game.stopMiniGame", function(msg) {
+			agent.forget();
 		});
 	};
 };
