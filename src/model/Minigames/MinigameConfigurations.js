@@ -7,12 +7,12 @@ MW.MinigameConfiguration = (function() {
 		LADDER: {
 			TREE: {
 				game: MW.LadderMinigame,
-				view: TreeView,
+				view: MW.TreeView,
 				title: "Tree Game"
 			},
 			MOUNTAIN: {
 				game: MW.LadderMinigame,
-				view: MountainView,
+				view: MW.MountainView,
 				title: "Mountain Game"
 			}
 		}

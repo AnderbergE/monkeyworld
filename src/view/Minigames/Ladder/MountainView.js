@@ -3,9 +3,9 @@
  * @extends {LadderView}
  * @param {MW.LadderMinigame} game
  */
-function MountainView(game) {
+MW.MountainView = function(game) {
 	/** @type {MountainView} */ var view = this;
-	LadderView.call(this, "MtView", game);
+	MW.LadderView.call(this, "MtView", game);
 	Log.debug("Constructing MountainView", this._tag);
 	
 	/**
@@ -394,4 +394,5 @@ function MountainView(game) {
 		view.stage.remove(staticLayer);
 		view.stage.remove(dynamicLayer);
 	});
-}
+};
+

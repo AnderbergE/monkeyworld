@@ -3,9 +3,9 @@
  * @extends {LadderView}
  * @param {MW.LadderMinigame} ladder
  */
-function TreeView(ladder) {
+MW.TreeView = function(ladder) {
 	"use strict";
-	LadderView.call(this, "TreeView", ladder);
+	MW.LadderView.call(this, "TreeView", ladder);
 	var
 		view = this,
 		scale = 1 / 2.083168317,
@@ -470,4 +470,5 @@ function TreeView(ladder) {
 		}) (this);
 	});
 	staticLayer.draw();
-}
+};
+

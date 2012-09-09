@@ -3,7 +3,7 @@
  * @extends {MW.MinigameView}
  * @param {MW.LadderMinigame} ladder
  */
-function LadderView(tag, ladder)
+MW.LadderView = function(tag, ladder)
 {
 	MW.MinigameView.call(this, tag);
 	this.tag(tag);
@@ -123,4 +123,5 @@ function LadderView(tag, ladder)
 	
 	view.on("Ladder.agentTooLow", function(msg) { MW.Sound.play(view.agentTooLow); });
 	view.on("Ladder.agentTooHigh", function(msg) { MW.Sound.play(view.agentTooHigh); });
-}
+};
+
