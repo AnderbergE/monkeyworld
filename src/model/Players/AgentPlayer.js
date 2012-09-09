@@ -3,9 +3,9 @@
  * @extends {MW.Player}
  * @constructor
  */
-function MonkeyPlayer() {
-	Log.debug("Creating MonkeyPlayer", "player");
-	MW.Player.call(this, "MonkeyPlayer");
+MW.AgentPlayer = function() {
+	Log.debug("Creating AgentPlayer", "player");
+	MW.Player.call(this, "AgentPlayer");
 	var that = this;
 	this.strategies = function() {};
 	
@@ -78,4 +78,4 @@ function MonkeyPlayer() {
 			that.forget();
 		});
 	};
-}
+};

@@ -68,8 +68,8 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 		NO_MINI_GAME    = null,
 		/** @const @type {MW.NoMiniGameResult} */
 		NO_RESULT       = new MW.NoMiniGameResult();
-	/** @const @type {GamerPlayer}         */ var GAMER           = newObject(GamerPlayer);
-	/** @const @type {MonkeyPlayer}        */ var AGENT           = newObject(MonkeyPlayer);
+	/** @const @type {MW.GamerPlayer}         */ var GAMER           = newObject(MW.GamerPlayer);
+	/** @const @type {MW.AgentPlayer}        */ var AGENT           = newObject(MW.AgentPlayer);
 	
 	/** @const @type {MW.NoLearningTrack}     */ var NO_TRACK     = new MW.NoLearningTrack();
 	/** @const @type {MW.RegularLearningTrack}*/ var REGULAR_TRACK= new MW.RegularLearningTrack();
