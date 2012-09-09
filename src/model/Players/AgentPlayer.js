@@ -1,5 +1,5 @@
 /**
- * MonkeyPlayer
+ * AgentPlayer
  * @extends {MW.Player}
  * @constructor
  */
