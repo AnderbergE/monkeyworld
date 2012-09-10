@@ -549,7 +549,7 @@ MW.Strings = (function() {
 		 */
 		get: function(str, var_args) {
 			if (strings[str] === undefined) return null;
-			var tmp = strings[str][Settings.get("global", "language")];
+			var tmp = strings[str][GlobalSettings.language];
 			for(var i = 1; i < arguments.length; i++) 
 			      tmp = tmp.replace("%"+i, arguments[i]);
 			return tmp;

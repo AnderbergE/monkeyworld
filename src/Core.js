@@ -26,57 +26,11 @@ WebFontConfig = {
  */
 function Game() {
 
-//	/** @const */ var WIN_WIDTH = 1024;
-//	/** @const */ var WIN_HEIGHT = 768;
-	
-	var settingsPanel = new SettingsPanel(Settings);
-	Settings.setJSON(JSON.parse($.cookie("monkeyWorldSettings")));
-	
-	this["applySettings"] = function() {
-		settingsPanel.apply();
-		$.cookie("monkeyWorldSettings", JSON.stringify(Settings.json()));
-	};
-	
-	this["hideSettings"] = function() {
-		settingsPanel.hide();
-	};
-	
-	this["showSettings"] = function() {
-		settingsPanel.show();
-	};
-	
-	var stageConfig = {
-        container: 'container',
-        width: 1010,
-        height: 660
-	};
-	var stage = new Kinetic.Stage(stageConfig);
-//	var resizeGame = function() {
-//		var w = window.innerWidth - 10;
-//		var h = window.innerHeight - 10;
-//		
-//		var WIN_WIDTH = w;
-//		var WIN_HEIGHT = WIN_WIDTH / 4 * 3;	
-//		
-//		if (WIN_HEIGHT > h) {
-//			WIN_HEIGHT = h;
-//			WIN_WIDTH = WIN_HEIGHT / 3 * 4;	
-//		}
-//		
-//		
-//		stage.attrs.width = (WIN_WIDTH);
-//		stage.attrs.height = (WIN_HEIGHT);
-//		if (WIN_WIDTH < w) {
-//			var container = document.getElementById("container");
-//			container.style.left = Math.round((w - WIN_WIDTH) / 2) + "px";
-//		}
-//		
-//		if (WIN_HEIGHT < h) {
-//			var container = document.getElementById("container");
-//			container.style.top = Math.round((h - WIN_HEIGHT) / 2) + "px";
-//		}
-//	};
-//	resizeGame();
+	var stage = new Kinetic.Stage({
+		container: 'container',
+		width: 1010,
+		height: 660
+	});
 
 	stage._mwunit = stage.getWidth() / 1024;
 	
