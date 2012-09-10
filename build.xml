@@ -9,23 +9,25 @@
 	<taskdef
 		name="jscomp"
 		classname="com.google.javascript.jscomp.ant.CompileTask"
-		classpath="lib/closure/compiler.jar"/>
+		classpath="lib/closure/compiler.jar" />
 
-	<target name="aggregate" depends="make_test">
-	    <concat destfile="${aggregate.dir}/aggregate.js">
-	    	<filelist dir="${source.dir}" files="MW.js"/>
-	        <fileset dir="${source.dir}" includes="**/*.js" excludes="MW.js" />
-	    </concat>
-	</target>
-	
+	<taskdef
+		name="aggregate_mw"
+		classname="MWBuilder"
+		classpath="lib/mw-builder.jar" />
+
 	<target name="make_test">
 		<concat destfile="test/aggregate.js">
 	    	<filelist dir="${source.dir}" files="MW.js"/>
-			<fileset dir="${source.dir}" includes="**/*.js" excludes="Core.js,MW.js" />
+		<fileset dir="${source.dir}" includes="**/*.js" excludes="Core.js,MW.js" />
 		</concat>
 	</target>
-	
-	<target name="compile" depends="aggregate">
+
+	<target name="compile">
+		<concat destfile="${aggregate.dir}/aggregate.js">
+			<filelist dir="${source.dir}" files="MW.js" />
+			<fileset dir="${source.dir}" includes="**/*.js" excludes="MW.js" />
+		</concat>
 		<jscomp
 			compilationLevel="advanced"
 			debug="false"
@@ -34,23 +36,19 @@
 
 			<externs dir=".">
 				<file name="externs/jquery-1.3.2.externs.js" />
-				<file name="externs.js" />
+				<file name="externs/externs.js" />
 				<file name="externs/kinetic-v4.0.1.externs.js" />
 			</externs>
 			<sources dir="${aggregate.dir}">
 				<file name="aggregate.js" />
 			</sources>
 		</jscomp>
-		
+
 		<copy todir="${build.compiled.dir}" file="${source.dir}/html/index.html" />
 		<copy todir="${build.compiled.dir}" file="${source.dir}/html/style.css" />
+		<delete file="${aggregate.dir}/aggregate.js" />
 	</target>
-	
-		<taskdef
-		name="aggregate_mw"
-		classname="MWBuilder"
-		classpath="lib/mw-builder.jar" />
-	
+
 	<target name="uncompiled">
 		<aggregate_mw
 			output="index.html"
