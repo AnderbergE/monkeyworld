@@ -4,6 +4,7 @@
 	<property name="source.dir" value="src" />
 	<property name="build.compiled.dir" value="build" />
 	<property name="build.uncompiled.dir" value="build_uncompiled" />
+	<property name="build.test.dir" value="test" />
 	<property name="aggregate.dir" value="." />
 
 	<taskdef
@@ -17,10 +18,22 @@
 		classpath="lib/mw-builder.jar" />
 
 	<target name="make_test">
-		<concat destfile="test/aggregate.js">
+		<!--<concat destfile="test/aggregate.js">
 	    	<filelist dir="${source.dir}" files="MW.js"/>
-		<fileset dir="${source.dir}" includes="**/*.js" excludes="Core.js,MW.js" />
-		</concat>
+		<fileset dir="${source.dir}" includes="**/*.js" excludes="Core.js,MW.js" />-->
+		<aggregate_mw
+			output="index.html"
+			build_path="${build.test.dir}"
+			src_path="${source.dir}"
+			lib_path="lib"
+			res_path="../res"
+			title="MWorld Unit Tests"
+			test="true"
+		>
+			<headtag text="&lt;link href='http://fonts.googleapis.com/css?family=Gloria+Hallelujah' rel='stylesheet' type='text/css' />" />
+			<headtag text="&lt;link href='http://fonts.googleapis.com/css?family=Short+Stack' rel='stylesheet' type='text/css' />" />
+		</aggregate_mw>
+		<!--</concat>-->
 	</target>
 
 	<target name="compile">

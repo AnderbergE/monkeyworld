@@ -6,3 +6,6 @@ build/
 build_uncompiled/
 aggregate.js
 test/aggregate.js
+test/lib/
+test/src/
+test/index.html

@@ -2,27 +2,74 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Monkey World Unit Testing</title>
-
-
-
-
+<title>MWorld Unit Tests</title>
+<link href='http://fonts.googleapis.com/css?family=Gloria+Hallelujah' rel='stylesheet' type='text/css' />
+<link href='http://fonts.googleapis.com/css?family=Short+Stack' rel='stylesheet' type='text/css' />
+<script type="text/javascript" src="lib/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="lib/qunit/qunit-git.js"></script>
+<script type="text/javascript" src="lib/tweenjs/easel.js"></script>
+<script type="text/javascript" src="lib/tweenjs/tween.js"></script>
+<script type="text/javascript" src="lib/tweenjs/Timeline.js"></script>
+<script type="text/javascript" src="lib/kineticjs/kinetic-v4.0.1.min.js"></script>
+<script type="text/javascript" src="lib/soundjs/soundjs-0.2.0.min.js"></script>
+<script type="text/javascript" src="lib/jquery.cookie.js"></script>
+<script type="text/javascript" src="lib/preloadjs-0.1.0.min.js"></script>
 <script type="text/javascript" src="../lib/jquery-1.7.2.min.js"></script>
-<script type="text/javascript" src="qunit-git.js"></script>
-<script type="text/javascript" src="../externs/externs.js"></script>
-<script type="text/javascript" src="../externs/kinetic-v4.0.1.externs.js"></script>
-<script type="text/javascript" src="aggregate.js"></script>
+<script type="text/javascript" src="../lib/qunit/qunit-git.js"></script>
+<script type="text/javascript" src="src/MW.js"></script>
+<script type="text/javascript" src="src/EventManager.js"></script>
+<script type="text/javascript" src="src/Module.js"></script>
+<script type="text/javascript" src="src/_res.js"></script>
+<script type="text/javascript" src="src/view/ViewModule.js"></script>
+<script type="text/javascript" src="src/view/Agents/MonkeyAgentView.js"></script>
+<script type="text/javascript" src="src/view/Agents/AgentView.js"></script>
+<script type="text/javascript" src="src/view/KineticJS/NoButton.js"></script>
+<script type="text/javascript" src="src/view/KineticJS/YesButton.js"></script>
+<script type="text/javascript" src="src/view/KineticJS/Parcel.js"></script>
+<script type="text/javascript" src="src/view/KineticJS/Lizard.js"></script>
+<script type="text/javascript" src="src/view/Minigames/Ladder/TreeView/TreeNumpad.js"></script>
+<script type="text/javascript" src="src/view/Minigames/Ladder/TreeView/TreeView.js"></script>
+<script type="text/javascript" src="src/view/Minigames/Ladder/LadderView.js"></script>
+<script type="text/javascript" src="src/view/Minigames/Ladder/MountainView.js"></script>
+<script type="text/javascript" src="src/view/Minigames/MinigameView.js"></script>
+<script type="text/javascript" src="src/view/Game/MinigameHandlerView.js"></script>
+<script type="text/javascript" src="src/view/Game/MonkeyWorldView.js"></script>
+<script type="text/javascript" src="src/view/Game/AgentChooserView.js"></script>
+<script type="text/javascript" src="src/view/Game/IntroductionView.js"></script>
+<script type="text/javascript" src="src/view/Game/GardenView.js"></script>
+<script type="text/javascript" src="src/res/Sounds.js"></script>
+<script type="text/javascript" src="src/res/Images.js"></script>
+<script type="text/javascript" src="src/res/Strings.js"></script>
+<script type="text/javascript" src="src/Event.js"></script>
+<script type="text/javascript" src="src/model/LearningTrack/FastLearningTrack.js"></script>
+<script type="text/javascript" src="src/model/LearningTrack/RegularLearningTrack.js"></script>
+<script type="text/javascript" src="src/model/LearningTrack/LearningTrack.js"></script>
+<script type="text/javascript" src="src/model/LearningTrack/NoLearningTrack.js"></script>
+<script type="text/javascript" src="src/model/LearningTrack/MediumLearningTrack.js"></script>
+<script type="text/javascript" src="src/model/Agents/MonkeyAgent.js"></script>
+<script type="text/javascript" src="src/model/Agents/MouseAgent.js"></script>
+<script type="text/javascript" src="src/model/Minigames/Minigame.js"></script>
+<script type="text/javascript" src="src/model/Minigames/Ladder/Ladder.js"></script>
+<script type="text/javascript" src="src/model/Minigames/Ladder/LadderAgentComments.js"></script>
+<script type="text/javascript" src="src/model/Minigames/MinigameConfigurations.js"></script>
+<script type="text/javascript" src="src/model/Players/GamerPlayer.js"></script>
+<script type="text/javascript" src="src/model/Players/Player.js"></script>
+<script type="text/javascript" src="src/model/Players/AgentPlayer.js"></script>
+<script type="text/javascript" src="src/model/Game/AgentChooser.js"></script>
+<script type="text/javascript" src="src/model/Game/Game.js"></script>
+<script type="text/javascript" src="src/utils/kineticjs/Plugins.js"></script>
+<script type="text/javascript" src="src/utils/Utils.js"></script>
+<script type="text/javascript" src="src/GlobalObject.js"></script>
+<script type="text/javascript" src="src/Settings.js"></script>
 <script type="text/javascript" src="monkeyworld-qunit.js"></script>
-<link rel="stylesheet" href="qunit-git.css" type="text/css" />
-
+<link rel="stylesheet" href="../lib/qunit/qunit-git.css" type="text/css" />
 </head>
 <body>
-	<h1 id="qunit-header">Monkey World Unit Testing</h1>
-	<h2 id="qunit-banner"></h2>
-	<div id="qunit-testrunner-toolbar"></div>
-	<h2 id="qunit-userAgent"></h2>
-	<ol id="qunit-tests"></ol>
-	<div id="qunit-fixture">test markup, will be hidden</div>
+<h1 id="qunit-header">MWorld Unit Tests</h1>
+<h2 id="qunit-banner"></h2>
+<div id="qunit-testrunner-toolbar"></div>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests"></ol>
+<div id="qunit-fixture">test markup, will be hidden</div>
 </body>
-
 </html>
