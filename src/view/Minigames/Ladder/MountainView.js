@@ -6,7 +6,6 @@
 MW.MountainView = function(game) {
 	/** @type {MW.MountainView} */ var view = this;
 	MW.LadderView.call(this, "MtView", game);
-	Log.debug("Constructing MountainView", this._tag);
 	
 	/**
 	 * Define sounds specific for this implementation of the ladder game. 
@@ -88,7 +87,6 @@ MW.MountainView = function(game) {
 	};
 	
 	view.addSetup(function() {
-		Log.debug("Setting up MountainView", "mt-view");
 		view.stage.add(staticLayer);
 		view.stage.add(dynamicLayer);
 		
@@ -390,7 +388,6 @@ MW.MountainView = function(game) {
 	});
 	
 	this.addTearDown(function() {
-		Log.debug("Tearing down MountainView", this._tag);
 		view.stage.remove(staticLayer);
 		view.stage.remove(dynamicLayer);
 	});

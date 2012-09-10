@@ -138,7 +138,7 @@ MW.AgentChooserView = function(chooser) {
 	 * Setup the view
 	 * @private
 	 */
-	view.setup = function() {
+	view.addSetup(function () {
 		layer = new Kinetic.Layer();
 		view.stage.add(layer);
 		var bg = new Kinetic.Image({
@@ -157,7 +157,7 @@ MW.AgentChooserView = function(chooser) {
 			buttons.add(new Button(agents[i], pos.x, pos.y));
 		}
 		MW.Sound.play(MW.Sounds.CHOOSE_YOUR_FRIEND);
-	};
+	});
 
 	/**
 	 * Tear down the view

@@ -41,18 +41,18 @@ MW.GlobalObject = function(tag) {
 	 */
 	this.tell = function(type, msg, debug) {
 		if (debug != undefined && debug)
-			Log.debug("Out: " + type, that._tag);
+			console.log(that._tag + ": " + type);
 		this.evm.tell(type, msg, debug);
 	};
 	
 	this.tellWait = function (type, callback, msg) {
-		Log.debug("Out: " + type, that._tag);
+		console.log(that._tag + ": " + type);
 		this.evm.tellWait(type, callback, msg);
 	};
 
 	this.sendable_ = function (waitable, event, var_args) {
 		return function (callback) {
-			Log.debug("Out: " + event, that._tag);
+			console.log(that._tag + ": " + event);
 			that.evm.tellArguments(callback, waitable, event, var_args);
 		};
 	};
@@ -130,7 +130,7 @@ MW.MiniGameRoundResult = function() {
 	 * Report that a mistake has been made.
 	 */ 
 	this.reportMistake = function() {
-		Log.debug("Got mistake report", "game");
+		console.log("Mistake reported");
 		madeMistake = true;
 	};
 	

@@ -104,7 +104,6 @@ MW.LadderMinigame = function () {
 	 */
 	function gotCorrectTarget(callback) {
 		birdHasTreat = true;
-		console.log("gotCorrectTarget");
 		Utils.chain(
 			ladder.waitable(MW.Event.MG_LADDER_GET_TARGET),
 			ladder.waitable(MW.Event.MG_LADDER_RESET_SCENE),
@@ -122,7 +121,6 @@ MW.LadderMinigame = function () {
 	 * @param {Function} callback
 	 */
 	function gotIncorrectTarget(callback) {
-		console.log("gotIncorrectTarget");
 		ladder.tellWait(
 			MW.Event.MG_LADDER_RESET_SCENE,
 			function () { mistake(callback); }

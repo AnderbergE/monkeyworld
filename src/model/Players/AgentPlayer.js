@@ -4,7 +4,6 @@
  * @constructor
  */
 MW.AgentPlayer = function() {
-	Log.debug("Creating AgentPlayer", "player");
 	MW.Player.call(this, "AgentPlayer");
 	var agent = this;
 	this.strategies = function() {};
@@ -14,12 +13,9 @@ MW.AgentPlayer = function() {
 	 * @param {Array=} result
 	 */
 	this.strategies["Ladder"] = function(game, result) {
-		Log.debug("Applying AgentPlayer's strategy to the Ladder", "player");
-		
 		var resultPosition = 0;
 		var interrupted = false;
 		var intentionalMistakePosition = Utils.getRandomInt(0, result.length - 1);
-		Log.debug("Will make mistake on try number " + intentionalMistakePosition + 1, "agent");
 		var tries = 0;
 		
 		agent.on(MW.Event.MG_LADDER_READY_TO_PICK, function(msg) {
@@ -44,13 +40,11 @@ MW.AgentPlayer = function() {
 		});
 		
 		this.interrupt = function() {
-			Log.debug("Interrupting agent", "agent");
 			interrupted = true;
 			tries = 0;
 		};
 		
 		this.resume = function() {
-			Log.debug("Resuming agent", "agent");
 			interrupted = false;
 		};
 		
@@ -58,7 +52,6 @@ MW.AgentPlayer = function() {
 			if (interrupted) return;
 			tries++;
 			setTimeout(function() {
-				Log.debug("Picking a number", "agent");
 				if (resultPosition === intentionalMistakePosition || result[resultPosition] === "incorrect") {
 					game.pick(game.getIncorrectNumber());
 				} else {

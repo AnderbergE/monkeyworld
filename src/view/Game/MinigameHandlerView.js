@@ -6,7 +6,7 @@ MW.MinigameHandlerView = function () {
 	MW.ViewModule.call(this, "MinigameHandlerView");
 	/** @type {MW.MinigameHandlerView} */ var view = this;
 	/** @type {Kinetic.Stage}          */ var stage = view.stage;
-	/** @type {Kinetic.Layer}          */ var layer = stage._gameLayer;
+	/** @type {Kinetic.Layer}          */ var layer = stage.getDynamicLayer();
 	/**
 	 * Show the current total backend score of the minigame.
 	 * @param {MW.MinigameHandlerView} view

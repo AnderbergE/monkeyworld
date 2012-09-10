@@ -1,17 +1,5 @@
 /**
  * @constructor
- * @param {Object} configuration
- * @param {MW.LearningTrack} learningTrack
- */
-MW.MinigameLauncher = function(configuration, learningTrack) {
-	var _configuration = configuration;
-	var _learningTrack = learningTrack;
-	this.getConfiguration = function() { return _configuration; };
-	this.getLearningTrack = function() { return _learningTrack; };
-};
-
-/**
- * @constructor
  * @extends {MW.GlobalObject}
  * @param {Kinetic.Stage} stage
  * @param {boolean=}      useViews         Defaults to true. Useful to falsify
@@ -62,7 +50,19 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 			tmp = new object(arg1, arg2, arg3, arg4);
 		return tmp;
 	};
-	
+
+	/**
+	 * @constructor
+	 * @param {Object} configuration
+	 * @param {MW.LearningTrack} learningTrack
+	 */
+	MW.MinigameLauncher = function(configuration, learningTrack) {
+		var _configuration = configuration;
+		var _learningTrack = learningTrack;
+		this.getConfiguration = function() { return _configuration; };
+		this.getLearningTrack = function() { return _learningTrack; };
+	};
+
 	var
 		/** @const @type {MW.Minigame} */
 		NO_MINI_GAME    = null,
@@ -98,7 +98,6 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	if (startGame != undefined) {
 		var h = new MW.MinigameLauncher(startGame, REGULAR_TRACK);
 		minigameArray.push(h);
-		console.log(h.getConfiguration());
 	}
 	
 	/*====================================================================*/
@@ -142,7 +141,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 		_learningTrack = learningTrack;
 		that.tell(MW.Event.LEARNING_TRACK_UPDATE, {
 			learningTrack: learningTrack
-		}, true);
+		});
 	};
 
 	/**
@@ -233,7 +232,6 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 
 		chooseMiniGame(function() {
 			if (useViews) {
-				console.log("creätar minigamehandlerviwe");
 				miniGameHandlerView = newObject(MW.MinigameHandlerView);
 				miniGameHandlerView.setup();
 			}
@@ -275,7 +273,6 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	 * Start the current mini game.
 	 */
 	var startMiniGame = function() {
-		that.evm.print();
 		miniGameStarter();
 		miniGame.setup();
 		if (useViews) {
@@ -283,7 +280,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 			currentMiniGameView.setup();
 			that.tell("Game.miniGameListenersInitiated");
 		}
-		that.tell(MW.Event.MINIGAME_INITIATED, {}, true);
+		that.tell(MW.Event.MINIGAME_INITIATED, {});
 		var todo = function () {
 			if (gameMode === MW.GameMode.AGENT_DO) {
 				var actions = result.getResult(_round).getActions();
@@ -292,7 +289,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 				miniGame.play(player);
 			}
 
-			that.tell(MW.Event.MINIGAME_STARTED, {}, true);
+			that.tell(MW.Event.MINIGAME_STARTED, {});
 		};
 		if (useViews) {
 			that.tellWait(MW.Event.INTRODUCE_AGENT, todo);
@@ -394,7 +391,6 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 			};
 		}
 		if (useViews) {
-			console.log("Tear down: ", currentMiniGameView);
 			currentMiniGameView.tearDown();
 		}
 		//miniGame.tearDown();
@@ -550,3 +546,4 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 		return gameMode === MW.GameMode.AGENT_DO;
 	};
 };
+

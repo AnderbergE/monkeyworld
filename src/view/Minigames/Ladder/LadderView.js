@@ -7,7 +7,6 @@ MW.LadderView = function(tag, ladder)
 {
 	MW.MinigameView.call(this, tag);
 	this.tag(tag);
-	Log.debug("Creating LadderView", "object");
 	var view = this;
 	var stopButton = null;
 	var continueButton = null;

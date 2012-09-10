@@ -25,7 +25,6 @@ MW.EventManager = function() {
 			listeners[types[i]].push(callback);
 			callback._caller = name;
 			var _name = name === undefined ? "unnamed" : name;
-			Log.debug(_name + " registerd " + types[i], "evm");
 		}
 	};
 
@@ -59,7 +58,7 @@ MW.EventManager = function() {
 		if (!(type in listeners))
 			return;
 		for (var i = 0; i < listeners[type].length; i++) {
-			Log.debug(listeners[type][i]._caller + " listens to " + type);
+			console.log(listeners[type][i]._caller + " listens to " + type);
 		}
 	};
 
@@ -86,7 +85,6 @@ MW.EventManager = function() {
 				delete listeners[key];
 			}
 		}
-		Log.debug("Forgot " + sum + " event registred by " + name, "evm");
 	};
 
 	/**
@@ -101,7 +99,7 @@ MW.EventManager = function() {
 			for (var i = 0; i < bucket.length; i++) {
 				var callback = bucket[i];
 				if (debug != undefined && debug)
-					Log.debug("      " + bucket[i]._caller);
+					console.log("  Observer: " + bucket[i]._caller);
 				callback(message);
 			}
 		}
@@ -122,7 +120,7 @@ MW.EventManager = function() {
 			for (var i = 0; i < bucket.length; i++) {
 				var callback = bucket[i];
 				if (debug != undefined && debug)
-					Log.debug("      " + bucket[i]._caller);
+					console.log("  Observer: " + bucket[i]._caller);
 				callback(next, args);
 				if (!wait)
 					next();

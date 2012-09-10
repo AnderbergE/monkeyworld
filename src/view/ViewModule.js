@@ -8,11 +8,15 @@ MW.ViewModule = function(tag) {
 	var that = this;
 	var tweenController = new TweenController();
 	
-	this.addTearDown(function() {
-		Log.debug("Tearing down", "ViewModule");
+	this.addTearDown(function () {
+		console.log("Tearing down view module \"" + tag + "\"");
 		tweenController.teardown();
 	});
-	
+
+	this.addSetup(function () {
+		console.log("Setting up view module \"" + tag + "\"");
+	});
+
 	/**
 	 * @param {Object} target
 	 * @return {Tween}

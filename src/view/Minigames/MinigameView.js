@@ -8,7 +8,7 @@ MW.MinigameView = function(tag) {
 	MW.ViewModule.call(this, tag);
 	var agentBody = null, agentX = 0, agentY = 0;
 	/** @type {MW.MinigameView}      */ var view  = this;
-	/** @type {Kinetic.Layer} */ var layer = view.stage._gameLayer;
+	/** @type {Kinetic.Layer} */ var layer = view.stage.getDynamicLayer();
 	/**
 	 * Show the current backend score of a mini game.
 	 * @param {MW.MinigameView} view

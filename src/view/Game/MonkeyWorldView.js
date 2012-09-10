@@ -9,13 +9,8 @@ MW.MonkeyWorldView = function () {
 	"use strict";
 	MW.ViewModule.call(this, "MonkeyWorldView");
 	var stage = this.stage;
+	var layer = stage.getDynamicLayer();
 
-	var layer = stage._gameLayer;
-/*
-	this.tearDown = function() {
-		this.forget();
-	};
-*/	
 	/**
 	 * Show a menu in which the user can choose a mini game to play.
 	 * 

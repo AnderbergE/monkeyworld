@@ -27,7 +27,6 @@ Object.size = function(obj) {
 
 /** @constructor */
 function _Log () {
-	console.log("Creating Log");
 	/**
 	 * @param {string} type
 	 * @param {string} msg

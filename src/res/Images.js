@@ -106,7 +106,6 @@ MW.ImageHandler = (function() {
 	imageHandler.getProgress = function() { return _img_progress; };
 	
 	imageHandler.loadImages = function(callback) {
-		Log.debug("Loading images...", "images");
 		var loadedImages = 0;
 		var numImages = Object.size(MW.ImageSources);
 		for (var src in MW.ImageSources) {
