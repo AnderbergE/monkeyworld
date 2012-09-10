@@ -33,8 +33,9 @@
 			warning="verbose">
 
 			<externs dir=".">
-				<file name="jquery-1.3.2.externs.js"/>
-				<file name="externs.js"/>
+				<file name="externs/jquery-1.3.2.externs.js" />
+				<file name="externs.js" />
+				<file name="externs/kinetic-v4.0.1.externs.js" />
 			</externs>
 			<sources dir="${aggregate.dir}">
 				<file name="aggregate.js" />

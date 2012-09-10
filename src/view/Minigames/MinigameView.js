@@ -74,14 +74,14 @@ MW.MinigameView = function(tag) {
 					view.getStage().getWidth() - faceImageObj.width - 30,
 					12
 				);
-				agentBody.setAlpha(0);
+				agentBody.setOpacity(0);
 				layer.add(faceImage);
 				view.on(MW.Event.INTRODUCE_AGENT, function (callback) {
 					MW.Sound.play(MW.Sounds.SYSTEM_WELL_DONE);
 					view.setTimeout(function () {
 						MW.Sound.play(MW.Sounds.SYSTEM_TIME_TO_TEACH_FRIEND);
 						view.setTimeout(function () {
-							view.getTween(faceImage.attrs).to({ alpha: 0 }, 2000);
+							view.getTween(faceImage.attrs).to({ opacity: 0 }, 2000);
 							view.game.getAgentView().jumpDown(agentX, agentY);
 							view.setTimeout(function () {
 								view.game.getAgentView().startTalk();

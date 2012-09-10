@@ -63,7 +63,7 @@ MW.IntroductionView = function (callback) {
 			callback(true);
 		});
 		layer.add(skipButton);
-
+		layer.draw();
 		view.setTimeout(function () { MW.Sound.play(MW.Sounds.INTRO_1); }, 2000);
 		view.setTimeout(function () { MW.Sound.play(MW.Sounds.INTRO_2); }, 2000);
 		view.setTimeout(function () { MW.Sound.play(MW.Sounds.INTRO_3); }, 7000);

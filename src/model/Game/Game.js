@@ -109,7 +109,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	if (useAgentChooser === undefined) useAgentChooser = true;
 	//this.on("frame", function(msg) { miniGame.onFrame(msg.frame); });
 	if (useViews)
-		newObject(MonkeyWorldView);
+		newObject(MW.MonkeyWorldView);
 
 	
 	/*====================================================================*/

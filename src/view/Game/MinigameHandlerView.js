@@ -171,7 +171,7 @@ MW.MinigameHandlerView = function () {
 			var time = distance / velocity * 1000;
 			dropImage.setX(dropOrigin.x);
 			dropImage.setY(dropOrigin.y);
-			dropImage.setAlpha(1);
+			dropImage.setOpacity(1);
 			dropImage.show();
 			if (view.game.modeIsAgentSee()) {
 				MW.Sound.play(MW.Sounds.YAY_HELPED_ME_GET_WATER);
@@ -205,7 +205,7 @@ MW.MinigameHandlerView = function () {
 				MW.Sound.play(MW.Sounds.DRIP);
 				pitcherBottomImage.show();
 				view.getTween(waterRect.attrs).to({ height: waterRect.getHeight() - levelHeight }, 1000);
-				view.getTween(dropImage.attrs).to({ alpha: 0 }, 1000).wait(1000).call(function () {
+				view.getTween(dropImage.attrs).to({ opacity: 0 }, 1000).wait(1000).call(function () {
 					dropImage.hide();
 					dropImage.setRotation(Math.PI);
 					if (msg.callback != undefined)

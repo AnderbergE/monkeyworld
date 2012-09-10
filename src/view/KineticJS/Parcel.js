@@ -33,7 +33,7 @@ Kinetic.MW.Parcel = function (config) {
 		      color: 'black',
 		      blur: 10,
 		      offset: [3, 3],
-		      alpha: 0.5
+		      opacity: 0.5
 		    }*/
 	});
 	group.add(image);

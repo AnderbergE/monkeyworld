@@ -182,7 +182,7 @@ function Game() {
 		}
 		};
 	}();
-	
+	/*
 	stage.onFrame(function(frame) {
 		if (MW.debug)
 			fps.showFps(frame); // Update FPS display
@@ -196,6 +196,24 @@ function Game() {
 		Tween.tick(frame.timeDiff, false);
 	});
 	stage.start();
+*/
+
+	var kineticAnimation = new Kinetic.Animation({
+		func: function (frame) {
+			if (MW.debug)
+				fps.showFps(frame); // Update FPS display
+			evm.tell("frame", {frame:frame});
+	//		modelModule.onFrame(frame);
+			gameLayer.draw();
+			if (stage._drawOverlayLayer) {
+				overlayLayer.draw();
+				stage._drawOverlayLayer = false;
+			}
+			Tween.tick(frame.timeDiff, false);
+		},
+		node: gameLayer
+	});
+	kineticAnimation.start();
 
 	evm.on("Game.miniGameListenersInitiated Game.viewInitiated", function() {
 		gameLayer.moveToTop();

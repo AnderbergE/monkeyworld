@@ -5,21 +5,21 @@
  * @constructor
  * @extends {MW.ViewModule}
  */
-function MonkeyWorldView() {
+MW.MonkeyWorldView = function () {
+	"use strict";
 	MW.ViewModule.call(this, "MonkeyWorldView");
 	var stage = this.stage;
-//	this._tag = "MonkeyWorldView";
-	
+
 	var layer = stage._gameLayer;
-	
+/*
 	this.tearDown = function() {
 		this.forget();
 	};
-	
+*/	
 	/**
 	 * Show a menu in which the user can choose a mini game to play.
 	 * 
-	 * @param {MonkeyWorldView} view
+	 * @param {MW.MonkeyWorldView} view
 	 */
 	(function(view) {
 		var buttons = new Array();
@@ -75,13 +75,13 @@ function MonkeyWorldView() {
 	})(this);
 
 	/**
-	 * Show loading bars and percentage numbers when downloading images, sound
-	 * and possibly other resources.
+	 * Show loading bars and percentage numbers when downloading images,
+	 * sound and possibly other resources.
 	 * 
-	 * @param {MonkeyWorldView} view
+	 * @param {MW.MonkeyWorldView} view
 	 */
 	(function LoadingModule(view) {
-		
+
 		/** @const */
 		var BAR_CONFIG = {
 			/** @const */ WIDTH: 300,
@@ -100,9 +100,9 @@ function MonkeyWorldView() {
 				y: (BAR_CONFIG.HEIGHT + BAR_CONFIG.MARGIN) / 2
 			},
 			fill: "#333",
-			alpha: 0
+			opacity: 0
 		});
-		
+
 		var filler = new Kinetic.Rect({
 			x: stage.getWidth() / 2,
 			y: stage.getHeight() / 2,
@@ -114,7 +114,7 @@ function MonkeyWorldView() {
 			},
 			fill: "#FFCC00"
 		});
-		
+
 		var loadingText = new Kinetic.Text({
 			fontFamily: "Arial",
 			fontSize: 10,
@@ -128,31 +128,41 @@ function MonkeyWorldView() {
 			y: stage.getHeight()/2 - 50,
 			x: 0
 		});
-		
+
 		view.on("Game.showLoadingScreen", function(msg) {
 			layer.add(bar);
 			layer.add(filler);
 			layer.add(loadingText);
-			bar.transitionTo({alpha:1, duration: msg.time / 1000});
-		});	
-		
+			bar.transitionTo({opacity:1, duration: msg.time / 1000});
+		});
+
 		view.on("Game.loadingSounds", function(msg) {
 			loadingText.setText(MW.Strings.get("INIT_LOADING_SOUNDS"));
+			layer.draw();
 		});
+
 		view.on("Game.loadingImages", function(msg) {
 			loadingText.setText(MW.Strings.get("INIT_LOADING_IMAGES"));
+			layer.draw();
 		});
+
 		view.on("Game.loadingDone", function(msg) {
 			layer.remove(loadingText);
 			layer.remove(bar);
 			layer.remove(filler);
+			layer.draw();
 		});
+
 		view.on("Game.updateSoundLoading", function(msg) {
 			filler.setWidth(msg.progress * BAR_CONFIG.WIDTH);
+			layer.draw();
 		});
+
 		view.on("Game.updateImageLoading", function(msg) {
 			filler.setWidth(msg.progress * BAR_CONFIG.WIDTH);
+			layer.draw();
 		});
 
 	})(this);
 };
+

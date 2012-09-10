@@ -70,7 +70,7 @@ MW.GardenView = function () {
 	});
 	view.on("Game.demonstrateGarden", function (msg) {
 		MW.Sound.play(MW.Sounds.INTRO_GARDEN_1);
-		happyBackground.setAlpha(0);
+		happyBackground.setOpacity(0);
 		layer.add(sadBackground);
 		layer.add(happyBackground);
 		var skipButton = new Kinetic.Group({ x: 10, y: 10 });
@@ -102,8 +102,8 @@ MW.GardenView = function () {
 		
 		view.setTimeout(function () {
 			MW.Sound.play(MW.Sounds.INTRO_GARDEN_2);
-			view.getTween(sadBackground.attrs).to({ alpha: 0 }, 2000);
-			view.getTween(happyBackground.attrs).to({ alpha: 1 }, 2000).wait(3000).call(msg.callback);
+			view.getTween(sadBackground.attrs).to({ opacity: 0 }, 2000);
+			view.getTween(happyBackground.attrs).to({ opacity: 1 }, 2000).wait(3000).call(msg.callback);
 		}, 3000);
 	});
 	view.on(MW.Event.WATER_GARDEN, function (msg) {

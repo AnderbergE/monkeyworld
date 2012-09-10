@@ -76,14 +76,14 @@ MW.AgentView = function() {
 		bodyY = y;
 		bodyImage.setImage(view.falling());
 		bodyFace.hide();
-		bodyView.getTween(bodyGroup.attrs).to({ alpha: 1}, 400).to({ x: x, y: y }, 3000).call(function () {
+		bodyView.getTween(bodyGroup.attrs).to({ opacity: 1}, 400).to({ x: x, y: y }, 3000).call(function () {
 			bodyImage.setImage(view.standing());
 			bodyFace.show();
 		});
 	};
 	
 	this.showBody = function () {
-		bodyGroup.setAlpha(1);
+		bodyGroup.setOpacity(1);
 		bodyGroup.show();
 	};
 

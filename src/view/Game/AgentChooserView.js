@@ -71,7 +71,7 @@ MW.AgentChooserView = function(chooser) {
 						MW.Sound.play(MW.Sounds.THANKS_FOR_CHOOSING_ME);
 					}).wait(TIME_WAIT).call(callback);
 				} else {
-					view.getTween(array[i].attrs).to({alpha: 0}, TIME_HIDE);
+					view.getTween(array[i].attrs).to({opacity: 0}, TIME_HIDE);
 				}
 			}
 		};
@@ -106,9 +106,9 @@ MW.AgentChooserView = function(chooser) {
 	              color: 'black',
 	              blur: 15,
 	              offset: [15, 15],
-	              alpha: 0.5
+	              opacity: 0.5
 	            },
-			alpha: 0.6,
+			opacity: 0.6,
 			cornerRadius: 10,
 			strokeWidth: 4,
 			stroke: "white",

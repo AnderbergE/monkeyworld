@@ -15,10 +15,10 @@ MW.LadderView = function(tag, ladder)
 	
 	this.addInterruptButtons = function(layer) {
 		stopButton = new Kinetic.MW.NoButton(view, {
-			x: 750, y: 600, alpha: 0
+			x: 750, y: 600, opacity: 0
 		});
 		continueButton = new Kinetic.MW.YesButton(view, {
-			x: 900, y: 600, alpha: 0
+			x: 900, y: 600, opacity: 0
 		});
 		stopButton.setScale(0.7);
 		continueButton.setScale(0.7);
@@ -67,8 +67,8 @@ MW.LadderView = function(tag, ladder)
 		MW.Sound.play(MW.Sounds.LADDER_MY_TURN);
 		view.setTimeout(function() {
 			callback();
-			view.getTween(stopButton.attrs).to({alpha:1},1000);
-			view.getTween(continueButton.attrs).to({alpha:1},1000);
+			view.getTween(stopButton.attrs).to({opacity:1},1000);
+			view.getTween(continueButton.attrs).to({opacity:1},1000);
 		}, 2000);
 	});
 	
