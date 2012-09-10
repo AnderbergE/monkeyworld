@@ -23,7 +23,7 @@ MW.MinigameLauncher = function(configuration, learningTrack) {
 MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	/** @const @type {MW.Game}      */ var that = this;
 	MW.GlobalObject.call(this, "Game");
-	this.evm = new MW.EventManager(stage);
+	this.evm = new MW.EventManager();
 	this.stage = stage;
 	this.game = this;
 	
@@ -124,7 +124,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	 * @param {number} round
 	 */
 	var setRound = function(round) {
-		if (round > Settings.get("global", "monkeySeeRounds") &&
+		if (round > 1 &&
 		    (gameMode === MW.GameMode.AGENT_SEE ||
 		     gameMode === MW.GameMode.AGENT_DO)) {
 			throw "MonkeyWorld.MiniGameRoundOverMaxLimit";
@@ -134,29 +134,31 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 			_round = round; 
 		}
 	};
-	
+
 	/**
 	 * @param {MW.LearningTrack} learningTrack
 	 */
 	var setLearningTrack = function(learningTrack) {
 		_learningTrack = learningTrack;
-		that.tell(MW.Event.LEARNING_TRACK_UPDATE, { learningTrack: learningTrack }, true);
+		that.tell(MW.Event.LEARNING_TRACK_UPDATE, {
+			learningTrack: learningTrack
+		}, true);
 	};
-	
+
 	/**
 	 * @returns {MW.LearningTrack}
 	 */
 	var getLearningTrack = function() {
 		return _learningTrack;
 	};
-	
+
 	/**
 	 * Add one round to the current mini game
 	 */
 	var addRound = function() {
 		setRound(_round + 1);
 	};
-	
+
 	/**
 	 * Decide when it's time and how to play the current game next time.
 	 */
@@ -214,17 +216,12 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 			player = AGENT;
 			startMiniGame();
 		} else if (gameMode === MW.GameMode.AGENT_DO) {
-			if (_round === Settings.get("global", "monkeySeeRounds")) {
-				setRound(1);
-				gameMode = MW.GameMode.CHILD_PLAY;
-				player = GAMER;
-				stopMiniGame();
-				decideNextOfSameGame(currentConfiguration, miniGameScore);
-				selectMinigame();
-			} else {
-				addRound();
-				startMiniGame();
-			}
+			setRound(1);
+			gameMode = MW.GameMode.CHILD_PLAY;
+			player = GAMER;
+			stopMiniGame();
+			decideNextOfSameGame(currentConfiguration, miniGameScore);
+			selectMinigame();
 		}
 	};
 	
@@ -346,7 +343,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	};
 	
 	var demonstrateGarden = function (callback) {
-		if (useViews && !MW.debug) {
+		if (useViews && !MW.GlobalSettings.debug) {
 			var gardenView = newObject(MW.GardenView);
 			gardenView.setup();
 			that.tell("Game.viewInitiated");
@@ -362,7 +359,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	};
 
 	var playIntroduction = function (callback) {
-		if (useViews && !MW.debug) {
+		if (useViews && !MW.GlobalSettings.debug) {
 			var introductionView = newObject(
 				MW.IntroductionView,
 				function (skipGarden) {

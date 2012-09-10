@@ -95,7 +95,7 @@ function Game() {
 	//setUpButtons();
 	
 	/** @type {MW.Game} */
-	var monkeyWorld = new MW.Game(stage, true, !MW.debug);
+	var monkeyWorld = new MW.Game(stage, true, !MW.GlobalSettings.debug);
 	var evm = monkeyWorld.evm;
 	
 	/**
@@ -136,25 +136,10 @@ function Game() {
 		}
 		};
 	}();
-	/*
-	stage.onFrame(function(frame) {
-		if (MW.debug)
-			fps.showFps(frame); // Update FPS display
-		evm.tell("frame", {frame:frame});
-//		modelModule.onFrame(frame);
-		gameLayer.draw();
-		if (stage._drawOverlayLayer) {
-			overlayLayer.draw();
-			stage._drawOverlayLayer = false;
-		}
-		Tween.tick(frame.timeDiff, false);
-	});
-	stage.start();
-*/
 
 	var kineticAnimation = new Kinetic.Animation({
 		func: function (frame) {
-			if (MW.debug)
+			if (MW.GlobalSettings.debug)
 				fps.showFps(frame); // Update FPS display
 			evm.tell("frame", {frame:frame});
 	//		modelModule.onFrame(frame);
@@ -174,7 +159,7 @@ function Game() {
 		overlayLayer.moveToTop();
 	}, "game");
 
-	var initTime = MW.debug ? 0 : 2000;
+	var initTime = MW.GlobalSettings.debug ? 0 : 2000;
 	evm.tell("Game.showLoadingScreen", { time: initTime });
 	setTimeout(function() {
 		load();
@@ -198,7 +183,7 @@ function Game() {
 				clearInterval(image_interval);
 				evm.tell("Game.updateImageLoading", { progress: 1 });
 				Log.debug("Images loaded.", "game");
-						var wait = MW.debug ? 0 : 1000;
+						var wait = MW.GlobalSettings.debug ? 0 : 1000;
 						setTimeout(function() {
 							evm.tell("Game.loadingDone");
 							monkeyWorld.start();

@@ -1,43 +1,10 @@
-MW.debug = false;
-MW.testing = false;
-
-/**
- * @enum {string}
- */
-MW.GameMode = {
-	CHILD_PLAY: "Child Play",
-	AGENT_SEE: "Monkey See",
-	AGENT_DO: "Monkey Do"
-};
-
-/**
- * @extends {Kinetic.Stage}
- * @constructor
- */
-Kinetic.NoStage = function() {};
-Kinetic.NoStage.getWidth = function(){};
-
-
 /**
  * @constructor
+ * @param {string} tag
  */
 MW.GlobalObject = function(tag) {
 	this._tag = tag;
 	var that = this;
-	
-	document.onkeypress = function(event) {
-		if (event.keyCode === 117/* U */) {
-			that.tell(MW.Event.TRIGGER_SUBTITLES);
-		} else if (event.keyCode === 105/* I */) {
-			that.tell(MW.Event.TRIGGER_SCORE);
-		} else if (event.keyCode === 111/* O */) {
-			that.tell(MW.Event.TRIGGER_FPS);
-		} else if (event.keyCode === 115) {
-			that.tell(MW.Event.PITCHER_LEVEL_ADD, { callback: function () {} });
-		} else {
-			console.info("Unhandles key: " + event.keyCode);
-		}
-	};
 	
 	/**
 	 * Register a listener to the event manager.
@@ -111,8 +78,8 @@ MW.GlobalObject = function(tag) {
 
 };
 
-MW.GlobalObject.prototype.evm  = new MW.NoEventManager();
-MW.GlobalObject.prototype.stage = new Kinetic.NoStage();
+MW.GlobalObject.prototype.evm  = null;
+MW.GlobalObject.prototype.stage = null;
 MW.GlobalObject.prototype.game = null;
 
 /**

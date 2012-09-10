@@ -1,7 +1,7 @@
 /**
  * @constructor
  */
-MW.EventManager = function(stage) {
+MW.EventManager = function() {
 	
 	/**
 	 * @type {Object.<string, Array>}
@@ -9,9 +9,9 @@ MW.EventManager = function(stage) {
 	var listeners = {};
 	var toForget = new Array();
 	var telling = 0;
-	
+
 	this.wevm = function() { return "GameEventManager"; };
-	
+
 	/**
 	 * @param {string} type
 	 * @param {Function} callback
@@ -28,7 +28,7 @@ MW.EventManager = function(stage) {
 			Log.debug(_name + " registerd " + types[i], "evm");
 		}
 	};
-	
+
 	/**
 	 * @param {string} type
 	 * @param {string} name
@@ -43,7 +43,7 @@ MW.EventManager = function(stage) {
 			delete listeners[type];
 		}
 	};
-	
+
 	this.print = function () {
 		console.log("-------EVENT MANAGER STATE-----------------");
 		for (var key in listeners) {
@@ -54,7 +54,7 @@ MW.EventManager = function(stage) {
 		}
 		console.log("-------------------------------------------");
 	};
-	
+
 	this.who = function(type) {
 		if (!(type in listeners))
 			return;
@@ -62,7 +62,7 @@ MW.EventManager = function(stage) {
 			Log.debug(listeners[type][i]._caller + " listens to " + type);
 		}
 	};
-	
+
 	/**
 	 * @param {string} name
 	 */
@@ -88,7 +88,7 @@ MW.EventManager = function(stage) {
 		}
 		Log.debug("Forgot " + sum + " event registred by " + name, "evm");
 	};
-	
+
 	/**
 	 * @param {string} type
 	 * @param {Object=} message
@@ -113,7 +113,7 @@ MW.EventManager = function(stage) {
 			toForget = new Array();
 		}
 	};
-	
+
 	this.tellArguments = function (next, wait, type, args) {
 		var debug = true;
 		telling++;
@@ -142,36 +142,3 @@ MW.EventManager = function(stage) {
 	};
 };
 
-/**
- * @constructor
- * @extends {MW.EventManager}
- */
-MW.NoEventManager = function() {
-	
-	this.wevm = function() { return "NoEventManager"; };
-	
-	/**
-	 * @param {string} type
-	 * @param {Function} callback
-	 * @param {string} name
-	 */
-	this.on = function(type, callback, name) {};
-	
-	/**
-	 * @param {string} type
-	 * @param {Object=} message
-	 * @param {boolean=} debug
-	 */
-	this.tell = function(type, message, debug) {};
-	
-	/**
-	 * @param {string} type
-	 * @param {string} name
-	 */
-	this.off = function(type, name) {};
-	
-	/**
-	 * @param {string} name
-	 */
-	this.forget = function(name) {};
-};
