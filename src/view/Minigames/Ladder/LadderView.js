@@ -19,8 +19,8 @@ MW.LadderView = function(tag, ladder)
 		continueButton = new Kinetic.MW.YesButton(view, {
 			x: 900, y: 600, opacity: 0
 		});
-		stopButton.setScale(0.7);
-		continueButton.setScale(0.7);
+		stopButton.setScale(0.4);
+		continueButton.setScale(0.4);
 		layer.add(stopButton);
 		layer.add(continueButton);
 	};
@@ -44,13 +44,11 @@ MW.LadderView = function(tag, ladder)
 
 	view.on(MW.Event.MG_LADDER_ALLOW_INTERRUPT, function(callback) {
 		stopButton.on("mousedown touchstart", function() {
-			//view.getTween(stopButton.attrs).to({rotation: 8*Math.PI}, 1200).to({rotation:0});
 			stopButton.animate();
 			MW.Sound.play(MW.Sounds.BIKE_HORN);
 			ladder.interruptAgent();
 		});
 		continueButton.on("mousedown touchstart", function() {
-			//view.getTween(continueButton.attrs).to({rotation: 8*Math.PI}, 1200).to({rotation:0});
 			continueButton.animate();
 			MW.Sound.play(MW.Sounds.TADA);
 		});
@@ -66,8 +64,8 @@ MW.LadderView = function(tag, ladder)
 		MW.Sound.play(MW.Sounds.LADDER_MY_TURN);
 		view.setTimeout(function() {
 			callback();
-			view.getTween(stopButton.attrs).to({opacity:1},1000);
-			view.getTween(continueButton.attrs).to({opacity:1},1000);
+			stopButton.transitionTo({ opacity: 1, duration: 1 });
+			continueButton.transitionTo({ opacity: 1, duration: 1 });
 		}, 2000);
 	});
 	

@@ -26,8 +26,9 @@ MW.MountainView = function(game) {
 	var resetButton = null;
 	var tellMyTurn = false;
 	
-	var dynamicLayer = new Kinetic.Layer();
-	var staticLayer = new Kinetic.Layer();
+	var cageTransition = null;
+	
+	var layer = new Kinetic.Layer();
 	
 	var CAGE_CONFIG = {
 		X: 400, Y: 600, WIDTH: 100, HEIGHT: 50, SLOPE: 10
@@ -87,8 +88,7 @@ MW.MountainView = function(game) {
 	};
 	
 	view.addSetup(function() {
-		view.stage.add(staticLayer);
-		view.stage.add(dynamicLayer);
+		view.stage.add(layer);
 		
 		var mountain = new Kinetic.Polygon({
 			points: [50, 600,
@@ -168,11 +168,11 @@ MW.MountainView = function(game) {
 						}, 2000);
 					}
 				});
-				dynamicLayer.add(group);
+				layer.add(group);
 			})(i);
 		};
 
-		staticLayer.add(mountain);
+		layer.add(mountain);
 
 		var ladder = game.getLadder();
 		for (var i = 0; i < ladder.length; i++) {
@@ -187,13 +187,13 @@ MW.MountainView = function(game) {
 				stroke: "black",
 				strokeWidth: 4
 			});
-			staticLayer.add(line);
+			layer.add(line);
 		}
 		friend.hide();
-		dynamicLayer.add(friend);
-		dynamicLayer.add(cage);
-		view.on("frame", function() { dynamicLayer.draw(); });
-		view.addInterruptButtons(dynamicLayer);
+		layer.add(friend);
+		layer.add(cage);
+		//view.on("frame", function() { layer.draw(); });
+		view.addInterruptButtons(layer);
 
 		var agentView = view.game.getAgentView();
 		var agentScale = 0.8;
@@ -203,16 +203,20 @@ MW.MountainView = function(game) {
 			  agentScale *
 			  (agentView.feetOffset() - agentView.bodyOffset().y),
 			agentScale,
-			dynamicLayer
+			layer
 		);
 
-		staticLayer.draw();
+		layer.draw();
 	});
 
 	view.interrupt = function() {
 		if (resetButton != null) resetButton();
-		view.removeTween(cage.attrs);
-		view.getTween(cage.attrs).to({x:CAGE_CONFIG.X,y:CAGE_CONFIG.Y});
+		//view.removeTween(cage.attrs);
+		cage.transitionTo({
+			x: CAGE_CONFIG.X,
+			y: CAGE_CONFIG.Y,
+			duration: 0.5
+		});
 	};
 
 	view.on(MW.Event.MG_LADDER_PLACE_TARGET, function(callback, msg) {
@@ -220,6 +224,7 @@ MW.MountainView = function(game) {
 		friend.setX(LADDER_CONFIG.X - level * LADDER_CONFIG.SLOPE);
 		friend.setY(LADDER_CONFIG.Y - level * LADDER_CONFIG.HEIGHT);
 		friend.show();
+		layer.draw();
 		callback();
 	});
 	
@@ -232,11 +237,11 @@ MW.MountainView = function(game) {
 	});
 	
 	view.on(MW.Event.MG_LADDER_ALLOW_GAMER_INPUT, function () {
-		// TODO: Implement
+
 	});
 	
 	view.on(MW.Event.MG_LADDER_FORBID_GAMER_INPUT, function () {
-		// TODO: Implement
+
 	});
 	
 	this.getStickPoint = function(number) {
@@ -266,15 +271,17 @@ MW.MountainView = function(game) {
 		
 		var yOffset = -110;
 		var xOffset = 20;
-		view.getTween(b.attrs).to({
+		b.transitionTo({
 			x: - Math.abs(CAGE_CONFIG.X - g.getX()) + xOffset,
-			y: CAGE_CONFIG.Y - g.getY() + yOffset }, 4000)
-		.call(function() {
-			b.moveTo(cage);
-			b.setX(xOffset);
-			b.setY(yOffset);
-			b.moveDown();
-			callback();
+			y: CAGE_CONFIG.Y - g.getY() + yOffset,
+			duration: 3,
+			callback: function () {
+				b.moveTo(cage);
+				b.setX(xOffset);
+				b.setY(yOffset);
+				b.moveDown();
+				callback();
+			}
 		});
 	};
 
@@ -305,12 +312,12 @@ MW.MountainView = function(game) {
 
 	view.on(MW.Event.MG_LADDER_HELPER_APPROACH_TARGET, function(callback) {
 		var number = game.getChosenNumber();
-		view.getTween(cage.attrs).to({
-			x: (LADDER_CONFIG.X - (number - 1) *
-			    LADDER_CONFIG.SLOPE + LADDER_CONFIG.WIDTH),
-			y: (LADDER_CONFIG.Y - (number - 1) *
-			    LADDER_CONFIG.HEIGHT)
-		}, 2000).call(callback);
+		cage.transitionTo({
+			x: (LADDER_CONFIG.X - (number - 1) * LADDER_CONFIG.SLOPE + LADDER_CONFIG.WIDTH),
+			y: (LADDER_CONFIG.Y - (number - 1) * LADDER_CONFIG.HEIGHT),
+			duration: 1.5,
+			callback: callback
+		});
 	});
 
 	view.on(MW.Event.MG_LADDER_GET_TARGET, function(callback, msg) {
@@ -320,26 +327,32 @@ MW.MountainView = function(game) {
 		view.setTimeout(function() {
 			MW.Sound.play(MW.Sounds.LADDER_MOUNTAIN_IM_HUNGRY);
 		}, 2000);
-		view.getTween(friend.attrs).to({
+		
+		friend.transitionTo({
 			x: cage.getX() + friendOffsetX,
-			y: cage.getY() + friendOffsetY
-		}, 1000).call(function() {
-			var time = 3000;
-			view.getTween(cage.attrs).to({
-				x: CAGE_CONFIG.X,
-				y: CAGE_CONFIG.Y
-			}, time);
-			view.getTween(friend.attrs).to({
-				x: CAGE_CONFIG.X + friendOffsetX,
-				y: CAGE_CONFIG.Y + friendOffsetY
-			}, time).call(function() {
-				view.getTween(friend.attrs).to({
-					x: CAGE_CONFIG.X +
-					   CAGE_CONFIG.WIDTH +
-					   FRIEND_CONFIG.WIDTH,
-					y: CAGE_CONFIG.Y
-				}, 2000).call(callback);
-			});
+			y: cage.getY() + friendOffsetY,
+			duration: 0.7,
+			callback: function () {
+				var time = 2;
+				cage.transitionTo({
+					x: CAGE_CONFIG.X,
+					y: CAGE_CONFIG.Y,
+					duration: time
+				});
+				friend.transitionTo({
+					x: CAGE_CONFIG.X + friendOffsetX,
+					y: CAGE_CONFIG.Y + friendOffsetY,
+					duration: time,
+					callback: function () {
+						friend.transitionTo({
+							x: CAGE_CONFIG.X + CAGE_CONFIG.WIDTH + FRIEND_CONFIG.WIDTH,
+							y: CAGE_CONFIG.Y,
+							duration: 1.5,
+							callback: callback
+						});
+					}
+				});
+			}
 		});
 	});
 	
@@ -379,17 +392,19 @@ MW.MountainView = function(game) {
 			callback();
 		};
 		if (cage.getY() != CAGE_CONFIG.Y) {
-			view.getTween(cage.attrs).to({
-				x: CAGE_CONFIG.X, y: CAGE_CONFIG.Y
-			}, 2000).call(whenDone);
+			cage.transitionTo({
+				x: CAGE_CONFIG.X,
+				y: CAGE_CONFIG.Y,
+				duration: 1.5,
+				callback: whenDone
+			});
 		} else {
 			whenDone();
 		}
 	});
 	
 	this.addTearDown(function() {
-		view.stage.remove(staticLayer);
-		view.stage.remove(dynamicLayer);
+		view.stage.remove(layer);
 	});
 };
 

@@ -4,7 +4,6 @@
  * @param {string} tag
  */
 MW.MinigameView = function(tag) {
-	// TODO: Rename this object to MinigameView
 	MW.ViewModule.call(this, tag);
 	var agentBody = null, agentX = 0, agentY = 0;
 	/** @type {MW.MinigameView}      */ var view  = this;
@@ -81,7 +80,7 @@ MW.MinigameView = function(tag) {
 					view.setTimeout(function () {
 						MW.Sound.play(MW.Sounds.SYSTEM_TIME_TO_TEACH_FRIEND);
 						view.setTimeout(function () {
-							view.getTween(faceImage.attrs).to({ opacity: 0 }, 2000);
+							faceImage.transitionTo({ opacity: 0, duration: 2});
 							view.game.getAgentView().jumpDown(agentX, agentY);
 							view.setTimeout(function () {
 								view.game.getAgentView().startTalk();

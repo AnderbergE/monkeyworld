@@ -16,8 +16,7 @@ MW.TreeView = function(ladder) {
 		shakeTreat,
 		treats = [],
 		background,
-		staticLayer,
-		dynamicLayer,
+		layer,
 		tellMyTurn = false,
 		currentPick,
 		stopShakeTreat,
@@ -113,17 +112,15 @@ MW.TreeView = function(ladder) {
 	});
 	numpad.lock();
 
-	staticLayer = new Kinetic.Layer();
-	dynamicLayer = new Kinetic.Layer();
-	view.getStage().add(staticLayer);
-	view.getStage().add(dynamicLayer);
+	layer = new Kinetic.Layer();
+	view.getStage().add(layer);
 
 	/** @type {Kinetic.MW.Lizard} */
 	helper = new Kinetic.MW.Lizard({
 		x: config.helper.x,
 		y: config.helper.y,
 		scale: scale * 0.7
-	}, view);
+	});
 
 	shakeTreat = function () {
 		shakeHandler = view.setInterval(function () {
@@ -164,14 +161,27 @@ MW.TreeView = function(ladder) {
 
 	createTreat = function (callback) {
 		treat = treats[ladder.getRoundNumber() - 1];
-		view.getTween(treat.attrs).wait(2000).to({
-			x: 100,
-			y: 150,
-			rotation: 2 * Math.PI
-		}, 1000).to({ rotation: 0 }).to({
-			y: stepGroups[ladder.getTargetNumber()].getY() + 25,
-			rotation: 2 * Math.PI * (7 - ladder.getTargetNumber())
-		}, 1000).to({ rotation: 0 }).call(callback);
+		
+		view.setTimeout(function () {
+			treat.transitionTo({
+				x: 100,
+				y: 150,
+				rotation: 2 * Math.PI,
+				duration: 1,
+				callback: function () {
+					treat.setRotation(0);
+					treat.transitionTo({
+						y: stepGroups[ladder.getTargetNumber()].getY() + 25,
+						rotation: 2 * Math.PI * (7 - ladder.getTargetNumber()),
+						duration: 1,
+						callback: function () {
+							treat.setRotation(0);
+							callback();
+						}
+					});
+				}
+			});
+		}, 2000);
 	};
 
 	/**
@@ -182,7 +192,7 @@ MW.TreeView = function(ladder) {
 		stopShakeTreat();
 		treat.open();
 		numpad.release();
-		staticLayer.draw();
+		layer.draw();
 	};
 
 	/**
@@ -204,9 +214,23 @@ MW.TreeView = function(ladder) {
 				y: 0.1
 			}
 		});
-		dynamicLayer.add(balloons);
-		view.getTween(balloons.attrs.scale).to({ x: 1, y: 1 }, 500).call(function () {
-			view.getTween(balloons.attrs).to({ y: 200 }, 2000).call(callback);
+		layer.add(balloons);
+		
+		balloons.transitionTo({
+			scale: {
+				x: 0.7,
+				y: 0.7
+			},
+			duration: 0.5,
+			callback: function () {
+				balloons.transitionTo({
+					x: balloons.getX() + 50,
+					y: 200,
+					duration: 2,
+					callback: callback
+				});
+			}
+			
 		});
 	};
 
@@ -248,33 +272,41 @@ MW.TreeView = function(ladder) {
 	 */
 	view.on(MW.Event.MG_LADDER_HELPER_APPROACH_TARGET, function (callback) {
 		currentPick = ladder.getChosenNumber();
-		view.getTween(helper.attrs).to({
-			y: config.helper.y - 100
-		}, 2000).to({
-			rotation: -Math.PI / 8,
-			x: config.helper.x - 25
-		}, 1000).call(function () {
-			if (currentPick > 1) {
-				view.getTween(helper.attrs).to({
-					rotation: 0,
-					y: 430
-				}, 1000).call(function () {
-					if (currentPick > 2) {
-						helper.startWalk();
-						view.getTween(helper.attrs).to({
-							y: stepGroups[currentPick].getY()
-						}, 500 * currentPick).call(function () {
-							helper.stopWalk();
-							callback();
+		helper.transitionTo({
+			y: config.helper.y - 100,
+			duration: 2,
+			callback: function () { helper.transitionTo({
+				rotation: -Math.PI / 8,
+				x: config.helper.x - 25,
+				duration: 1,
+				callback: function () {
+					if (currentPick > 1) {
+						helper.transitionTo({
+							rotation: 0,
+							y: 430,
+							duration: 1,
+							callback: function () {
+								if (currentPick > 2) {
+									helper.startWalk();
+									helper.transitionTo({
+										y: stepGroups[currentPick].getY(),
+										duration: 0.5 * currentPick,
+										callback: function () {
+											helper.stopWalk();
+											callback();
+										}
+									});
+								} else {
+									helper.stopWalk();
+									callback();
+								}
+							}
 						});
 					} else {
-						helper.stopWalk();
 						callback();
 					}
-				});
-			} else {
-				callback();
-			}
+				}
+			});}
 		});
 	});
 
@@ -289,28 +321,40 @@ MW.TreeView = function(ladder) {
 		view.setTimeout(function () {
 			var step1 = function (next) {
 				helper.startWalk();
-				view.getTween(helper.attrs).to({
-					y: 430
-				}, 500 * currentPick).call(helper.stopWalk).call(next);
+				helper.transitionTo({
+					y: 430,
+					duration: 0.5 * currentPick,
+					callback: function () {
+						helper.stopWalk();
+						next();
+					}
+				});
 			};
 			var step2 = function (next) {
-				view.getTween(helper.attrs).to({
+			
+				helper.transitionTo({
 					rotation: -Math.PI / 16,
 					x: config.helper.x,
-					y: config.helper.y - 70
-				}, 1000).to({
-					rotation: 0,
-					y: config.helper.y - 50
-				}, 1000).call(next);
+					y: config.helper.y - 70,
+					duration: 1,
+					callback: function () { helper.transitionTo({
+						rotation: 0,
+						y: config.helper.y - 50,
+						duration: 1,
+						callback: next
+					});}
+				});
 			};
 			var step3 = function () {
-				view.getTween(helper.attrs).to({
+				helper.transitionTo({
 					rotation: 0,
 					x: config.helper.x,
-					y: config.helper.y
-				}, 2000).call(function () {
-					numpad.release();
-					callback();
+					y: config.helper.y,
+					duration: 2,
+					callback: function () {
+						numpad.release();
+						callback();
+					}
 				});
 			};
 			if (currentPick > 2) {
@@ -333,32 +377,36 @@ MW.TreeView = function(ladder) {
 				if (done_ === 2)
 					callback();
 			};
-			view.getTween(treat.attrs).to({
-				x: treat.getX() + 30,
-				y: treat.getY() - 30
-			}).wait(200).call(function () {
-				MW.Sound.play(MW.Sounds.LADDER_TREE_TONGUE);
-				helper.tongueIn(done);
-			}).to({
-				x: config.dropZone.x + config.dropZone.offsetWidth * dropZoneOffset,
-				y: config.dropZone.y,
-				rotation: 3 * Math.PI
-			}, 2000).to({ rotation: 0 }).call(done).call(function () {
-				if (!view.game.modeIsAgentDo()) {
-					addOnMouseActionToTreat();
-					shakeTreat();
+			treat.transitionTo({
+				x: treat.getX() + 55,
+				y: treat.getY() - 40,
+				duration: 0.01,
+				callback: function () {
+					view.setTimeout( function () {
+						MW.Sound.play(MW.Sounds.LADDER_TREE_TONGUE);
+						helper.tongueIn(done);
+						treat.transitionTo({
+							x: config.dropZone.x + config.dropZone.offsetWidth * dropZoneOffset,
+							y: config.dropZone.y,
+							rotation: 3 * Math.PI,
+							duration: 2,
+							callback: function () {
+								treat.setRotation(0);
+								done();
+								if (!view.game.modeIsAgentDo()) {
+									addOnMouseActionToTreat();
+									shakeTreat();
+								}
+							}
+						});
+					}, 200);
 				}
 			});
 		});
 	});
 
-	view.on(MW.Event.FRAME, function () {
-		dynamicLayer.draw();
-	});
-
 	view.addTearDown(function () {
-		view.getStage().remove(staticLayer);
-		view.getStage().remove(dynamicLayer);
+		view.getStage().remove(layer);
 	});
 
 	view.interrupt = function () {
@@ -373,17 +421,12 @@ MW.TreeView = function(ladder) {
 		height: MW.Images.TREEGAME_BACKGROUND.height
 	});
 
-	staticLayer.add(background);
-	staticLayer.add(new Kinetic.Image({
+	layer.add(background);
+	layer.add(new Kinetic.Image({
 		image: MW.Images.TREEGAME_TREEDOTS,
 		x: 145,
 		y: 161
 	}));
-	view.addInterruptButtons(dynamicLayer);
-
-	view.on("Ladder.helpAgent", function () {
-
-	});
 
 	for (i = 0; i < ladder.getLadder().length; i += 1) {
 		ladderStepNumber = ladder.getLadder()[i];
@@ -391,25 +434,13 @@ MW.TreeView = function(ladder) {
 			x: config.tree.x,
 			y: config.tree.y - i * config.tree.stepHeight
 		});
-//		ladderStepPolygon = new Kinetic.Polygon({
-//			points: [
-//				0, 0,
-//				config.tree.stepWidth, 0,
-//				config.tree.stepWidth - config.tree.stepNarrowing, config.tree.stepHeight,
-//				config.tree.stepNarrowing, config.tree.stepHeight
-//			],
-//			stroke: "#5C4033",
-//			strokeWidth: 5
-//		});
-//		ladderStepGroup.add(ladderStepPolygon);
 		stepGroups[ladderStepNumber] = ladderStepGroup;
-//		staticLayer.add(ladderStepGroup);
-//		staticLayer.draw();
 	}
 
-	dynamicLayer.add(helper);
+	layer.add(helper);
+	helper.start();
 
-	dynamicLayer.add(new Kinetic.Image({
+	layer.add(new Kinetic.Image({
 		image: MW.Images.TREEGAME_COVER,
 		width: MW.Images.TREEGAME_COVER.width,
 		height: MW.Images.TREEGAME_COVER.height,
@@ -430,12 +461,12 @@ MW.TreeView = function(ladder) {
 		return numpad.getButtonPosition(number);
 	};
 
-	staticLayer.add(new Kinetic.Image({
+	layer.add(new Kinetic.Image({
 		x: config.numpad.x - 180,
 		y: config.numpad.y - 280,
 		image: MW.Images.NUMPAD_WOOD
 	}));
-	dynamicLayer.add(numpad);
+	layer.add(numpad);
 
 	var agentView = view.game.getAgentView();
 	var agentScale = 0.8;
@@ -445,9 +476,9 @@ MW.TreeView = function(ladder) {
 			view.getStage().getWidth() - 248,
 			view.getStage().getHeight() - 100 - agentScale * (agentView.feetOffset() - agentView.bodyOffset().y),
 			agentScale,
-			dynamicLayer
+			layer
 		);
-
+		view.addInterruptButtons(layer);
 
 		/**
 		 * Hang the treats in the crown
@@ -464,11 +495,11 @@ MW.TreeView = function(ladder) {
 					type: (i % 3) + 1,
 					scale: scale
 				});
-				dynamicLayer.add(parcel);
+				layer.add(parcel);
 				treats.push(parcel);
 			}
 		}) (this);
 	});
-	staticLayer.draw();
+	layer.draw();
 };
 

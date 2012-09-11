@@ -46,30 +46,29 @@ Kinetic.MW.Parcel = function (config) {
 		var
 			ox = group.getX(),
 			oy = group.getY(),
-			offset = 5,
-			timeMillis = 100;
-		view.getTween(group.attrs)
-		.to({ x: ox - offset }, timeMillis)
-		.to({ x: ox + offset }, timeMillis)
-		.to({ x: ox - offset }, timeMillis)
-		.to({ x: ox + offset }, timeMillis)
-		.to({ x: ox - offset }, timeMillis)
-		.to({ x: ox + offset }, timeMillis)
-		.to({ x: ox - offset }, timeMillis)
-		.to({ x: ox + offset }, timeMillis)
-		.to({ x: ox - offset }, timeMillis)
-		.to({ x: ox }, timeMillis);
-		view.getTween(group.attrs)
-		.to({ y: oy - offset }, timeMillis)
-		.to({ y: oy + offset }, timeMillis)
-		.to({ y: oy - offset }, timeMillis)
-		.to({ y: oy + offset }, timeMillis)
-		.to({ y: oy - offset }, timeMillis)
-		.to({ y: oy + offset }, timeMillis)
-		.to({ y: oy - offset }, timeMillis)
-		.to({ y: oy + offset }, timeMillis)
-		.to({ y: oy - offset }, timeMillis)
-		.to({ y: oy }, timeMillis);
+			offset = 4,
+			timeSeconds = 0.1;
+
+		function moveTo(dir, again) {
+			group.transitionTo({
+				x: ox + dir * offset,
+				y: oy + dir * offset,
+				duration: timeSeconds,
+				callback: function () {
+					if (again > 0) {
+						var nextAgain = again -= 1;
+						moveTo(-dir, nextAgain);
+					} else {
+						group.transitionTo({
+							x: ox,
+							y: oy,
+							duration: timeSeconds
+						});
+					}
+				}
+			});
+		}
+		moveTo(1, 9);
 	};
 
 	/**

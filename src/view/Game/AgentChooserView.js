@@ -66,16 +66,29 @@ MW.AgentChooserView = function(chooser) {
 			/** @const @type {number} */ var TIME_WAIT = 5000;
 			for (var i = 0; i < array.length; i++) {
 				if (array[i] === button) {
-					view.getTween(array[i].attrs).wait(TIME_HIDE).to({x: view.stage.getWidth() / 2, y: view.stage.getHeight() / 2}, TIME_MOVE);
-					view.getTween(array[i].attrs.scale).wait(TIME_HIDE).to({x: 1.5, y: 1.5}, TIME_MOVE).call(function() {
-						MW.Sound.play(MW.Sounds.THANKS_FOR_CHOOSING_ME);
-					}).wait(TIME_WAIT).call(callback);
+					view.setTimeout(function () {
+						button.transitionTo({
+							x: view.getStage().getWidth() / 2,
+							y: view.getStage().getHeight() / 2,
+							scale: {
+								x: 1.5,
+								y: 1.5
+							},
+							duration: TIME_MOVE / 1000,
+							callback: function () {
+								MW.Sound.play(MW.Sounds.THANKS_FOR_CHOOSING_ME);
+								view.setTimeout(callback, TIME_WAIT);
+							}
+						});
+					}, TIME_HIDE);
 				} else {
-					view.getTween(array[i].attrs).to({opacity: 0}, TIME_HIDE);
+					array[i].transitionTo({
+						opacity: 0,
+						duration: TIME_HIDE / 1000
+					});
 				}
 			}
 		};
-		
 		return buttons;
 	})();
 

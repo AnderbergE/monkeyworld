@@ -2,28 +2,84 @@
  * @extends {Kinetic.Node}
  * @constructor
  * @param {Object} config
- * @param {MW.ViewModule} view
  */
-Kinetic.MW.Lizard = function (config, view) {
+Kinetic.MW.Lizard = function (config) {
 	var
 		group = new Kinetic.Group(config),
-		image,
+		sprite,
+		tongueSprite,
 		walkInterval,
 		walkTimeout,
 		mouthInterval = 200,
 		tongueInterval = 200,
-		tongueImage;
+		animations = {},
+		tongueAnimations = {},
+		hasInit = false;
 
-	image = new Kinetic.Image({
-		image: MW.Images.TREEGAME_LIZARD_STANDING,
-		width: MW.Images.TREEGAME_LIZARD_STANDING.width,
-		height: MW.Images.TREEGAME_LIZARD_STANDING.height
+	animations["idle"] = [
+		{ x: 0, y: 0, width: 181, height: 309 }
+	];
+
+	animations["walking"] = [
+		{ x: 0, y: 718, width: 181, height: 309 },
+		{ x: 0, y: 359, width: 181, height: 309 }
+
+	];
+
+	animations["openMouth"] = [
+		{ x: 0, y: 1077, width: 181, height: 309 },
+		{ x: 0, y: 1436, width: 181, height: 309 },
+		{ x: 0, y: 1795, width: 181, height: 309 },
+		{ x: 231, y: 0, width: 181, height: 309 }
+	];
+
+	animations["closeMouth"] = [
+		{ x: 231, y: 0, width: 181, height: 309 },
+		{ x: 0, y: 1795, width: 181, height: 309 },
+		{ x: 0, y: 1436, width: 181, height: 309 },
+		{ x: 0, y: 1077, width: 181, height: 309 }
+	];
+
+	animations["keepMouthOpen"] = [
+		{ x: 231, y: 0, width: 181, height: 309 }
+	];
+
+	tongueAnimations["idleIn"] = [
+		{ x: 0, y: 0, width: 500, height: 500 }
+	];
+
+	tongueAnimations["out"] = [
+		{ x: 0, y: 0, width: 500, height: 500 },
+		{ x: 0, y: 550, width: 500, height: 500 },
+		{ x: 0, y: 1100, width: 500, height: 500 },
+		{ x: 0, y: 1650, width: 500, height: 500 },
+		{ x: 550, y: 0, width: 500, height: 500 }
+	];
+
+	tongueAnimations["in"] = [
+		{ x: 550, y: 0, width: 500, height: 500 },
+		{ x: 0, y: 1650, width: 500, height: 500 },
+		{ x: 0, y: 1100, width: 500, height: 500 },
+		{ x: 0, y: 550, width: 500, height: 500 },				
+		{ x: 0, y: 0, width: 500, height: 500 }
+	];
+
+	tongueAnimations["idleOut"] = [
+		{ x: 550, y: 0, width: 500, height: 500 }
+	];
+
+	sprite = new Kinetic.Sprite({
+		image: MW.Images.TREEGAME_LIZARD_SPRITE,
+		animations: animations,
+		animation: "idle",
+		frameRate: 5
 	});
-
-	tongueImage = new Kinetic.Image({
-		image: MW.Images.TREEGAME_LIZARD_TONGUE1,
-		width: MW.Images.TREEGAME_LIZARD_TONGUE1.width,
-		height: MW.Images.TREEGAME_LIZARD_TONGUE1.height,
+	
+	tongueSprite = new Kinetic.Sprite({
+		image: MW.Images.TREEGAME_LIZARD_TONGUE_SPRITE,
+		animations: tongueAnimations,
+		animation: "idleIn",
+		frameRate: 10,
 		visible: false,
 		x: -170 + 279,
 		y: -200 + 281,
@@ -33,110 +89,49 @@ Kinetic.MW.Lizard = function (config, view) {
 		}
 	});
 
-	group.add(tongueImage);
-	group.add(image);
+	group.add(tongueSprite);
+	group.add(sprite);
 
 	this.startWalk = function () {
-		var INTERVAL = 280;
-		image.attrs.image = MW.Images.TREEGAME_LIZARD_STEP2;
-		walkInterval = view.setInterval(function () {
-			image.attrs.image = MW.Images.TREEGAME_LIZARD_STEP1;
-			walkTimeout = view.setTimeout(function () {
-				image.attrs.image = MW.Images.TREEGAME_LIZARD_STEP2;	
-			}, INTERVAL / 2);
-		}, INTERVAL);
+		sprite.setAnimation("walking");
 	};
 	
 	this.stopWalk = function () {
-		view.clearInterval(walkInterval);
-		view.clearTimeout(walkTimeout);
-		image.attrs.image = MW.Images.TREEGAME_LIZARD_STANDING;
-	};
-
-	this.bend = function (callback) {
-		var INTERVAL = 2000;
-		var bendScale = MW.Images.TREEGAME_LIZARD_STANDING.height / MW.Images.TREEGAME_LIZARD_HOLE3.height;
-		view.getTween(image.attrs)
-		.to({
-			image: MW.Images.TREEGAME_LIZARD_HOLE1,
-			width: MW.Images.TREEGAME_LIZARD_HOLE1.width * bendScale,
-			height: MW.Images.TREEGAME_LIZARD_HOLE1.height * bendScale
-		})
-		.wait(INTERVAL)
-		.to({
-			image: MW.Images.TREEGAME_LIZARD_HOLE2,
-			width: MW.Images.TREEGAME_LIZARD_HOLE2.width * bendScale,
-			height: MW.Images.TREEGAME_LIZARD_HOLE2.height * bendScale
-		})
-		.wait(INTERVAL)
-		.call(function () {
-			group.setX(group.getX() - 15);
-		})
-		.to({
-			image: MW.Images.TREEGAME_LIZARD_HOLE3,
-			width: MW.Images.TREEGAME_LIZARD_HOLE3.width * bendScale,
-			height: MW.Images.TREEGAME_LIZARD_HOLE3.height * bendScale
-		})
-		.wait(INTERVAL)
-		.to({
-			image: MW.Images.TREEGAME_LIZARD_STANDING,
-			width: MW.Images.TREEGAME_LIZARD_STANDING.width,
-			height: MW.Images.TREEGAME_LIZARD_STANDING.height
-		})
-		.call(callback);
+		sprite.setAnimation("idle");
 	};
 	
 	function openMouth(callback) {
-		view.getTween(image.attrs)
-		.to({ image: MW.Images.TREEGAME_LIZARD_MOUTH1 })
-		.wait(mouthInterval)
-		.to({ image: MW.Images.TREEGAME_LIZARD_MOUTH2 })
-		.wait(mouthInterval)
-		.to({ image: MW.Images.TREEGAME_LIZARD_MOUTH3 })
-		.wait(mouthInterval)
-		.to({ image: MW.Images.TREEGAME_LIZARD_MOUTH4 })
-		.call(callback);
+		sprite.setAnimation("openMouth");
+		sprite.afterFrame(animations["openMouth"].length - 1, function () {
+			sprite.setAnimation("keepMouthOpen");
+			callback();
+		});
 	}
 
 	function closeMouth(callback) {
-		view.getTween(image.attrs)
-		.to({ image: MW.Images.TREEGAME_LIZARD_MOUTH4 })
-		.wait(mouthInterval)
-		.to({ image: MW.Images.TREEGAME_LIZARD_MOUTH3 })
-		.wait(mouthInterval)
-		.to({ image: MW.Images.TREEGAME_LIZARD_MOUTH2 })
-		.wait(mouthInterval)
-		.to({ image: MW.Images.TREEGAME_LIZARD_MOUTH1 })
-		.wait(mouthInterval)
-		.to({ image: MW.Images.TREEGAME_LIZARD_STANDING })
-		.call(callback);
+		sprite.setAnimation("closeMouth");
+		sprite.afterFrame(animations["closeMouth"].length - 1, function () {
+			sprite.setAnimation("idle");
+			callback();
+		});
 	}
 
 	function tongueOut(callback) {
-		tongueImage.show();
-		view.getTween(tongueImage.attrs)
-		.to({ image: MW.Images.TREEGAME_LIZARD_TONGUE2 })
-		.wait(tongueInterval)
-		.to({ image: MW.Images.TREEGAME_LIZARD_TONGUE3 })
-		.wait(tongueInterval)
-		.to({ image: MW.Images.TREEGAME_LIZARD_TONGUE4 })
-		.wait(tongueInterval)
-		.to({ image: MW.Images.TREEGAME_LIZARD_TONGUE5 })
-		.call(callback);
+		tongueSprite.setAnimation("out");
+		tongueSprite.show();
+		tongueSprite.afterFrame(tongueAnimations["out"].length - 1, function () {
+			tongueSprite.setAnimation("idleOut");
+			callback();
+		});
 	}
 
 	function tongueIn(callback) {
-		view.getTween(tongueImage.attrs)
-		.to({ image: MW.Images.TREEGAME_LIZARD_TONGUE4 })
-		.wait(tongueInterval)
-		.to({ image: MW.Images.TREEGAME_LIZARD_TONGUE3 })
-		.wait(tongueInterval)
-		.to({ image: MW.Images.TREEGAME_LIZARD_TONGUE2 })
-		.wait(tongueInterval)
-		.to({ image: MW.Images.TREEGAME_LIZARD_TONGUE1 })
-		.wait(tongueInterval)
-		.to({ visible: false })
-		.call(callback);
+		tongueSprite.setAnimation("in");
+		tongueSprite.afterFrame(tongueAnimations["in"].length - 1, function () {
+			tongueSprite.setAnimation("idleIn");
+			tongueSprite.hide();
+			callback();
+		});
 	}
 
 	group.startWalk = this.startWalk;
@@ -148,9 +143,13 @@ Kinetic.MW.Lizard = function (config, view) {
 	this.tongueIn = function (callback) {
 		tongueIn(function () { closeMouth(callback); });
 	}
+	this.start = function () {
+		sprite.start();
+		tongueSprite.start();
+	};
 	group.tongueIn = this.tongueIn;
 	group.tongueOut = this.tongueOut;
-	group.bend = this.bend;
+	group.start = this.start;
 
 	return group;
 };

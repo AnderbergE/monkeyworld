@@ -376,8 +376,62 @@ Kinetic.Line.prototype.draggable = function() {};
 Kinetic.Line.prototype.dragConstraint = function() {};
 Kinetic.Line.prototype.dragBounds = function() {};
 
+/*----------------------------------------------------------------------------*/
+/*  Class Kinetic.Sprite
+/*----------------------------------------------------------------------------*/
+/**
+ * @constructor
+ * @param {Object} config
+ * @extends {Kinetic.Shape}
+ */
+Kinetic.Sprite = function (config) {};
 
 
+Kinetic.Sprite.prototype.image = function () {};
+Kinetic.Sprite.prototype.animations = function () {};
+Kinetic.Sprite.prototype.animation = function () {};
+Kinetic.Sprite.prototype.frameRate = function () {};
+
+/**
+ * @param {number} index - frame index
+ * @param {Function} func - function to be executed after frame has been drawn
+ */
+Kinetic.Sprite.prototype.afterFrame = function (index, func) {};
+
+Kinetic.Sprite.prototype.getAnimation = function () {};
+Kinetic.Sprite.prototype.getAnimations = function () {};
+Kinetic.Sprite.prototype.getIndex = function () {};
+
+/**
+ * @param {String} anim
+ */
+Kinetic.Sprite.prototype.setAnimation = function (anim) {};
+
+/**
+ * @param {Object} animations
+ */
+Kinetic.Sprite.prototype.setAnimations = function (animations) {};
+
+/**
+ * @param {number} index
+ */
+Kinetic.Sprite.prototype.setIndex = function (index) {};
+
+Kinetic.Sprite.prototype.start = function () {};
+Kinetic.Sprite.prototype.stop = function () {};
+
+/*----------------------------------------------------------------------------*/
+/*  Class Kinetic.Transition
+/*----------------------------------------------------------------------------*/
+/**
+ * @constructor
+ * @param {Kinetic.Node} node
+ * @param {Object} config
+ */
+Kinetic.Transition = function (node, config) {};
+Kinetic.Transition.prototype.resume = function () {};
+Kinetic.Transition.prototype.start = function () {};
+Kinetic.Transition.prototype.stop = function () {};
 
 /*----------------------------------------------------------------------------*/
 /*  Class Kinetic.Animation

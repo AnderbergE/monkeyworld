@@ -5,34 +5,51 @@
  * @constructor
  */
 Kinetic.MW.NoButton = function (view, config) {
-	config.image = MW.Images.BUTTON_NO_1;
-	config.width = 128;
-	config.height = 128;
+	var started = false;
+	config.image = MW.Images.BUTTON_NO_SPRITE;
+	config.width = 208;
+	config.height = 208;
 	config.offset = {
-		x: 64,
-		y: 64
+		x: 104,
+		y: 104
 	};
-	var image = new Kinetic.Image(config);
+	config.animations = {
+		"shake": [
+			{ x: 0, y: 0, width: 208, height: 208 },    // 1 middle
+			{ x: 0, y: 258, width: 208, height: 208 },  // 2 left1
+			{ x: 0, y: 516, width: 208, height: 208 },  // 3 left2
+			{ x: 0, y: 258, width: 208, height: 208 },  // 2 left1
+			{ x: 0, y: 0, width: 208, height: 208 },    // 1 middle
+			{ x: 0, y: 1032, width: 208, height: 208 }, // 5 right1
+			{ x: 0, y: 1290, width: 208, height: 208 }, // 6 right2
+			{ x: 0, y: 1032, width: 208, height: 208 }, // 5 right1
+			{ x: 0, y: 0, width: 208, height: 208 },    // 1 middle
+			{ x: 0, y: 258, width: 208, height: 208 },  // 2 left1
+			{ x: 0, y: 516, width: 208, height: 208 },  // 3 left2
+			{ x: 0, y: 258, width: 208, height: 208 },  // 2 left1
+			{ x: 0, y: 0, width: 208, height: 208 },    // 1 middle
+			{ x: 0, y: 1032, width: 208, height: 208 }, // 5 right1
+			{ x: 0, y: 1290, width: 208, height: 208 }, // 6 right2
+			{ x: 0, y: 1032, width: 208, height: 208 }  // 5 right1
+		],
+		"idle": [
+			{ x: 0, y: 0, width: 208, height: 208 }    // 1 middle
+		]
+	};
+	config.animation = "idle";
+	config.frameRate = 10;
+	var image = new Kinetic.Sprite(config);
 	this.animate = function () {
-		var interval = 300;
-		view.getTween(image.attrs)
-		.to({ image: MW.Images.BUTTON_NO_2 }).wait(interval)
-		.to({ image: MW.Images.BUTTON_NO_3 }).wait(interval)
-		.to({ image: MW.Images.BUTTON_NO_4 }).wait(interval)
-		.to({ image: MW.Images.BUTTON_NO_1 }).wait(interval)
-		.to({ image: MW.Images.BUTTON_NO_5 }).wait(interval)
-		.to({ image: MW.Images.BUTTON_NO_6 }).wait(interval)
-		.to({ image: MW.Images.BUTTON_NO_7 }).wait(interval)
-		.to({ image: MW.Images.BUTTON_NO_1 }).wait(interval)
-		.to({ image: MW.Images.BUTTON_NO_2 }).wait(interval)
-		.to({ image: MW.Images.BUTTON_NO_3 }).wait(interval)
-		.to({ image: MW.Images.BUTTON_NO_4 }).wait(interval)
-		.to({ image: MW.Images.BUTTON_NO_1 }).wait(interval)
-		.to({ image: MW.Images.BUTTON_NO_5 }).wait(interval)
-		.to({ image: MW.Images.BUTTON_NO_6 }).wait(interval)
-		.to({ image: MW.Images.BUTTON_NO_7 }).wait(interval)
-		.to({ image: MW.Images.BUTTON_NO_1 }).wait(interval);
+		if (!started) {
+			image.start();
+			started = true;
+		}
+		image.setAnimation("shake");
+		image.afterFrame(config.animations["shake"].length - 1, function () {
+			image.setAnimation("idle");
+		});
 	}
 	image.animate = this.animate;
 	return image;
 };
+

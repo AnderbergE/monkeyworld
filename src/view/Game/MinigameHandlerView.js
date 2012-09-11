@@ -182,35 +182,49 @@ MW.MinigameHandlerView = function () {
 					MW.Sound.play(MW.Sounds.LETS_FILL_THE_BUCKET);
 				}, 2000)
 			}
-			view.getTween(dropImage.attrs)
-			.to({
+			
+			dropImage.transitionTo({
 				x: x2 - 50,
-				y: y2
-			}, time * 1.2)
-			.to({
-				rotation: 4 * Math.PI / 3,
-				x: x2 - 50,
-				y: y2 - 30
-			}, 300)
-			.to({
-				rotation: 5 * Math.PI / 3,
-				x: x2 - 25,
-				y: y2 - 25
-			}, 300)
-			.to({
-				rotation: 6 * Math.PI / 3,
-				x: x2,
-				y: y2
-			}, 300).call(function () {
-				MW.Sound.play(MW.Sounds.DRIP);
-				pitcherBottomImage.show();
-				view.getTween(waterRect.attrs).to({ height: waterRect.getHeight() - levelHeight }, 1000);
-				view.getTween(dropImage.attrs).to({ opacity: 0 }, 1000).wait(1000).call(function () {
-					dropImage.hide();
-					dropImage.setRotation(Math.PI);
-					if (msg.callback != undefined)
-						msg.callback();
-				});
+				y: y2,
+				duration: time * 1.2 / 1000,
+				callback: function () { dropImage.transitionTo({
+					rotation: 4 * Math.PI / 3,
+					x: x2 - 50,
+					y: y2 - 30,
+					duration: 0.3,
+					callback: function () { dropImage.transitionTo({
+						rotation: 5 * Math.PI / 3,
+						x: x2 - 25,
+						y: y2 - 25,
+						duration: 0.3,
+						callback: function () { dropImage.transitionTo({
+							rotation: 6 * Math.PI / 3,
+							x: x2,
+							y: y2,
+							duration: 0.3,
+							callback: function () {
+								MW.Sound.play(MW.Sounds.DRIP);
+								pitcherBottomImage.show();
+								waterRect.transitionTo({
+									height: waterRect.getHeight() - levelHeight,
+									duration: 1
+								});
+								dropImage.transitionTo({
+									opacity: 0,
+									duration: 1,
+									callback: function () {
+										view.setTimeout(function () {
+											dropImage.hide();
+											dropImage.setRotation(Math.PI);
+											if (msg.callback != undefined)
+												msg.callback();
+										}, 1000);
+									}
+								});
+							}
+						});}
+					});}
+				});}
 			});
 		});
 	})(this);

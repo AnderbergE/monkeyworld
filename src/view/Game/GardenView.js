@@ -68,6 +68,7 @@ MW.GardenView = function () {
 	view.on(MW.Event.FRAME, function (msg) {
 		layer.draw();
 	});
+
 	view.on("Game.demonstrateGarden", function (msg) {
 		MW.Sound.play(MW.Sounds.INTRO_GARDEN_1);
 		happyBackground.setOpacity(0);
@@ -102,10 +103,22 @@ MW.GardenView = function () {
 		
 		view.setTimeout(function () {
 			MW.Sound.play(MW.Sounds.INTRO_GARDEN_2);
-			view.getTween(sadBackground.attrs).to({ opacity: 0 }, 2000);
-			view.getTween(happyBackground.attrs).to({ opacity: 1 }, 2000).wait(3000).call(msg.callback);
+			sadBackground.transitionTo({
+				opacity: 0,
+				duration: 2
+			});
+			happyBackground.transitionTo({
+				opacity: 1,
+				duration: 2,
+				callback: function () {
+					view.setTimeout(function () {
+						msg.callback();
+					}, 2000);
+				}
+			});
 		}, 3000);
 	});
+
 	view.on(MW.Event.WATER_GARDEN, function (msg) {
 		setVerdure();
 		var p = waterPolygon.attrs.points;
@@ -117,33 +130,39 @@ MW.GardenView = function () {
 		var m2 = p[2].y - k2 * p[2].x;
 		pitcherImage.setRotation(Math.PI / 3);
 		pitcherGroup.show();
+
+		/*
+		 * TODO: Redo this animation with transitionTo when KineticJS has
+		 *       resolved the bug which seems to have appeared in recursive
+		 *       transitions. (Using Kinetic v4.0.1 when writing this.)
+		 *
+		 *       http://goo.gl/GzzV2
+		 */
 		setTimeout(function () {
-			setTimeout(function () {
+			view.getTween(waterPolygon.attrs.points[0])
+			.to({ x: (newY - m1) / k1, y: newY }, 3000);
+			view.getTween(waterPolygon.attrs.points[1])
+			.to({ x: (newY - m2) / k2, y: newY }, 3000).call(function () {
+				var k3 = (p[3].y - p[4].y) / (p[3].x - p[4].x);
+				var m3 = p[3].y - k3 * p[3].x;
+				newY += p[3].y - p[2].y;
 				view.getTween(waterPolygon.attrs.points[0])
-				.to({ x: (newY - m1) / k1, y: newY }, 3000);
+				.to({ x: (newY - m3) / k3, y: newY }, 3000);
 				view.getTween(waterPolygon.attrs.points[1])
 				.to({ x: (newY - m2) / k2, y: newY }, 3000).call(function () {
-					var k3 = (p[3].y - p[4].y) / (p[3].x - p[4].x);
-					var m3 = p[3].y - k3 * p[3].x;
 					newY += p[3].y - p[2].y;
+					var k4 = (p[2].y - p[3].y) / (p[2].x - p[3].x);
+					var m4 = p[2].y - k4 * p[2].x;
 					view.getTween(waterPolygon.attrs.points[0])
-					.to({ x: (newY - m3) / k3, y: newY }, 3000);
+					.to({ x: (newY - m3) / k3, y: newY }, 2000);
 					view.getTween(waterPolygon.attrs.points[1])
-					.to({ x: (newY - m2) / k2, y: newY }, 3000).call(function () {
-						newY += p[3].y - p[2].y;
-						var k4 = (p[2].y - p[3].y) / (p[2].x - p[3].x);
-						var m4 = p[2].y - k4 * p[2].x;
-						view.getTween(waterPolygon.attrs.points[0])
-						.to({ x: (newY - m3) / k3, y: newY }, 2000);
-						view.getTween(waterPolygon.attrs.points[1])
-						.to({ x: (newY - m3) / k3, y: newY }, 2000).call(function () {
-							view.setTimeout(function () {
-								msg.callback();
-							}, 3000);
-						});
+					.to({ x: (newY - m3) / k3, y: newY }, 2000).call(function () {
+						view.setTimeout(function () {
+							msg.callback();
+						}, 3000);
 					});
 				});
-			}, 1000);
-		}, 1000);
+			});
+		}, 2000);
 	});
 };
