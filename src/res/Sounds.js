@@ -1,8 +1,9 @@
 /**
  * @constructor
- * @param {null|string} soundFile
- * @param {null|string} subtitle
- * @param {number=} instances
+ * @param {null|string} soundFile - name of the sound file
+ * @param {null|string} subtitle  - subtitle, potentially a stored string
+ * @param {number=} instances     - number of times the sound can be played
+ *                                  at the same time
  */
 MW.SoundEntry = function(soundFile, subtitle, instances) {
 	this.soundFile = soundFile;
@@ -34,7 +35,6 @@ MW.Sounds = {
 	LETS_FILL_THE_BUCKET:            new MW.SoundEntry(null, "LETS_FILL_THE_BUCKET"),
 	WHICH_ONE_DO_YOU_THINK_IT_IS:    new MW.SoundEntry(null, "WHICH_ONE_DO_YOU_THINK_IT_IS"),
 	MONKEY_HMM:                      new MW.SoundEntry(null, "MONKEY_HMM"),
-	MAGIC_CHIMES:                    new MW.SoundEntry("51710__bristolstories__u-chimes3_short", null),
 	DRIP:                            new MW.SoundEntry("25879__acclivity__drip1", null),
 
 	INTRO_1:                         new MW.SoundEntry(null, "INTRO_1"),
@@ -99,72 +99,6 @@ MW.Sounds = {
 	"NUMBER_8":                      new MW.SoundEntry(null, "NUMBER_8"),
 	"NUMBER_9":                      new MW.SoundEntry(null, "NUMBER_9"),
 	"NUMBER_10":                     new MW.SoundEntry(null, "NUMBER_10")
-		
-	,ARE_YOU_READY_TO_TEACH:
-		new MW.SoundEntry(null, "ARE_YOU_READY_TO_TEACH"),
-
-	GET_BANANA:
-		new MW.SoundEntry(null/*"60443__jobro__tada1"*/, null, 2),
-
-	FISHING_FREE_WRONG_ONES:
-		new MW.SoundEntry(null, "FISHING_FREE_WRONG_ONES"),
-		
-	FISHING_CATCH:
-		new MW.SoundEntry(null, "FISHING_CATCH"),
-		
-	FISHING_NOT_THIS_ONE:
-		new MW.SoundEntry(null, "FISHING_NOT_THIS_ONE"),
-	
-	FISHING_THERE_ARE_MORE:
-		new MW.SoundEntry(null, "FISHING_THERE_ARE_MORE"),
-		
-	FISHING_KEEP_GOING:
-		new MW.SoundEntry(null, "FISHING_KEEP_GOING"),
-		
-	FISHING_ARE_YOU_SURE:
-		new MW.SoundEntry(null, "FISHING_ARE_YOU_SURE"),
-		
-	FISHING_COUNT_FISH:
-		new MW.SoundEntry(null, "FISHING_COUNT_FISH"),
-
-	FISHING_COUNT_TARGET_FISH:
-		new MW.SoundEntry(null, "FISHING_COUNT_TARGET_FISH"),
-		
-	FISHING_WINDING:
-		new MW.SoundEntry(/*"34968__mike-campbell__f-s-1-fishing-reel"*/null, null), 
-
-	FISHING_SPLASH:
-		new MW.SoundEntry(/*"water_movement_fast_002"*/null, null),
-
-	FISHING_SWOSH:
-		new MW.SoundEntry(/*"60009__qubodup__swosh-22"*/ null, null),
-		
-	FISHING_ANGEL_CHOOSE_FISH:
-		new MW.SoundEntry(null, "FISHING_ANGEL_CHOOSE_FISH"),
-		
-	FISHING_ANGEL_COUNT:
-		new MW.SoundEntry(null, "FISHING_ANGEL_COUNT"),
-	
-	BUBBA_HI:
-		new MW.SoundEntry(null, "BUBBA_HI"),
-		
-	BUBBA_HERE_TO_HELP:
-		new MW.SoundEntry(null, "BUBBA_HERE_TO_HELP"),
-		
-	MONKEY_LEARNED_WELL:
-		new MW.SoundEntry(null, "MONKEY_LEARNED_WELL"),
-		
-	MONKEY_DIDNT_LEARN_WELL:
-		new MW.SoundEntry(null, "MONKEY_DIDNT_LEARN_WELL"),
-		
-	LETS_SHOW_HIM_AGAIN:
-		new MW.SoundEntry(null, "LETS_SHOW_HIM_AGAIN"),
-	
-	THANK_YOU_FOR_HELPING:
-		new MW.SoundEntry(null, "THANK_YOU_FOR_HELPING"),
-		
-	NOW_MONKEY_SHOW_YOU:
-		new MW.SoundEntry(null, "NOW_MONKEY_SHOW_YOU")
 };
 
 MW.Sound = (function() {
