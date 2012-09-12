@@ -1,3 +1,14 @@
+/** @constructor */
+function Class() {};
+/**
+ * @param {Object} obj
+ * @param {Object=} obj2
+ */
+Class.extend = function (obj, obj2) {};
+Class.prototype.init = function () {};
+
+/** @param {...} args */
+Class.prototype._super = function (args) {};
 
 /*============================================================================*/
 /**
