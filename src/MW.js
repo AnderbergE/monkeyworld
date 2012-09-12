@@ -36,8 +36,8 @@ MW.GlobalSettings = {
  *    on an object. Part of type-checking."
  *          -- http://code.google.com/p/closure-compiler/wiki/Warnings
  *
- * And by having this function it _can_ be defined, thus the warning may not
- * be raised.
+ * And by having this function it _can_ be defined from the Closure view point,
+ * thus the warning may not be raised.
  */
 (function () {
 	function silentClosure(tmp) {
