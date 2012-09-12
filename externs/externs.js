@@ -2,10 +2,11 @@
 function Class() {};
 /**
  * @param {Object} obj
- * @param {Object=} obj2
  */
-Class.extend = function (obj, obj2) {};
-Class.prototype.init = function () {};
+Class.extend = function (obj) {};
+
+/** @param {...} args */
+Class.prototype.init = function (args) {};
 
 /** @param {...} args */
 Class.prototype._super = function (args) {};
