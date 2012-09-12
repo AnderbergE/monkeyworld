@@ -3,12 +3,18 @@
  * @extends {MW.Player}
  * @constructor
  */
-MW.GamerPlayer = function() {
-	MW.Player.call(this, "GamerPlayer");
-	this.tag("GamerPlayer");
-	this.strategies = function() {};
-	this.strategies["Ladder"] = function(game) {
+MW.GamerPlayer = MW.Player.extend(
+/** @lends {MW.GamerPlayer.prototype} */
+{
+	/** @constructs */
+	init: function () {
+		this._super("GamerPlayer");
+		this.tag("GamerPlayer");
+		this.strategies = function () {};
+		this.strategies["Ladder"] = function(game) {
 		
-	};
-};
+		};
+	}
+
+});
 

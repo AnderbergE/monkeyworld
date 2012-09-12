@@ -1,7 +1,4 @@
-/**
- * @constructor
- */
-MW.EventManager = function() {
+MW.EventManager = new (/** @constructor */function() {
 	
 	/**
 	 * @type {Object.<string, Array>}
@@ -138,5 +135,4 @@ MW.EventManager = function() {
 	this.tellWait = function (type, callback, message) {
 		this.tellArguments(callback, true, type, message);
 	};
-};
-
+})();

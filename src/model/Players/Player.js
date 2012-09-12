@@ -2,7 +2,11 @@
  * @constructor
  * @extends {MW.GlobalObject}
  */
+MW.Player = MW.GlobalObject.extend(
+/** @lends {MW.Player.prototype} */
+{
+	init: function (name) {
+		this._super(name);
+	}
+});
 
-MW.Player = function(name) {
-	MW.GlobalObject.call(this, name);
-};

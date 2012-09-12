@@ -18,20 +18,71 @@
 		classpath="lib/mw-builder.jar" />
 
 	<target name="make_test">
-		<!--<concat destfile="test/aggregate.js">
-	    	<filelist dir="${source.dir}" files="MW.js"/>
-		<fileset dir="${source.dir}" includes="**/*.js" excludes="Core.js,MW.js" />-->
 		<aggregate_mw
 			output="index.html"
 			build_path="${build.test.dir}"
 			src_path="${source.dir}"
 			lib_path="lib"
-			res_path="../res"
 			title="MWorld Unit Tests"
 			test="true"
 		>
-			<headtag text="&lt;link href='http://fonts.googleapis.com/css?family=Gloria+Hallelujah' rel='stylesheet' type='text/css' />" />
-			<headtag text="&lt;link href='http://fonts.googleapis.com/css?family=Short+Stack' rel='stylesheet' type='text/css' />" />
+		<sources id="test">
+			<file name="MW.js" />
+			<file name="EventManager.js" />
+			<file name="Event.js" />
+			<file name="GlobalObject.js" />
+			<file name="Module.js" />
+			<!-- utils -->
+			<file name="utils/Utils.js" />
+			<file name="utils/kineticjs/Plugins.js" />
+			
+			<!-- res -->
+			<file name="res/Images.js" />
+			<file name="res/Strings.js" />
+			<file name="res/Sounds.js" />
+			
+			<!-- model -->
+			<file name="model/Agents/MonkeyAgent.js" />
+			<file name="model/Agents/MouseAgent.js" />
+			<file name="model/Game/AgentChooser.js" />
+			<file name="model/Game/Game.js" />
+			<file name="model/LearningTrack/LearningTrack.js" />
+			<file name="model/LearningTrack/FastLearningTrack.js" />
+			<file name="model/LearningTrack/MediumLearningTrack.js" />
+			<file name="model/LearningTrack/RegularLearningTrack.js" />
+			<file name="model/LearningTrack/NoLearningTrack.js" />
+			<file name="model/Players/Player.js" />
+			<file name="model/Players/AgentPlayer.js" />
+			<file name="model/Players/GamerPlayer.js" />
+			
+			<!-- model/Minigames -->
+			<file name="model/Minigames/Minigame.js" />
+			<file name="model/Minigames/Ladder/Ladder.js" />
+			
+			<!-- view -->
+			<file name="view/ViewModule.js" />
+			<file name="view/Agents/AgentView.js" />
+			<file name="view/Agents/MonkeyAgentView.js" />
+			<file name="view/Game/AgentChooserView.js" />
+			<file name="view/Game/GardenView.js" />
+			<file name="view/Game/IntroductionView.js" />
+			<file name="view/Game/MinigameHandlerView.js" />
+			<file name="view/Game/MonkeyWorldView.js" />
+			<file name="view/KineticJS/NoButton.js" />
+			<file name="view/KineticJS/YesButton.js" />
+			<file name="view/KineticJS/Lizard.js" />
+			<file name="view/KineticJS/Parcel.js" />
+			
+			<!-- view/Minigames -->
+			<file name="view/Minigames/MinigameView.js" />
+			<file name="view/Minigames/Ladder/LadderView.js" />
+			<file name="view/Minigames/Ladder/MountainView.js" />
+			<file name="view/Minigames/Ladder/TreeView/TreeNumpad.js" />
+			<file name="view/Minigames/Ladder/TreeView/TreeView.js" />
+			
+			<!-- core -->
+			<file name="MinigameConfigurations.js" />
+		</sources>
 		</aggregate_mw>
 		<!--</concat>-->
 	</target>
@@ -52,8 +103,63 @@
 				<file name="externs/externs.js" />
 				<file name="externs/kinetic-v4.0.1.externs.js" />
 			</externs>
-			<sources dir="${aggregate.dir}">
-				<file name="aggregate.js" />
+			<sources dir="${source.dir}">
+				<file name="MW.js" />
+				<file name="EventManager.js" />
+				<file name="Event.js" />
+				<file name="GlobalObject.js" />
+				<file name="Module.js" />
+				<!-- utils -->
+				<file name="utils/Utils.js" />
+				<file name="utils/kineticjs/Plugins.js" />
+				
+				<!-- res -->
+				<file name="res/Images.js" />
+				<file name="res/Strings.js" />
+				<file name="res/Sounds.js" />
+				
+				<!-- model -->
+				<file name="model/Agents/MonkeyAgent.js" />
+				<file name="model/Agents/MouseAgent.js" />
+				<file name="model/Game/AgentChooser.js" />
+				<file name="model/Game/Game.js" />
+				<file name="model/LearningTrack/LearningTrack.js" />
+				<file name="model/LearningTrack/FastLearningTrack.js" />
+				<file name="model/LearningTrack/MediumLearningTrack.js" />
+				<file name="model/LearningTrack/RegularLearningTrack.js" />
+				<file name="model/LearningTrack/NoLearningTrack.js" />
+				<file name="model/Players/Player.js" />
+				<file name="model/Players/AgentPlayer.js" />
+				<file name="model/Players/GamerPlayer.js" />
+				
+				<!-- model/Minigames -->
+				<file name="model/Minigames/Minigame.js" />
+				<file name="model/Minigames/Ladder/Ladder.js" />
+				
+				<!-- view -->
+				<file name="view/ViewModule.js" />
+				<file name="view/Agents/AgentView.js" />
+				<file name="view/Agents/MonkeyAgentView.js" />
+				<file name="view/Game/AgentChooserView.js" />
+				<file name="view/Game/GardenView.js" />
+				<file name="view/Game/IntroductionView.js" />
+				<file name="view/Game/MinigameHandlerView.js" />
+				<file name="view/Game/MonkeyWorldView.js" />
+				<file name="view/KineticJS/NoButton.js" />
+				<file name="view/KineticJS/YesButton.js" />
+				<file name="view/KineticJS/Lizard.js" />
+				<file name="view/KineticJS/Parcel.js" />
+				
+				<!-- view/Minigames -->
+				<file name="view/Minigames/MinigameView.js" />
+				<file name="view/Minigames/Ladder/LadderView.js" />
+				<file name="view/Minigames/Ladder/MountainView.js" />
+				<file name="view/Minigames/Ladder/TreeView/TreeNumpad.js" />
+				<file name="view/Minigames/Ladder/TreeView/TreeView.js" />
+				
+				<!-- core -->
+				<file name="MinigameConfigurations.js" />
+				<file name="Core.js" />
 			</sources>
 		</jscomp>
 
@@ -68,9 +174,66 @@
 			build_path="${build.uncompiled.dir}"
 			src_path="${source.dir}"
 			lib_path="lib"
-			res_path="../res"
 			title="MWorld"
 		>
+		<sources>
+			<file name="MW.js" />
+			<file name="EventManager.js" />
+			<file name="Event.js" />
+			<file name="GlobalObject.js" />
+			<file name="Module.js" />
+			<!-- utils -->
+			<file name="utils/Utils.js" />
+			<file name="utils/kineticjs/Plugins.js" />
+			
+			<!-- res -->
+			<file name="res/Images.js" />
+			<file name="res/Strings.js" />
+			<file name="res/Sounds.js" />
+			
+			<!-- model -->
+			<file name="model/Agents/MonkeyAgent.js" />
+			<file name="model/Agents/MouseAgent.js" />
+			<file name="model/Game/AgentChooser.js" />
+			<file name="model/Game/Game.js" />
+			<file name="model/LearningTrack/LearningTrack.js" />
+			<file name="model/LearningTrack/FastLearningTrack.js" />
+			<file name="model/LearningTrack/MediumLearningTrack.js" />
+			<file name="model/LearningTrack/RegularLearningTrack.js" />
+			<file name="model/LearningTrack/NoLearningTrack.js" />
+			<file name="model/Players/Player.js" />
+			<file name="model/Players/AgentPlayer.js" />
+			<file name="model/Players/GamerPlayer.js" />
+			
+			<!-- model/Minigames -->
+			<file name="model/Minigames/Minigame.js" />
+			<file name="model/Minigames/Ladder/Ladder.js" />
+			
+			<!-- view -->
+			<file name="view/ViewModule.js" />
+			<file name="view/Agents/AgentView.js" />
+			<file name="view/Agents/MonkeyAgentView.js" />
+			<file name="view/Game/AgentChooserView.js" />
+			<file name="view/Game/GardenView.js" />
+			<file name="view/Game/IntroductionView.js" />
+			<file name="view/Game/MinigameHandlerView.js" />
+			<file name="view/Game/MonkeyWorldView.js" />
+			<file name="view/KineticJS/NoButton.js" />
+			<file name="view/KineticJS/YesButton.js" />
+			<file name="view/KineticJS/Lizard.js" />
+			<file name="view/KineticJS/Parcel.js" />
+			
+			<!-- view/Minigames -->
+			<file name="view/Minigames/MinigameView.js" />
+			<file name="view/Minigames/Ladder/LadderView.js" />
+			<file name="view/Minigames/Ladder/MountainView.js" />
+			<file name="view/Minigames/Ladder/TreeView/TreeNumpad.js" />
+			<file name="view/Minigames/Ladder/TreeView/TreeView.js" />
+			
+			<!-- core -->
+			<file name="MinigameConfigurations.js" />
+			<file name="Core.js" />
+		</sources>
 			<headtag text="&lt;link href='http://fonts.googleapis.com/css?family=Gloria+Hallelujah' rel='stylesheet' type='text/css' />" />
 			<headtag text="&lt;link href='http://fonts.googleapis.com/css?family=Short+Stack' rel='stylesheet' type='text/css' />" />
 		</aggregate_mw>

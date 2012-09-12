@@ -4,37 +4,42 @@
  * @param {Kinetic.Stage} stage
  * @param {Function} callback
  */
-MW.IntroductionView = function (stage, callback) {
-	MW.ViewModule.call(this, stage, "IntroductionView");
-	var
-		view = this,
-		layer;
+MW.IntroductionView = MW.ViewModule.extend(
+/** @lends {MW.IntroductionView.prototype} */
+{
+	/** @constructs */
+	init: function (stage, callback) {
+		this._super(stage, "IntroductionView");
+		this._callback = callback;
+		this._layer = new Kinetic.Layer();
+	},
 
-	view.addSetup(function () {
-		layer = new Kinetic.Layer();
-		stage.add(layer);
+	setup: function () {
+		var that = this;
+		this._super();
+		this.getStage().add(this._layer);
 		
 		var mouseView = new MW.MouseAgentView();
-		var mouse = mouseView.getBody(view, 100, 200);
-		layer.add(mouse);
+		var mouse = mouseView.getBody(this, 100, 200);
+		this._layer.add(mouse);
 		mouseView.dance();
 		mouse.setScale(0.7);
 		
 		var mouseView2 = new MW.MouseAgentView();
-		var mouse2 = mouseView2.getBody(view, 300, 200);
-		layer.add(mouse2);
+		var mouse2 = mouseView2.getBody(this, 300, 200);
+		this._layer.add(mouse2);
 		mouseView2.dance();
 		mouse2.setScale(0.7);
 		
 		var mouseView3 = new MW.MouseAgentView();
-		var mouse3 = mouseView3.getBody(view, 500, 200);
-		layer.add(mouse3);
+		var mouse3 = mouseView3.getBody(this, 500, 200);
+		this._layer.add(mouse3);
 		mouseView3.dance();
 		mouse3.setScale(0.7);
 
 		var mouseView4 = new MW.MouseAgentView();
-		var mouse4 = mouseView4.getBody(view, 700, 200);
-		layer.add(mouse4);
+		var mouse4 = mouseView4.getBody(this, 700, 200);
+		this._layer.add(mouse4);
 		mouseView4.dance();
 		mouse4.setScale(0.7);
 		
@@ -60,23 +65,21 @@ MW.IntroductionView = function (stage, callback) {
 		skipButton.add(skipText);
 		
 		skipButton.on("mousedown touchstart", function () {
-			callback(true);
+			that._callback(true);
 		});
-		layer.add(skipButton);
-		layer.draw();
-		view.setTimeout(function () { MW.Sound.play(MW.Sounds.INTRO_1); }, 2000);
-		view.setTimeout(function () { MW.Sound.play(MW.Sounds.INTRO_2); }, 2000);
-		view.setTimeout(function () { MW.Sound.play(MW.Sounds.INTRO_3); }, 7000);
-		view.setTimeout(function () { MW.Sound.play(MW.Sounds.INTRO_4); }, 7000);
-		view.setTimeout(function () { MW.Sound.play(MW.Sounds.INTRO_5); }, 12000);
-		view.setTimeout(function () { callback(false); }, 14000);
-	});
+		this._layer.add(skipButton);
+		this._layer.draw();
+		this.setTimeout(function () { MW.Sound.play(MW.Sounds.INTRO_1); }, 2000);
+		this.setTimeout(function () { MW.Sound.play(MW.Sounds.INTRO_2); }, 2000);
+		this.setTimeout(function () { MW.Sound.play(MW.Sounds.INTRO_3); }, 7000);
+		this.setTimeout(function () { MW.Sound.play(MW.Sounds.INTRO_4); }, 7000);
+		this.setTimeout(function () { MW.Sound.play(MW.Sounds.INTRO_5); }, 12000);
+		this.setTimeout(function () { that._callback(false); }, 14000);
+	},
+	
+	tearDown: function () {
+		this._super();
+		this.getStage().remove(this._layer);
+	}
+});
 
-	view.addTearDown(function () {
-		stage.remove(layer);
-	});
-
-	view.on(MW.Event.FRAME, function (msg) {
-		layer.draw();
-	});
-};
