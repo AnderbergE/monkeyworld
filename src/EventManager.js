@@ -4,7 +4,7 @@ MW.EventManager = new (/** @constructor */function() {
 	 * @type {Object.<string, Array>}
 	 */
 	var listeners = {};
-	var toForget = new Array();
+	var toForget = [];
 	var telling = 0;
 
 	this.wevm = function() { return "GameEventManager"; };
@@ -63,10 +63,11 @@ MW.EventManager = new (/** @constructor */function() {
 	 * @param {string} name
 	 */
 	this.forget = function(name) {
-		if (telling > 0) {
+		/*if (telling > 0) {
+		    console.log("TELLING");
 			toForget.push(name);
 			return;
-		}
+		}*/
 		var sum = 0;
 		for (var key in listeners) {
 			var total = listeners[key].length;
@@ -105,7 +106,7 @@ MW.EventManager = new (/** @constructor */function() {
 			for (var i = 0; i < toForget.length; i++) {
 				this.forget(toForget[i]);
 			}
-			toForget = new Array();
+			toForget = [];
 		}
 	};
 
@@ -124,12 +125,6 @@ MW.EventManager = new (/** @constructor */function() {
 			}
 		}
 		telling--;
-		if (telling == 0 && toForget.length > 0) {
-			for (var i = 0; i < toForget.length; i++) {
-				this.forget(toForget[i]);
-			}
-			toForget = new Array();
-		}
 	};
 
 	this.tellWait = function (type, callback, message) {
