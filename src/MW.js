@@ -39,7 +39,9 @@ MW.GlobalSettings = {
  * And by having this function it _can_ be defined, thus the warning may not
  * be raised.
  */
-(function silentClosure(tmp) {
-	tmp.extend = Class.extend;
-})({});
+(function () {
+	function silentClosure(tmp) {
+		tmp.extend = Class.extend;
+	}
+})();
 
