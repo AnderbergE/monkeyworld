@@ -1,16 +1,16 @@
 /**
  * @constructor
  * @extends {MW.ViewModule}
+ * @param {Kinetic.Stage} stage
+ * @param {Function} callback
  */
-MW.IntroductionView = function (callback) {
-	MW.ViewModule.call(this, "IntroductionView");
+MW.IntroductionView = function (stage, callback) {
+	MW.ViewModule.call(this, stage, "IntroductionView");
 	var
 		view = this,
-		stage,
 		layer;
 
 	view.addSetup(function () {
-		stage = view.getStage();
 		layer = new Kinetic.Layer();
 		stage.add(layer);
 		

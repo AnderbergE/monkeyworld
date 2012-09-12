@@ -1,13 +1,14 @@
 /**
  * @constructor
  * @extends {MW.ViewModule}
+ * @param {Kinetic.Stage} stage
  * @param {string} tag
  */
-MW.MinigameView = function(tag) {
-	MW.ViewModule.call(this, tag);
+MW.MinigameView = function(stage, tag) {
+	MW.ViewModule.call(this, stage, tag);
 	var agentBody = null, agentX = 0, agentY = 0;
 	/** @type {MW.MinigameView}      */ var view  = this;
-	/** @type {Kinetic.Layer} */ var layer = view.stage.getDynamicLayer();
+	/** @type {Kinetic.Layer} */ var layer = stage.getDynamicLayer();
 	/**
 	 * Show the current backend score of a mini game.
 	 * @param {MW.MinigameView} view
@@ -22,7 +23,7 @@ MW.MinigameView = function(tag) {
 			textFill: "black",
 			align: "left",
 			verticalAlign: "middle",
-			x: view.stage.getWidth() - 700,
+			x: stage.getWidth() - 700,
 			y: 15
 		});
 		layer.add(text);
@@ -55,7 +56,7 @@ MW.MinigameView = function(tag) {
 		var faceImageObj = view.game.getAgentView().normalFace();
 		var faceImage = new view.game.getAgentView().getFace(
 			view,
-			view.getStage().getWidth() - faceImageObj.width - 30,
+			stage.getWidth() - faceImageObj.width - 30,
 			12
 		);
 		faceImage.setScale(0.5);
@@ -70,7 +71,7 @@ MW.MinigameView = function(tag) {
 			} else if (view.game.modeIsAgentSee()) {
 				agentBody = view.game.getAgentView().getBody(
 					view,
-					view.getStage().getWidth() - faceImageObj.width - 30,
+					stage.getWidth() - faceImageObj.width - 30,
 					12
 				);
 				agentBody.setOpacity(0);

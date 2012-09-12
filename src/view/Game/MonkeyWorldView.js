@@ -4,11 +4,11 @@
  * 
  * @constructor
  * @extends {MW.ViewModule}
+ * @param {Kinetic.Stage} stage
  */
-MW.MonkeyWorldView = function () {
+MW.MonkeyWorldView = function (stage) {
 	"use strict";
-	MW.ViewModule.call(this, "MonkeyWorldView");
-	var stage = this.stage;
+	MW.ViewModule.call(this, stage, "MonkeyWorldView");
 	var layer = stage.getDynamicLayer();
 
 	/**

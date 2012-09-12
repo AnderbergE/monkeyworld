@@ -1,11 +1,12 @@
 /**
  * @constructor
  * @extends {MW.LadderView}
+ * @param {Kinetic.Stage} stage
  * @param {MW.LadderMinigame} ladder
  */
-MW.TreeView = function(ladder) {
+MW.TreeView = function(stage, ladder) {
 	"use strict";
-	MW.LadderView.call(this, "TreeView", ladder);
+	MW.LadderView.call(this, stage, "TreeView", ladder);
 	var
 		view = this,
 		scale = 1 / 2.083168317,
@@ -31,7 +32,7 @@ MW.TreeView = function(ladder) {
 		config = {
 			tree: {
 				x: 120,
-				y: view.getStage().getHeight() - 160,
+				y: stage.getHeight() - 160,
 				stepHeight: 70,
 				stepWidth: 120,
 				stepNarrowing: 10
@@ -42,7 +43,7 @@ MW.TreeView = function(ladder) {
 			},
 			dropZone: {
 				x: 650,
-				y: view.getStage().getHeight() - 120,
+				y: stage.getHeight() - 120,
 				height: 200,
 				offset: 0,
 				offsetWidth: 75
@@ -113,7 +114,7 @@ MW.TreeView = function(ladder) {
 	numpad.lock();
 
 	layer = new Kinetic.Layer();
-	view.getStage().add(layer);
+	stage.add(layer);
 
 	/** @type {Kinetic.MW.Lizard} */
 	helper = new Kinetic.MW.Lizard({
@@ -406,7 +407,7 @@ MW.TreeView = function(ladder) {
 	});
 
 	view.addTearDown(function () {
-		view.getStage().remove(layer);
+		stage.remove(layer);
 	});
 
 	view.interrupt = function () {
@@ -416,7 +417,7 @@ MW.TreeView = function(ladder) {
 	background = new Kinetic.Image({
 		image: MW.Images.TREEGAME_BACKGROUND,
 		x: 0,
-		y: view.getStage().getHeight() - MW.Images.TREEGAME_BACKGROUND.height,
+		y: stage.getHeight() - MW.Images.TREEGAME_BACKGROUND.height,
 		width: MW.Images.TREEGAME_BACKGROUND.width,
 		height: MW.Images.TREEGAME_BACKGROUND.height
 	});
@@ -445,7 +446,7 @@ MW.TreeView = function(ladder) {
 		width: MW.Images.TREEGAME_COVER.width,
 		height: MW.Images.TREEGAME_COVER.height,
 		x: 182,
-		y: view.getStage().getHeight() - MW.Images.TREEGAME_COVER.height
+		y: stage.getHeight() - MW.Images.TREEGAME_COVER.height
 	}));
 
 
@@ -473,8 +474,8 @@ MW.TreeView = function(ladder) {
 	
 	view.addSetup(function () {
 		view.addAgent(
-			view.getStage().getWidth() - 248,
-			view.getStage().getHeight() - 100 - agentScale * (agentView.feetOffset() - agentView.bodyOffset().y),
+			stage.getWidth() - 248,
+			stage.getHeight() - 100 - agentScale * (agentView.feetOffset() - agentView.bodyOffset().y),
 			agentScale,
 			layer
 		);

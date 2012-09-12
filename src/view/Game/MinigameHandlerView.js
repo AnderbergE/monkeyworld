@@ -1,11 +1,11 @@
 /**
  * @constructor
  * @extends {MW.ViewModule}
+ * @param {Kinetic.Stage} stage
  */
-MW.MinigameHandlerView = function () {
-	MW.ViewModule.call(this, "MinigameHandlerView");
+MW.MinigameHandlerView = function (stage) {
+	MW.ViewModule.call(this, stage, "MinigameHandlerView");
 	/** @type {MW.MinigameHandlerView} */ var view = this;
-	/** @type {Kinetic.Stage}          */ var stage = view.stage;
 	/** @type {Kinetic.Layer}          */ var layer = stage.getDynamicLayer();
 	/**
 	 * Show the current total backend score of the minigame.
@@ -20,7 +20,7 @@ MW.MinigameHandlerView = function () {
 			textFill: "black",
 			align: "left",
 			verticalAlign: "middle",
-			x: view.stage.getWidth() - 700,
+			x: stage.getWidth() - 700,
 			y: 35
 		});
 		var on = false;
@@ -66,7 +66,7 @@ MW.MinigameHandlerView = function () {
 			textFill: "black",
 			align: "left",
 			verticalAlign: "middle",
-			x: view.stage.getWidth() - 700,
+			x: stage.getWidth() - 700,
 			y: 55
 		});
 		var on = false, running = false;

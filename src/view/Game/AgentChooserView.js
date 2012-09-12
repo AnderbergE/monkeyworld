@@ -1,10 +1,12 @@
 /**
  * @constructor
  * @extends {MW.ViewModule}
+ * @param {Kinetic.Stage} stage
  * @param {MW.AgentChooser} chooser
  */
-MW.AgentChooserView = function(chooser) {
-	MW.ViewModule.call(this, "AgentChooserView");
+MW.AgentChooserView = function(stage, chooser) {
+	MW.ViewModule.call(this, stage, "AgentChooserView");
+	console.log(stage);
 	var view = this;
 	/** @type {Kinetic.Layer} */ var layer = null;
 	/** @const @type {Object.<number>} */
@@ -68,8 +70,8 @@ MW.AgentChooserView = function(chooser) {
 				if (array[i] === button) {
 					view.setTimeout(function () {
 						button.transitionTo({
-							x: view.getStage().getWidth() / 2,
-							y: view.getStage().getHeight() / 2,
+							x: stage.getWidth() / 2,
+							y: stage.getHeight() / 2,
 							scale: {
 								x: 1.5,
 								y: 1.5
@@ -153,7 +155,7 @@ MW.AgentChooserView = function(chooser) {
 	 */
 	view.addSetup(function () {
 		layer = new Kinetic.Layer();
-		view.stage.add(layer);
+		stage.add(layer);
 		var bg = new Kinetic.Image({
 			image: MW.Images.JUNGLEBG
 		});
@@ -176,7 +178,7 @@ MW.AgentChooserView = function(chooser) {
 	 * Tear down the view
 	 */
 	view.addTearDown(function() {
-		view.stage.remove(layer);
+		stage.remove(layer);
 	});
 
 	/**

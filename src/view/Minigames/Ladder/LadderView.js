@@ -1,11 +1,12 @@
 /**
  * @constructor
  * @extends {MW.MinigameView}
+ * @param {Kinetic.Stage} stage
  * @param {MW.LadderMinigame} ladder
  */
-MW.LadderView = function(tag, ladder)
+MW.LadderView = function(stage, tag, ladder)
 {
-	MW.MinigameView.call(this, tag);
+	MW.MinigameView.call(this, stage, tag);
 	this.tag(tag);
 	var view = this;
 	var stopButton = null;

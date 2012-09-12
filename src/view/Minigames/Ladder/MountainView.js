@@ -1,11 +1,12 @@
 /**
  * @constructor
  * @extends {MW.LadderView}
+ * @param {Kinetic.Stage} stage
  * @param {MW.LadderMinigame} game
  */
-MW.MountainView = function(game) {
+MW.MountainView = function(stage, game) {
 	/** @type {MW.MountainView} */ var view = this;
-	MW.LadderView.call(this, "MtView", game);
+	MW.LadderView.call(this, stage, "MtView", game);
 	
 	/**
 	 * Define sounds specific for this implementation of the ladder game. 
@@ -88,7 +89,7 @@ MW.MountainView = function(game) {
 	};
 	
 	view.addSetup(function() {
-		view.stage.add(layer);
+		stage.add(layer);
 		
 		var mountain = new Kinetic.Polygon({
 			points: [50, 600,
@@ -198,8 +199,8 @@ MW.MountainView = function(game) {
 		var agentView = view.game.getAgentView();
 		var agentScale = 0.8;
 		view.addAgent(
-			view.getStage().getWidth() - 500,
-			view.getStage().getHeight() - 50 -
+			stage.getWidth() - 500,
+			stage.getHeight() - 50 -
 			  agentScale *
 			  (agentView.feetOffset() - agentView.bodyOffset().y),
 			agentScale,
@@ -404,7 +405,7 @@ MW.MountainView = function(game) {
 	});
 	
 	this.addTearDown(function() {
-		view.stage.remove(layer);
+		stage.remove(layer);
 	});
 };
 

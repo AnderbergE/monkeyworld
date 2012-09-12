@@ -1,9 +1,10 @@
 /**
  * @constructor
  * @extends {MW.Module}
+ * @param {Kinetic.Stage} stage
  * @param {string} tag
  */
-MW.ViewModule = function(tag) {
+MW.ViewModule = function(stage, tag) {
 	MW.Module.call(this, tag);
 	var that = this;
 	var tweenController = new TweenController();

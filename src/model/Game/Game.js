@@ -32,7 +32,6 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 		 */
 		object.prototype.evm = that.evm;
 		object.prototype.game = that;
-		object.prototype.stage = stage;
 		
 		/*
 		 * TODO: Find out how to achieve this with apply(...) instead.
@@ -108,7 +107,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	if (useAgentChooser === undefined) useAgentChooser = true;
 	//this.on("frame", function(msg) { miniGame.onFrame(msg.frame); });
 	if (useViews)
-		newObject(MW.MonkeyWorldView);
+		newObject(MW.MonkeyWorldView, stage);
 
 	
 	/*====================================================================*/
@@ -232,7 +231,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 
 		chooseMiniGame(function() {
 			if (useViews) {
-				miniGameHandlerView = newObject(MW.MinigameHandlerView);
+				miniGameHandlerView = newObject(MW.MinigameHandlerView, stage);
 				miniGameHandlerView.setup();
 			}
 			setMinigameScore(0);
@@ -276,7 +275,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 		miniGameStarter();
 		miniGame.setup();
 		if (useViews) {
-			currentMiniGameView = newObject(miniGameView, miniGame);
+			currentMiniGameView = newObject(miniGameView, stage, miniGame);
 			currentMiniGameView.setup();
 			that.tell("Game.miniGameListenersInitiated");
 		}
@@ -327,7 +326,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 				callback();
 		};
 		if (useViews) {
-			var gardenView = newObject(MW.GardenView);
+			var gardenView = newObject(MW.GardenView, stage);
 			gardenView.setup();
 			that.tell(MW.Event.WATER_GARDEN, {
 				callback: function () {
@@ -341,7 +340,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 	
 	var demonstrateGarden = function (callback) {
 		if (useViews && !MW.GlobalSettings.debug) {
-			var gardenView = newObject(MW.GardenView);
+			var gardenView = newObject(MW.GardenView, stage);
 			gardenView.setup();
 			that.tell("Game.viewInitiated");
 			that.tell("Game.demonstrateGarden", {
@@ -359,6 +358,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 		if (useViews && !MW.GlobalSettings.debug) {
 			var introductionView = newObject(
 				MW.IntroductionView,
+				stage,
 				function (skipGarden) {
 					if (!skipGarden) {
 						introductionView.tearDown();
@@ -447,7 +447,7 @@ MW.Game = function(stage, useViews, useAgentChooser, startGame) {
 					}
 				);
 				if (useViews) {
-					chooserView = newObject(MW.AgentChooserView, chooser);
+					chooserView = newObject(MW.AgentChooserView, stage, chooser);
 					chooserView.setup();
 					that.tell("Game.viewInitiated");
 				}

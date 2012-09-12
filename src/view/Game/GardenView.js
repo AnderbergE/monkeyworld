@@ -1,9 +1,10 @@
 /**
  * @constructor
  * @extends {MW.ViewModule}
+ * @param {Kinetic.Stage} stage
  */
-MW.GardenView = function () {
-	MW.ViewModule.call(this, "GardenView");
+MW.GardenView = function (stage) {
+	MW.ViewModule.call(this, stage, "GardenView");
 	var
 		view = this,
 		sadBackground,
@@ -47,14 +48,14 @@ MW.GardenView = function () {
 		    fill: "blue"
 		});
 		layer = new Kinetic.Layer();
-		view.getStage().add(layer);
+		stage.add(layer);
 		layer.add(sadBackground);
 		layer.add(pitcherGroup);
 		pitcherGroup.add(waterPolygon);
 		pitcherGroup.add(pitcherImage);
 	});
 	view.addTearDown(function () {
-		view.getStage().remove(layer);
+		stage.remove(layer);
 	});
 
 	/**
