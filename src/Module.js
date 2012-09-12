@@ -77,7 +77,6 @@ MW.Module = MW.GlobalObject.extend(
 	},
 	
 	tearDown: function() {
-		console.log("tear down module");
 		if (this._tearDowns === null)
 			throw {
 				name: "MW.TearDownAlreadyCalledException",

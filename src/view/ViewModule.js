@@ -46,7 +46,6 @@ MW.ViewModule = MW.Module.extend(
 	},
 	
 	tearDown: function () {
-		console.log("tear down view module");
 		this._super();
 		this._tweenController.teardown();
 	},

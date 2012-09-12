@@ -14,12 +14,11 @@ MW.Minigame = MW.Module.extend(
 		this._super(tag);
 		this._parent = parent;
 		this.quit = parent.miniGameDone;
-		var
-			that = this,
-			startFunctions = [],
-			stopFunctions = [],
-			started = false,
-			stopped = false;
+		var that = this;
+		this._started = false;
+		this._startFunctions = [];
+		this._stopped = false;
+		this._stopFunctions = [];
 	
 		/** @private @type {MW.MiniGameRoundResult} */
 		var roundResult = null;
@@ -44,38 +43,14 @@ MW.Minigame = MW.Module.extend(
 		 * @param {Function} fnc
 		 */
 		this.addStart = function (fnc) {
-			startFunctions.push(fnc);
+			this._startFunctions.push(fnc);
 		};
 
 		/**
 		 * @param {Function} fnc
 		 */	
 		this.addStop = function (fnc) {
-			stopFunctions.push(fnc);
-		};
-	
-		this.start = function () {
-			if (started)
-				throw {
-					name: "MW.MinigameModuleAlreadyStarted",
-					message: "This minigame module (" + tag + ") " +
-						     "has already been started."
-				};
-			started = true;
-			while (startFunctions.length > 0)
-				(startFunctions.shift())();
-		};
-	
-		this.stop = function () {
-			if (stopped)
-				throw {
-					name: "MW.MinigameModuleAlreadyStopped",
-					message: "This minigame module (" + tag + ") " +
-						     "has already been stopped."
-				};
-			stopped = true;
-			while (stopFunctions.length > 0)
-				(stopFunctions.shift())();
+			this._stopFunctions.push(fnc);
 		};
 	
 		var subtractBackendScore = function() {
@@ -128,8 +103,10 @@ MW.Minigame = MW.Module.extend(
 			backendScore = 10;
 			that.tell(MW.Event.BACKEND_SCORE_UPDATE_MODE, { backendScore: backendScore }, true);
 			roundResult = new MW.MiniGameRoundResult();
-			_strategy = new player.strategies[this._tag](this, res);
-			this.start();
+			if (player.strategies[this._tag] !== undefined) {
+    			_strategy = new player.strategies[this._tag](this, res);
+    		}
+			that.start();
 		};
 	
 		var _agentIsInterrupted = false;
@@ -138,8 +115,10 @@ MW.Minigame = MW.Module.extend(
 	
 		this.interruptAgent = function() {
 			_agentIsInterrupted = true;
-			_strategy.interrupt();
-			that.setGamerAsPlayer();
+			if (_strategy !== undefined && _strategy !== null) {
+    			_strategy.interrupt();
+	    		that.setGamerAsPlayer();
+	    	}
 			for (var i = 0; i < interruptHandlers.length; i += 1) {
 				interruptHandlers[i]();
 			}
@@ -183,6 +162,30 @@ MW.Minigame = MW.Module.extend(
 		this.agentIsBeingHelped = function() {
 			return _agentIsBeingHelped;
 		};
+	},
+	
+	start: function () {
+		if (this._started)
+			throw {
+				name: "MW.MinigameModuleAlreadyStarted",
+				message: "This minigame module (" + this.getTag() + ") " +
+					     "has already been started."
+			};
+		this._started = true;
+		while (this._startFunctions.length > 0)
+			(this._startFunctions.shift())();
+	},
+	
+	stop: function () {
+		if (this._stopped)
+			throw {
+				name: "MW.MinigameModuleAlreadyStopped",
+				message: "This minigame module (" + this.getTag() + ") " +
+					     "has already been stopped."
+			};
+		this._stopped = true;
+		while (this._stopFunctions.length > 0)
+			(this._stopFunctions.shift())();
 	},
 	
 	addWaterDrop: function (callback) {
