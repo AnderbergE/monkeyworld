@@ -1,212 +1,190 @@
 /**
  * @constructor
+ * @extends {Kinetic.Node}
+ * @param {Kinetic.Container} container
+ * @param {Object} config
  */
-MW.AgentView = function() {
-	var view = this;
-	var bodyGroup = null;
-	var bodyImage = null;
-	var bodyImageOriginal = null;
-	var bodyFace = null;
-	var bodyView = null;
-	var faceView = null;
-	var leftArmImage = null;
-	var bodyX = null, bodyY = null;
-	var resetting = false;
-	var face = null;
-	var headBlink = null;
-	var talkInterval = null;
-	var talkTimeout = null;
+MW.AgentView = Class.extend(
+/** @lends {MW.AgentView.prototype} */
+{
+    /** @constructs */
+    init: function (container, config) {
+        this.container = container;
+        this.started = false;
+        this.group = new Kinetic.Group(config);
+        this.container.add(this.group);
+        this.sprite = new Kinetic.Sprite({
+            image: this.imageSprite,
+            animation: "idle",
+            animations: this.animations,
+            frameRate: 4,
+            visible: false
+        });
+        this.face = new Kinetic.Sprite({
+            image: this.faceSprite,
+            animation: "neutral",
+            animations: this.facials,
+            frameRate: 4,
+            x: this.offsets["face"].x,
+            y: this.offsets["face"].y,
+            visible: false
+        });
+        this.blink = new Kinetic.Sprite({
+            image: this.blinkSprite,
+            animation: "idle",
+            animations: this.blinks,
+            frameRate: 15,
+            x: this.offsets["face"].x,
+            y: this.offsets["face"].y,
+            visible: false
+        });
+        this.arm = new Kinetic.Sprite({
+            image: this.pointAtSprite,
+            animation: "pointAt",
+            animations: this.pointAts,
+            frameRate: 5,
+            visible: false,
+            x: this.offsets["arm"].x,
+            y: this.offsets["arm"].y
+        });
+        var that = this;
+        function repeatBlink() {
+            that.blink.show();
+            setTimeout(function () {
+                that.blink.setAnimation("blink");
+                that.blink.afterFrame(that.blinks["blink"].length - 1, function () {
+                    that.blink.setAnimation("idle");
+                    repeatBlink();
+                });
+            }, Utils.getRandomInt(2000, 5000));
+        };
+        repeatBlink();
+        this.group.add(this.sprite);
+        this.group.add(this.arm);
+        this.group.add(this.face);
+        this.group.add(this.blink);
+        this.start = function () {
+            if (!that.started) {
+                that.started = true;
+                this.sprite.show();
+                this.sprite.start();
+                this.face.start();
+                this.blink.start();
+                this.blink.show();
+            }
+        }
+        this.setDefaultPosition = function () {
+            this.sprite.setPosition({ x: 0, y: 0 });
+        };
+    },
 
-	/**
-	 * @return {Kinetic.Node}
-	 */
-	this.getBody = function (v, x, y) {
-		bodyView = v;
-		bodyX = x; bodyY = y;
-		bodyGroup = new Kinetic.Group({ x: bodyX, y: bodyY });
-		bodyImage = new Kinetic.Image({
-			image: view.standing()
-		});
-		bodyImageOriginal = bodyImage;
-		bodyFace = new Kinetic.Image({
-			image: view.normalFace(),
-			x: view.faceOffset().x,
-			y: view.faceOffset().y
-		});
-		leftArmImage = new Kinetic.Image({
-			image: view.pointAtArmArray()[0],
-			x: view.pointAtArmOffset().x,
-			y: view.pointAtArmOffset().y,
-			visible: false
-		});
-		bodyGroup.add(bodyImage);
-		bodyGroup.add(bodyFace);
-		bodyGroup.add(leftArmImage);
-		return bodyGroup;
-	};
+    idle: function () {
+        this.start();
+        this.face.show();
+        this.blink.show();
+        this.sprite.setAnimation("idle");
+        this.setDefaultPosition();
+    },
 
-	this.getFace = function (v, x, y) {
-		faceView = v;
-		var group = new Kinetic.Group({ x: x, y: y });
-		var head = new Kinetic.Image({
-			image: view.head(),
-			width: view.head().width,
-			height: view.head().height
-		});
-		face = new Kinetic.Image({
-			image: view.normalFace(),
-			x: view.faceOffset().x,
-			y: view.faceOffset().y
-		});
-		headBlink = new Kinetic.Image({
-			image: view.blinkArray()[0],
-			visible: false,
-			x: view.faceOffset().x,
-			y: view.faceOffset().y
-		});
-		group.add(head);
-		group.add(face);
-		group.add(headBlink);
-		
-		return group;
-	};
+    dance: function () {
+        this.start();
+        this.face.hide();
+        this.blink.hide();
+        this.sprite.setAnimation("dance");
+        this.sprite.setPosition(this.offsets["dance"]);
+    },
+    
+    pointAt: function (number, callback) {
+        this.start();
+        this.sprite.setAnimation("idle-no-arm");
+        this.arm.show();
+        this.arm.setAnimation("pointAt" + number);
+        var that = this;
+        this._chosenNumber = number;
+        this.arm.afterFrame(that.pointAts["pointAt" + number].length - 2, function () {
+            that.arm.stop();
+            callback();
+        });
+        this.arm.start();
+    },
+    
+    resetPointAt: function (callback) {
+        this.start();
+        this.arm.stop();
+        this.sprite.setAnimation("idle-no-arm");
+        this.arm.show();
+        var that = this;
+        if (this.arm.getIndex() < 4) {
+            var n = this.arm.getIndex();
+            this.arm.setIndex(this.pointAts["pointAt" + this._chosenNumber].length - n - 2);
+        }
+        this.arm.setAnimation("reset");
+        this.arm.afterFrame(this.pointAts["reset"].length - 1, function () {
+            that.arm.stop();
+            that.arm.hide();
+            that.sprite.setAnimation("idle");
+            if (callback !== undefined) {
+                callback();
+            }
+        });
+        this.arm.start();
+    },
 
-	this.jumpDown = function (x, y) {
-		bodyX = x;
-		bodyY = y;
-		bodyImage.setImage(view.falling());
-		bodyFace.hide();
-		bodyView.getTween(bodyGroup.attrs).to({ opacity: 1}, 400).to({ x: x, y: y }, 3000).call(function () {
-			bodyImage.setImage(view.standing());
-			bodyFace.show();
-		});
-	};
-	
-	this.showBody = function () {
-		bodyGroup.setOpacity(1);
-		bodyGroup.show();
-	};
+    jump: function () {
+        this.start();
+        this.face.hide();
+        this.blink.hide();
+        this.sprite.setAnimation("jump");
+        this.setDefaultPosition();
+    },
 
-	this.moveBody = function (x, y) {
-		bodyX = x;
-		bodyY = y;
-		bodyGroup.setX(x);
-		bodyGroup.setY(y);
-	};
-
-	/**
-	 * @return {Function} a reset function
-	 */
-	this.pointAt = function (number, callback) {
-		var
-			waitingTime = 200,
-			rollbackable = null,
-			images = [
-				view.pointAtArmArray()[0],
-				view.pointAtArmArray()[1],
-				view.pointAtArmArray()[2],
-				view.pointAtArmArray()[3],
-				view.pointAtButtonArray()[number - 1]
-			],
-			reset = false,
-			resetCallback = null,
-			i = 0,
-			rolling = false;
-		bodyImage.setImage(view.standingNoLeftArm());
-		leftArmImage.show();
-		rollbackable = function () {
-			rolling = true;
-			leftArmImage.setImage(images[i]);
-			bodyView.setTimeout(function () {
-				if (!reset && i < images.length) {
-					i += 1;
-					rollbackable();
-				} else if (reset && i >= 0) {
-					i -= 1;
-					rollbackable();
-				} else if (i === images.length) {
-					callback();
-					rolling = false;
-				} else if (reset && i === -1) {
-					bodyImage.setImage(view.standing());
-					leftArmImage.hide();
-					if (resetCallback !== null && resetCallback !== undefined) {
-						resetCallback();
-					}
-					rolling = false;
-				}
-			}, waitingTime);
-		};
-		rollbackable();
-		var resetFunction = function (done) {
-			resetCallback = done;
-			reset = true;
-			if (!rolling) {
-				rollbackable();
-			}
-		};
-		this.resetFunction = resetFunction;
-		return resetFunction;
-	};
-
-	this.interruptPointAt = function () {
-		this.resetFunction();
-	};
-
-	this.stopDance = function () {
-		bodyView.removeTween(bodyImage.attrs);
-		bodyImage.setImage(view.standing());
-		bodyGroup.setX(bodyX);
-		bodyGroup.setY(bodyY);
-		bodyImage.setWidth(view.standing().width);
-		bodyImage.setHeight(view.standing().height);
-		bodyFace.show();
-	};
-
-	this.dance = function () {
-		var wait = 400;
-		bodyFace.hide();
-		bodyGroup.setX(bodyX + view.danceOffset().x);
-		bodyGroup.setY(bodyY + view.danceOffset().y);
-		bodyImage.setImage(view.danceArray()[0]);
-		bodyImage.setWidth(view.danceArray()[0].width);
-		bodyImage.setHeight(view.danceArray()[0].height);
-		bodyView.getTween(bodyImage.attrs)
-		.to({ image: view.danceArray()[0] })
-		.wait(wait)
-		.to({ image: view.danceArray()[1] })
-		.wait(wait)
-		.to({ image: view.danceArray()[2] })
-		.wait(wait)
-		.call(view.dance);
-	};
-
-	this.faceBlink = function () {
-		faceView.setInterval(function () {
-			headBlink.show();
-			faceView.getTween(headBlink.attrs)
-			.to({ image: view.blinkArray()[1] }, 100)
-			.to({ image: view.blinkArray()[2] }, 100)
-			.to({ image: view.blinkArray()[1] }, 100)
-			.to({ image: view.blinkArray()[0] }, 100)
-			.call(function () { headBlink.hide(); });
-		}, 5000);
-	};
-
-	this.startTalk = function () {
-		bodyFace.setImage(view.talk());
-		talkInterval = bodyView.setInterval(function () {
-			bodyFace.setImage(view.normalFace());
-			talkTimeout = bodyView.setTimeout(function () {
-				bodyFace.setImage(view.talk());
-			}, 200);
-		}, 400);
-	};
-	
-	this.stopTalk = function () {
-		bodyView.clearInterval(talkInterval);
-		bodyView.clearTimeout(talkTimeout);
-		bodyFace.setImage(view.normalFace());
-	};
-};
+    hideBody: function () {
+        this.start();
+        this.face.show();
+        this.blink.show();
+        this.sprite.setAnimation("head");
+        this.setDefaultPosition();
+    },
+    
+    /**
+     * @param {boolean=} set
+     */
+    talk: function (set) {
+        this.start();
+        this.face.show();
+        this.blink.show();
+        this.face.setAnimation("talk");
+    },
+    
+    neutral: function () {
+        this.start();
+        this.face.show();
+        this.blink.show();
+        this.face.setAnimation("neutral");
+    },
+    
+    feetOffset: function () {
+        return this.offsets["feet"];
+    },
+    
+    transitionTo: function (config) {
+        this.group.transitionTo(config);
+    },
+    
+    setContainer: function (container) {
+        this.group.moveTo(container);
+    },
+    
+    setX: function (x) {
+        this.group.setX(x);
+    },
+    
+    setY: function (y) {
+        this.group.setY(y);
+    },
+    
+    setPosition: function(pos) {
+        this.group.setPosition(pos);
+    }
+});
 

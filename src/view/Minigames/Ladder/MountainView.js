@@ -199,7 +199,7 @@ MW.MountainView = MW.LadderView.extend(
 			layer.add(cage);
 			//view.on("frame", function() { layer.draw(); });
 			view.addInterruptButtons(layer);
-
+/*
 			var agentScale = 0.8;
 			view.addAgent(
 				stage.getWidth() - 500,
@@ -209,7 +209,7 @@ MW.MountainView = MW.LadderView.extend(
 				agentScale,
 				layer
 			);
-
+	*/		
 			layer.draw();
 		});
 
@@ -256,6 +256,13 @@ MW.MountainView = MW.LadderView.extend(
 			};
 		};
 
+        view.addAgent(
+            stage.getWidth() - 500,
+            stage.getHeight() - 50,
+            layer,
+            0.8
+        );
+
 		this.pick = function(number, callback) {
 			allowNumpad = false;
 			var b = balloonGroups[number - 1]._balloons;
@@ -298,16 +305,7 @@ MW.MountainView = MW.LadderView.extend(
 				MW.Sound.play(MW.Sounds.IM_GOING_TO_PICK_THIS_ONE);
 				var reset = null;
 				view.setTimeout(function () {
-					reset = agentView.pointAt(ladderMinigame.getChosenNumber(), function () {
-						view.setTimeout(function () {
-							if (!ladderMinigame.agentIsInterrupted()) {
-								view.pick(ladderMinigame.getChosenNumber(), callback);
-								view.setTimeout(function () {
-									reset(function () {});
-								}, 1000);
-							}
-						}, 3000);
-					});
+				    view.pointAt(ladderMinigame.getChosenNumber(), callback);
 				}, 1500);
 			} else {
 				view.pick(ladderMinigame.getChosenNumber(), callback);

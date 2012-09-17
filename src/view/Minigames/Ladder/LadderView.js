@@ -17,6 +17,9 @@ MW.LadderView = MW.MinigameView.extend(
 		var stopButton = null;
 		var continueButton = null;
 		var agent = null;
+		var agentPosition = {};
+		var agentLayer = null;
+		var agentScale = 0.8;
 	
 		this.addInterruptButtons = function(layer) {
 			stopButton = new Kinetic.MW.NoButton(view, {
@@ -31,19 +34,30 @@ MW.LadderView = MW.MinigameView.extend(
 			layer.add(continueButton);
 		};
 	
-		this.addAgent = function(x, y, scale, layer) {
-			if (!ladderMinigame.modeIsChild()) {
-				//agent = new agentView.getBody(view, x, y);
-				view.setInitialAgentPosition(x, y);
-				view.getAgentBody().setScale(scale);
-				layer.add(view.getAgentBody());
-			}
+		this.addAgent = function(x, y, layer, scale) {
+			agentPosition.x = x;
+			agentPosition.y = y;
+			agentLayer = layer;
+			agentScale = scale;
 		};
+
+        this.pointAt = function (number, callback) {
+			agent.pointAt(ladderMinigame.getChosenNumber(), function () {
+				view.setTimeout(function () {
+					if (!ladderMinigame.agentIsInterrupted()) {
+						view.pick(ladderMinigame.getChosenNumber(), callback);
+						view.setTimeout(function () {
+							agent.resetPointAt(function () {});
+						}, 1000);
+					}
+				}, 3000);
+			});
+        }
 
 		this.on(MW.Event.MG_LADDER_INTERRUPT, function(msg) {
 			view.interrupt();
 			if (ladderMinigame.modeIsAgentDo()) {
-				agentView.interruptPointAt();
+				agent.resetPointAt();
 				MW.Sound.play(MW.Sounds.WHICH_ONE_DO_YOU_THINK_IT_IS);
 			}
 		});
@@ -78,9 +92,9 @@ MW.LadderView = MW.MinigameView.extend(
 		this.on(MW.Event.MG_LADDER_CHEER, function(callback) {
 			MW.Sound.play(MW.Sounds.YAY);
 			if (!ladderMinigame.modeIsChild()) {
-				agentView.dance();
+				agent.dance();
 				view.setTimeout(function () {
-					agentView.stopDance();
+					agent.idle();
 					view.setTimeout(callback, 1500);
 				}, 3000);
 			} else {
@@ -89,7 +103,57 @@ MW.LadderView = MW.MinigameView.extend(
 				//callback();
 			}
 		});
-	
+
+		this.on(MW.Event.INTRODUCE_AGENT, function (callback) {
+    		if (ladderMinigame.modeIsAgentSee()) {
+		        agent = new agentView(agentLayer, {
+	                x: stage.getWidth() - 260,
+			        y: 12,
+	                opacity: 0,
+	                scale: agentScale
+	            });
+	            agent.jump();
+		        agent.transitionTo({
+		            opacity: 1,
+		            duration: 1,
+		            callback: function () {
+		                agent.transitionTo({
+	                        x: agentPosition.x,
+	                        y: agentPosition.y + agent.feetOffset().y,
+	                        duration: 1,
+	                        callback: function () {
+	                            agent.idle();
+	                            agent.talk();
+		                        MW.Sound.play(MW.Sounds.LADDER_LOOKS_FUN);
+		                        view.setTimeout(function() {
+			                        MW.Sound.play(MW.Sounds.LADDER_SHOW_ME);
+			                        view.setTimeout(function () {
+				                        agent.neutral();
+				                        callback();
+			                        }, 1500);
+		                        }, 2000);
+	                        }
+	                    });
+		            }
+		        });
+	        } else {
+	            callback();
+	        }
+		});
+
+        this.on(MW.Event.INTRODUCE_MODE, function (callback) {
+    		if (ladderMinigame.modeIsAgentDo()) {
+    		    console.log("hej");
+		        agent = new agentView(agentLayer, {
+	                x: agentPosition.x,
+			        y: agentPosition.y,
+	                scale: agentScale
+	            });
+	            agent.setY(agentPosition.y + agent.feetOffset().y);
+	            agent.idle();
+	        }
+        });
+
 		this.on(MW.Event.MG_LADDER_GET_TREAT, function(callback) {
 			view.getTreat(callback);		
 		});

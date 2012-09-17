@@ -19,29 +19,17 @@ MW.IntroductionView = MW.ViewModule.extend(
 		this._super();
 		this.getStage().add(this._layer);
 		
-		var mouseView = new MW.MouseAgentView();
-		var mouse = mouseView.getBody(this, 100, 200);
-		this._layer.add(mouse);
+		var mouseView = new MW.MouseAgentView(this._layer, { x: 100, y: 200, scale: 0.7 });
 		mouseView.dance();
-		mouse.setScale(0.7);
 		
-		var mouseView2 = new MW.MouseAgentView();
-		var mouse2 = mouseView2.getBody(this, 300, 200);
-		this._layer.add(mouse2);
+		var mouseView2 = new MW.MouseAgentView(this._layer, { x: 300, y: 200, scale: 0.7 });
 		mouseView2.dance();
-		mouse2.setScale(0.7);
-		
-		var mouseView3 = new MW.MouseAgentView();
-		var mouse3 = mouseView3.getBody(this, 500, 200);
-		this._layer.add(mouse3);
-		mouseView3.dance();
-		mouse3.setScale(0.7);
 
-		var mouseView4 = new MW.MouseAgentView();
-		var mouse4 = mouseView4.getBody(this, 700, 200);
-		this._layer.add(mouse4);
+		var mouseView3 = new MW.MouseAgentView(this._layer, { x: 500, y: 200, scale: 0.7 });
+		mouseView3.dance();
+
+		var mouseView4 = new MW.MouseAgentView(this._layer, { x: 700, y: 200, scale: 0.7 });
 		mouseView4.dance();
-		mouse4.setScale(0.7);
 		
 		var skipButton = new Kinetic.Group({ x: 10, y: 10 });
 		

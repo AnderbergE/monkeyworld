@@ -78,7 +78,6 @@ MW.Game = MW.GlobalObject.extend(
 		//this.on("frame", function(msg) { miniGame.onFrame(msg.frame); });
 		if (useViews)
 			new MW.MonkeyWorldView(stage);
-useAgentChooser = false;
 	
 		/*====================================================================*/
 		/*=== PRIVATE ========================================================*/
@@ -197,7 +196,7 @@ useAgentChooser = false;
 			result = new MW.MiniGameResult();
 			player = GAMER;
 			gameMode = MW.GameMode.CHILD_PLAY;
-	//		gameMode = MW.GameMode.AGENT_SEE;
+            //gameMode = MW.GameMode.AGENT_SEE;
 
 			chooseMiniGame(function() {
 				if (useViews) {
@@ -261,7 +260,11 @@ useAgentChooser = false;
 				that.tell(MW.Event.MINIGAME_STARTED, {});
 			};
 			if (useViews) {
-				that.tellWait(MW.Event.INTRODUCE_AGENT, todo);
+				that.tellWait(MW.Event.INTRODUCE_MODE, function () {
+				    that.tellWait(MW.Event.INTRODUCE_AGENT, function () {
+				        todo();
+				    });
+				});
 			} else {
 				todo();
 			}
@@ -410,7 +413,7 @@ useAgentChooser = false;
 							chooser.tearDown();
 							if (chooserView != null)
 								chooserView.tearDown();
-							agentView = new agent.view();
+							agentView = agent.view;
 							selectMinigame();
 						}
 					);
@@ -420,7 +423,7 @@ useAgentChooser = false;
 						that.tell("Game.viewInitiated");
 					}
 				} else {
-					agentView = new MW.MouseAgentView();
+					agentView = MW.MouseAgentView;
 					selectMinigame();
 				}
 			});

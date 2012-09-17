@@ -62,7 +62,7 @@
 			<!-- view -->
 			<file name="view/ViewModule.js" />
 			<file name="view/Agents/AgentView.js" />
-			<file name="view/Agents/MonkeyAgentView.js" />
+			<file name="view/Agents/MouseAgentView.js" />
 			<file name="view/Game/AgentChooserView.js" />
 			<file name="view/Game/GardenView.js" />
 			<file name="view/Game/IntroductionView.js" />
@@ -139,7 +139,7 @@
 				<!-- view -->
 				<file name="view/ViewModule.js" />
 				<file name="view/Agents/AgentView.js" />
-				<file name="view/Agents/MonkeyAgentView.js" />
+    			<file name="view/Agents/MouseAgentView.js" />
 				<file name="view/Game/AgentChooserView.js" />
 				<file name="view/Game/GardenView.js" />
 				<file name="view/Game/IntroductionView.js" />
@@ -192,7 +192,6 @@
 			<file name="res/Sounds.js" />
 			
 			<!-- model -->
-			<file name="model/Agents/MonkeyAgent.js" />
 			<file name="model/Agents/MouseAgent.js" />
 			<file name="model/Game/AgentChooser.js" />
 			<file name="model/Game/Game.js" />
@@ -212,7 +211,7 @@
 			<!-- view -->
 			<file name="view/ViewModule.js" />
 			<file name="view/Agents/AgentView.js" />
-			<file name="view/Agents/MonkeyAgentView.js" />
+			<file name="view/Agents/MouseAgentView.js" />
 			<file name="view/Game/AgentChooserView.js" />
 			<file name="view/Game/GardenView.js" />
 			<file name="view/Game/IntroductionView.js" />

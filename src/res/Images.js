@@ -35,30 +35,9 @@ MW.ImageSources = {
 /** @const */ PITCHER_BOTTOM: "vattenkanna-botten.png",
 
 /** @const */ AGENT_MOUSE_SPRITE:      "agents/mouse/body-sprite.png",
-/** @const */ AGENT_MOUSE_NORMAL:      "agents/mouse/normal.png",
-/** @const */ AGENT_MOUSE_NORMAL_NO_ARM: "agents/mouse/normal-no-arm.png",
-/** @const */ AGENT_MOUSE_HEAD: "agents/mouse/head.png",
-/** @const */ AGENT_FACE_NORMAL_MOUSE: "agents/mouse/facials/m-normal.png",
-/** @const */ AGENT_FACE_HAPPY_MOUSE:  "agents/mouse/facials/m-glad.png",
-/** @const */ AGENT_FACE_SURPRISED_MOUSE: "agents/mouse/facials/m-suprised.png",
-/** @const */ AGENT_DANCE_MOUSE_1: "agents/mouse/dance/1.png",
-/** @const */ AGENT_DANCE_MOUSE_2: "agents/mouse/dance/2.png",
-/** @const */ AGENT_DANCE_MOUSE_3: "agents/mouse/dance/3.png",
-/** @const */ AGENT_BLINK_MOUSE_1: "agents/mouse/facials/blink/1.png",
-/** @const */ AGENT_BLINK_MOUSE_2: "agents/mouse/facials/blink/2.png",
-/** @const */ AGENT_BLINK_MOUSE_3: "agents/mouse/facials/blink/3.png",
-/** @const */ AGENT_TALK_MOUSE: "agents/mouse/facials/m-prat.png",
-/** @const */ AGENT_FALLING_MOUSE: "agents/mouse/falling.png",
-/** @const */ AGENT_ARM_POINT_1: "agents/mouse/pointing/arm-1.png",
-/** @const */ AGENT_ARM_POINT_2: "agents/mouse/pointing/arm-2.png",
-/** @const */ AGENT_ARM_POINT_3: "agents/mouse/pointing/arm-3.png",
-/** @const */ AGENT_ARM_POINT_4: "agents/mouse/pointing/arm-4.png",
-/** @const */ AGENT_ARM_POINT_AT_1: "agents/mouse/pointing/prickpek-1.png",
-/** @const */ AGENT_ARM_POINT_AT_2: "agents/mouse/pointing/prickpek-2.png",
-/** @const */ AGENT_ARM_POINT_AT_3: "agents/mouse/pointing/prickpek-3.png",
-/** @const */ AGENT_ARM_POINT_AT_4: "agents/mouse/pointing/prickpek-4.png",
-/** @const */ AGENT_ARM_POINT_AT_5: "agents/mouse/pointing/prickpek-5.png",
-/** @const */ AGENT_ARM_POINT_AT_6: "agents/mouse/pointing/prickpek-6.png"
+/** @const */ AGENT_MOUSE_FACIALS_SPRITE:      "agents/mouse/facials-sprite.png",
+/** @const */ AGENT_MOUSE_BLINK_SPRITE:      "agents/mouse/blink-sprite.png",
+/** @const */ AGENT_MOUSE_POINT_AT_SPRITE:      "agents/mouse/pointat-sprite.png"
 };
 
 MW.Images = {};

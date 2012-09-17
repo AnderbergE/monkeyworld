@@ -60,52 +60,46 @@ MW.MinigameView = MW.ViewModule.extend(
 		 * Show the face of the agent in the top right corner in child play mode
 		 */
 		(function (view) {
-			var faceImageObj = agentView.normalFace();
-			var faceImage = new agentView.getFace(
+			/*var faceImage = new agentView.getFace(
 				view,
 				stage.getWidth() - faceImageObj.width - 30,
 				12
 			);
-			faceImage.setScale(0.5);
+			faceImage.setScale(0.5);*/
 			view.addSetup(function() {
 				if (minigame.modeIsChild()) {
-					layer.add(faceImage);
-					agentView.faceBlink();
+					var faceImageObj = new agentView(layer, {
+			            x: stage.getWidth() - 60 - 30,
+				        y: 12,
+				        scale: 0.5
+			        });
+			        faceImageObj.hideBody();
 					view.on(MW.Event.INTRODUCE_AGENT, function (callback) {
 						MW.Sound.play(MW.Sounds.SYSTEM_FIRST_YOU_PLAY);
 						setTimeout(callback, 2000);
 					});
 				} else if (minigame.modeIsAgentSee()) {
-					agentBody = agentView.getBody(
-						view,
-						stage.getWidth() - faceImageObj.width - 30,
-						12
-					);
-					agentBody.setOpacity(0);
-					layer.add(faceImage);
-					view.on(MW.Event.INTRODUCE_AGENT, function (callback) {
+			        var faceImageObj = new agentView(layer, {
+			            x: stage.getWidth() - 260,
+				        y: 12,
+				        scale: 0.5
+			        });
+			        faceImageObj.hideBody();
+					view.on(MW.Event.INTRODUCE_MODE, function (callback) {
 						MW.Sound.play(MW.Sounds.SYSTEM_WELL_DONE);
 						view.setTimeout(function () {
 							MW.Sound.play(MW.Sounds.SYSTEM_TIME_TO_TEACH_FRIEND);
 							view.setTimeout(function () {
-								faceImage.transitionTo({ opacity: 0, duration: 2});
-								agentView.jumpDown(agentX, agentY);
-								view.setTimeout(function () {
-									agentView.startTalk();
-									MW.Sound.play(MW.Sounds.LADDER_LOOKS_FUN);
-									view.setTimeout(function() {
-										MW.Sound.play(MW.Sounds.LADDER_SHOW_ME);
-										view.setTimeout(function () {
-											agentView.stopTalk();
-										}, 1500);
-										view.setTimeout(callback, 2000);
-									}, 2000);
-								}, 2000);
+								faceImageObj.transitionTo({ opacity: 0, duration: 2});
+								callback();
 							}, 3000);
 						}, 2000);
 					});
 				} else if (minigame.modeIsAgentDo()) {
-					agentBody = agentView.getBody(
+				    view.on(MW.Event.INTRODUCE_MODE, function (callback) {
+				        callback();
+				    });
+					/*agentBody = agentView.getBody(
 						view,
 						agentX,
 						agentY
@@ -115,11 +109,8 @@ MW.MinigameView = MW.ViewModule.extend(
 						agentView.moveBody(agentX, agentY);
 						agentView.showBody();
 						callback();
-					});
+					});*/
 				}
-			});
-			view.addTearDown(function() {
-				layer.remove(faceImage);
 			});
 		})(this);
 

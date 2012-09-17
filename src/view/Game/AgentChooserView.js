@@ -34,14 +34,14 @@ MW.AgentChooserView = MW.ViewModule.extend(
 		 */
 		this._buttons = (function() {
 			var buttons = this;
-			var array = new Array();
+			var array = [];
 		
 			/**
 			 * Add a button
 			 */
 			buttons.add = function(button) {
 				array.push(button);
-				view._layer.add(button);
+				//view._layer.add(button);
 			};
 
 			/**
@@ -102,7 +102,7 @@ MW.AgentChooserView = MW.ViewModule.extend(
 		 * @constructor
 		 * @extends {Kinetic.Shape}
 		 */
-		this._Button = function(agent, x, y) {
+		this._Button = function(agent, x, y, container) {
 			var g = new Kinetic.Group({ x: x, y: y });
 			var CONFIG = view.CONFIG;
 			var rect = new Kinetic.Rect({
@@ -139,10 +139,12 @@ MW.AgentChooserView = MW.ViewModule.extend(
 			g.add(rect);
 			g._rect = rect;
 			g._agent = agent;
-			var agentView = new agent.view();
-			var img = agentView.getFace(view, -110, -60);
-			img.setScale(0.9);
-			g.add(img);
+			container.add(g);
+			var agentView = new agent.view(g, { x: -110, y: -60, scale: 0.9 });
+			agentView.hideBody();
+			//var img = agentView.getFace(view, -110, -60);
+			//img.setScale(0.9);
+			//g.add(img);
 			g.on("mousedown touchstart", function() {
 				MW.Sound.play(MW.Sounds.CLICK);
 				g._rect.setFill("white");
@@ -153,7 +155,7 @@ MW.AgentChooserView = MW.ViewModule.extend(
 			return g;
 		};
 	},
-	
+
 	/**
 	 * Setup the view
 	 * @private
@@ -176,7 +178,8 @@ MW.AgentChooserView = MW.ViewModule.extend(
 		var agents = this._chooser.getAgents();
 		for (var i = 0; i < agents.length; i++) {
 			var pos = buttonGrid.next();
-			this._buttons.add(new this._Button(agents[i], pos.x, pos.y));
+			var b = new this._Button(agents[i], pos.x, pos.y, this._layer);
+			this._buttons.add(b);
 		}
 		MW.Sound.play(MW.Sounds.CHOOSE_YOUR_FRIEND);
 		this._layer.draw();

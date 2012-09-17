@@ -10,10 +10,10 @@ MW.AgentChooser = MW.Module.extend(
 	init: function (done) {
 		this._super("AgentChooser");
 		this._agents = [
-			{ model: MW.MonkeyAgent, view: MW.MonkeyAgentView },
 			{ model: MW.MouseAgent, view: MW.MouseAgentView },
-			{ model: MW.MonkeyAgent, view: MW.MonkeyAgentView },
-			{ model: MW.MonkeyAgent, view: MW.MonkeyAgentView }
+			{ model: MW.MouseAgent, view: MW.MouseAgentView },
+			{ model: MW.MouseAgent, view: MW.MouseAgentView },
+			{ model: MW.MouseAgent, view: MW.MouseAgentView }
 		];
 		this._done = done;
 	},
