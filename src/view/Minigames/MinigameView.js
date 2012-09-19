@@ -60,21 +60,15 @@ MW.MinigameView = MW.ViewModule.extend(
 		 * Show the face of the agent in the top right corner in child play mode
 		 */
 		(function (view) {
-			/*var faceImage = new agentView.getFace(
-				view,
-				stage.getWidth() - faceImageObj.width - 30,
-				12
-			);
-			faceImage.setScale(0.5);*/
 			view.addSetup(function() {
 				if (minigame.modeIsChild()) {
 					var faceImageObj = new agentView(layer, {
-			            x: stage.getWidth() - 60 - 30,
+			            x: stage.getWidth() - 260,
 				        y: 12,
 				        scale: 0.5
 			        });
 			        faceImageObj.hideBody();
-					view.on(MW.Event.INTRODUCE_AGENT, function (callback) {
+					view.on(MW.Event.INTRODUCE_MODE, function (callback) {
 						MW.Sound.play(MW.Sounds.SYSTEM_FIRST_YOU_PLAY);
 						setTimeout(callback, 2000);
 					});
@@ -99,17 +93,6 @@ MW.MinigameView = MW.ViewModule.extend(
 				    view.on(MW.Event.INTRODUCE_MODE, function (callback) {
 				        callback();
 				    });
-					/*agentBody = agentView.getBody(
-						view,
-						agentX,
-						agentY
-					);
-					agentBody.hide();
-					view.on(MW.Event.INTRODUCE_AGENT, function (callback) {
-						agentView.moveBody(agentX, agentY);
-						agentView.showBody();
-						callback();
-					});*/
 				}
 			});
 		})(this);

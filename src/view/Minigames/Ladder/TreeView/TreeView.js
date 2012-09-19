@@ -167,7 +167,6 @@ MW.TreeView = MW.LadderView.extend(
 
 		createTreat = function (callback) {
 			treat = treats[ladderMinigame.getRoundNumber() - 1];
-		
 			view.setTimeout(function () {
 				treat.transitionTo({
 					x: 100,
@@ -401,30 +400,6 @@ MW.TreeView = MW.LadderView.extend(
 			});
 		});
 
-        view.on(MW.Event.INTRODUCE_AGENT, function () {
-			view.addInterruptButtons(layer);
-
-			/**
-			 * Hang the treats in the crown
-			 */
-			(function (view) {
-				var
-					max = ladderMinigame.getMaximumTreats(),
-					parcel;
-				for (i = 0; i < max; i += 1) {
-					parcel = new Kinetic.MW.Parcel({
-						x: config.treatGrid[i + 1].x,
-						y: config.treatGrid[i + 1].y,
-						rotation: config.treatGrid[i + 1].rotation,
-						type: (i % 3) + 1,
-						scale: scale
-					});
-					layer.add(parcel);
-					treats.push(parcel);
-				}
-			}) (this);
-        });
-
 		view.addTearDown(function () {
 			stage.remove(layer);
 		});
@@ -495,14 +470,35 @@ MW.TreeView = MW.LadderView.extend(
             0.8
         );
 
+        view.hasIntroducedAgent = function () {
+			for (i = 0; i < ladderMinigame.getMaximumTreats(); i += 1) {
+				treats[i].moveToTop();
+			}
+        };
+
 		view.addSetup(function () {
 
-			/*view.addAgent(
-				stage.getWidth() - 248,
-				stage.getHeight() - 100 - agentScale * (agentView.feetOffset() - agentView.bodyOffset().y),
-				agentScale,
-				layer
-			);*/
+			view.addInterruptButtons(layer);
+
+			/**
+			 * Hang the treats in the crown
+			 */
+			(function (view) {
+				var
+					max = ladderMinigame.getMaximumTreats(),
+					parcel;
+				for (i = 0; i < max; i += 1) {
+					parcel = new Kinetic.MW.Parcel({
+						x: config.treatGrid[i + 1].x,
+						y: config.treatGrid[i + 1].y,
+						rotation: config.treatGrid[i + 1].rotation,
+						type: (i % 3) + 1,
+						scale: scale
+					});
+					layer.add(parcel);
+					treats.push(parcel);
+				}
+			}) (this);
 
 		});
 		layer.draw();

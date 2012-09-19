@@ -112,6 +112,11 @@ MW.LadderView = MW.MinigameView.extend(
 	                opacity: 0,
 	                scale: agentScale
 	            });
+	            if (view.hasIntroducedAgent !== undefined) {
+	                view.hasIntroducedAgent();
+                }
+                continueButton.moveToTop();
+                stopButton.moveToTop();
 	            agent.jump();
 		        agent.transitionTo({
 		            opacity: 1,
@@ -143,12 +148,16 @@ MW.LadderView = MW.MinigameView.extend(
 
         this.on(MW.Event.INTRODUCE_MODE, function (callback) {
     		if (ladderMinigame.modeIsAgentDo()) {
-    		    console.log("hej");
 		        agent = new agentView(agentLayer, {
 	                x: agentPosition.x,
 			        y: agentPosition.y,
 	                scale: agentScale
 	            });
+	            if (view.hasIntroducedAgent !== undefined) {
+	                view.hasIntroducedAgent();
+                }
+                continueButton.moveToTop();
+                stopButton.moveToTop();
 	            agent.setY(agentPosition.y + agent.feetOffset().y);
 	            agent.idle();
 	        }

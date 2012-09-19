@@ -261,9 +261,9 @@ MW.Game = MW.GlobalObject.extend(
 			};
 			if (useViews) {
 				that.tellWait(MW.Event.INTRODUCE_MODE, function () {
-				    that.tellWait(MW.Event.INTRODUCE_AGENT, function () {
+			        that.tellWait(MW.Event.INTRODUCE_AGENT, function () {
 				        todo();
-				    });
+    			    });
 				});
 			} else {
 				todo();
