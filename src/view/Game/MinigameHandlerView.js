@@ -17,45 +17,47 @@ MW.MinigameHandlerView = MW.ViewModule.extend(
 		 * @param {MW.MinigameHandlerView} view
 		 */
 		(function (view) {
-			/** @const @type {string} */ var label = "Backend Score (current minigame):";
-			var text = new Kinetic.Text({
-				text: label,
-				fontSize: 12,
-				fontFamily: "sans-serif",
-				textFill: "black",
-				align: "left",
-				verticalAlign: "middle",
-				x: stage.getWidth() - 700,
-				y: 35
-			});
-			var on = false;
-			var running = false;
-			view.on(MW.Event.BACKEND_SCORE_UPDATE_MINIGAME, function(msg) {
-				text.setText(label + " " + msg.score);
-			});
-			view.addSetup(function () {
-				on = true;
-				running = true;
-				layer.add(text);
-			});
-			view.on(MW.Event.TRIGGER_SCORE, function () {
-				if (running && !on) {
-					layer.add(text);
-					on = true;
-					console.info("Turning off backend score display");
-				} else if (running && on) {
-					layer.remove(text);
-					on = false;
-					console.info("Turning on backend score display");
-				}
-			});
-			view.addTearDown(function() {
-				running = false;
-				if (on) {
-					layer.remove(text);
-				}
-				on = false;
-			});
+		    if (MW.GlobalSettings.debug) {
+			    /** @const @type {string} */ var label = "Backend Score (current minigame):";
+			    var text = new Kinetic.Text({
+				    text: label,
+				    fontSize: 12,
+				    fontFamily: "sans-serif",
+				    textFill: "black",
+				    align: "left",
+				    verticalAlign: "middle",
+				    x: stage.getWidth() - 700,
+				    y: 35
+			    });
+			    var on = false;
+			    var running = false;
+			    view.on(MW.Event.BACKEND_SCORE_UPDATE_MINIGAME, function(msg) {
+				    text.setText(label + " " + msg.score);
+			    });
+			    view.addSetup(function () {
+				    on = true;
+				    running = true;
+				    layer.add(text);
+			    });
+			    view.on(MW.Event.TRIGGER_SCORE, function () {
+				    if (running && !on) {
+					    layer.add(text);
+					    on = true;
+					    console.info("Turning off backend score display");
+				    } else if (running && on) {
+					    layer.remove(text);
+					    on = false;
+					    console.info("Turning on backend score display");
+				    }
+			    });
+			    view.addTearDown(function() {
+				    running = false;
+				    if (on) {
+					    layer.remove(text);
+				    }
+				    on = false;
+			    });
+		    }
 		})(this);
 
 		/**
@@ -63,42 +65,44 @@ MW.MinigameHandlerView = MW.ViewModule.extend(
 		 * @param {MW.MinigameHandlerView} view
 		 */
 		(function (view) {
-			/** @const @type {string} */ var label = "Learning track (current game):";
-			var text = new Kinetic.Text({
-				text: label,
-				fontSize: 12,
-				fontFamily: "sans-serif",
-				textFill: "black",
-				align: "left",
-				verticalAlign: "middle",
-				x: stage.getWidth() - 700,
-				y: 55
-			});
-			var on = false, running = false;
-			view.addSetup(function () {
-				layer.add(text);
-				running = true;
-				on = true;
-			});
-			view.on(MW.Event.LEARNING_TRACK_UPDATE, function(msg) {
-				text.setText(label + " " + msg.learningTrack.name());
-			});
-			view.on(MW.Event.TRIGGER_SCORE, function () {
-				if (running && !on) {
-					layer.add(text);
-					on = true;
-				} else if (running && on) {
-					layer.remove(text);
-					on = false;
-				}
-			});
-			view.addTearDown(function() {
-				running = false;
-				if (on) {
-					layer.remove(text);
-				}
-				on = false;
-			});
+		    if (MW.GlobalSettings.debug) {
+			    /** @const @type {string} */ var label = "Learning track (current game):";
+			    var text = new Kinetic.Text({
+				    text: label,
+				    fontSize: 12,
+				    fontFamily: "sans-serif",
+				    textFill: "black",
+				    align: "left",
+				    verticalAlign: "middle",
+				    x: stage.getWidth() - 700,
+				    y: 55
+			    });
+			    var on = false, running = false;
+			    view.addSetup(function () {
+				    layer.add(text);
+				    running = true;
+				    on = true;
+			    });
+			    view.on(MW.Event.LEARNING_TRACK_UPDATE, function(msg) {
+				    text.setText(label + " " + msg.learningTrack.name());
+			    });
+			    view.on(MW.Event.TRIGGER_SCORE, function () {
+				    if (running && !on) {
+					    layer.add(text);
+					    on = true;
+				    } else if (running && on) {
+					    layer.remove(text);
+					    on = false;
+				    }
+			    });
+			    view.addTearDown(function() {
+				    running = false;
+				    if (on) {
+					    layer.remove(text);
+				    }
+				    on = false;
+			    });
+		    }
 		})(this);
 
 		/**

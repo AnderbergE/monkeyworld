@@ -147,13 +147,19 @@ MW.AgentView = Class.extend(
     },
     
     /**
-     * @param {boolean=} set
+     * @param {number=} timeout
      */
-    talk: function (set) {
+    talk: function (timeout) {
         this.start();
         this.face.show();
         this.blink.show();
         this.face.setAnimation("talk");
+        var that = this;
+        if (timeout !== undefined) {
+            setTimeout(function () {
+                that.neutral();
+            }, timeout);
+        }
     },
     
     neutral: function () {
@@ -185,6 +191,10 @@ MW.AgentView = Class.extend(
     
     setPosition: function(pos) {
         this.group.setPosition(pos);
+    },
+    
+    _remove: function () {
+        this.container.remove(this.group);
     }
 });
 

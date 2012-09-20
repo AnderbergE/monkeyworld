@@ -20,39 +20,41 @@ MW.MinigameView = MW.ViewModule.extend(
 		 * @param {MW.MinigameView} view
 		 */
 		(function (view) {
-			/** @const */
-			var label = "Backend Score (current mode):";
-			var text = new Kinetic.Text({
-				text: label,
-				fontSize: 12,
-				fontFamily: "sans-serif",
-				textFill: "black",
-				align: "left",
-				verticalAlign: "middle",
-				x: stage.getWidth() - 700,
-				y: 15
-			});
-			layer.add(text);
-			var on = true, running = on;
-			view.on(MW.Event.BACKEND_SCORE_UPDATE_MODE, function(msg) {
-				text.setText(label + " " + msg.backendScore);
-			});
-			view.on(MW.Event.TRIGGER_SCORE, function () {
-				if (running && !on) {
-					layer.add(text);
-					on = true;
-				} else if (running && on) {
-					layer.remove(text);
-					on = false;
-				}
-			});
-			view.addTearDown(function() {
-				if (on) {
-					layer.remove(text);
-				}
-				running = false;
-				on = false;
-			});
+		    if (MW.GlobalSettings.debug) {
+			    /** @const */
+			    var label = "Backend Score (current mode):";
+			    var text = new Kinetic.Text({
+				    text: label,
+				    fontSize: 12,
+				    fontFamily: "sans-serif",
+				    textFill: "black",
+				    align: "left",
+				    verticalAlign: "middle",
+				    x: stage.getWidth() - 700,
+				    y: 15
+			    });
+			    layer.add(text);
+			    var on = true, running = on;
+			    view.on(MW.Event.BACKEND_SCORE_UPDATE_MODE, function(msg) {
+				    text.setText(label + " " + msg.backendScore);
+			    });
+			    view.on(MW.Event.TRIGGER_SCORE, function () {
+				    if (running && !on) {
+					    layer.add(text);
+					    on = true;
+				    } else if (running && on) {
+					    layer.remove(text);
+					    on = false;
+				    }
+			    });
+			    view.addTearDown(function() {
+				    if (on) {
+					    layer.remove(text);
+				    }
+				    running = false;
+				    on = false;
+			    });
+		    }
 		})(this);
 
 		/**
@@ -67,6 +69,9 @@ MW.MinigameView = MW.ViewModule.extend(
 				        y: 12,
 				        scale: 0.5
 			        });
+			        view.addTearDown(function () {
+			            faceImageObj._remove();
+			        });
 			        faceImageObj.hideBody();
 					view.on(MW.Event.INTRODUCE_MODE, function (callback) {
 						MW.Sound.play(MW.Sounds.SYSTEM_FIRST_YOU_PLAY);
@@ -77,6 +82,9 @@ MW.MinigameView = MW.ViewModule.extend(
 			            x: stage.getWidth() - 260,
 				        y: 12,
 				        scale: 0.5
+			        });
+			        view.addTearDown(function () {
+			            faceImageObj._remove();
 			        });
 			        faceImageObj.hideBody();
 					view.on(MW.Event.INTRODUCE_MODE, function (callback) {

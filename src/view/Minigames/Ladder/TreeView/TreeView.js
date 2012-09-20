@@ -94,6 +94,7 @@ MW.TreeView = MW.LadderView.extend(
 			buttonMargin: 15,
 			forbid: function (i) {
 				tellMyTurn = true;
+				view.agentTalk(4000);
 				MW.Sound.play(MW.Sounds.NO_MY_TURN);
 				view.setTimeout(function () {
 					MW.Sound.play(MW.Sounds.BUT_YOU_CAN_INTERRUPT);
@@ -253,6 +254,7 @@ MW.TreeView = MW.LadderView.extend(
 		view.on(MW.Event.MG_LADDER_PICKED, function (callback) {
 			if (ladderMinigame.modeIsAgentDo() && !ladderMinigame.agentIsInterrupted() && !ladderMinigame.agentIsBeingHelped()) {
 				var pos = view.getStickPoint(ladderMinigame.getChosenNumber());
+				view.agentTalk(2000);
 				MW.Sound.play(MW.Sounds.IM_GOING_TO_PICK_THIS_ONE);
 				view.setTimeout(function () {
 				    view.pointAt(ladderMinigame.getChosenNumber(), callback);

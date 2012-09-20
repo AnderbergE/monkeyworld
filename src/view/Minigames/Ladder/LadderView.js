@@ -41,6 +41,10 @@ MW.LadderView = MW.MinigameView.extend(
 			agentScale = scale;
 		};
 
+        this.agentTalk = function (timeout) {
+            agent.talk(timeout);
+        };
+
         this.pointAt = function (number, callback) {
 			agent.pointAt(ladderMinigame.getChosenNumber(), function () {
 				view.setTimeout(function () {
@@ -58,6 +62,7 @@ MW.LadderView = MW.MinigameView.extend(
 			view.interrupt();
 			if (ladderMinigame.modeIsAgentDo()) {
 				agent.resetPointAt();
+				agent.talk(2000);
 				MW.Sound.play(MW.Sounds.WHICH_ONE_DO_YOU_THINK_IT_IS);
 			}
 		});
@@ -81,6 +86,7 @@ MW.LadderView = MW.MinigameView.extend(
 		});
 	
 		this.on(MW.Event.MG_LADDER_START_AGENT, function(callback) {
+    		agent.talk(2000);
 			MW.Sound.play(MW.Sounds.LADDER_MY_TURN);
 			view.setTimeout(function() {
 				callback();
@@ -142,26 +148,23 @@ MW.LadderView = MW.MinigameView.extend(
 		            }
 		        });
 	        } else {
+        		if (ladderMinigame.modeIsAgentDo()) {
+		            agent = new agentView(agentLayer, {
+	                    x: agentPosition.x,
+			            y: agentPosition.y,
+	                    scale: agentScale
+	                });
+	                if (view.hasIntroducedAgent !== undefined) {
+	                    view.hasIntroducedAgent();
+                    }
+                    continueButton.moveToTop();
+                    stopButton.moveToTop();
+	                agent.setY(agentPosition.y + agent.feetOffset().y);
+	                agent.idle();
+	            }
 	            callback();
 	        }
 		});
-
-        this.on(MW.Event.INTRODUCE_MODE, function (callback) {
-    		if (ladderMinigame.modeIsAgentDo()) {
-		        agent = new agentView(agentLayer, {
-	                x: agentPosition.x,
-			        y: agentPosition.y,
-	                scale: agentScale
-	            });
-	            if (view.hasIntroducedAgent !== undefined) {
-	                view.hasIntroducedAgent();
-                }
-                continueButton.moveToTop();
-                stopButton.moveToTop();
-	            agent.setY(agentPosition.y + agent.feetOffset().y);
-	            agent.idle();
-	        }
-        });
 
 		this.on(MW.Event.MG_LADDER_GET_TREAT, function(callback) {
 			view.getTreat(callback);		
@@ -171,19 +174,21 @@ MW.LadderView = MW.MinigameView.extend(
 			view.confirmTarget();
 		});
 
-		this.on("Ladder.betterBecauseBigger", function(msg) { MW.Sound.play(view.betterBigger); });
-		this.on("Ladder.betterBecauseSmaller", function(msg) { MW.Sound.play(view.betterSmaller); });
-		this.on("Ladder.hmm", function(msg) { MW.Sound.play(MW.Sounds.MAYBE_THAT_WORKS); });
+		this.on("Ladder.betterBecauseBigger", function(msg) { agent.talk(2000); MW.Sound.play(view.betterBigger); });
+		this.on("Ladder.betterBecauseSmaller", function(msg) { agent.talk(2000);MW.Sound.play(view.betterSmaller); });
+		this.on("Ladder.hmm", function(msg) { agent.talk(2000);MW.Sound.play(MW.Sounds.MAYBE_THAT_WORKS); });
 		this.on("Ladder.agentSuggestSolution", function(msg) {
+    		agent.talk(4000);
 			view.setTimeout(function() {
 				MW.Sound.play(view.suggestion1);
 				view.setTimeout(function() {
-					MW.Sound.play(view.suggestion1);	
+					MW.Sound.play(view.suggestion1);
 				}, 2000);
 			}, 2000);
 		});
 	
 		this.on("Ladder.tooLow", function(msg) {
+		    agent.talk(4000);
 			MW.Sound.play(view.tooLow);
 			setTimeout(function() {
 				MW.Sound.play(view.tryBigger);
@@ -191,14 +196,15 @@ MW.LadderView = MW.MinigameView.extend(
 		});
 	
 		this.on("Ladder.tooHigh", function(msg) {
+		    agent.talk(4000);
 			MW.Sound.play(view.tooHigh);
 			setTimeout(function() {
 				MW.Sound.play(view.trySmaller);
 			}, 2000);
 		});
 	
-		this.on("Ladder.agentTooLow", function(msg) { MW.Sound.play(view.agentTooLow); });
-		this.on("Ladder.agentTooHigh", function(msg) { MW.Sound.play(view.agentTooHigh); });
+		this.on("Ladder.agentTooLow", function(msg) { agent.talk(2000); MW.Sound.play(view.agentTooLow); });
+		this.on("Ladder.agentTooHigh", function(msg) { agent.talk(2000); MW.Sound.play(view.agentTooHigh); });
 	}
 });
 
