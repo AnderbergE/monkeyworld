@@ -26,8 +26,6 @@ MW.MonkeyWorldView = MW.ViewModule.extend(
 				var games = msg.games;
 				var grid = Utils.gridizer(200, 200, 300, 100, 2);
 			
-				//for (var i = 0; i < games.length; i++) { (function(i) {
-			
 				for (var category in games) { (function() {
 					for (var i = 0; i < games[category].sum; i++) { (function() {
 						var game = games[category].variations[i];

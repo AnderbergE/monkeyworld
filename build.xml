@@ -79,6 +79,8 @@
 			<file name="view/Minigames/Ladder/MountainView.js" />
 			<file name="view/Minigames/Ladder/TreeView/TreeNumpad.js" />
 			<file name="view/Minigames/Ladder/TreeView/TreeView.js" />
+			<file name="view/Minigames/Ladder/ElevatorView/ElevatorNumpad.js" />
+			<file name="view/Minigames/Ladder/ElevatorView/ElevatorView.js" />
 			
 			<!-- core -->
 			<file name="MinigameConfigurations.js" />
@@ -156,6 +158,8 @@
 				<file name="view/Minigames/Ladder/MountainView.js" />
 				<file name="view/Minigames/Ladder/TreeView/TreeNumpad.js" />
 				<file name="view/Minigames/Ladder/TreeView/TreeView.js" />
+				<file name="view/Minigames/Ladder/ElevatorView/ElevatorNumpad.js" />
+				<file name="view/Minigames/Ladder/ElevatorView/ElevatorView.js" />
 				
 				<!-- core -->
 				<file name="MinigameConfigurations.js" />
@@ -228,6 +232,8 @@
 			<file name="view/Minigames/Ladder/MountainView.js" />
 			<file name="view/Minigames/Ladder/TreeView/TreeNumpad.js" />
 			<file name="view/Minigames/Ladder/TreeView/TreeView.js" />
+			<file name="view/Minigames/Ladder/ElevatorView/ElevatorNumpad.js" />
+			<file name="view/Minigames/Ladder/ElevatorView/ElevatorView.js" />
 			
 			<!-- core -->
 			<file name="MinigameConfigurations.js" />
