@@ -58,6 +58,7 @@
 			<!-- model/Minigames -->
 			<file name="model/Minigames/Minigame.js" />
 			<file name="model/Minigames/Ladder/Ladder.js" />
+			<file name="model/Minigames/Elevator/Elevator.js" />
 			
 			<!-- view -->
 			<file name="view/ViewModule.js" />
@@ -76,11 +77,12 @@
 			<!-- view/Minigames -->
 			<file name="view/Minigames/MinigameView.js" />
 			<file name="view/Minigames/Ladder/LadderView.js" />
+			<file name="view/Minigames/Ladder/ElevatorView.js" />
 			<file name="view/Minigames/Ladder/MountainView.js" />
 			<file name="view/Minigames/Ladder/TreeView/TreeNumpad.js" />
 			<file name="view/Minigames/Ladder/TreeView/TreeView.js" />
-			<file name="view/Minigames/Ladder/ElevatorView/ElevatorNumpad.js" />
-			<file name="view/Minigames/Ladder/ElevatorView/ElevatorView.js" />
+			<file name="view/Minigames/Ladder/TreeElevatorView/TreeElevatorNumpad.js" />
+			<file name="view/Minigames/Ladder/TreeElevatorView/TreeElevatorView.js" />
 			
 			<!-- core -->
 			<file name="MinigameConfigurations.js" />
@@ -137,6 +139,7 @@
 				<!-- model/Minigames -->
 				<file name="model/Minigames/Minigame.js" />
 				<file name="model/Minigames/Ladder/Ladder.js" />
+				<file name="model/Minigames/Elevator/Elevator.js" />
 				
 				<!-- view -->
 				<file name="view/ViewModule.js" />
@@ -155,11 +158,12 @@
 				<!-- view/Minigames -->
 				<file name="view/Minigames/MinigameView.js" />
 				<file name="view/Minigames/Ladder/LadderView.js" />
+				<file name="view/Minigames/Ladder/ElevatorView.js" />
 				<file name="view/Minigames/Ladder/MountainView.js" />
 				<file name="view/Minigames/Ladder/TreeView/TreeNumpad.js" />
 				<file name="view/Minigames/Ladder/TreeView/TreeView.js" />
-				<file name="view/Minigames/Ladder/ElevatorView/ElevatorNumpad.js" />
-				<file name="view/Minigames/Ladder/ElevatorView/ElevatorView.js" />
+				<file name="view/Minigames/Ladder/TreeElevatorView/TreeElevatorNumpad.js" />
+				<file name="view/Minigames/Ladder/TreeElevatorView/TreeElevatorView.js" />
 				
 				<!-- core -->
 				<file name="MinigameConfigurations.js" />
@@ -211,6 +215,7 @@
 			<!-- model/Minigames -->
 			<file name="model/Minigames/Minigame.js" />
 			<file name="model/Minigames/Ladder/Ladder.js" />
+			<file name="model/Minigames/Elevator/Elevator.js" />
 			
 			<!-- view -->
 			<file name="view/ViewModule.js" />
@@ -229,11 +234,12 @@
 			<!-- view/Minigames -->
 			<file name="view/Minigames/MinigameView.js" />
 			<file name="view/Minigames/Ladder/LadderView.js" />
+			<file name="view/Minigames/Ladder/ElevatorView.js" />
 			<file name="view/Minigames/Ladder/MountainView.js" />
 			<file name="view/Minigames/Ladder/TreeView/TreeNumpad.js" />
 			<file name="view/Minigames/Ladder/TreeView/TreeView.js" />
-			<file name="view/Minigames/Ladder/ElevatorView/ElevatorNumpad.js" />
-			<file name="view/Minigames/Ladder/ElevatorView/ElevatorView.js" />
+			<file name="view/Minigames/Ladder/TreeElevatorView/TreeElevatorNumpad.js" />
+			<file name="view/Minigames/Ladder/TreeElevatorView/TreeElevatorView.js" />
 			
 			<!-- core -->
 			<file name="MinigameConfigurations.js" />

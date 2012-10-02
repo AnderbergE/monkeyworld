@@ -18,7 +18,7 @@
  *    representations
  *    representationsScale
  */
-MW.Numpad = function(config) {
+MW.ElevatorNumpad = function(config) {
 	if (config.x            === undefined) config.x            = 0;
 	if (config.y            === undefined) config.y            = 0;
 	if (config.min          === undefined) config.min          = 1;

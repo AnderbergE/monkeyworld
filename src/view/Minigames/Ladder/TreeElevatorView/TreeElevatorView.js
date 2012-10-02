@@ -1,16 +1,16 @@
 /**
  * @constructor
- * @extends {MW.LadderView}
- * @param {MW.LadderMinigame} ladderMinigame
+ * @extends {MW.TreeElevatorView}
+ * @param {MW.TreeElevatorMinigame} treeElevatorMinigame
  * @param {Kinetic.Stage} stage
  * @param {MW.AgentView} agentView
  */
-MW.ElevatorView = MW.LadderView.extend(
-/** @lends {MW.LadderView.prototype} */
+MW.TreeElevatorView = MW.ElevatorView.extend(
+/** @lends {MW.TreeElevatorView.prototype} */
 {
 	/** @constructs */
-	init: function (ladderMinigame, stage, agentView) {
-		this._super(ladderMinigame, stage, agentView, "ElevatorView");
+	init: function (treeElevatorMinigame, stage, agentView) {
+		this._super(treeElevatorMinigame, stage, agentView, "TreeElevatorView");
 		var
 			view = this,
 			scale = 1 / 2.083168317,
@@ -31,9 +31,9 @@ MW.ElevatorView = MW.LadderView.extend(
 			addOnMouseActionToTreat,
 			dropZoneOffset = 0,
 			stepGroups = {},
-			ladderStepNumber,
-			ladderStepGroup,
-			ladderStepPolygon,
+			treeElevatorStepNumber,
+			treeElevatorStepGroup,
+			treeElevatorStepPolygon,
 			config = {
 				tree: {
 					x: 120,
@@ -70,7 +70,7 @@ MW.ElevatorView = MW.LadderView.extend(
 			};
 
 		/**
-		 * Define sounds specific for this implementation of the ladder game.
+		 * Define sounds specific for this implementation of the treeElevator game.
 		 */
 		view.tooLow          = MW.Sounds.LADDER_TREE_OOPS_TOO_LOW;
 		view.tooHigh         = MW.Sounds.LADDER_TREE_OOPS_TOO_HIGH;
@@ -84,7 +84,7 @@ MW.ElevatorView = MW.LadderView.extend(
 		view.betterSmaller   = MW.Sounds.LADDER_TREE_BETTER_BECAUSE_SMALLER;
 		view.agentSeeCorrect = MW.Sounds.LADDER_TREE_AGENT_SEE_CORRECT;
 
-		numpad = new MW.Numpad({
+		numpad = new MW.ElevatorNumpad({
 			x: config.numpad.x,
 			y: config.numpad.y,
 			button: MW.Images.BUTTON_WOOD,
@@ -104,8 +104,8 @@ MW.ElevatorView = MW.LadderView.extend(
 				}, 2000);
 			},
 			pushed: function (i) {
-				if (ladderMinigame.playerIsGamer())
-					ladderMinigame.pick(i);
+				if (treeElevatorMinigame.playerIsGamer())
+					treeElevatorMinigame.pick(i);
 			},
 			representations: {
 				"1": MW.Images.DOTS_1,
@@ -131,7 +131,7 @@ MW.ElevatorView = MW.LadderView.extend(
 
 		shakeTreat = function () {
 			shakeHandler = view.setInterval(function () {
-				treats[ladderMinigame.getRoundNumber() - 1].shake(view);
+				treats[treeElevatorMinigame.getRoundNumber() - 1].shake(view);
 			}, 4000);
 		};
 
@@ -140,13 +140,13 @@ MW.ElevatorView = MW.LadderView.extend(
 		};
 
 		addOnMouseActionToTreat = function () {
-			treat.onClick(ladderMinigame.openTreat);
+			treat.onClick(treeElevatorMinigame.openTreat);
 		};
 	
 		view.on(MW.Event.PITCHER_LEVEL_ADD_BEFORE, function (msg) {
 			view.tell(MW.Event.PITCHER_LEVEL_SET_DROP_ORIGIN, {
-				x: treats[ladderMinigame.getRoundNumber() - 1].getX(),
-				y: treats[ladderMinigame.getRoundNumber() - 1].getY()
+				x: treats[treeElevatorMinigame.getRoundNumber() - 1].getX(),
+				y: treats[treeElevatorMinigame.getRoundNumber() - 1].getY()
 			});
 		});
 
@@ -167,7 +167,7 @@ MW.ElevatorView = MW.LadderView.extend(
 		});
 
 		createTreat = function (callback) {
-			treat = treats[ladderMinigame.getRoundNumber() - 1];
+			treat = treats[treeElevatorMinigame.getRoundNumber() - 1];
 			view.setTimeout(function () {
 				treat.transitionTo({
 					x: 100,
@@ -177,8 +177,8 @@ MW.ElevatorView = MW.LadderView.extend(
 					callback: function () {
 						treat.setRotation(0);
 						treat.transitionTo({
-							y: stepGroups[ladderMinigame.getTargetNumber()].getY() + 25,
-							rotation: 2 * Math.PI * (7 - ladderMinigame.getTargetNumber()),
+							y: stepGroups[treeElevatorMinigame.getTargetNumber()].getY() + 25,
+							rotation: 2 * Math.PI * (7 - treeElevatorMinigame.getTargetNumber()),
 							duration: 1,
 							callback: function () {
 								treat.setRotation(0);
@@ -252,15 +252,15 @@ MW.ElevatorView = MW.LadderView.extend(
 		 * Picked a number on the numpad
 		 */
 		view.on(MW.Event.MG_LADDER_PICKED, function (callback) {
-			if (ladderMinigame.modeIsAgentDo() && !ladderMinigame.agentIsInterrupted() && !ladderMinigame.agentIsBeingHelped()) {
-				var pos = view.getStickPoint(ladderMinigame.getChosenNumber());
+			if (treeElevatorMinigame.modeIsAgentDo() && !treeElevatorMinigame.agentIsInterrupted() && !treeElevatorMinigame.agentIsBeingHelped()) {
+				var pos = view.getStickPoint(treeElevatorMinigame.getChosenNumber());
 				view.agentTalk(2000);
 				MW.Sound.play(MW.Sounds.IM_GOING_TO_PICK_THIS_ONE);
 				view.setTimeout(function () {
-				    view.pointAt(ladderMinigame.getChosenNumber(), callback);
+				    view.pointAt(treeElevatorMinigame.getChosenNumber(), callback);
 				}, 1500);
 			} else {
-				view.pick(ladderMinigame.getChosenNumber(), callback);
+				view.pick(treeElevatorMinigame.getChosenNumber(), callback);
 			}
 		});
 
@@ -268,7 +268,7 @@ MW.ElevatorView = MW.LadderView.extend(
 		 * Helper approaches the target
 		 */
 		view.on(MW.Event.MG_LADDER_HELPER_APPROACH_TARGET, function (callback) {
-			currentPick = ladderMinigame.getChosenNumber();
+			currentPick = treeElevatorMinigame.getChosenNumber();
 			helper.transitionTo({
 				y: config.helper.y - 100,
 				duration: 2,
@@ -312,7 +312,7 @@ MW.ElevatorView = MW.LadderView.extend(
 		 */
 		view.on(MW.Event.MG_LADDER_RESET_SCENE, function (callback, msg) {
 			var timeout = 0;
-			if (currentPick !== ladderMinigame.getTargetNumber()) {
+			if (currentPick !== treeElevatorMinigame.getTargetNumber()) {
 				timeout = 2000;
 			}
 			view.setTimeout(function () {
@@ -390,7 +390,7 @@ MW.ElevatorView = MW.LadderView.extend(
 								callback: function () {
 									treat.setRotation(0);
 									done();
-									if (!ladderMinigame.modeIsAgentDo()) {
+									if (!treeElevatorMinigame.modeIsAgentDo()) {
 										addOnMouseActionToTreat();
 										shakeTreat();
 									}
@@ -425,13 +425,13 @@ MW.ElevatorView = MW.LadderView.extend(
 			y: 161
 		}));
 
-		for (i = 0; i < ladderMinigame.getLadder().length; i += 1) {
-			ladderStepNumber = ladderMinigame.getLadder()[i];
-			ladderStepGroup = new Kinetic.Group({
+		for (i = 0; i < treeElevatorMinigame.getTreeElevator().length; i += 1) {
+			treeElevatorStepNumber = treeElevatorMinigame.getTreeElevator()[i];
+			treeElevatorStepGroup = new Kinetic.Group({
 				x: config.tree.x,
 				y: config.tree.y - i * config.tree.stepHeight
 			});
-			stepGroups[ladderStepNumber] = ladderStepGroup;
+			stepGroups[treeElevatorStepNumber] = treeElevatorStepGroup;
 		}
 
 		layer.add(helper);
@@ -448,7 +448,7 @@ MW.ElevatorView = MW.LadderView.extend(
 
 		this.pick = function (number, callback) {
 			MW.Sound.play(MW.Sounds.CLICK);
-			if (ladderMinigame.playerIsAgent()) {
+			if (treeElevatorMinigame.playerIsAgent()) {
 				numpad.push(number);
 			}
 			callback();
@@ -473,7 +473,7 @@ MW.ElevatorView = MW.LadderView.extend(
         );
 
         view.hasIntroducedAgent = function () {
-			for (i = 0; i < ladderMinigame.getMaximumTreats(); i += 1) {
+			for (i = 0; i < treeElevatorMinigame.getMaximumTreats(); i += 1) {
 				treats[i].moveToTop();
 			}
         };
@@ -487,7 +487,7 @@ MW.ElevatorView = MW.LadderView.extend(
 			 */
 			(function (view) {
 				var
-					max = ladderMinigame.getMaximumTreats(),
+					max = treeElevatorMinigame.getMaximumTreats(),
 					parcel;
 				for (i = 0; i < max; i += 1) {
 					parcel = new Kinetic.MW.Parcel({

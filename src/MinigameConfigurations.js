@@ -6,8 +6,8 @@ MW.MinigameConfiguration = (function() {
 		/** @enum {Object} */
 		LADDER: {
 			ELEVATOR: {
-				game: MW.LadderMinigame,
-				view: MW.ElevatorView,
+				game: MW.ElevatorMinigame,
+				view: MW.TreeElevatorView,
 				title: "Elevator Game"
 			},
 			TREE: {
