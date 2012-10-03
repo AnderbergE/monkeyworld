@@ -78,6 +78,8 @@
 			<file name="view/Minigames/MinigameView.js" />
 			<file name="view/Minigames/Elevator/ElevatorView.js" />
 			<file name="view/Minigames/Elevator/BirdTreeView/BirdTreeView.js" />
+			<file name="view/Minigames/Elevator/BirdTreeView/BirdTreeBranch.js" />
+			<file name="view/Minigames/Elevator/BirdTreeView/BirdTreeNest.js" />
 			<file name="view/Minigames/Ladder/LadderView.js" />
 			<file name="view/Minigames/Ladder/MountainView.js" />
 			<file name="view/Minigames/Ladder/TreeView/TreeNumpad.js" />
@@ -158,6 +160,8 @@
 				<file name="view/Minigames/MinigameView.js" />
 				<file name="view/Minigames/Elevator/ElevatorView.js" />
 				<file name="view/Minigames/Elevator/BirdTreeView/BirdTreeView.js" />
+				<file name="view/Minigames/Elevator/BirdTreeView/BirdTreeBranch.js" />
+				<file name="view/Minigames/Elevator/BirdTreeView/BirdTreeNest.js" />
 				<file name="view/Minigames/Ladder/LadderView.js" />
 				<file name="view/Minigames/Ladder/MountainView.js" />
 				<file name="view/Minigames/Ladder/TreeView/TreeNumpad.js" />
@@ -233,6 +237,8 @@
 			<file name="view/Minigames/MinigameView.js" />
 			<file name="view/Minigames/Elevator/ElevatorView.js" />
 			<file name="view/Minigames/Elevator/BirdTreeView/BirdTreeView.js" />
+			<file name="view/Minigames/Elevator/BirdTreeView/BirdTreeBranch.js" />
+			<file name="view/Minigames/Elevator/BirdTreeView/BirdTreeNest.js" />
 			<file name="view/Minigames/Ladder/LadderView.js" />
 			<file name="view/Minigames/Ladder/MountainView.js" />
 			<file name="view/Minigames/Ladder/TreeView/TreeNumpad.js" />
