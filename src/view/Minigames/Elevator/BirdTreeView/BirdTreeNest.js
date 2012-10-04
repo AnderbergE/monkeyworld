@@ -11,37 +11,35 @@ MW.BirdTreeNest = function (config) {
 	if (config.y === undefined) config.y = 0;
 	if (config.facingRight === undefined) config.facingRight = true;
 	var group,
-		nestGraphics;
+		nest;
 	
 	group = new Kinetic.Group({
 			x: config.x,
 			y: config.y,
 	});
-	nestGraphics = new Kinetic.Rect({
+	nest = new Kinetic.Rect({
 		width: 30,
 		height: 10,
 		fill: config.facingRight ? 'purple' : 'yellow'
 	});
-	group.add(nestGraphics);
+	group.add(nest);
 	
 	
 	/**
-	* Add getWidth function to group.
 	* @public
 	* @returns {Number} The width of the bird tree nest.
 	*/
 	group.getWidth = function () {
-		return nestGraphics.getWidth();
-	}
+		return nest.getWidth();
+	};
 	
 	/**
-	* Add getHeight function to group.
 	* @public
 	* @returns {Number} The height of the bird tree nest.
 	*/
 	group.getHeight = function () {
-		return nestGraphics.getHeight();
-	}
+		return nest.getHeight();
+	};
 	
 	
 	return group;

@@ -11,9 +11,12 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 	/** @constructs */
 	init: function (elevatorMinigame, stage, agentView) {
 		this._super(elevatorMinigame, stage, agentView, "BirdTreeView");
-		var layer;
+		var layer,
+			nbrOfBranches = 5,
+			numpanel;
 
 		layer = new Kinetic.Layer()
+		
 		/* Add background */
 		layer.add(new Kinetic.Rect({
 			x: 0,
@@ -23,23 +26,27 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			fill: 'cyan'
 		}));
 
-		/* Create the tree. */
+		/* Create the tree */
 		layer.add(this.buildTree({
-			x: 100,
-			y: 100
+			x: 600,
+			y: 100,
+			branches: nbrOfBranches
 		}));
 		
-		/* Add the panel with numbers. */
-		var numpanel = new MW.Numpanel({
+		/* Add the panel with buttons */
+		numpanel = new MW.Numpanel({
 			height: 75,
-			nbrOfButtons: 6,
-			buttonScale: 0.9
+			nbrOfButtons: nbrOfBranches,
+			buttonScale: 0.9,
+			buttonPushed: function () {
+				layer.draw();
+			}
 		});
 		numpanel.setX((stage.getWidth() / 2) - (numpanel.getWidth() / 2));
 		numpanel.setY(stage.getHeight() - numpanel.getHeight() - 10);
 		layer.add(numpanel);
 
-		/* Add the layer and draw it. */
+		/* Add the layer and draw it */
 		stage.add(layer);
 		layer.draw();
 		
@@ -50,6 +57,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 	},
 	
 	/**
+	 * Builds a tree.
 	 * @private
 	 * @param {Kinetic.Stage} Stage needed to setup objects. 
 	 * @param {Hash} config:
@@ -57,7 +65,6 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 	 *		{Number} y - y position, default 0
 	 *		{Number} height - height that the branches will take up, default 500.
 	 *		{Number} branches - branches on the tree, default 5.
-	 *		{Boolean} isRight - the direction of the branch, default true.
 	 * @returns {Kinetic.Group} The group with all the branches.
 	 */
 	buildTree: function (config) {
@@ -84,6 +91,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		
 		for (var i = 2; i <= config.branches; i++) {
 			branch = new MW.BirdTreeBranch({
+				/* The branch that goes right is put more to the right. */
 				x: i % 2 == 0 ? (3 * branch.getWidth()) / 5 : 0,
 				y: branch.getY() + branch.getHeight() + spaceBetween,
 				number: i,
