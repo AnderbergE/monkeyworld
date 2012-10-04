@@ -9,6 +9,7 @@
  * 		{Number} rows - rows of buttons, default 1
  * 		{Number} columns - columns of buttons, default nbrOfButtons
  * 		{Number} buttonScale - size of button (1 = full row's height), default 1
+ *		{Function} buttonPushed - called when a button is pushed.
  */
 MW.Numpanel = function (config) {
 	if (config.x === undefined) config.x = 0;
@@ -18,14 +19,16 @@ MW.Numpanel = function (config) {
 	if (config.rows === undefined) config.rows = 1;
 	if (config.columns === undefined) config.columns = config.nbrOfButtons;
 	if (config.buttonScale === undefined) config.buttonScale = 1;
+	if (config.buttonPushed === undefined) config.buttonPushed = function () {};
 	var group,
 		buttonDiameter = config.height / config.rows;
-		
+	
 	group = new Kinetic.Group({
 		x: config.x,
 		y: config.y
 	});
 	
+	/* Add the buttons in rows and columns */
 	var k = 1;
 	for (var row = 0; row < config.rows; row++) {
 		for (var column = 0; column < config.columns; column++) {
@@ -36,7 +39,8 @@ MW.Numpanel = function (config) {
 				x: column * buttonDiameter,
 				y: row * buttonDiameter,
 				number: k,
-				radius: (buttonDiameter * config.buttonScale ) / 2
+				radius: (buttonDiameter * config.buttonScale ) / 2,
+				pushed: config.buttonPushed
 			}));
 			k++;
 		}
@@ -44,7 +48,6 @@ MW.Numpanel = function (config) {
 	
 	
 	/**
-	* Add getWidth function to group.
 	* @public
 	* @returns {Number} The height of the bird tree nest.
 	*/
@@ -53,10 +56,9 @@ MW.Numpanel = function (config) {
 			config.columns : config.nbrOfButtons;
 		/* buttonwidth  */
 		return columns * (config.height / config.rows);
-	}
+	};
 	
 	/**
-	* Add getHeight function to group.
 	* @public
 	* @returns {Number} The height of the bird tree nest.
 	*/
@@ -64,7 +66,7 @@ MW.Numpanel = function (config) {
 		var buttonDiameter = config.height / config.rows; 
 		var rows = Math.ceil(config.nbrOfButtons / config.columns);
 		return rows * buttonDiameter - buttonDiameter / 2;
-	}
+	};
 	
 	
 	return group;
