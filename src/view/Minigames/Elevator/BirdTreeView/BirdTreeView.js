@@ -11,11 +11,10 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 	/** @constructs */
 	init: function (elevatorMinigame, stage, agentView) {
 		this._super(elevatorMinigame, stage, agentView, "BirdTreeView");
-		var
-			view = this,
-			layer = new Kinetic.Layer();
+		var layer;
 
-		stage.add(layer);
+		layer = new Kinetic.Layer()
+		/* Add background */
 		layer.add(new Kinetic.Rect({
 			x: 0,
 			y: 0,
@@ -24,14 +23,28 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			fill: 'cyan'
 		}));
 
-		layer.add(this.buildTree(stage, {
+		/* Create the tree. */
+		layer.add(this.buildTree({
 			x: 100,
 			y: 100
 		}));
+		
+		/* Add the panel with numbers. */
+		var numpanel = new MW.Numpanel({
+			height: 75,
+			nbrOfButtons: 6,
+			buttonScale: 0.9
+		});
+		numpanel.setX((stage.getWidth() / 2) - (numpanel.getWidth() / 2));
+		numpanel.setY(stage.getHeight() - numpanel.getHeight() - 10);
+		layer.add(numpanel);
 
+		/* Add the layer and draw it. */
+		stage.add(layer);
 		layer.draw();
 		
-		view.addTearDown(function () {
+		
+		this.addTearDown(function () {
 			stage.remove(layer);
 		});
 	},
@@ -47,36 +60,36 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 	 *		{Boolean} isRight - the direction of the branch, default true.
 	 * @returns {Kinetic.Group} The group with all the branches.
 	 */
-	buildTree: function (stage, config) {
+	buildTree: function (config) {
 		if (config.x === undefined) config.x = 0;
 		if (config.y === undefined) config.y = 0;
 		if (config.height === undefined) config.height = 500;
 		if (config.branches === undefined) config.branches = 5;
-		var
+		var group,
 			branch,
-			group = new Kinetic.Group({
-				x: config.x,
-				y: config.y
-			}),
 			spaceBetween;
 		
-		branch = new MW.BirdTreeBranch(stage, {
+		group = new Kinetic.Group({
+				x: config.x,
+				y: config.y
+		});
+		branch = new MW.BirdTreeBranch({
 				number: 1,
 				isRight: false
 		});
-		group.add(branch.getGraphics());
+		group.add(branch);
 		
 		spaceBetween =
 			(config.height - config.branches * branch.getHeight()) / config.branches;
-			
+		
 		for (var i = 2; i <= config.branches; i++) {
-			branch = new MW.BirdTreeBranch(stage, {
+			branch = new MW.BirdTreeBranch({
 				x: i % 2 == 0 ? (3 * branch.getWidth()) / 5 : 0,
-				y: branch.getGraphics().getY() + branch.getHeight() + spaceBetween,
+				y: branch.getY() + branch.getHeight() + spaceBetween,
 				number: i,
 				isRight: i % 2 == 0 ? true : false
 			});
-			group.add(branch.getGraphics());
+			group.add(branch);
 		}
 		
 		return group;

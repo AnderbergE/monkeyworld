@@ -1,57 +1,48 @@
 /**
  * @constructor
- * @extends {MW.ViewModule}
- * @param {Kinect.Stage} stage
+ * @extends {Kinetic.Group}
  * @param {Hash} config:
  * 		{Number} x - x position, default 0
  * 		{Number} y - y position, default 0
  *		{Boolean} facingRight - if the bird should face right, default true
  */
-MW.BirdTreeNest = MW.ViewModule.extend(
-/** @lends {MW.BirdTreeNest.prototype} */
-{
-	/** @constructs */
-	init: function (stage, config) {
-		this._super(stage, "BirdTreeNest");
-		if (config.x === undefined) config.x = 0;
-		if (config.y === undefined) config.y = 0;
-		if (config.facingRight === undefined) config.facingRight = true;
-		var
-			nestGraphics,
-			group = new Kinetic.Group();
-		
-		nestGraphics = new Kinetic.Rect({
+MW.BirdTreeNest = function (config) {
+	if (config.x === undefined) config.x = 0;
+	if (config.y === undefined) config.y = 0;
+	if (config.facingRight === undefined) config.facingRight = true;
+	var group,
+		nestGraphics;
+	
+	group = new Kinetic.Group({
 			x: config.x,
 			y: config.y,
-			width: 30,
-			height: 10,
-			fill: config.facingRight ? 'purple' : 'yellow'
-		});
-		group.add(nestGraphics);
-		
-		
-		/**
-		* @public
-		* @returns {Number}
-		*/
-		this.getWidth = function () {
-			return nestGraphics.getWidth();
-		}
-		
-		/**
-		* @public
-		* @returns {Number}
-		*/
-		this.getHeight = function () {
-			return nestGraphics.getHeight();
-		}
-		
-		/**
-		* @public
-		* @returns {Kinect.Group} The group with all the nest graphics.
-		*/
-		this.getGraphics = function () {
-			return group;
-		}
+	});
+	nestGraphics = new Kinetic.Rect({
+		width: 30,
+		height: 10,
+		fill: config.facingRight ? 'purple' : 'yellow'
+	});
+	group.add(nestGraphics);
+	
+	
+	/**
+	* Add getWidth function to group.
+	* @public
+	* @returns {Number} The width of the bird tree nest.
+	*/
+	group.getWidth = function () {
+		return nestGraphics.getWidth();
 	}
-});
+	
+	/**
+	* Add getHeight function to group.
+	* @public
+	* @returns {Number} The height of the bird tree nest.
+	*/
+	group.getHeight = function () {
+		return nestGraphics.getHeight();
+	}
+	
+	
+	return group;
+};

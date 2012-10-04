@@ -20,7 +20,7 @@ MW.GameMode = {
 
 MW.GlobalSettings = {
 	/** @type {MW.Language} */ language: MW.Language.ENGLISH,
-	/** @type {boolean}     */ debug:    false,
+	/** @type {boolean}     */ debug:    true,
     /** @type {boolean}     */ testing:  false
 };
 
