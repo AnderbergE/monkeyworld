@@ -1,11 +1,11 @@
 /**
- * @constructor
- * @extends {Kinetic.Group}
+ * Create a bird tree branch.
  * @param {Hash} config:
  * 		{Number} x - x position, default 0
  * 		{Number} y - y position, default 0
  * 		{Number} number - the branches number, default 0
  *		{Boolean} isRight - if the branch should sprout right, default true
+ * @return The bird tree branch as a Kinetic.group.
  */
 MW.BirdTreeBranch = function (config) {
 	if (config.x === undefined) config.x = 0;

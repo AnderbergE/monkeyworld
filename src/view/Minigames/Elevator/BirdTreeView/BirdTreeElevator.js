@@ -1,28 +1,26 @@
 /**
- * Create a bird tree nest.
+ * Create a bird tree elevator.
  * @param {Hash} config:
  * 		{Number} x - x position, default 0
  * 		{Number} y - y position, default 0
- *		{Boolean} facingRight - if the bird should face right, default true
- * @return The bird tree nest as a Kinetic.group.
+ * @return The bird tree elevator as a Kinetic.group.
  */
-MW.BirdTreeNest = function (config) {
+MW.BirdTreeElevator = function (config) {
 	if (config.x === undefined) config.x = 0;
 	if (config.y === undefined) config.y = 0;
-	if (config.facingRight === undefined) config.facingRight = true;
 	var group,
-		nest;
+		elevator;
 	
 	group = new Kinetic.Group({
 			x: config.x,
 			y: config.y,
 	});
-	nest = new Kinetic.Rect({
-		width: 30,
-		height: 10,
-		fill: config.facingRight ? 'purple' : 'yellow'
+	elevator = new Kinetic.Rect({
+		width: 50,
+		height: 40,
+		fill: 'hotpink'
 	});
-	group.add(nest);
+	group.add(elevator);
 	
 	
 	/**
@@ -30,7 +28,7 @@ MW.BirdTreeNest = function (config) {
 	* @returns {Number} The width of the bird tree nest.
 	*/
 	group.getWidth = function () {
-		return nest.getWidth();
+		return elevator.getWidth();
 	};
 	
 	/**
@@ -38,7 +36,7 @@ MW.BirdTreeNest = function (config) {
 	* @returns {Number} The height of the bird tree nest.
 	*/
 	group.getHeight = function () {
-		return nest.getHeight();
+		return elevator.getHeight();
 	};
 	
 	

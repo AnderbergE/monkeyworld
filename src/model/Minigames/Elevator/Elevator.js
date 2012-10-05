@@ -16,7 +16,7 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 			elevator = this,
 			minNumber = 1,
 			maxNumber = 10;
-
+		
 		this.addStart(function () {
 			
 		});
@@ -24,5 +24,12 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 		this.addStop(function () {
 			elevator.tell("Game.roundDone");
 		});
+		
+		
+		this.pickedNumber = function (pickedNumber) {
+			elevator.tell(MW.Event.MG_LADDER_PICKED, {
+					number: pickedNumber,
+			});
+		};
 	}
 });
