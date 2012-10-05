@@ -1,6 +1,5 @@
 /**
- * @constructor
- * @extends {Kinetic.Group}
+ * Create a numpanel
  * @param {Hash} config:
  * 		{Number} x - x position, default 0
  * 		{Number} y - y position, default 0
@@ -9,7 +8,9 @@
  * 		{Number} rows - rows of buttons, default 1
  * 		{Number} columns - columns of buttons, default nbrOfButtons
  * 		{Number} buttonScale - size of button (1 = full row's height), default 1
- *		{Function} buttonPushed - called when a button is pushed.
+ *		{Function} buttonPushed - called when a button is pushed, default empty.
+ *		{Function} drawScene - function that redraws the scene, default empty.
+ * @return The numpanel as a Kinetic.group.
  */
 MW.Numpanel = function (config) {
 	if (config.x === undefined) config.x = 0;
@@ -20,6 +21,7 @@ MW.Numpanel = function (config) {
 	if (config.columns === undefined) config.columns = config.nbrOfButtons;
 	if (config.buttonScale === undefined) config.buttonScale = 1;
 	if (config.buttonPushed === undefined) config.buttonPushed = function () {};
+	if (config.drawScene === undefined) config.drawScene = function () {};
 	var group,
 		buttonDiameter = config.height / config.rows;
 	
@@ -40,7 +42,8 @@ MW.Numpanel = function (config) {
 				y: row * buttonDiameter,
 				number: k,
 				radius: (buttonDiameter * config.buttonScale ) / 2,
-				pushed: config.buttonPushed
+				pushed: config.buttonPushed,
+				drawScene: config.drawScene
 			}));
 			k++;
 		}
