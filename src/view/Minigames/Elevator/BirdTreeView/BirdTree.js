@@ -28,8 +28,16 @@ MW.BirdTree = function (config) {
 	* @returns {Number}
 	*/
 	group.getWidth = function () {
-		return (group.getChildren()[1].getX() +
-			group.getChildren()[1].getWidth()) - group.getChildren()[0].getX();
+		if (group.getNbrOfBranches() < 2) {
+			return (group.getChildren()[0].getX() +
+				group.getChildren()[0].getWidth());
+		} else if (group.getChildren()[0].getX() < group.getChildren()[1].getX())
+			return (group.getChildren()[1].getX() +
+				group.getChildren()[1].getWidth()) - group.getChildren()[0].getX();
+		else {
+			return (group.getChildren()[0].getX() +
+				group.getChildren()[0].getWidth()) - group.getChildren()[1].getX();
+		}
 	};
 	
 	/**
