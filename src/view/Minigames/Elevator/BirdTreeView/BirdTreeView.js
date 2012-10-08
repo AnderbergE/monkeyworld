@@ -64,6 +64,17 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		layer.draw();
 		
 		
+		view.on(MW.Event.MG_LADDER_PLACE_TARGET, function (vars) {
+			var bird = new MW.Bird({
+				x: 50,
+				y: 150,
+				number: vars.targetNumber
+			});
+			layer.add(bird);
+			numpanel.lock(false);
+			layer.draw();
+		});
+		
 		/**
 		 * Picked a number on the numpad
 		 */

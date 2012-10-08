@@ -48,6 +48,7 @@ MW.Numpanel = function (config) {
 			k++;
 		}
 	}
+	group.setListening(false);
 	
 	
 	/**
