@@ -71,6 +71,10 @@ MW.Numpanel = function (config) {
 		return rows * buttonDiameter - buttonDiameter / 2;
 	};
 	
+	group.lock = function (isLocked) {
+		group.setListening(!isLocked);
+	}
+	
 	
 	return group;
 };
