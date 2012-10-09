@@ -14,23 +14,57 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 		this._super(parent, "Elevator");
 		var
 			elevator = this,
+			numberOfBranches = 5,
 			targetNumber,
 			roundsWon = 0,
 			roundsLost = 0,
-			nbrOfRounds = 3;
+			winsToProgress = 3,
+			maxTries = 6;
 		
-		function newBird() {
-			if (nbrOfRounds > (roundsWon + roundsLost)) {
-				targetNumber = 1 + Math.floor(Math.random()*5);
-				elevator.tell(MW.Event.MG_LADDER_PLACE_TARGET, {
-						targetNumber: targetNumber,
-				});
+		
+		/**
+		 * Introduce a new bird.
+		 */
+		function newBird () {
+			/* Randomize where it should go and send event */
+			targetNumber = 1 + Math.floor(Math.random()*numberOfBranches);
+			elevator.tell(MW.Event.MG_LADDER_PLACE_TARGET, {
+				targetNumber: targetNumber
+			});
+		}
+		
+		
+		/**
+		 * Get the number of branches for this game.
+		 * @public
+		 * @return {Number}
+		 */
+		this.getNumberOfBranches = function () {
+			return numberOfBranches;
+		}
+		
+		/**
+		 * Run next round.
+		 * @public
+		 */
+		this.nextRound = function () {
+			if (winsToProgress >= roundsWon ||
+				maxTries >= (roundsWon + roundsLost)) {
+				newBird();
+			} else {
+				
 			}
 		}
 		
+		/**
+		 * A number has been picked.
+		 * @public
+		 * @param pickedNumber - The number that was picked
+		 */
 		this.pickedNumber = function (pickedNumber) {
 			elevator.tell(MW.Event.MG_LADDER_PICKED, {
-					number: pickedNumber,
+				number: pickedNumber,
+				correct: pickedNumber == targetNumber 
 			});
 			if (pickedNumber == targetNumber) {
 				roundsWon++;
@@ -39,11 +73,16 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 			}
 		};
 		
-		
+		/**
+		 * Functions to run when starting.
+		 */
 		this.addStart(function () {
-			newBird();
+			elevator.nextRound();
 		});
 
+		/**
+		 * Functions to run when stopping.
+		 */
 		this.addStop(function () {
 			elevator.tell("Game.roundDone");
 		});

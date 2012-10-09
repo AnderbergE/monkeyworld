@@ -28,7 +28,7 @@ MW.BirdTree = function (config) {
 	* @returns {Number}
 	*/
 	group.getWidth = function () {
-		if (group.getNbrOfBranches() < 2) {
+		if (group.getChildren().length < 2) {
 			return (group.getChildren()[0].getX() +
 				group.getChildren()[0].getWidth());
 		} else if (group.getChildren()[0].getX() < group.getChildren()[1].getX())
@@ -52,8 +52,8 @@ MW.BirdTree = function (config) {
 	* @public
 	* @returns {Number}
 	*/
-	group.getBranchY = function (i) {
-		return group.getChildren()[i-1].getY();
+	group.getBranches = function () {
+		return group.getChildren();
 	};
 	
 	/**
@@ -62,14 +62,6 @@ MW.BirdTree = function (config) {
 	*/
 	group.getBranchOverlap = function () {
 		return group.getChildren()[0].getX() - group.getChildren()[1].getX();
-	};
-	
-	/**
-	* @public
-	* @returns {Number}
-	*/
-	group.getNbrOfBranches = function () {
-		return group.getChildren().length;
 	};
 	
 	

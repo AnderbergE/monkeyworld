@@ -58,6 +58,14 @@ MW.BirdTreeBranch = function (config) {
 		return branch.getHeight() + nest.getHeight();
 	};
 	
+	group.isRight = function () {
+		return config.isRight;
+	}
+	
+	group.getNestX = function () {
+		return nest.getX();
+	}
+	
 	
 	return group;
 };
