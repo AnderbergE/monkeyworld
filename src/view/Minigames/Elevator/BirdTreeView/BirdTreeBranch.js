@@ -24,6 +24,7 @@ MW.BirdTreeBranch = function (config) {
 	
 	/* Add nest */
 	nest = new MW.BirdTreeNest({
+		number: config.number,
 		facingRight: !config.isRight
 	});
 	

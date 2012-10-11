@@ -24,10 +24,7 @@ MW.Bird = function (config) {
 	bird = new Kinetic.Rect({
 		width: 50,
 		height: 30,
-		fill: config.number == 1 ? 'green' :
-			config.number == 2 ? 'darkslategray' :
-			config.number == 3 ? 'lightseagreen' :
-			config.number == 4 ? 'indigo' : 'greenyellow'
+		fill: MW.BirdColorGet(config.number)
 	});
 	group.add(bird);
 	

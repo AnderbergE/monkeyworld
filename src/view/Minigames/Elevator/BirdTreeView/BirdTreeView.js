@@ -23,6 +23,9 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 
 		layer = new Kinetic.Layer();
 		
+		/* Setup colors that will be used by the birds. */
+		MW.BirdColorSetup(elevatorMinigame.getNumberOfBranches());
+		
 		/* Add background */
 		layer.add(new Kinetic.Rect({
 			x: 0,
