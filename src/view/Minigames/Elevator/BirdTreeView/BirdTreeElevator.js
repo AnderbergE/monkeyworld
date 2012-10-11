@@ -15,6 +15,8 @@ MW.BirdTreeElevator = function (config) {
 			x: config.x,
 			y: config.y,
 	});
+	
+	/* Add the elevator. */
 	elevator = new Kinetic.Rect({
 		width: 50,
 		height: 40,

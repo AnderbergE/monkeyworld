@@ -82,7 +82,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		/**
 		 * Move the bird to the elevator.
 		 * @private
-		 * @param callback - function to call when done
+		 * @param {Function} callback - function to call when done
 		 */
 		function moveBirdToElevator (callback) {
 			bird.transitionTo({
@@ -98,8 +98,8 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		/**
 		 * Move the bird from the elevator out on the branch.
 		 * @private
-		 * @param branch - which branch the elevator is at 
-		 * @param callback - function to call when done
+		 * @param {Number} branch - which branch the elevator is at 
+		 * @param {Function} callback - function to call when done
 		 */
 		function moveBirdFromElevator (branch, callback) {
 			bird.setY(elevator.getY() + elevator.getHeight() / 2);
@@ -118,8 +118,8 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		 * Move the elevator to specific floor.
 		 * if floor is 0 the elevator is moved to the bottom of the tree.
 		 * @private
-		 * @param floor - the target floor
-		 * @param callback - function to call when done
+		 * @param {Number} floor - the target floor
+		 * @param {Function} callback - function to call when done
 		 */
 		function moveElevator (floor, callback) {
 			if (floor == 0) {
@@ -149,6 +149,8 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		
 		/**
 		 * A target has been chosen, introduce baby bird.
+		 * @param {Hash} vars
+		 * @param {Number} vars.targetNumber - the target of the bird
 		 */
 		view.on(MW.Event.MG_LADDER_PLACE_TARGET, function (vars) {
 			birdGroup.removeChildren();
@@ -188,6 +190,10 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		
 		/**
 		 * Picked a number on the numpad, move bird and elevator.
+		 * @param {Hash} vars
+		 * @param {Number} vars.number - the chosen number
+		 * @param {Boolean} vars.tooHigh - the chosen number was too high
+		 * @param {Boolean} vars.tooLow - the chosen number was too low
 		 */
 		view.on(MW.Event.MG_LADDER_PICKED, function (vars) {
 			/* lock buttons from clicks */
@@ -200,21 +206,20 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 						
 						/* Same as above. */
 						var done = function () {
-							if (vars.correct) {
+							if (vars.tooHigh || vars.tooLow) {
 								elevatorMinigame.nextRound();
 							} else {
-								/* Make buttons clickable */
 								numpanel.lock(false);
 							}
 						}
 						
-						if (!vars.correct) {
+						if (vars.tooHigh || vars.tooLow) {
+							moveElevator(0, done);
+						} else {
 							moveBirdToElevator(function () {
 								bird.setOpacity(0);
 								moveElevator(0, done);
 							});
-						} else {
-							moveElevator(0, done);
 						}
 					});
 				});

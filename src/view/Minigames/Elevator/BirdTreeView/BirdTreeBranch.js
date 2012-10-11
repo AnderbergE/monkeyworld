@@ -28,6 +28,7 @@ MW.BirdTreeBranch = function (config) {
 		facingRight: !config.isRight
 	});
 	
+	/* Add branch */
 	branch = new Kinetic.Rect({
 		y: nest.getHeight(),
 		width: 150,
@@ -59,10 +60,18 @@ MW.BirdTreeBranch = function (config) {
 		return branch.getHeight() + nest.getHeight();
 	};
 	
+	/**
+	* @public
+	* @returns {Boolean}
+	*/
 	group.isRight = function () {
 		return config.isRight;
 	}
 	
+	/**
+	* @public
+	* @returns {Number}
+	*/
 	group.getNestX = function () {
 		return nest.getX();
 	}

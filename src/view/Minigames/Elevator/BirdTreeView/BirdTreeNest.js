@@ -19,6 +19,7 @@ MW.BirdTreeNest = function (config) {
 			x: config.x,
 			y: config.y,
 	});
+	/* Add the nest. */
 	nest = new Kinetic.Rect({
 		width: 30,
 		height: 10,

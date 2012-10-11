@@ -103,7 +103,8 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 			}
 			elevator.tell(MW.Event.MG_LADDER_PICKED, {
 				number: pickedNumber,
-				correct: pickedNumber == targetNumber
+				tooHigh: pickedNumber > targetNumber,
+				tooLow: pickedNumber < targetNumber
 			});
 		};
 		

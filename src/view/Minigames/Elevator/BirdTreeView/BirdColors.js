@@ -2,9 +2,7 @@ var BirdColors;
 
 /**
  * Set a list of colors for the birds.
- * @param {Hash} config:
- *		{Boolean} facingRight - if the bird should face right, default true
- * @return The bird tree nest as a Kinetic.group.
+ * @param {Number} nbrOfColors - the amount of colors to pick from
  */
 MW.BirdColorSetup = function (nbrOfColors) {
 	BirdColors = new Array();
@@ -25,6 +23,12 @@ MW.BirdColorSetup = function (nbrOfColors) {
 	}
 }
 
+/**
+ * Get a color from the list.
+ * @public
+ * @param {Number} number - the color place in the list
+ * @return {String} - the color
+ */
 MW.BirdColorGet = function (number) {
 	if (number < 0 || number > BirdColors.length) {
 		throw "Array out of bounds exception";

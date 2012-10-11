@@ -21,6 +21,8 @@ MW.Bird = function (config) {
 			y: config.y,
 			scale: config.scale
 	});
+	
+	/* Add bird */
 	bird = new Kinetic.Rect({
 		width: 50,
 		height: 30,

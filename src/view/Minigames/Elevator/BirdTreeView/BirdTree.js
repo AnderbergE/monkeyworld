@@ -94,9 +94,11 @@ function buildTree (config) {
 	});
 	branchList.push(branch);
 	
+	/* Calculate the space between the branches. */
 	spaceBetween =
 		(config.height - config.branches * branch.getHeight()) / config.branches;
 	
+	/* Create the branches. */
 	for (var i = 1; i < config.branches; i++) {
 		branch = new MW.BirdTreeBranch({
 			/* The branch that goes right is put more to the right. */
