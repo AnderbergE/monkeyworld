@@ -42,6 +42,8 @@
 			<file name="res/Sounds.js" />
 			
 			<!-- model -->
+			<file name="model/Agents/Agent.js" />
+			<file name="model/Agents/AgentKnowledge.js" />
 			<file name="model/Agents/MonkeyAgent.js" />
 			<file name="model/Agents/MouseAgent.js" />
 			<file name="model/Game/AgentChooser.js" />
@@ -130,6 +132,8 @@
 				<file name="res/Sounds.js" />
 				
 				<!-- model -->
+				<file name="model/Agents/Agent.js" />
+				<file name="model/Agents/AgentKnowledge.js" />
 				<file name="model/Agents/MonkeyAgent.js" />
 				<file name="model/Agents/MouseAgent.js" />
 				<file name="model/Game/AgentChooser.js" />
@@ -214,6 +218,8 @@
 			<file name="res/Sounds.js" />
 			
 			<!-- model -->
+			<file name="model/Agents/Agent.js" />
+			<file name="model/Agents/AgentKnowledge.js" />
 			<file name="model/Agents/MouseAgent.js" />
 			<file name="model/Game/AgentChooser.js" />
 			<file name="model/Game/Game.js" />

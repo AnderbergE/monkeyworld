@@ -19,18 +19,46 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 			roundsWon = 0,
 			roundsLost = 0,
 			winsToProgress = 3,
-			maxTries = 6;
+			maxTries = 6,
+			agent;
 		
 		
 		/**
 		 * Introduce a new bird.
+		 * @private
 		 */
 		function newBird () {
 			/* Randomize where it should go and send event */
 			targetNumber = 1 + Math.floor(Math.random()*numberOfBranches);
 			elevator.tell(MW.Event.MG_LADDER_PLACE_TARGET, {
-				targetNumber: targetNumber
+				targetNumber: targetNumber,
+				callback: elevator.modeIsAgentDo() ? elevator.agentPickNumber :
+					null
 			});
+		}
+		
+		/**
+		 * Introduce a new mode.
+		 * Child play -> Agent watch -> Agent act
+		 * @private
+		 */
+		function nextMode () {
+			if (elevator.modeIsChild()) {
+				elevator.setMode(MW.GameMode.AGENT_SEE);
+				agent = new MW.Agent();
+				roundsWon = 0;
+				roundsLost = 0;
+				elevator.tell(MW.Event.MG_LADDER_INTRODUCE_AGENT,
+					elevator.nextRound);
+			} else if (elevator.modeIsAgentSee()) {
+				elevator.setMode(MW.GameMode.AGENT_DO);
+				roundsWon = 0;
+				roundsLost = 0;
+				elevator.tell(MW.Event.MG_LADDER_START_AGENT,
+					elevator.nextRound);
+			} else {
+				elevator.tell(MW.Event.MG_LADDER_CHEER, elevator.quit);
+			}
 		}
 		
 		
@@ -52,20 +80,7 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 				maxTries > (roundsWon + roundsLost)) {
 				newBird();
 			} else {
-				if (this.modeIsChild()) {
-					elevator.tell(MW.Event.MG_LADDER_INTRODUCE_AGENT,
-						elevator.nextRound);
-					roundsWon = 0;
-					roundsLost = 0;
-					this.setMode(MW.GameMode.AGENT_SEE);
-				} else if (this.modeIsAgentSee()) {
-					elevator.tell(MW.Event.MG_LADDER_START_AGENT);
-					roundsWon = 0;
-					roundsLost = 0;
-					this.setMode(MW.GameMode.AGENT_DO);
-				} else {
-					elevator.tell(MW.Event.MG_LADDER_CHEER, elevator.quit);
-				}
+				nextMode();
 			}
 		}
 		
@@ -75,15 +90,28 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 		 * @param pickedNumber - The number that was picked
 		 */
 		this.pickedNumber = function (pickedNumber) {
-			elevator.tell(MW.Event.MG_LADDER_PICKED, {
-				number: pickedNumber,
-				correct: pickedNumber == targetNumber 
-			});
 			if (pickedNumber == targetNumber) {
 				roundsWon++;
+				if (this.modeIsAgentSee()) {
+					agent.watchCorrectAnswer(pickedNumber);
+				}
 			} else {
 				roundsLost++;
+				if (this.modeIsAgentSee()) {
+					agent.watchIncorrectAnswer(pickedNumber, targetNumber);
+				}
 			}
+			elevator.tell(MW.Event.MG_LADDER_PICKED, {
+				number: pickedNumber,
+				correct: pickedNumber == targetNumber
+			});
+		};
+		
+		/**
+		 * Let the agent pick a number.
+		 */
+		this.agentPickNumber = function () {
+			elevator.pickedNumber(agent.pickNumber());
 		};
 		
 		

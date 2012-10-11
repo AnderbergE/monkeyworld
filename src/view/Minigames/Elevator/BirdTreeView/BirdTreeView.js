@@ -176,8 +176,12 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 							fill: 'darkblue'
 						}));
 					}
-					/* Make buttons clickable */
-					numpanel.lock(false);
+					if (vars.callback === undefined || vars.callback == null) {
+						/* Make buttons clickable */
+						numpanel.lock(false);
+					} else {
+						vars.callback();
+					}
 				}
 			});
 		});
@@ -227,6 +231,9 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			}
 		});
 		
+		/**
+		 * Introduce the agent to the playing field.
+		 */
 		view.on(MW.Event.MG_LADDER_INTRODUCE_AGENT, function (callback) {
 			agent = new Kinetic.Rect({
 				x: 300,
@@ -239,6 +246,18 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			agent.transitionTo({
 				x: 300,
 				y: 350,
+				duration: 1,
+				easing: 'ease-out',
+				callback: callback
+			});
+		});
+		
+		/**
+		 * Agent starts acting.
+		 */
+		view.on(MW.Event.MG_LADDER_START_AGENT, function (callback) {
+			agent.transitionTo({
+				x: 330,
 				duration: 1,
 				easing: 'ease-out',
 				callback: callback
