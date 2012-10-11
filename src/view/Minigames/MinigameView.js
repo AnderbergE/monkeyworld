@@ -58,7 +58,6 @@ MW.MinigameView = MW.ViewModule.extend(
 		})(this);
 
 		/**
-
 		 * Show the face of the agent in the top right corner in child play mode
 		 */
 		(function (view) {

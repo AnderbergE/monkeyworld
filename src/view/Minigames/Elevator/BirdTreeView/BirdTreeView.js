@@ -15,8 +15,11 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			layer,
 			tree,
 			numpanel,
+			elevator,
+			elevatorOrigin,
 			bird,
-			birdGroup;
+			birdGroup, /* This holds the bird and the "fingers" */
+			agent;
 
 		layer = new Kinetic.Layer();
 		
@@ -28,7 +31,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			height: stage.getHeight(),
 			fill: 'black'
 		}));
-
+		
 		/* Create the tree */
 		tree = new MW.BirdTree({
 			x: 600,
@@ -60,6 +63,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			elevator.getWidth() / 2);
 		elevator.setY(tree.getY() + tree.getHeight() - elevator.getHeight());
 		layer.add(elevator);
+		elevatorOrigin = elevator.getY();
 
 		/* Add the group which will hold the birds and set Z */
 		birdGroup = new Kinetic.Group();
@@ -109,11 +113,21 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		
 		/**
 		 * Move the elevator to specific floor.
+		 * if floor is 0 the elevator is moved to the bottom of the tree.
 		 * @private
 		 * @param floor - the target floor
 		 * @param callback - function to call when done
 		 */
 		function moveElevator (floor, callback) {
+			if (floor == 0) {
+				elevator.transitionTo({
+					y: elevatorOrigin,
+					duration: 1,
+					easing: 'ease-in-out',
+					callback: callback
+				});
+				return;
+			}
 			/* Anonymous function to stop at each elevator floor */
 			var gotoFloor = 0;
 			(function () {
@@ -171,35 +185,29 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		view.on(MW.Event.MG_LADDER_PICKED, function (vars) {
 			/* lock buttons from clicks */
 			numpanel.lock(true);
-			var elevatorOrigin = elevator.getY();
 			
+			/* This function will be called later, avoiding code duplication. */
 			var tempMover = function () {
 				moveElevator(vars.number, function () {
 					moveBirdFromElevator(vars.number, function () {
-					
-						var moveElevatorToBottom = function () {
-							elevator.transitionTo({
-								y: elevatorOrigin,
-								duration: 1,
-								easing: 'ease-in-out',
-								callback: function () {
-									if (vars.correct) {
-										elevatorMinigame.nextRound();
-									} else {
-										/* Make buttons clickable */
-										numpanel.lock(false);
-									}
-								}
-							});
+						
+						/* Same as above. */
+						var done = function () {
+							if (vars.correct) {
+								elevatorMinigame.nextRound();
+							} else {
+								/* Make buttons clickable */
+								numpanel.lock(false);
+							}
 						}
 						
 						if (!vars.correct) {
 							moveBirdToElevator(function () {
 								bird.setOpacity(0);
-								moveElevatorToBottom();
+								moveElevator(0, done);
 							});
 						} else {
-							moveElevatorToBottom();
+							moveElevator(0, done);
 						}
 					});
 				});
@@ -214,6 +222,24 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			} else {
 				tempMover();
 			}
+		});
+		
+		view.on(MW.Event.MG_LADDER_INTRODUCE_AGENT, function (callback) {
+			agent = new Kinetic.Rect({
+				x: 300,
+				y: -100,
+				width: 60,
+				height: 80,
+				fill: 'chartreuse' 
+			});
+			layer.add(agent);
+			agent.transitionTo({
+				x: 300,
+				y: 350,
+				duration: 1,
+				easing: 'ease-out',
+				callback: callback
+			});
 		});
 		
 		

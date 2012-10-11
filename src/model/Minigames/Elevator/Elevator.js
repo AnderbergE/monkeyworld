@@ -48,11 +48,24 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 		 * @public
 		 */
 		this.nextRound = function () {
-			if (winsToProgress >= roundsWon ||
-				maxTries >= (roundsWon + roundsLost)) {
+			if (winsToProgress > roundsWon &&
+				maxTries > (roundsWon + roundsLost)) {
 				newBird();
 			} else {
-				
+				if (this.modeIsChild()) {
+					elevator.tell(MW.Event.MG_LADDER_INTRODUCE_AGENT,
+						elevator.nextRound);
+					roundsWon = 0;
+					roundsLost = 0;
+					this.setMode(MW.GameMode.AGENT_SEE);
+				} else if (this.modeIsAgentSee()) {
+					elevator.tell(MW.Event.MG_LADDER_START_AGENT);
+					roundsWon = 0;
+					roundsLost = 0;
+					this.setMode(MW.GameMode.AGENT_DO);
+				} else {
+					elevator.tell(MW.Event.MG_LADDER_CHEER, elevator.quit);
+				}
 			}
 		}
 		
@@ -72,6 +85,7 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 				roundsLost++;
 			}
 		};
+		
 		
 		/**
 		 * Functions to run when starting.

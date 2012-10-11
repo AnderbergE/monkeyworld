@@ -229,6 +229,10 @@ MW.Minigame = MW.Module.extend(
 	/** @return {boolean} true if the current mode is Agent Do */
 	modeIsAgentDo: function() {
 		return this._parent.modeIsAgentDo();
+	},
+	
+	setMode: function (mode) {
+		this._parent.setMode(mode);
 	}
 });
 

@@ -516,6 +516,10 @@ MW.Game = MW.GlobalObject.extend(
 		this.modeIsAgentDo = function() {
 			return gameMode === MW.GameMode.AGENT_DO;
 		};
+		
+		this.setMode = function (mode) {
+			gameMode = mode;
+		};
 	}
 });
 
