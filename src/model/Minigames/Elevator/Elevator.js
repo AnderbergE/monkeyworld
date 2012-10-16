@@ -38,6 +38,19 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 		}
 		
 		/**
+		 * Run next round.
+		 * @private
+		 */
+		function nextRound () {
+			if (winsToProgress > roundsWon &&
+				maxTries > (roundsWon + roundsLost)) {
+				newBird();
+			} else {
+				nextMode();
+			}
+		}
+		
+		/**
 		 * Introduce a new mode.
 		 * Child play -> Agent watch -> Agent act
 		 * @private
@@ -48,18 +61,40 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 				agent = new MW.Agent();
 				roundsWon = 0;
 				roundsLost = 0;
-				elevator.tell(MW.Event.MG_LADDER_INTRODUCE_AGENT,
-					elevator.nextRound);
+				elevator.tell(MW.Event.MG_LADDER_INTRODUCE_AGENT);
 			} else if (elevator.modeIsAgentSee()) {
 				elevator.setMode(MW.GameMode.AGENT_DO);
 				roundsWon = 0;
 				roundsLost = 0;
-				elevator.tell(MW.Event.MG_LADDER_START_AGENT,
-					elevator.nextRound);
+				elevator.tell(MW.Event.MG_LADDER_START_AGENT);
 			} else {
 				elevator.tell(MW.Event.MG_LADDER_CHEER, elevator.quit);
 			}
 		}
+		
+		/**
+		 * A number has been picked.
+		 * @public
+		 * @param pickedNumber - The number that was picked
+		 */
+		function pickedNumber (pickedNumber) {
+			if (pickedNumber == targetNumber) {
+				roundsWon++;
+				if (elevator.modeIsAgentSee()) {
+					agent.watchCorrectAnswer(pickedNumber);
+				}
+			} else {
+				roundsLost++;
+				if (elevator.modeIsAgentSee()) {
+					agent.watchIncorrectAnswer(pickedNumber, targetNumber);
+				}
+			}
+			elevator.tell(MW.Event.MG_LADDER_PICKED, {
+				number: pickedNumber,
+				tooHigh: pickedNumber > targetNumber,
+				tooLow: pickedNumber < targetNumber
+			});
+		};
 		
 		
 		/**
@@ -71,48 +106,13 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 			return numberOfBranches;
 		}
 		
-		/**
-		 * Run next round.
-		 * @public
-		 */
-		this.nextRound = function () {
-			if (winsToProgress > roundsWon &&
-				maxTries > (roundsWon + roundsLost)) {
-				newBird();
-			} else {
-				nextMode();
-			}
-		}
-		
-		/**
-		 * A number has been picked.
-		 * @public
-		 * @param pickedNumber - The number that was picked
-		 */
-		this.pickedNumber = function (pickedNumber) {
-			if (pickedNumber == targetNumber) {
-				roundsWon++;
-				if (this.modeIsAgentSee()) {
-					agent.watchCorrectAnswer(pickedNumber);
-				}
-			} else {
-				roundsLost++;
-				if (this.modeIsAgentSee()) {
-					agent.watchIncorrectAnswer(pickedNumber, targetNumber);
-				}
-			}
-			elevator.tell(MW.Event.MG_LADDER_PICKED, {
-				number: pickedNumber,
-				tooHigh: pickedNumber > targetNumber,
-				tooLow: pickedNumber < targetNumber
-			});
-		};
+
 		
 		/**
 		 * Let the agent pick a number.
 		 */
 		this.agentPickNumber = function () {
-			elevator.pickedNumber(agent.pickNumber());
+			pickedNumber(agent.pickNumber());
 		};
 		
 		
@@ -120,7 +120,7 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 		 * Functions to run when starting.
 		 */
 		this.addStart(function () {
-			elevator.nextRound();
+			nextRound();
 		});
 
 		/**
@@ -130,6 +130,20 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 			elevator.tell("Game.roundDone");
 		});
 		
+		
+		/**
+		 * Listen to button pushes.
+		 */
+		this.on('BUTTON_PUSHED', function (vars) {
+			pickedNumber(vars.number);
+		});
+		
+		/**
+		 * Start new round.
+		 */
+		this.on('ROUND_DONE', function (vars) {
+			nextRound();
+		});
 		
 		/* This is needed to start the game */
 		this.on(MW.Event.INTRODUCE_AGENT, function (callback) {

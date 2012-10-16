@@ -49,9 +49,6 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			height: 75,
 			nbrOfButtons: tree.getBranches().length,
 			buttonScale: 0.9,
-			buttonPushed: function (i) {
-				elevatorMinigame.pickedNumber(i)
-			},
 			drawScene: function () {
 				layer.draw();
 			}
@@ -118,32 +115,29 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		 * Move the elevator to specific floor.
 		 * if floor is 0 the elevator is moved to the bottom of the tree.
 		 * @private
-		 * @param {Number} floor - the target floor
+		 * @param {Number} targetFloor - the target floor
+		 * @param {Number} nextFloor - the next floor to go to
 		 * @param {Function} callback - function to call when done
 		 */
-		function moveElevator (floor, callback) {
-			if (floor == 0) {
-				elevator.transitionTo({
-					y: elevatorOrigin,
-					duration: 1,
-					easing: 'ease-in-out',
-					callback: callback
-				});
-				return;
-			}
-			/* Anonymous function to stop at each elevator floor */
-			var gotoFloor = 0;
-			(function () {
-				gotoFloor++;
-				elevator.transitionTo({
-					y: tree.getY() + tree.getBranches()[gotoFloor-1].getY(),
-					duration: 1,
-					easing: 'ease-in-out',
-					/* Recursive call if we have not reached our destination */
-					/* otherwise go back to start */
-					callback: gotoFloor != floor ? arguments.callee : callback
-				});
-			})(); /* Call the anonymous function right away */
+		function moveElevator (targetFloor, nextFloor, callback) {
+			/* Anonymous function to stop at each elevator floor when going up.
+			 * No stops when going to bottom. */
+			elevator.transitionTo({
+				y: targetFloor == 0 ? elevatorOrigin :
+					tree.getY() + tree.getBranches()[nextFloor-1].getY(),
+				duration: 1,
+				easing: 'ease-in-out',
+				callback: function () {
+					if (nextFloor < targetFloor) {
+						elevator.setFloor(nextFloor);
+						/* Recursive call if we have not reached our dest */
+						moveElevator(targetFloor, nextFloor + 1, callback);
+					} else {
+						elevator.setFloor(nextFloor);
+						callback();
+					}
+				}
+			});
 		}
 		
 		
@@ -201,25 +195,27 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			
 			/* This function will be called later, avoiding code duplication. */
 			var tempMover = function () {
-				moveElevator(vars.number, function () {
+				moveElevator(vars.number, 1, function () {
 					moveBirdFromElevator(vars.number, function () {
 						
 						/* Same as above. */
 						var done = function () {
 							if (vars.tooHigh || vars.tooLow) {
-								elevatorMinigame.nextRound();
-							} else {
 								numpanel.lock(false);
+							} else {
+								view.tell('ROUND_DONE');
 							}
 						}
 						
+						/* Move elevator to the bottom.
+						 * If wrong, bird goes back */
 						if (vars.tooHigh || vars.tooLow) {
-							moveElevator(0, done);
-						} else {
 							moveBirdToElevator(function () {
 								bird.setOpacity(0);
-								moveElevator(0, done);
+								moveElevator(0, 0, done);
 							});
+						} else {
+							moveElevator(0, 0, done);
 						}
 					});
 				});
@@ -239,7 +235,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		/**
 		 * Introduce the agent to the playing field.
 		 */
-		view.on(MW.Event.MG_LADDER_INTRODUCE_AGENT, function (callback) {
+		view.on(MW.Event.MG_LADDER_INTRODUCE_AGENT, function () {
 			agent = new Kinetic.Rect({
 				x: 300,
 				y: -100,
@@ -253,19 +249,23 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 				y: 350,
 				duration: 1,
 				easing: 'ease-out',
-				callback: callback
+				callback: function () {
+					view.tell('ROUND_DONE');
+				}
 			});
 		});
 		
 		/**
 		 * Agent starts acting.
 		 */
-		view.on(MW.Event.MG_LADDER_START_AGENT, function (callback) {
+		view.on(MW.Event.MG_LADDER_START_AGENT, function () {
 			agent.transitionTo({
 				x: 330,
 				duration: 1,
 				easing: 'ease-out',
-				callback: callback
+				callback: function () {
+					view.tell('ROUND_DONE');
+				}
 			});
 		});
 		

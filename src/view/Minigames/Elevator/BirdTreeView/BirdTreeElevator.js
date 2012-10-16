@@ -26,19 +26,27 @@ MW.BirdTreeElevator = function (config) {
 	
 	
 	/**
-	* @public
-	* @returns {Number} The width of the bird tree nest.
-	*/
+	 * @public
+	 * @returns {Number} The width of the bird tree nest.
+	 */
 	group.getWidth = function () {
 		return elevator.getWidth();
 	};
 	
 	/**
-	* @public
-	* @returns {Number} The height of the bird tree nest.
-	*/
+	 * @public
+	 * @returns {Number} The height of the bird tree nest.
+	 */
 	group.getHeight = function () {
 		return elevator.getHeight();
+	};
+	
+	/**
+	 * @public
+	 * @param {Number} number - the floor number of the elevator.
+	 */
+	group.setFloor = function (number) {
+		elevator.setFill(number == 0 ? 'hotpink' : MW.BirdColorGet(number));
 	};
 	
 	

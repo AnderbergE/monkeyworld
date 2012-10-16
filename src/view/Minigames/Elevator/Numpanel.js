@@ -8,7 +8,6 @@
  * 		{Number} rows - rows of buttons, default 1
  * 		{Number} columns - columns of buttons, default nbrOfButtons
  * 		{Number} buttonScale - size of button (1 = full row's height), default 1
- *		{Function} buttonPushed - called when a button is pushed, default empty.
  *		{Function} drawScene - function that redraws the scene, default empty.
  * @return The numpanel as a Kinetic.group.
  */
@@ -20,7 +19,6 @@ MW.Numpanel = function (config) {
 	if (config.rows === undefined) config.rows = 1;
 	if (config.columns === undefined) config.columns = config.nbrOfButtons;
 	if (config.buttonScale === undefined) config.buttonScale = 1;
-	if (config.buttonPushed === undefined) config.buttonPushed = function () {};
 	if (config.drawScene === undefined) config.drawScene = function () {};
 	var group,
 		buttonDiameter = config.height / config.rows;
@@ -42,9 +40,8 @@ MW.Numpanel = function (config) {
 				y: row * buttonDiameter,
 				number: k,
 				radius: (buttonDiameter * config.buttonScale ) / 2,
-				pushed: config.buttonPushed,
 				drawScene: config.drawScene
-			}));
+			}).getGroup());
 			k++;
 		}
 	}
@@ -52,9 +49,9 @@ MW.Numpanel = function (config) {
 	
 	
 	/**
-	* @public
-	* @returns {Number} The height of the bird tree nest.
-	*/
+	 * @public
+	 * @returns {Number} The height of the bird tree nest.
+	 */
 	group.getWidth = function () {
 		var columns = config.columns > config.nbrOfButtons ?
 			config.columns : config.nbrOfButtons;
@@ -63,15 +60,19 @@ MW.Numpanel = function (config) {
 	};
 	
 	/**
-	* @public
-	* @returns {Number} The height of the bird tree nest.
-	*/
+	 * @public
+	 * @returns {Number} The height of the bird tree nest.
+	 */
 	group.getHeight = function () {
 		var buttonDiameter = config.height / config.rows; 
 		var rows = Math.ceil(config.nbrOfButtons / config.columns);
 		return rows * buttonDiameter - buttonDiameter / 2;
 	};
 	
+	/**
+	 * @public
+	 * @param {Boolean} isLocked - true if the buttons should not be pushable.
+	 */
 	group.lock = function (isLocked) {
 		group.setListening(!isLocked);
 	}

@@ -26,11 +26,11 @@ MW.BirdColorSetup = function (nbrOfColors) {
 /**
  * Get a color from the list.
  * @public
- * @param {Number} number - the color place in the list
+ * @param {Number} number - the color place in the list (1-nbrOfColors)
  * @return {String} - the color
  */
 MW.BirdColorGet = function (number) {
-	if (number < 0 || number > BirdColors.length) {
+	if (number <= 0 || number > BirdColors.length) {
 		throw "Array out of bounds exception";
 	}
 	return BirdColors[number - 1];
