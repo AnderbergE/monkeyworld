@@ -14,14 +14,16 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		var view = this,
 			layer,
 			tree,
+			numpanelLayer,
 			numpanel,
 			elevator,
 			elevatorOrigin,
 			bird,
 			birdGroup, /* This holds the bird and the "fingers" */
 			agent;
-
+		
 		layer = new Kinetic.Layer();
+		numpanelLayer = new Kinetic.Layer();
 		
 		/* Setup colors that will be used by the birds. */
 		MW.BirdColorSetup(elevatorMinigame.getNumberOfBranches());
@@ -44,18 +46,9 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		});
 		layer.add(tree);
 		
-		/* Add the panel with buttons */
-		numpanel = new MW.Numpanel({
-			height: 75,
-			nbrOfButtons: tree.getBranches().length,
-			buttonScale: 0.9,
-			drawScene: function () {
-				layer.draw();
-			}
-		});
-		numpanel.setX((stage.getWidth() / 2) - (numpanel.getWidth() / 2));
-		numpanel.setY(stage.getHeight() - numpanel.getHeight() - 10);
-		layer.add(numpanel);
+		/* Add the group which will hold the birds */
+		birdGroup = new Kinetic.Group();
+		layer.add(birdGroup);
 		
 		/* Add the elevator */
 		elevator = new MW.BirdTreeElevator({});
@@ -64,16 +57,23 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		elevator.setY(tree.getY() + tree.getHeight() - elevator.getHeight());
 		layer.add(elevator);
 		elevatorOrigin = elevator.getY();
-
-		/* Add the group which will hold the birds and set Z */
-		birdGroup = new Kinetic.Group();
-		layer.add(birdGroup);
-		birdGroup.setZIndex(elevator.getZIndex() - 1);
-		tree.setZIndex(birdGroup.getZIndex() - 1);
 		
-		/* Add the layer and draw it */
+		/* Add the panel with buttons in its own layer so it is always shown */
+		numpanel = new MW.Numpanel({
+			height: 75,
+			nbrOfButtons: elevatorMinigame.getNumberOfBranches(),
+			buttonScale: 0.9,
+			drawScene: function () {
+				numpanelLayer.draw();
+			}
+		});
+		numpanel.setX((stage.getWidth() / 2) - (numpanel.getWidth() / 2));
+		numpanel.setY(stage.getHeight() - numpanel.getHeight() - 10);
+		numpanelLayer.add(numpanel);
+		
+		/* Add the layers */
 		stage.add(layer);
-		layer.draw();
+		stage.add(numpanelLayer);
 		
 		
 		/**
@@ -147,6 +147,11 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		 * @param {Number} vars.targetNumber - the target of the bird
 		 */
 		view.on(MW.Event.MG_LADDER_PLACE_TARGET, function (vars) {
+			layer.transitionTo({
+				y: -300,
+				scale: {x: 1.75, y: 1.75},
+				duration: 1
+			});
 			birdGroup.removeChildren();
 			bird = new MW.Bird({
 				x: -50,
@@ -192,6 +197,12 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		view.on(MW.Event.MG_LADDER_PICKED, function (vars) {
 			/* lock buttons from clicks */
 			numpanel.lock(true);
+			
+			layer.transitionTo({
+				y: 0,
+				scale: {x: 1, y: 1},
+				duration: 1
+			});
 			
 			/* This function will be called later, avoiding code duplication. */
 			var tempMover = function () {

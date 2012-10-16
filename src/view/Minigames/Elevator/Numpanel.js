@@ -75,6 +75,7 @@ MW.Numpanel = function (config) {
 	 */
 	group.lock = function (isLocked) {
 		group.setListening(!isLocked);
+		config.drawScene();
 	}
 	
 	
