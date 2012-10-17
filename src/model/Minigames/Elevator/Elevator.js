@@ -14,7 +14,7 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 		this._super(parent, "Elevator");
 		var
 			elevator = this,
-			numberOfBranches = 5,
+			numberOfBranches = 6,
 			targetNumber,
 			roundsWon = 0,
 			roundsLost = 0,
@@ -32,8 +32,7 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 			targetNumber = 1 + Math.floor(Math.random()*numberOfBranches);
 			elevator.tell(MW.Event.MG_LADDER_PLACE_TARGET, {
 				targetNumber: targetNumber,
-				callback: elevator.modeIsAgentDo() ? elevator.agentPickNumber :
-					null
+				agentDo: elevator.modeIsAgentDo()
 			});
 		}
 		
@@ -96,6 +95,13 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 			});
 		};
 		
+		/**
+		 * Let the agent pick a number.
+		 */
+		function agentPickNumber () {
+			pickedNumber(agent.pickNumber(targetNumber));
+		};
+		
 		
 		/**
 		 * Get the number of branches for this game.
@@ -105,15 +111,6 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 		this.getNumberOfBranches = function () {
 			return numberOfBranches;
 		}
-		
-
-		
-		/**
-		 * Let the agent pick a number.
-		 */
-		this.agentPickNumber = function () {
-			pickedNumber(agent.pickNumber());
-		};
 		
 		
 		/**
@@ -143,6 +140,15 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 		 */
 		this.on('ROUND_DONE', function (vars) {
 			nextRound();
+		});
+		
+		/**
+		 * Start new round.
+		 */
+		this.on('MW.Event.MG_ELEVATOR_TARGET_IS_PLACED', function (vars) {
+			if (elevator.modeIsAgentDo()) {
+				agentPickNumber();
+			}
 		});
 		
 		/* This is needed to start the game */
