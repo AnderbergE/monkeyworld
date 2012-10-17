@@ -4,7 +4,6 @@
  * 		{Number} x - x position, default 0
  * 		{Number} y - y position, default 0
  * 		{Number} number - number of the button, default 0
- * 		{Number} radius - radius of the button, default 25
  *		{Function} drawScene - function that redraws the scene, default empty.
  * @return The button as a Kinetic.group.
  */
@@ -17,70 +16,55 @@ MW.Button = MW.GlobalObject.extend(
 		if (config.x === undefined) config.x = 0;
 		if (config.y === undefined) config.y = 0;
 		if (config.number === undefined) config.number = 0;
-		if (config.radius === undefined) config.radius = 25;
 		if (config.drawScene === undefined) config.drawScene = function () {};
 		var button = this,
 			group,
-			circle;
-			
-		/**
-		 * Set the appearance of a Kinect.shape object.
-		 * @private
-		 * @param {Kinect.Shape} object - The object to set edit.
-		 * @param {String} fill - The color to fill with.
-		 * @param {String} shadow - The color of the shadow, null will "remove" shadow.
-		 */
-		function setAppearance (object, fill, shadow) {
-			object.setFill(fill);
-			if (shadow != null) {
-				object.setShadow({
-					color: shadow,
-					blur: 15,
-					opacity: 1
-				});
-			} else {
-				/* How to remove shadow? opacity 0 does not work, use 0.01 */
-				object.setShadow({
-					opacity: 0.01
-				});
-			}
-		}
-
+			graphics;
+		
+		
 		group = new Kinetic.Group({
-				x: config.x + config.radius,
+				x: config.x,
 				y: config.y
 		});
-
+		group.setScale(0.75, 0.75);
+		
 		/* Add button */
-		circle = new Kinetic.Circle({
-			radius: config.radius
+		graphics = new Kinetic.Image({
+			image: eval("MW.Images.ELEVATORGAME_BUTTON_FINGERS_" +
+				config.number)
 		});
-		setAppearance(circle, 'blue');
-		group.add(circle);
-
+		group.add(graphics);
+		
+		
 		/* Mouse events */	
-		circle.on('mouseover', function () {
-			setAppearance(circle, 'yellow', 'yellow');
+		graphics.on('mouseover', function () {
 			config.drawScene();
 		});
 
-		circle.on('mouseout', function () {
-			setAppearance(circle, 'blue');
+		graphics.on('mouseout', function () {
 			config.drawScene();
 		});
 
-		circle.on('mousedown', function () {
-			setAppearance(circle, 'red', 'red');
+		graphics.on('mousedown', function () {
+			graphics.clearImageBuffer();
+			var image = eval("MW.Images.ELEVATORGAME_BUTTON_FINGERS_DOWN_" +
+					config.number);
+			MW.SetImage(graphics, image, 0, graphics.getY() + 5)
 			config.drawScene();
 		});
 
-		circle.on('mouseup', function () {
-			setAppearance(circle, 'yellow', 'yellow');
+		graphics.on('mouseup', function () {
+			var image = eval("MW.Images.ELEVATORGAME_BUTTON_FINGERS_" +
+					config.number);
+			MW.SetImage(graphics, image, 0, 0)
 			config.drawScene();
 			button.tell('BUTTON_PUSHED', { number: config.number });
 		});
-	
-	
+		
+		/**
+		 * @public
+		 * @return {Kinetic.Group} returns group that is addable to the stage.
+		 */
 		this.getGroup = function () {
 			return group;
 		};

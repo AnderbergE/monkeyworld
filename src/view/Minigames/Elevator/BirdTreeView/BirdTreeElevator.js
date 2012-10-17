@@ -9,25 +9,50 @@ MW.BirdTreeElevator = function (config) {
 	if (config.x === undefined) config.x = 0;
 	if (config.y === undefined) config.y = 0;
 	var group,
-		elevator;
+		rope,
+		elevator,
+		floorText;
 	
 	group = new Kinetic.Group({
 			x: config.x,
 			y: config.y,
 	});
 	
-	/* Add the elevator. */
-	elevator = new Kinetic.Rect({
-		width: 50,
-		height: 40,
-		fill: 'hotpink'
+	/* Add the rope to the bucket */
+	rope = new Kinetic.Image({
+		y: -MW.Images.ELEVATORGAME_TREE_ELEVATOR_ROPE.height + 5,
+		image: MW.Images.ELEVATORGAME_TREE_ELEVATOR_ROPE
+	});
+	group.add(rope);
+	
+	/* Add the bucket (elevator) */
+	elevator = new Kinetic.Image({
+		image: MW.Images.ELEVATORGAME_TREE_ELEVATOR_BUCKET
 	});
 	group.add(elevator);
+	
+	floorText = new Kinetic.Text({
+		x: elevator.getWidth() / 2 - 5,
+		y: elevator.getHeight() / 2 - 6,
+		text: '0',
+		fontSize: 14,
+		fontFamily: 'sans-serif',
+		textFill: 'white',
+		fontStyle: 'bold',
+		/* THIS ALIGN DOES NOT SEEM TO WORK! */
+		align: 'center',
+		shadow: {
+			color: 'yellow',
+			blur: 5,
+			opacity: 1
+		}
+	});
+	group.add(floorText);
 	
 	
 	/**
 	 * @public
-	 * @returns {Number} The width of the bird tree nest.
+	 * @returns {Number} The width of the elevator bucket.
 	 */
 	group.getWidth = function () {
 		return elevator.getWidth();
@@ -35,7 +60,7 @@ MW.BirdTreeElevator = function (config) {
 	
 	/**
 	 * @public
-	 * @returns {Number} The height of the bird tree nest.
+	 * @returns {Number} The height of the elevator bucket.
 	 */
 	group.getHeight = function () {
 		return elevator.getHeight();
@@ -46,7 +71,7 @@ MW.BirdTreeElevator = function (config) {
 	 * @param {Number} number - the floor number of the elevator.
 	 */
 	group.setFloor = function (number) {
-		elevator.setFill(number == 0 ? 'hotpink' : MW.BirdColorGet(number));
+		floorText.setText(number.toString());
 	};
 	
 	

@@ -1,5 +1,6 @@
 /**
  * Create a bird tree.
+ * X coordinate 0 is the center of the tree.
  * @param {Hash} config:
  * 		{Number} x - x position, default 0
  * 		{Number} y - y position, default 0
@@ -12,40 +13,35 @@ MW.BirdTree = function (config) {
 	if (config.y === undefined) config.y = 0;
 	if (config.height === undefined) config.height = 500;
 	if (config.nbrOfBranches === undefined) config.nbrOfBranches = 5;
-	var group;
+	var group, 
+		bole;
 	
-	/* Create the tree */
-	group = buildTree({
+	group = new Kinetic.Group({
 			x: config.x,
-			y: config.y,
-			height: config.height,
+			y: config.y
+	});
+	
+	/* Create the branches */
+	buildTree(group, {
+			offsetFromTop: 100,
+			height: MW.Images.ELEVATORGAME_TREE_BOLE.height - 200,
 			branches: config.nbrOfBranches
 	});
 	
+	/* Add the tree bole */
+	bole = new Kinetic.Image({
+		x: -220,
+		image: MW.Images.ELEVATORGAME_TREE_BOLE
+	});
+	group.add(bole);
 	
-	/**
-	* @public
-	* @returns {Number}
-	*/
-	group.getWidth = function () {
-		if (group.getChildren().length < 2) {
-			return (group.getChildren()[0].getX() +
-				group.getChildren()[0].getWidth());
-		} else if (group.getChildren()[0].getX() < group.getChildren()[1].getX())
-			return (group.getChildren()[1].getX() +
-				group.getChildren()[1].getWidth()) - group.getChildren()[0].getX();
-		else {
-			return (group.getChildren()[0].getX() +
-				group.getChildren()[0].getWidth()) - group.getChildren()[1].getX();
-		}
-	};
 	
 	/**
 	* @public
 	* @returns {Number}
 	*/
 	group.getHeight = function () {
-		return config.height;
+		return bole.getHeight();
 	};
 	
 	/**
@@ -54,14 +50,6 @@ MW.BirdTree = function (config) {
 	*/
 	group.getBranches = function () {
 		return group.getChildren();
-	};
-	
-	/**
-	* @public
-	* @returns {Number}
-	*/
-	group.getBranchOverlap = function () {
-		return group.getChildren()[0].getX() - group.getChildren()[1].getX();
 	};
 	
 	
@@ -78,9 +66,8 @@ MW.BirdTree = function (config) {
  *		{Number} branches - branches on the tree, default 5.
  * @returns {Kinetic.Group} The group with all the branches.
  */
-function buildTree (config) {
-	if (config.x === undefined) config.x = 0;
-	if (config.y === undefined) config.y = 0;
+function buildTree (group, config) {
+	if (config.offsetFromTop === undefined) config.offsetFromTop = 0;
 	if (config.height === undefined) config.height = 500;
 	if (config.branches === undefined) config.branches = 5;
 	var group,
@@ -89,34 +76,28 @@ function buildTree (config) {
 		branchList = new Array();
 	
 	branch = new MW.BirdTreeBranch({
+			y: config.offsetFromTop,
 			number: config.branches,
 			isRight: false
 	});
+	/* Branch that goes left is put to the left. */
+	branch.setX(-branch.getWidth());
 	branchList.push(branch);
-	
-	/* Calculate the space between the branches. */
-	spaceBetween =
-		(config.height - config.branches * branch.getHeight()) / config.branches;
 	
 	/* Create the branches. */
 	for (var i = 1; i < config.branches; i++) {
 		branch = new MW.BirdTreeBranch({
-			/* The branch that goes right is put more to the right. */
-			x: i % 2 == 0 ? 0 : (3 * branch.getWidth()) / 5,
-			y: branch.getY() + branch.getHeight() + spaceBetween,
+			y: branch.getY() + config.height / config.branches,
 			number: config.branches - i,
-			isRight: i % 2 == 0 ? false : true 
+			isRight: i % 2 != 0 ? true : false 
 		});
+		branch.setX(i % 2 != 0 ? 0 : -branch.getWidth());
 		branchList.push(branch);
 	}
 	
-	group = new Kinetic.Group({
-			x: config.x,
-			y: config.y
-	});
 	/* Put the branches in branch number order. */
-	for (var i = branchList.length; i > 0; i--) {
-		group.add(branchList[i-1]);
+	for (var i = branchList.length - 1; i >= 0; i--) {
+		group.add(branchList[i]);
 	}
 	
 	return group;

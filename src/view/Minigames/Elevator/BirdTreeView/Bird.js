@@ -23,44 +23,42 @@ MW.Bird = function (config) {
 	});
 	
 	/* Add bird */
-	bird = new Kinetic.Rect({
-		width: 50,
-		height: 30,
-		fill: MW.BirdColorGet(config.number)
+	bird = new Kinetic.Image({
+		scale: {x: 0.3, y: 0.3},
+		image: eval("MW.Images.ELEVATORGAME_CHICK_" + config.number)
 	});
 	group.add(bird);
 	
 	
 	/**
-	* @public
-	* @returns {Number} The width of the bird tree nest.
-	*/
+	 * @public
+	 * @returns {Number} The width of the bird tree nest.
+	 */
 	group.getWidth = function () {
 		return bird.getWidth();
 	};
 	
 	/**
-	* @public
-	* @returns {Number} The height of the bird tree nest.
-	*/
+	 * @public
+	 * @returns {Number} The height of the bird tree nest.
+	 */
 	group.getHeight = function () {
 		return bird.getHeight();
 	};
 	
 	/**
-	* @public
-	* @returns {Number} If the bird is in the elevator.
-	*/
-	group.inElevator = function () {
-		return config.inElevator;
-	};
-	
-	/**
-	* @public
-	* @param {Boolean} inElevator - set if the bird is in elevator or not.
-	*/
-	group.setInElevator = function (inElevator) {
-		config.inElevator = inElevator;
+	 * @public
+	 * @param {Boolean} show - true if the bird should show its wings.
+	 */
+	group.showNumber = function (show) {
+		/* Change width and height to avoid stretch/squeeze */
+		if (show) {
+			MW.SetImage(bird, 
+				eval("MW.Images.ELEVATORGAME_CHICK_SHOW_" + config.number));
+		} else {
+			MW.SetImage(bird, 
+				eval("MW.Images.ELEVATORGAME_CHICK_" + config.number));
+		}
 	}
 	
 	

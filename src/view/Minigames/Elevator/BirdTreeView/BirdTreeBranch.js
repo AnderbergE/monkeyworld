@@ -22,20 +22,18 @@ MW.BirdTreeBranch = function (config) {
 			y: config.y
 	});
 	
+	/* Add branch */
+	var branchVariant = config.number > 8 ? 4 : Math.floor((Math.random()*3))+1;
+	branch = new Kinetic.Image({
+		image: eval('MW.Images.ELEVATORGAME_TREE_BRANCH_' + (config.isRight ?
+			'RIGHT' : 'LEFT') + '_' + branchVariant)
+	});
+	
 	/* Add nest */
 	nest = new MW.BirdTreeNest({
 		number: config.number,
 		facingRight: !config.isRight
 	});
-	
-	/* Add branch */
-	branch = new Kinetic.Rect({
-		y: nest.getHeight(),
-		width: 150,
-		height: 30,
-		fill: 'brown'
-	});
-	
 	nest.setX(
 		direction * (branch.getWidth() - nest.getWidth())
 	);
@@ -57,7 +55,7 @@ MW.BirdTreeBranch = function (config) {
 	* @returns {Number}
 	*/
 	group.getHeight = function () {
-		return branch.getHeight() + nest.getHeight();
+		return branch.getHeight();
 	};
 	
 	/**

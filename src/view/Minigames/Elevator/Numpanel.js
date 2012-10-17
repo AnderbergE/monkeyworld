@@ -39,7 +39,6 @@ MW.Numpanel = function (config) {
 				x: column * buttonDiameter,
 				y: row * buttonDiameter,
 				number: k,
-				radius: (buttonDiameter * config.buttonScale ) / 2,
 				drawScene: config.drawScene
 			}).getGroup());
 			k++;
