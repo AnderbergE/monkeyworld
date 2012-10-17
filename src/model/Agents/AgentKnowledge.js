@@ -9,6 +9,7 @@ MW.AgentKnowledge = MW.GlobalObject.extend(
 	/** @constructs */
 	init: function () {
 		this._super("AgentKnowledge");
+		var knowledge = {};
 		
 		
 		/**
@@ -17,7 +18,7 @@ MW.AgentKnowledge = MW.GlobalObject.extend(
 		 * @param {Number} number - the number that was correct.
 		 */
 		this.correctAnswer = function (number) {
-			
+			knowledge[number] = number;
 		};
 		
 		/**
@@ -27,7 +28,7 @@ MW.AgentKnowledge = MW.GlobalObject.extend(
 		 * @param {Number} correctNumber - the correct number.
 		 */
 		this.incorrectAnswer = function (chosenNumber, correctNumber) {
-			
+			knowledge[correctNumber] = chosenNumber;
 		};
 		
 		/**
@@ -36,8 +37,12 @@ MW.AgentKnowledge = MW.GlobalObject.extend(
 		 * @param {Number} targetNumber - the number that is the target.
 		 */
 		this.pickNumber = function (targetNumber) {
-			pickedNumber = 3;
-			return pickedNumber;
+			var pickedNumber = 3;
+			if (knowledge[targetNumber] === undefined) {
+				return pickedNumber;
+			} else {
+				return knowledge[targetNumber];
+			}
 		};
 	}
 });
