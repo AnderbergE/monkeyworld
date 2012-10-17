@@ -16,10 +16,10 @@ MW.MinigameHandlerView = MW.ViewModule.extend(
 		 * Show the current total backend score of the minigame.
 		 * @param {MW.MinigameHandlerView} view
 		 */
-		(function (view) {
+		/*(function (view) {
 		    if (MW.GlobalSettings.debug) {
 			    /** @const @type {string} */ var label = "Backend Score (current minigame):";
-			    var text = new Kinetic.Text({
+			    /*var text = new Kinetic.Text({
 				    text: label,
 				    fontSize: 12,
 				    fontFamily: "sans-serif",
@@ -58,16 +58,16 @@ MW.MinigameHandlerView = MW.ViewModule.extend(
 				    on = false;
 			    });
 		    }
-		})(this);
+		})(this);*/
 
 		/**
 		 * Show the current learning track.
 		 * @param {MW.MinigameHandlerView} view
 		 */
-		(function (view) {
+		/*(function (view) {
 		    if (MW.GlobalSettings.debug) {
 			    /** @const @type {string} */ var label = "Learning track (current game):";
-			    var text = new Kinetic.Text({
+			    /*var text = new Kinetic.Text({
 				    text: label,
 				    fontSize: 12,
 				    fontFamily: "sans-serif",
@@ -103,12 +103,12 @@ MW.MinigameHandlerView = MW.ViewModule.extend(
 				    on = false;
 			    });
 		    }
-		})(this);
+		})(this);*/
 
 		/**
 		 * Show the pitcher
 		 */
-		(function (view) {
+		/*(function (view) {
 			var pitcherImage, dropImage, pitcherBottomImage, waterRect,
 			levelHeight = 6.9, dropOrigin = { x: 10, y: 20 };
 			view.addSetup(function () {
@@ -176,7 +176,7 @@ MW.MinigameHandlerView = MW.ViewModule.extend(
 				var x2 = pitcherImage.getX() + pitcherImage.getWidth() / 2;
 				var y2 = pitcherImage.getY() + pitcherImage.getHeight() - dropImage.getHeight();
 				var velocity = 200; /* px/s */
-				var distance = Math.sqrt(Math.pow(dropOrigin.x - x2, 2) + Math.pow(dropOrigin.y - y2, 2));
+				/*var distance = Math.sqrt(Math.pow(dropOrigin.x - x2, 2) + Math.pow(dropOrigin.y - y2, 2));
 				var time = distance / velocity * 1000;
 				dropImage.setX(dropOrigin.x);
 				dropImage.setY(dropOrigin.y);
@@ -236,7 +236,7 @@ MW.MinigameHandlerView = MW.ViewModule.extend(
 					});}
 				});
 			});
-		})(this);
+		})(this);*/
 	}
 })
 

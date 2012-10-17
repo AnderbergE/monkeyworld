@@ -19,10 +19,10 @@ MW.MinigameView = MW.ViewModule.extend(
 		 * Show the current backend score of a mini game.
 		 * @param {MW.MinigameView} view
 		 */
-		(function (view) {
+		/*(function (view) {
 		    if (MW.GlobalSettings.debug) {
 			    /** @const */
-			    var label = "Backend Score (current mode):";
+			   /* var label = "Backend Score (current mode):";
 			    var text = new Kinetic.Text({
 				    text: label,
 				    fontSize: 12,
@@ -55,7 +55,7 @@ MW.MinigameView = MW.ViewModule.extend(
 				    on = false;
 			    });
 		    }
-		})(this);
+		})(this);*/
 
 		/**
 		 * Show the face of the agent in the top right corner in child play mode
@@ -63,7 +63,7 @@ MW.MinigameView = MW.ViewModule.extend(
 		(function (view) {
 			view.addSetup(function() {
 				if (minigame.modeIsChild()) {
-					var faceImageObj = new agentView(layer, {
+					/*var faceImageObj = new agentView(layer, {
 			            x: stage.getWidth() - 260,
 				        y: 12,
 				        scale: 0.5
@@ -71,7 +71,7 @@ MW.MinigameView = MW.ViewModule.extend(
 			        view.addTearDown(function () {
 			            faceImageObj._remove();
 			        });
-			        faceImageObj.hideBody();
+			        faceImageObj.hideBody();*/
 					view.on(MW.Event.INTRODUCE_MODE, function (callback) {
 						MW.Sound.play(MW.Sounds.SYSTEM_FIRST_YOU_PLAY);
 						setTimeout(callback, 2000);
