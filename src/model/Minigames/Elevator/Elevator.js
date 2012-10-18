@@ -14,7 +14,7 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 		this._super(parent, "Elevator");
 		var
 			elevator = this,
-			numberOfBranches = 6,
+			numberOfBranches = 10,
 			targetNumber,
 			roundsWon = 0,
 			roundsLost = 0,
@@ -93,7 +93,7 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 				tooHigh: pickedNumber > targetNumber,
 				tooLow: pickedNumber < targetNumber
 			});
-		};
+		}
 		
 		/**
 		 * Let the agent pick a number.
@@ -110,7 +110,7 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 		 */
 		this.getNumberOfBranches = function () {
 			return numberOfBranches;
-		}
+		};
 		
 		
 		/**

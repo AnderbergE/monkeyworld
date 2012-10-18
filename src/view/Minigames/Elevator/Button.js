@@ -39,10 +39,12 @@ MW.Button = MW.GlobalObject.extend(
 		/* Mouse events */	
 		graphics.on('mouseover', function () {
 			config.drawScene();
+			document.body.style.cursor = "pointer";
 		});
 
 		graphics.on('mouseout', function () {
 			config.drawScene();
+			document.body.style.cursor = "default";
 		});
 
 		graphics.on('mousedown', function () {
