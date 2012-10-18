@@ -27,9 +27,6 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		layer = new Kinetic.Layer();
 		numpanelLayer = new Kinetic.Layer();
 		
-		/* Setup colors that will be used by the birds. */
-		MW.BirdColorSetup(elevatorMinigame.getNumberOfBranches());
-		
 		/* Add background */
 		layer.add(new Kinetic.Image({
 			x: 0,
@@ -123,7 +120,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			bird.transitionTo({
 				x: tree.getX() +
 					tree.getBranches()[branch - 1].getX() +
-					tree.getBranches()[branch - 1].getNestX(),
+					tree.getBranches()[branch - 1].getNest().getX(),
 				duration: 1,
 				easing: 'ease-in-out',
 				callback: callback
@@ -168,13 +165,12 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		view.on(MW.Event.MG_LADDER_PLACE_TARGET, function (vars) {
 			/* Zoom in on bird when it arrives */
 			layer.transitionTo({
-				x: -100,
-				y: -650,
-				scale: {x: 2, y: 2},
+				x: -50,
+				y: -800,
+				scale: {x: 2.25, y: 2.25},
 				duration: 1
 			});
 			
-			birdGroup.removeChildren();
 			bird = new MW.Bird({
 				x: -50,
 				y: 600,
@@ -183,9 +179,9 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			birdGroup.add(bird);
 			/* Bird enters screen */
 			bird.transitionTo({
-				x: 100,
+				x: 50,
 				y: 500,
-				scale: {x: 2, y: 2},
+				scale: {x: 1.75, y: 1.75},
 				duration: 1,
 				easing: 'ease-out',
 				callback: function () {
@@ -245,6 +241,8 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 							});
 						} else {
 							/* BIRD SHOULD BE HAPPY :) */
+							birdGroup.removeChildren();
+							tree.getBranches()[vars.number - 1].getNest().addChick();
 							moveElevator(0, 0, done);
 						}
 					});
@@ -266,17 +264,15 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		 * Introduce the agent to the playing field.
 		 */
 		view.on(MW.Event.MG_LADDER_INTRODUCE_AGENT, function () {
-			agent = new Kinetic.Rect({
-				x: 300,
-				y: -100,
-				width: 60,
-				height: 80,
-				fill: 'chartreuse' 
+			agent = new MW.PandaAgentView({
+				x: 200,
+				y: 800
 			});
-			layer.add(agent);
+			layer.add(agent.getGraphics());
+			agent.getGraphics().setZIndex(birdGroup.getZIndex() - 1);
 			agent.transitionTo({
-				x: 300,
-				y: 350,
+				x: 275,
+				y: 400,
 				duration: 1,
 				easing: 'ease-out',
 				callback: function () {
@@ -290,7 +286,8 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		 */
 		view.on(MW.Event.MG_LADDER_START_AGENT, function () {
 			agent.transitionTo({
-				x: 330,
+				x: 225,
+				y: 425,
 				duration: 1,
 				easing: 'ease-out',
 				callback: function () {

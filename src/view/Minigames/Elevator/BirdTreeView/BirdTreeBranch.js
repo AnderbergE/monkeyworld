@@ -14,8 +14,7 @@ MW.BirdTreeBranch = function (config) {
 	if (config.isRight === undefined) config.isRight = true;
 	var group,
 		branch,
-		nest,
-		direction = config.isRight ? 1 : 0;
+		nest;
 	
 	group = new Kinetic.Group({
 			x: config.x,
@@ -28,18 +27,18 @@ MW.BirdTreeBranch = function (config) {
 		image: eval('MW.Images.ELEVATORGAME_TREE_BRANCH_' + (config.isRight ?
 			'RIGHT' : 'LEFT') + '_' + branchVariant)
 	});
+	group.add(branch);
 	
 	/* Add nest */
 	nest = new MW.BirdTreeNest({
+		x: (config.isRight ? 60 : 40) + Math.floor(Math.random()*20),
 		number: config.number,
 		facingRight: !config.isRight
 	});
-	nest.setX(
-		direction * (branch.getWidth() - nest.getWidth())
-	);
-	
+	nest.setY(branch.getHeight() / 2 - nest.getHeight() +
+		(branchVariant == 2 ? 10 : 0) +
+		(branchVariant == 4 ? -7 : 0));
 	group.add(nest);
-	group.add(branch);
 	
 	
 	/**
@@ -70,8 +69,8 @@ MW.BirdTreeBranch = function (config) {
 	* @public
 	* @returns {Number}
 	*/
-	group.getNestX = function () {
-		return nest.getX();
+	group.getNest = function () {
+		return nest;
 	}
 	
 	

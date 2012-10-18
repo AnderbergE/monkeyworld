@@ -13,17 +13,31 @@ MW.BirdTreeNest = function (config) {
 	if (config.number === undefined) config.number = 0;
 	if (config.facingRight === undefined) config.facingRight = true;
 	var group,
+		mother,
+		chickGroup,
 		nest;
 	
 	group = new Kinetic.Group({
 			x: config.x,
 			y: config.y,
 	});
-	/* Add the nest. */
-	nest = new Kinetic.Rect({
-		width: 30,
-		height: 10,
-		fill: MW.BirdColorGet(config.number)
+	
+	/* Add the mother */
+	mother = new Kinetic.Image({
+		image: eval("MW.Images.ELEVATORGAME_NEST_MOTHER_" + config.number)
+	});
+	group.add(mother);
+	
+	/* Add the group where the chicks will be added */
+	chickGroup = new Kinetic.Group({});
+	group.add(chickGroup);
+	
+	/* Add the nest */
+	nest = new Kinetic.Image({
+		x: config.facingRight ? 0 :
+			mother.getWidth() - MW.Images.ELEVATORGAME_NEST.width,
+		y: mother.getHeight() - MW.Images.ELEVATORGAME_NEST.height / 3 * 2,
+		image: MW.Images.ELEVATORGAME_NEST
 	});
 	group.add(nest);
 	
@@ -41,8 +55,53 @@ MW.BirdTreeNest = function (config) {
 	* @returns {Number} The height of the bird tree nest.
 	*/
 	group.getHeight = function () {
-		return nest.getHeight();
+		/* This is not the exact height, but approximately correct */
+		return mother.getHeight();
 	};
+	
+	/**
+	 * @public
+	 * @param {Boolean} showWings - true if the mother's 'wings should be up.
+	 */
+	group.flap = function (showWings) {
+		if (showWings) {
+			MW.SetImage(mother,
+				eval("MW.Images.ELEVATORGAME_NEST_MOTHER_FLAP_" +
+					config.number));
+		} else {
+			MW.SetImage(mother,
+				eval("MW.Images.ELEVATORGAME_NEST_MOTHER_" +
+					config.number));
+		}
+	}
+	
+	/**
+	 * Add a chick beside the mother in the nest.
+	 * @public
+	 */
+	group.addChick = function () {
+		if (chickGroup.getChildren().length < 1) {
+			var img = eval("MW.Images.ELEVATORGAME_NEST_CHICK_" +
+				config.number);
+			chickGroup.add(new Kinetic.Image({
+				x: config.facingRight ? mother.getWidth() - img.width / 2 :
+					mother.getX() - img.width / 2,
+				y: mother.getHeight() - img.height,
+				image: img 
+			}));
+		} else if (chickGroup.getChildren().length < 2) {
+			var img = eval("MW.Images.ELEVATORGAME_NEST_CHICK_" +
+				config.number);
+			chickGroup.add(new Kinetic.Image({
+				x: config.facingRight ? mother.getWidth() :
+					mother.getX() - img.width,
+				y: mother.getHeight() - img.height - 3,
+				image: img 
+			}));
+			/* it looks better with this chick behind the other one */
+			chickGroup.getChildren()[0].moveUp();
+		} /* Do not add more birds than two. */
+	}
 	
 	
 	return group;
