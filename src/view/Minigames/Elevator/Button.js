@@ -62,6 +62,15 @@ MW.Button = MW.GlobalObject.extend(
 			config.drawScene();
 			button.tell('BUTTON_PUSHED', { number: config.number });
 		});
+	
+		/**
+		 * @public
+		 * @param {Boolean} lock - true if the buttons should not be pushable.
+		 */
+		button.on(MW.Event.MG_ELEVATOR_LOCK, function (lock) {
+			group.setListening(!lock);
+			config.drawScene();
+		});
 		
 		/**
 		 * @public

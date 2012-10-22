@@ -4,14 +4,12 @@
  * @param {Hash} config:
  * 		{Number} x - x position, default 0
  * 		{Number} y - y position, default 0
- *		{Number} height - height that the branches will take up, default 500
  * 		{Number} nbrOfBranches - the number of branches, default 5
  * @return The bird tree as a Kinetic.group.
  */
 MW.BirdTree = function (config) {
 	if (config.x === undefined) config.x = 0;
 	if (config.y === undefined) config.y = 0;
-	if (config.height === undefined) config.height = 500;
 	if (config.nbrOfBranches === undefined) config.nbrOfBranches = 5;
 	var group, 
 		bole;

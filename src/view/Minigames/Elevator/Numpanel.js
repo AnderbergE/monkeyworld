@@ -44,7 +44,6 @@ MW.Numpanel = function (config) {
 			k++;
 		}
 	}
-	group.setListening(false);
 	
 	
 	/**
@@ -67,15 +66,6 @@ MW.Numpanel = function (config) {
 		var rows = Math.ceil(config.nbrOfButtons / config.columns);
 		return rows * buttonDiameter - buttonDiameter / 2;
 	};
-	
-	/**
-	 * @public
-	 * @param {Boolean} isLocked - true if the buttons should not be pushable.
-	 */
-	group.lock = function (isLocked) {
-		group.setListening(!isLocked);
-		config.drawScene();
-	}
 	
 	
 	return group;

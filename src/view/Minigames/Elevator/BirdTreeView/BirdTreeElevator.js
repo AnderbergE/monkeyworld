@@ -10,6 +10,7 @@ MW.BirdTreeElevator = function (config) {
 	if (config.y === undefined) config.y = 0;
 	var group,
 		rope,
+		inElevatorGroup,
 		elevator,
 		floorText;
 	
@@ -24,6 +25,9 @@ MW.BirdTreeElevator = function (config) {
 		image: MW.Images.ELEVATORGAME_TREE_ELEVATOR_ROPE
 	});
 	group.add(rope);
+	
+	inElevatorGroup = new Kinetic.Group();
+	group.add(inElevatorGroup);
 	
 	/* Add the bucket (elevator) */
 	elevator = new Kinetic.Image({
@@ -73,6 +77,24 @@ MW.BirdTreeElevator = function (config) {
 	group.setFloor = function (number) {
 		floorText.setText(number.toString());
 	};
+	
+	/**
+	 * Add an object to the elevator. This will be put between bucket and rope.
+	 * (Note: This will inherit the elevators x and y position.)
+	 * @public
+	 * @param {Kinect.Node} passenger - The object to add to the elevator.
+	 */
+	group.addPassenger = function (passenger) {
+		inElevatorGroup.add(passenger);
+	}
+	
+	/**
+	 * @public
+	 * @param {Kinect.Node} passenger - The object to remove from the elevator.
+	 */
+	group.removePassenger = function (passenger) {
+		inElevatorGroup.remove(passenger);
+	}
 	
 	
 	return group;

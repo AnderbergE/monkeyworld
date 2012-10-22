@@ -77,6 +77,13 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 		 * @param pickedNumber - The number that was picked
 		 */
 		function pickedNumber (pickedNumber) {
+			elevator.tell(MW.Event.MG_ELEVATOR_LOCK, true);
+			elevator.tell(MW.Event.MG_LADDER_PICKED, {
+				number: pickedNumber,
+				tooHigh: pickedNumber > targetNumber,
+				tooLow: pickedNumber < targetNumber
+			});
+			
 			if (pickedNumber == targetNumber) {
 				roundsWon++;
 				if (elevator.modeIsAgentSee()) {
@@ -88,11 +95,6 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 					agent.watchIncorrectAnswer(pickedNumber, targetNumber);
 				}
 			}
-			elevator.tell(MW.Event.MG_LADDER_PICKED, {
-				number: pickedNumber,
-				tooHigh: pickedNumber > targetNumber,
-				tooLow: pickedNumber < targetNumber
-			});
 		}
 		
 		/**
@@ -145,9 +147,11 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 		/**
 		 * Start new round.
 		 */
-		this.on('MW.Event.MG_ELEVATOR_TARGET_IS_PLACED', function (vars) {
+		this.on('MW.Event.MG_ELEVATOR_TARGET_IS_PLACED', function () {
 			if (elevator.modeIsAgentDo()) {
 				agentPickNumber();
+			} else {
+				elevator.tell(MW.Event.MG_ELEVATOR_LOCK, false);
 			}
 		});
 		

@@ -17,12 +17,19 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			numpanelLayer,
 			numpanel,
 			elevator,
-			elevatorGroup,
 			elevatorOrigin,
 			bird,
-			birdGroup, /* This holds the bird and the "fingers" */
-			birdInElevator,
-			agent;
+			agent,
+			second = 0.75,
+			coordinates = {
+				treeX: 700, treeY: 10,
+				numpadHeight: 100, numpadYOffset: 30,
+				bgZoomX: -50, bgZoomY: -810, bgZoomScale: {x: 2.25, y: 2.25},
+				birdStartX: -100, birdStartY: 600,
+				birdShowX: 30, birdShowY: 500,
+				agentStartX: 200, agentStartY: 800,
+				agentStopX: 290, agentStopY: 400,
+			};
 		
 		layer = new Kinetic.Layer();
 		numpanelLayer = new Kinetic.Layer();
@@ -38,27 +45,18 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		
 		/* Create the tree */
 		tree = new MW.BirdTree({
-			x: 700,
-			y: 10,
-			height: 400,
+			x: coordinates.treeX,
+			y: coordinates.treeY,
 			nbrOfBranches: elevatorMinigame.getNumberOfBranches()
 		});
-		//tree.setScale(0.5, 0.5);
 		layer.add(tree);
-		
-		/* Add the group which will hold the birds */
-		birdGroup = new Kinetic.Group();
-		layer.add(birdGroup);
 		
 		/* Add the elevator */
 		elevator = new MW.BirdTreeElevator({});
-		elevatorGroup = new Kinetic.Group({
-			x: tree.getX() - elevator.getWidth() / 2,
-			y: tree.getY() + tree.getHeight() - elevator.getHeight()
-		});
-		elevatorOrigin = elevatorGroup.getY();
-		elevatorGroup.add(elevator);
-		layer.add(elevatorGroup);
+		elevator.setX(tree.getX() - elevator.getWidth() / 2);
+		elevator.setY(tree.getY() + tree.getHeight() - elevator.getHeight());
+		elevatorOrigin = elevator.getY();
+		layer.add(elevator);
 		
 		/* Add the tree top */
 		layer.add(new Kinetic.Image({
@@ -69,7 +67,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		
 		/* Add the panel with buttons in its own layer so it is always shown */
 		numpanel = new MW.Numpanel({
-			height: 75,
+			height: coordinates.numpadHeight,
 			nbrOfButtons: elevatorMinigame.getNumberOfBranches(),
 			buttonScale: 0.9,
 			drawScene: function () {
@@ -77,7 +75,8 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			}
 		});
 		numpanel.setX((stage.getWidth() / 2) - (numpanel.getWidth() / 2));
-		numpanel.setY(stage.getHeight() - numpanel.getHeight() - 40);
+		numpanel.setY(stage.getHeight() - numpanel.getHeight() -
+			coordinates.numpadYOffset);
 		numpanelLayer.add(numpanel);
 		
 		/* Add the layers */
@@ -86,25 +85,59 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		
 		
 		/**
+		 * Move the bird to the start position.
+		 * @private
+		 */
+		function moveBirdToStartPosition () {
+			/* Zoom in on bird */
+			layer.transitionTo({
+				x: coordinates.bgZoomX,
+				y: coordinates.bgZoomY,
+				scale: coordinates.bgZoomScale,
+				duration: second * 1
+			});
+			
+			bird.transitionTo({
+				x: - elevator.getY() + coordinates.birdShowX,
+				y: - elevator.getY() + coordinates.birdShowY,
+				scale: {x: 1.75, y: 1.75},
+				duration: second * 1,
+				easing: 'ease-out',
+				callback: function () {
+					bird.showNumber(true);
+					view.tell('MW.Event.MG_ELEVATOR_TARGET_IS_PLACED');
+				}
+			});
+		}
+		
+		/**
+		 * Move the bird to peak in the elevator.
+		 * @private
+		 * @param {Boolean} peak - true if the bird should peak, false if not
+		 * @param {Function} callback - function to call when done
+		 */
+		function moveBirdElevatorPeak (peak, callback) {
+			bird.transitionTo({
+				y: bird.getY() + (peak ? -18 : 18),
+				duration: second * 0.5,
+				easing: (peak ? 'ease-out' : 'ease-in'),
+				callback: callback
+			});
+		}
+		
+		/**
 		 * Move the bird to the elevator.
 		 * @private
 		 * @param {Function} callback - function to call when done
 		 */
 		function moveBirdToElevator (callback) {
 			bird.transitionTo({
-				x: elevatorGroup.getX() + 5,
-				y: elevatorGroup.getY(),
+				x: 5,
+				y: + 8,
 				scale: {x: 0.40, y: 0.40},
-				duration: 2,
-				easing: 'ease-in-out',
-				callback: function () {
-					bird.transitionTo({
-						y: bird.getY() - 15,
-						duration: 0.5,
-						easing: 'ease-out',
-						callback: callback
-					});
-				}
+				duration: second * 2,
+				easing: 'ease-in',
+				callback: callback
 			});
 		}
 		
@@ -115,14 +148,12 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		 * @param {Function} callback - function to call when done
 		 */
 		function moveBirdFromElevator (branch, callback) {
-			bird.setY(elevatorGroup.getY() + elevator.getHeight() / 2);
-			bird.setOpacity(1);
 			bird.transitionTo({
-				x: tree.getX() +
+				x: - elevator.getX() + (tree.getX() +
 					tree.getBranches()[branch - 1].getX() +
-					tree.getBranches()[branch - 1].getNest().getX(),
-				duration: 1,
-				easing: 'ease-in-out',
+					tree.getBranches()[branch - 1].getNest().getX()),
+				duration: second * 1,
+				easing: 'ease-out',
 				callback: callback
 			});
 		}
@@ -138,10 +169,11 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		function moveElevator (targetFloor, nextFloor, callback) {
 			/* Anonymous function to stop at each elevator floor when going up.
 			 * No stops when going to bottom. */
-			elevatorGroup.transitionTo({
+			elevator.transitionTo({
 				y: targetFloor == 0 ? elevatorOrigin :
-					tree.getY() + tree.getBranches()[nextFloor-1].getY(),
-				duration: 1,
+					tree.getY() + tree.getBranches()[nextFloor-1].getY() +
+					tree.getBranches()[nextFloor-1].getNest().getY() + 12,
+				duration: second * 1,
 				easing: 'ease-in-out',
 				callback: function () {
 					if (nextFloor < targetFloor) {
@@ -163,37 +195,13 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		 * @param {Number} vars.targetNumber - the target of the bird
 		 */
 		view.on(MW.Event.MG_LADDER_PLACE_TARGET, function (vars) {
-			/* Zoom in on bird when it arrives */
-			layer.transitionTo({
-				x: -50,
-				y: -800,
-				scale: {x: 2.25, y: 2.25},
-				duration: 1
-			});
-			
 			bird = new MW.Bird({
-				x: -50,
-				y: 600,
+				x: - elevator.getY() + coordinates.birdStartX,
+				y: - elevator.getY() + coordinates.birdStartY,
 				number: vars.targetNumber
 			});
-			birdGroup.add(bird);
-			/* Bird enters screen */
-			bird.transitionTo({
-				x: 50,
-				y: 500,
-				scale: {x: 1.75, y: 1.75},
-				duration: 1,
-				easing: 'ease-out',
-				callback: function () {
-					bird.showNumber(true);
-					if (!vars.agentDo) {
-						/* Make buttons clickable */
-						numpanel.lock(false);
-					}
-					view.tell('MW.Event.MG_ELEVATOR_TARGET_IS_PLACED');
-				}
-			});
-			birdInElevator = false;
+			elevator.addPassenger(bird);
+			moveBirdToStartPosition();
 		});
 		
 		/**
@@ -204,60 +212,46 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		 * @param {Boolean} vars.tooLow - the chosen number was too low
 		 */
 		view.on(MW.Event.MG_LADDER_PICKED, function (vars) {
-			/* lock buttons from clicks */
-			numpanel.lock(true);
+			bird.showNumber(false);
 			
 			/* Zoom out to tree */
 			layer.transitionTo({
 				x: 0,
 				y: 0,
 				scale: {x: 1, y: 1},
-				duration: 1
+				duration: second * 1
 			});
 			
-			bird.showNumber(false);
-			
-			/* This function will be called later, avoiding code duplication. */
-			var tempMover = function () {
-				moveElevator(vars.number, 1, function () {
-					moveBirdFromElevator(vars.number, function () {
-						
-						/* Same as above. */
-						var done = function () {
-							if (vars.tooHigh || vars.tooLow) {
-								numpanel.lock(false);
-							} else {
-								view.tell('ROUND_DONE');
-							}
-						}
-						
-						/* Move elevator to the bottom.
-						 * If wrong, bird goes back */
-						if (vars.tooHigh || vars.tooLow) {
-							/* BIRD SHOULD BE SAD :( */
-							moveBirdToElevator(function () {
-								bird.setOpacity(0);
-								moveElevator(0, 0, done);
-							});
-						} else {
-							/* BIRD SHOULD BE HAPPY :) */
-							birdGroup.removeChildren();
-							tree.getBranches()[vars.number - 1].getNest().addChick();
-							moveElevator(0, 0, done);
-						}
+			moveBirdToElevator(function () {
+			moveBirdElevatorPeak(true, function () {
+			moveElevator(vars.number, 1, function () {
+			moveBirdElevatorPeak (false, function () {
+			moveBirdFromElevator(vars.number, function () {
+				/* If picked wrong, bird goes back */
+				if (vars.tooHigh || vars.tooLow) {
+					/* BIRD SHOULD BE SAD :( */
+					moveBirdToElevator(function () {
+					moveBirdElevatorPeak(true, function () {
+					moveElevator(0, 0, function () {
+					moveBirdElevatorPeak(false, function () {
+					moveBirdToStartPosition();
 					});
-				});
-			};
-			
-			if (!birdInElevator) {
-				moveBirdToElevator(function () {
-					bird.setOpacity(0);
-					birdInElevator = true;
-					tempMover();
-				});
-			} else {
-				tempMover();
-			}
+					});
+					});
+					});
+				} else {
+					/* BIRD SHOULD BE HAPPY :) */
+					elevator.removePassenger(bird);
+					tree.getBranches()[vars.number - 1].getNest().addChick();
+					moveElevator(0, 0, function () {
+						view.tell('ROUND_DONE');
+					});
+				}
+			});
+			});
+			});
+			});
+			});
 		});
 		
 		/**
@@ -265,15 +259,15 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		 */
 		view.on(MW.Event.MG_LADDER_INTRODUCE_AGENT, function () {
 			agent = new MW.PandaAgentView({
-				x: 200,
-				y: 800
+				x: coordinates.agentStartX,
+				y: coordinates.agentStartY
 			});
 			layer.add(agent.getGraphics());
-			agent.getGraphics().setZIndex(birdGroup.getZIndex() - 1);
+			agent.getGraphics().setZIndex(elevator.getZIndex() - 1);
 			agent.transitionTo({
-				x: 275,
-				y: 400,
-				duration: 1,
+				x: coordinates.agentStopX,
+				y: coordinates.agentStopY,
+				duration: second * 1,
 				easing: 'ease-out',
 				callback: function () {
 					view.tell('ROUND_DONE');
@@ -288,7 +282,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			agent.transitionTo({
 				x: 225,
 				y: 425,
-				duration: 1,
+				duration: second * 1,
 				easing: 'ease-out',
 				callback: function () {
 					view.tell('ROUND_DONE');
