@@ -97,13 +97,23 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 				duration: second * 1
 			});
 			
+			var x = - elevator.getY() + coordinates.birdShowX;
+			var direction = x > bird.getX() ? 1 : -1;
+			var addScale = 0.75;
 			bird.transitionTo({
-				x: - elevator.getY() + coordinates.birdShowX,
+				x: x + (direction < 0 ? + bird.getWidth() * addScale : 0),
 				y: - elevator.getY() + coordinates.birdShowY,
-				scale: {x: 1.75, y: 1.75},
-				duration: second * 1,
+				scale: {x: direction * (1 + addScale), y: (1 + addScale)},
+				duration: second * 2,
 				easing: 'ease-out',
 				callback: function () {
+					if (direction < 0) {
+						bird.transitionTo({
+							x: x,
+							scale: {x: (1 + addScale), y: (1 + addScale)},
+							duration: second * 0.1
+						});
+					}
 					bird.showNumber(true);
 					view.tell('MW.Event.MG_ELEVATOR_TARGET_IS_PLACED');
 				}
