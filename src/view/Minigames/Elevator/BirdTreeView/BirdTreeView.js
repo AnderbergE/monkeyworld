@@ -26,7 +26,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 				numpadHeight: 100, numpadYOffset: 30,
 				bgZoomX: -50, bgZoomY: -810, bgZoomScale: {x: 2.25, y: 2.25},
 				birdStartX: -100, birdStartY: 600,
-				birdShowX: 30, birdShowY: 500,
+				birdShowX: 50, birdShowY: 500,
 				agentStartX: 200, agentStartY: 800,
 				agentStopX: 290, agentStopY: 400,
 			};
@@ -85,6 +85,27 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		
 		
 		/**
+		 * Turn the bird around.
+		 * @private
+		 * @param {Number} direction - 1 is right, -1 is left
+		 */ 
+		function turnBird (direction, callback) {
+			/* No need to turn if already in correct direction */
+			if (direction > 0 && bird.getScale().x > 0 ||
+				direction < 0 && bird.getScale().x < 0) {
+				callback();
+				return;
+			}
+			
+			bird.transitionTo({
+				x: bird.getX() + (bird.getWidth() * bird.getScale().x),
+				scale: {x: -1 * bird.getScale().x, y: bird.getScale().y},
+				duration: second * 0.1,
+				callback: callback
+			});
+		}
+		
+		/**
 		 * Move the bird to the start position.
 		 * @private
 		 */
@@ -97,26 +118,24 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 				duration: second * 1
 			});
 			
-			var x = - elevator.getY() + coordinates.birdShowX;
+			var x = - elevator.getX() + coordinates.birdShowX;
+			var scale = 0.6;
+			/* Left is -1, right is 1 */
 			var direction = x > bird.getX() ? 1 : -1;
-			var addScale = 0.75;
-			bird.transitionTo({
-				x: x + (direction < 0 ? + bird.getWidth() * addScale : 0),
-				y: - elevator.getY() + coordinates.birdShowY,
-				scale: {x: direction * (1 + addScale), y: (1 + addScale)},
-				duration: second * 2,
-				easing: 'ease-out',
-				callback: function () {
-					if (direction < 0) {
-						bird.transitionTo({
-							x: x,
-							scale: {x: (1 + addScale), y: (1 + addScale)},
-							duration: second * 0.1
+			turnBird(direction, function () {
+				bird.transitionTo({
+					x: x + (direction < 0 ? (bird.getWidth() * scale) : 0),
+					y: - elevator.getY() + coordinates.birdShowY,
+					scale: {x: direction * scale, y: scale},
+					duration: second * 2,
+					easing: 'ease-out',
+					callback: function () {
+						turnBird(1, function () {
+							bird.showNumber(true);
 						});
+						view.tell('MW.Event.MG_ELEVATOR_TARGET_IS_PLACED');
 					}
-					bird.showNumber(true);
-					view.tell('MW.Event.MG_ELEVATOR_TARGET_IS_PLACED');
-				}
+				});
 			});
 		}
 		
@@ -141,13 +160,19 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		 * @param {Function} callback - function to call when done
 		 */
 		function moveBirdToElevator (callback) {
-			bird.transitionTo({
-				x: 5,
-				y: + 8,
-				scale: {x: 0.40, y: 0.40},
-				duration: second * 2,
-				easing: 'ease-in',
-				callback: callback
+			var x = 8;
+			var scale = 0.1;
+			/* Left is -1, right is 1 */
+			var direction = x > bird.getX() ? 1 : -1;
+			turnBird(direction, function () {
+				bird.transitionTo({
+					x: x + (direction < 0 ? (bird.getWidth() * scale) : 0),
+					y: 8,
+					scale: {x: direction * scale, y: scale},
+					duration: second * 2,
+					easing: 'ease-in',
+					callback: callback
+				});
 			});
 		}
 		
@@ -158,13 +183,19 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		 * @param {Function} callback - function to call when done
 		 */
 		function moveBirdFromElevator (branch, callback) {
-			bird.transitionTo({
-				x: - elevator.getX() + (tree.getX() +
+			var x = - elevator.getX() + (tree.getX() +
 					tree.getBranches()[branch - 1].getX() +
-					tree.getBranches()[branch - 1].getNest().getX()),
-				duration: second * 1,
-				easing: 'ease-out',
-				callback: callback
+					tree.getBranches()[branch - 1].getNest().getX());
+			/* Left is -1, right is 1 */
+			var direction = x > bird.getX() ? 1 : -1;
+			turnBird(direction, function () {
+				bird.transitionTo({
+					x: x - (direction < 0 ?
+						(bird.getWidth() * bird.getScale().x) : 0),
+					duration: second * 1,
+					easing: 'ease-out',
+					callback: callback
+				});
 			});
 		}
 		
@@ -208,8 +239,10 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			bird = new MW.Bird({
 				x: - elevator.getY() + coordinates.birdStartX,
 				y: - elevator.getY() + coordinates.birdStartY,
+				scale: {x: 0.3, y: 0.3},
 				number: vars.targetNumber
 			});
+			bird.walk(true);
 			elevator.addPassenger(bird);
 			moveBirdToStartPosition();
 		});
@@ -232,6 +265,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 				duration: second * 1
 			});
 			
+			bird.walk(true);
 			moveBirdToElevator(function () {
 			moveBirdElevatorPeak(true, function () {
 			moveElevator(vars.number, 1, function () {
