@@ -14,8 +14,7 @@ MW.Bird = function (config) {
 	if (config.number === undefined) config.number = 0;
 	config.inElevator = false;
 	var group,
-		bird,
-		module = new MW.Module('bird');
+		bird;
 	
 	group = new Kinetic.Group({
 			x: config.x,
@@ -64,13 +63,13 @@ MW.Bird = function (config) {
 	function walkLeft() {
 		MW.SetImage(bird,
 			eval("MW.Images.ELEVATORGAME_CHICK_WALK_LEFT_" + config.number));
-		module.setTimeout(walkRight, 150);
+		setTimeout(walkRight, 150);
 	}
 	
 	function walkRight() {
 		MW.SetImage(bird,
 			eval("MW.Images.ELEVATORGAME_CHICK_WALK_RIGHT_" + config.number));
-		module.setTimeout(walkLeft, 150);
+		setTimeout(walkLeft, 150);
 	}
 	
 	/**
@@ -79,7 +78,7 @@ MW.Bird = function (config) {
 	 */
 	group.walk = function (walk) {
 		if (walk) {
-			module.setTimeout(walkLeft, 1000);
+			walkLeft();
 		} else {
 			MW.SetImage(bird,
 				eval("MW.Images.ELEVATORGAME_CHICK_" + config.number));

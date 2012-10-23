@@ -182,19 +182,43 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		 * @param {Number} branch - which branch the elevator is at 
 		 * @param {Function} callback - function to call when done
 		 */
-		function moveBirdFromElevator (branch, callback) {
+		function moveBirdToNest (branch, isCorrect, callback) {
+			var nest = tree.getBranches()[branch - 1].getNest();
 			var x = - elevator.getX() + (tree.getX() +
 					tree.getBranches()[branch - 1].getX() +
-					tree.getBranches()[branch - 1].getNest().getX());
+					nest.getX());
 			/* Left is -1, right is 1 */
 			var direction = x > bird.getX() ? 1 : -1;
+			x = x + (direction > 0 ? -bird.getWidth() * bird.getScale().x :
+				nest.getWidth())
 			turnBird(direction, function () {
 				bird.transitionTo({
 					x: x - (direction < 0 ?
 						(bird.getWidth() * bird.getScale().x) : 0),
 					duration: second * 1,
 					easing: 'ease-out',
-					callback: callback
+					callback: function () {
+						/* Did our bird get to the correct nest? */
+						var animationTime = 2; 
+						if (isCorrect) {
+							elevator.removePassenger(bird);
+							nest.addChick();
+							nest.celebrate(true);
+							setTimeout(function () {
+								nest.celebrate(false);
+							}, second * animationTime * 1000);
+						} else {
+							nest.scare(true);
+							setTimeout(function () {
+								nest.scare(false);
+							}, second * animationTime * 1000);
+						}
+						layer.transitionTo({
+							x: layer.getX(),
+							duration: second * animationTime,
+							callback: callback
+						});
+					}
 				});
 			});
 		}
@@ -270,10 +294,10 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			moveBirdElevatorPeak(true, function () {
 			moveElevator(vars.number, 1, function () {
 			moveBirdElevatorPeak (false, function () {
-			moveBirdFromElevator(vars.number, function () {
-				/* If picked wrong, bird goes back */
+			moveBirdToNest(vars.number, !(vars.tooHigh || vars.tooLow),
+				function () {
 				if (vars.tooHigh || vars.tooLow) {
-					/* BIRD SHOULD BE SAD :( */
+					/* If picked wrong, bird goes back */
 					moveBirdToElevator(function () {
 					moveBirdElevatorPeak(true, function () {
 					moveElevator(0, 0, function () {
@@ -284,9 +308,6 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 					});
 					});
 				} else {
-					/* BIRD SHOULD BE HAPPY :) */
-					elevator.removePassenger(bird);
-					tree.getBranches()[vars.number - 1].getNest().addChick();
 					moveElevator(0, 0, function () {
 						view.tell('ROUND_DONE');
 					});

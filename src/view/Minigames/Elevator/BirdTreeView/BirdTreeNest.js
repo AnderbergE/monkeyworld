@@ -15,6 +15,8 @@ MW.BirdTreeNest = function (config) {
 	var group,
 		mother,
 		chickGroup,
+		chickAnimation,
+		motherCelebrate,
 		nest;
 	
 	group = new Kinetic.Group({
@@ -30,6 +32,21 @@ MW.BirdTreeNest = function (config) {
 	
 	/* Add the group where the chicks will be added */
 	chickGroup = new Kinetic.Group({});
+	/* This animation runs when the chicks celebrate */
+	chickAnimation = new Kinetic.Animation({
+		func: function (frame) {
+			if (chickGroup.getChildren().length > 0) {
+				chickGroup.getChildren()[0].setY(
+					chickGroup.getChildren()[0].getY() +
+					0.75 * Math.sin(frame.time * 2 * Math.PI / 300));
+				if (chickGroup.getChildren().length > 1) {
+					chickGroup.getChildren()[1].setY(
+						chickGroup.getChildren()[1].getY() +
+						0.75 * Math.sin(-frame.time * 2 * Math.PI / 300));
+				}
+			}
+		}
+	});
 	group.add(chickGroup);
 	
 	/* Add the nest */
@@ -40,6 +57,23 @@ MW.BirdTreeNest = function (config) {
 		image: MW.Images.ELEVATORGAME_NEST
 	});
 	group.add(nest);
+	
+	
+	/**
+	 * @private
+	 * @param {Boolean} showWings - true if the mother's 'wings should be up.
+	 */
+	function flap (showWings) {
+		if (showWings) {
+			MW.SetImage(mother,
+				eval("MW.Images.ELEVATORGAME_NEST_MOTHER_FLAP_" +
+					config.number));
+		} else {
+			MW.SetImage(mother,
+				eval("MW.Images.ELEVATORGAME_NEST_MOTHER_" +
+					config.number));
+		}
+	}
 	
 	
 	/**
@@ -60,22 +94,6 @@ MW.BirdTreeNest = function (config) {
 	};
 	
 	/**
-	 * @public
-	 * @param {Boolean} showWings - true if the mother's 'wings should be up.
-	 */
-	group.flap = function (showWings) {
-		if (showWings) {
-			MW.SetImage(mother,
-				eval("MW.Images.ELEVATORGAME_NEST_MOTHER_FLAP_" +
-					config.number));
-		} else {
-			MW.SetImage(mother,
-				eval("MW.Images.ELEVATORGAME_NEST_MOTHER_" +
-					config.number));
-		}
-	}
-	
-	/**
 	 * Add a chick beside the mother in the nest.
 	 * @public
 	 */
@@ -86,7 +104,7 @@ MW.BirdTreeNest = function (config) {
 			chickGroup.add(new Kinetic.Image({
 				x: config.facingRight ? mother.getWidth() - img.width / 2 :
 					mother.getX() - img.width / 2,
-				y: mother.getHeight() - img.height,
+				y: mother.getHeight() - img.height - 3,
 				image: img 
 			}));
 		} else if (chickGroup.getChildren().length < 2) {
@@ -95,12 +113,39 @@ MW.BirdTreeNest = function (config) {
 			chickGroup.add(new Kinetic.Image({
 				x: config.facingRight ? mother.getWidth() :
 					mother.getX() - img.width,
-				y: mother.getHeight() - img.height - 3,
+				y: mother.getHeight() - img.height - 6,
 				image: img 
 			}));
 			/* it looks better with this chick behind the other one */
 			chickGroup.getChildren()[0].moveUp();
 		} /* Do not add more birds than two. */
+	}
+	
+	/**
+	 * @public
+	 * @param {Boolean} celebrate - true if the nest should celebrate.
+	 */
+	group.celebrate = function (celebrate) {
+		if (celebrate) {
+			chickAnimation.start();
+			var showingWings = false;
+			motherCelebrate = setInterval(function () {
+				showingWings = !showingWings;
+				flap(showingWings);
+			}, 150);
+		} else {
+			chickAnimation.stop();
+			clearInterval(motherCelebrate);
+			flap(false);
+		}
+	}
+	
+	/**
+	 * @public
+	 * @param {Boolean} scare - true if the mother should scare.
+	 */
+	group.scare = function (scare) {
+		flap(scare);
 	}
 	
 	
