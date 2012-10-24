@@ -93,11 +93,12 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 		 */
 		function agentPickNumber () {
 			var agentPick = agent.pickNumber(targetNumber, numberOfBranches);
-			elevator.tell(MW.Event.MG_ELEVATOR_LOCK, true);
 			elevator.tell(MW.Event.MG_LADDER_PICKED, {
 				number: agentPick.guess,
 				tooHigh: agentPick.guess > targetNumber,
-				tooLow: agentPick.guess < targetNumber
+				tooLow: agentPick.guess < targetNumber,
+				agent: true,
+				agentConfidence: agentPick.confidence
 			});
 		}
 		

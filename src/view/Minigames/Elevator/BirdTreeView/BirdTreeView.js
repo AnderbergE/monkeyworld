@@ -20,6 +20,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			elevatorOrigin,
 			bird,
 			agent,
+			agentPickGroup,
 			second = 0.75,
 			coordinates = {
 				treeX: 700, treeY: 10,
@@ -51,6 +52,10 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		});
 		layer.add(tree);
 		
+		/* Add the group which will hold the agents thought bubble. */
+		agentPickGroup = new Kinetic.Group();
+		layer.add(agentPickGroup);
+		
 		/* Add the elevator */
 		elevator = new MW.BirdTreeElevator({});
 		elevator.setX(tree.getX() - elevator.getWidth() / 2);
@@ -61,7 +66,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		/* Add the tree top */
 		layer.add(new Kinetic.Image({
 			x: tree.getX() - MW.Images.ELEVATORGAME_TREE_TOP.width / 2,
-			y: tree.getY() - MW.Images.ELEVATORGAME_TREE_TOP.height / 2,
+			y: tree.getY() - MW.Images.ELEVATORGAME_TREE_TOP.height / 2 - 15,
 			image: MW.Images.ELEVATORGAME_TREE_TOP
 		}));
 		
@@ -253,6 +258,23 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			});
 		}
 		
+		/**
+		 * Agent wants to pick a number.
+		 * @private
+		 * @param {Number} number - the number the agent want to pick
+		 * @param {Number} confidence - how sure the agent is
+		 */
+		function agentPickNumber (number, confidence) {
+			var button = new MW.Button({
+				x: coordinates.agentStopX - 150,
+				y: coordinates.agentStopY - 20,
+				number: number
+			});
+			button.getGroup().setScale({x: 0.5, y: 0.5});
+			button.getGroup().setListening(false);
+			agentPickGroup.add(button.getGroup());
+		}
+		
 		
 		/**
 		 * A target has been chosen, introduce baby bird.
@@ -288,6 +310,10 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 				scale: {x: 1, y: 1},
 				duration: second * 1
 			});
+			
+			if (!(vars.agent === undefined || !vars.agent)) {
+				agentPickNumber(vars.number, vars.agentConfidence);
+			}
 			
 			bird.walk(true);
 			moveBirdToElevator(function () {
