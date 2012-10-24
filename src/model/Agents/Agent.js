@@ -13,31 +13,26 @@ MW.Agent = MW.GlobalObject.extend(
 		
 		
 		/**
-		 * Player picked correct answer.
-		 * @public
-		 * @param {Number} number - the number that was correct.
-		 */
-		this.watchCorrectAnswer = function (number) {
-			knowledge.correctAnswer(number);
-		};
-		
-		/**
-		 * Player picked incorrect answer.
+		 * Player picked an answer.
 		 * @public
 		 * @param {Number} chosenNumber - the number that was incorrect.
 		 * @param {Number} correctNumber - the correct number.
 		 */
-		this.watchIncorrectAnswer = function (chosenNumber, correctNumber) {
-			knowledge.incorrectAnswer(chosenNumber, correctNumber);
-		};
+		this.watchAnswer = function (chosenNumber, correctNumber) {
+			knowledge.answer(chosenNumber, correctNumber);
+		}
 		
 		/**
 		 * Have the agent pick a number.
 		 * @public
 		 * @param {Number} targetNumber - the number that is the target.
+		 * @param {Number} maxNumber - the max number to pick.
+		 * @return {Hash}
+		 * @return {Number} {Hash}.guess - the picked number
+		 * @return {Number} {Hash}.confidence - how sure the agent is
 		 */
-		this.pickNumber = function (targetNumber) {
-			return knowledge.pickNumber(targetNumber);
-		};
+		this.pickNumber = function (targetNumber, maxNumber) {
+			return knowledge.pickNumber(targetNumber, maxNumber);
+		}
 	}
 });

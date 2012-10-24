@@ -133,7 +133,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 						turnBird(1, function () {
 							bird.showNumber(true);
 						});
-						view.tell('MW.Event.MG_ELEVATOR_TARGET_IS_PLACED');
+						view.tell(MW.Event.MG_ELEVATOR_TARGET_IS_PLACED);
 					}
 				});
 			});
