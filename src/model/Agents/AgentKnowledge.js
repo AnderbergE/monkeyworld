@@ -10,8 +10,19 @@ MW.AgentKnowledge = MW.GlobalObject.extend(
 	init: function () {
 		this._super("AgentKnowledge");
 		var knowledge = {},
-			guessPower = 0.2;
+			guessPower = 0.2,
+			guessArray,
+			lastTarget = -1;
 		
+		
+		function fillArray (maxNumber) {
+			var i;
+			guessArray = new Array();
+			for (i = 1; i <= maxNumber; i++) {
+				guessArray.push(i);
+			}
+		}		
+
 		
 		/**
 		 * An answer was picked.
@@ -51,10 +62,20 @@ MW.AgentKnowledge = MW.GlobalObject.extend(
 		 * @return {Number} {Hash}.confidence - how sure the agent is
 		 */
 		this.pickNumber = function (targetNumber, maxNumber) {
+			if (guessArray === undefined) {
+				fillArray(maxNumber);
+			}
 			if (knowledge[targetNumber] === undefined) {
+				var guess = Math.floor(Math.random() * guessArray.length);
+				/* splice return an array of removed elements */
+				guess = guessArray.splice(guess, 1)[0];
+				/* if guess was correct, reset guess array */
+				if (guess == targetNumber) {
+					fillArray(maxNumber);
+				}
 				return {
-					guess: Math.floor((Math.random() * maxNumber) + 1),
-					confidence: 1 / maxNumber
+					guess: guess,
+					confidence: 1 / guessArray.length
 				};
 			} else {
 				var guess, bestSoFar = 0, total = 0;
