@@ -366,6 +366,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 				y: coordinates.agentStartY
 			});
 			layer.add(agent.getGraphics());
+			agent.walk(true);
 			agent.getGraphics().setZIndex(elevator.getZIndex() - 1);
 			agent.transitionTo({
 				x: coordinates.agentStopX,
@@ -373,6 +374,10 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 				duration: second * 1,
 				easing: 'ease-out',
 				callback: function () {
+					agent.wave(true);
+					setTimeout(function () {
+						agent.wave(false);
+					}, second * 1 * 1000);
 					view.tell('ROUND_DONE');
 				}
 			});
@@ -420,8 +425,10 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			for (i; i < tree.getBranches().length - 1; i++) {
 				tree.getBranches()[i].getNest().celebrate(true);
 			}
+			agent.wave(true);
 			layer.transitionTo({
 				x: layer.getX(),
+				opacity: 0,
 				duration: second * 5,
 				callback: function () {
 					view.tell('QUIT');
