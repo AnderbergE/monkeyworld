@@ -20,7 +20,8 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 			roundsLost = 0,
 			winsToProgress = 3,
 			maxTries = 6,
-			agent;
+			agent,
+			agentPick;
 		
 		
 		/**
@@ -77,7 +78,6 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 		 * @param pickedNumber - The number that was picked
 		 */
 		function playerPickNumber(number) {
-			elevator.tell(MW.Event.MG_ELEVATOR_LOCK, true);
 			elevator.tell(MW.Event.MG_LADDER_PICKED, {
 				number: number,
 				tooHigh: number > targetNumber,
@@ -92,13 +92,10 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 		 * Let the agent pick a number.
 		 */
 		function agentPickNumber () {
-			var agentPick = agent.pickNumber(targetNumber, numberOfBranches);
-			elevator.tell(MW.Event.MG_LADDER_PICKED, {
+			agentPick = agent.pickNumber(targetNumber, numberOfBranches);
+			elevator.tell(MW.Event.MG_ELEVATOR_AGENT_CHOICE, {
 				number: agentPick.guess,
-				tooHigh: agentPick.guess > targetNumber,
-				tooLow: agentPick.guess < targetNumber,
-				agent: true,
-				agentConfidence: agentPick.confidence
+				confidence: agentPick.confidence
 			});
 		}
 		
@@ -132,8 +129,15 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 		 * Listen to button pushes.
 		 */
 		this.on('BUTTON_PUSHED', function (vars) {
+			elevator.tell(MW.Event.MG_ELEVATOR_LOCK, true);
 			if (vars.number === undefined) {
-				
+				/* agent was correct/incorrect */
+				if (vars.bool) {
+					playerPickNumber(agentPick.guess);
+				} else {
+					elevator.tell(MW.Event.MG_ELEVATOR_CORRECT_AGENT);
+					elevator.tell(MW.Event.MG_ELEVATOR_LOCK, false);
+				}
 			} else {
 				playerPickNumber(vars.number);
 			}

@@ -12,9 +12,9 @@ MW.Bird = function (config) {
 	if (config.y === undefined) config.y = 0;
 	if (config.scale === undefined) config.scale = 1;
 	if (config.number === undefined) config.number = 0;
-	config.inElevator = false;
 	var group,
-		bird;
+		bird,
+		animation;
 	
 	group = new Kinetic.Group({
 			x: config.x,
@@ -27,6 +27,27 @@ MW.Bird = function (config) {
 		image: eval("MW.Images.ELEVATORGAME_CHICK_" + config.number)
 	});
 	group.add(bird);
+	
+	
+	/**
+	 * Walk with left foot.
+	 * @private
+	 */
+	function walkLeft() {
+		MW.SetImage(bird,
+			eval("MW.Images.ELEVATORGAME_CHICK_WALK_LEFT_" + config.number));
+		animation = setTimeout(walkRight, 150);
+	}
+	
+	/**
+	 * Walk with right foot.
+	 * @private
+	 */
+	function walkRight() {
+		MW.SetImage(bird,
+			eval("MW.Images.ELEVATORGAME_CHICK_WALK_RIGHT_" + config.number));
+		animation = setTimeout(walkLeft, 150);
+	}
 	
 	
 	/**
@@ -51,6 +72,7 @@ MW.Bird = function (config) {
 	 */
 	group.showNumber = function (show) {
 		/* Change width and height to avoid stretch/squeeze */
+		clearTimeout(animation);
 		if (show) {
 			MW.SetImage(bird, 
 				eval("MW.Images.ELEVATORGAME_CHICK_SHOW_" + config.number));
@@ -58,18 +80,6 @@ MW.Bird = function (config) {
 			MW.SetImage(bird, 
 				eval("MW.Images.ELEVATORGAME_CHICK_" + config.number));
 		}
-	}
-	
-	function walkLeft() {
-		MW.SetImage(bird,
-			eval("MW.Images.ELEVATORGAME_CHICK_WALK_LEFT_" + config.number));
-		setTimeout(walkRight, 150);
-	}
-	
-	function walkRight() {
-		MW.SetImage(bird,
-			eval("MW.Images.ELEVATORGAME_CHICK_WALK_RIGHT_" + config.number));
-		setTimeout(walkLeft, 150);
 	}
 	
 	/**
@@ -80,9 +90,23 @@ MW.Bird = function (config) {
 		if (walk) {
 			walkLeft();
 		} else {
+			clearTimeout(animation);
 			MW.SetImage(bird,
 				eval("MW.Images.ELEVATORGAME_CHICK_" + config.number));
 		}
+	}
+	
+	/**
+	 * @public
+	 * @param {Function} callback - called when turn is complete.
+	 */
+	group.turn = function (callback) {
+		group.transitionTo({
+			x: group.getX() + (group.getWidth() * group.getScale().x),
+			scale: {x: -1 * group.getScale().x, y: group.getScale().y},
+			duration: 0.1,
+			callback: callback
+		});
 	}
 	
 	

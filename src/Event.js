@@ -42,7 +42,11 @@ MW.Event = {
 	MG_LADDER_START_AGENT:            "MG_LADDER_START_AGENT",
 	
 	MG_ELEVATOR_TARGET_IS_PLACED:	"MG_ELEVATOR_TARGET_IS_PLACED",
-	MG_ELEVATOR_LOCK:				"MG_ELEVATOR_LOCK", /* Boolean */
+	MG_ELEVATOR_LOCK:				"MG_ELEVATOR_LOCK",
+									/* {Boolean} */
+	MG_ELEVATOR_AGENT_CHOICE:		"MG_ELEVATOR_AGENT_CHOICE",
+									/* {number: {Number}, confidence: {Number}} */
+	MG_ELEVATOR_CORRECT_AGENT:		"MG_ELEVATOR_CORRECT_AGENT",
 	
 	WATER_GARDEN: "Game.waterGarden",
 	GARDEN_WATERED: "Game.gardenWatered"

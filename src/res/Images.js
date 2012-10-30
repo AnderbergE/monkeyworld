@@ -41,11 +41,9 @@ MW.ImageSources = {
 /** @const */ ELEVATORGAME_TREE_BRANCH_LEFT_1:	"minigames/elevatorgame/mWorldTreeBranchLeft2.png",
 /** @const */ ELEVATORGAME_TREE_BRANCH_LEFT_2:	"minigames/elevatorgame/mWorldTreeBranchLeft4.png",
 /** @const */ ELEVATORGAME_TREE_BRANCH_LEFT_3:	"minigames/elevatorgame/mWorldTreeBranchLeft6.png",
-/** @const */ ELEVATORGAME_TREE_BRANCH_LEFT_4:	"minigames/elevatorgame/mWorldTreeBranchLeftHighest.png",
 /** @const */ ELEVATORGAME_TREE_BRANCH_RIGHT_1:	"minigames/elevatorgame/mWorldTreeBranchRight5.png",
 /** @const */ ELEVATORGAME_TREE_BRANCH_RIGHT_2:	"minigames/elevatorgame/mWorldTreeBranchRight1.png",
 /** @const */ ELEVATORGAME_TREE_BRANCH_RIGHT_3:	"minigames/elevatorgame/mWorldTreeBranchRight3.png",
-/** @const */ ELEVATORGAME_TREE_BRANCH_RIGHT_4:	"minigames/elevatorgame/mWorldTreeBranchRightHighest.png",
 /** @const */ ELEVATORGAME_TREE_ELEVATOR_ROPE:	"minigames/elevatorgame/elevator.png",
 /** @const */ ELEVATORGAME_TREE_ELEVATOR_BUCKET:"minigames/elevatorgame/bucket.png",
 
@@ -70,8 +68,8 @@ MW.ImageSources = {
 /** @const */ ELEVATORGAME_BUTTON_FINGERS_DOWN_9:	"minigames/elevatorgame/button9c.png",
 /** @const */ ELEVATORGAME_BUTTON_FINGERS_DOWN_10:	"minigames/elevatorgame/button10c.png",
 /** @const */ ELEVATORGAME_BUTTON_YES:				"minigames/elevatorgame/buttonYes.png",
-/** @const */ ELEVATORGAME_BUTTON_NO:				"minigames/elevatorgame/buttonYesc.png",
-/** @const */ ELEVATORGAME_BUTTON_DOWN_YES:			"minigames/elevatorgame/button1c.png",
+/** @const */ ELEVATORGAME_BUTTON_NO:				"minigames/elevatorgame/buttonNo.png",
+/** @const */ ELEVATORGAME_BUTTON_DOWN_YES:			"minigames/elevatorgame/buttonYesc.png",
 /** @const */ ELEVATORGAME_BUTTON_DOWN_NO:			"minigames/elevatorgame/buttonNoc.png",
 
 /** @const */ ELEVATORGAME_CHICK_1:				"minigames/elevatorgame/ChickOrange1_1.png",

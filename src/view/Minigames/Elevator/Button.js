@@ -47,6 +47,25 @@ MW.Button = MW.GlobalObject.extend(
 			image: image
 		});
 		group.add(graphics);
+		group.setListening(false);
+		
+		
+		/**
+		 * @public
+		 * @return {Kinetic.Group} returns group that is addable to the stage.
+		 */
+		this.getGroup = function () {
+			return group;
+		};
+		
+		/**
+		 * @public
+		 * @param {Boolean} lock - true if button is locked, otherwise false.
+		 */
+		this.lock = function (lock) {
+			group.setListening(!lock);
+			config.drawScene();
+		}
 		
 		
 		/* Mouse events */	
@@ -78,17 +97,7 @@ MW.Button = MW.GlobalObject.extend(
 		 * @param {Boolean} lock - true if the buttons should not be pushable.
 		 */
 		button.on(MW.Event.MG_ELEVATOR_LOCK, function (lock) {
-			group.setListening(!lock);
-			config.drawScene();
+			button.lock(lock);
 		});
-		
-		
-		/**
-		 * @public
-		 * @return {Kinetic.Group} returns group that is addable to the stage.
-		 */
-		this.getGroup = function () {
-			return group;
-		};
 	}
 });

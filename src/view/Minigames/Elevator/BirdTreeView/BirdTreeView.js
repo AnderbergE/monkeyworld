@@ -99,15 +99,9 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			if (direction > 0 && bird.getScale().x > 0 ||
 				direction < 0 && bird.getScale().x < 0) {
 				callback();
-				return;
+			} else {
+				bird.turn(callback);
 			}
-			
-			bird.transitionTo({
-				x: bird.getX() + (bird.getWidth() * bird.getScale().x),
-				scale: {x: -1 * bird.getScale().x, y: bird.getScale().y},
-				duration: second * 0.1,
-				callback: callback
-			});
 		}
 		
 		/**
@@ -265,27 +259,36 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		 * @param {Number} confidence - how sure the agent is
 		 */
 		function agentPickNumber (number, confidence) {
+			agentPickGroup.removeChildren();
 			var button = new MW.Button({
 				x: coordinates.agentStopX - 150,
 				y: coordinates.agentStopY - 20,
 				number: number
 			});
 			button.getGroup().setScale({x: 0.5, y: 0.5});
-			button.getGroup().setListening(false);
+			button.lock(true);
 			agentPickGroup.add(button.getGroup());
 			var yesButton = new MW.Button({
 				x: button.getGroup().getX() - 30,
-				y: button.getGroup().getY() + 30,
-				bool: true
+				y: button.getGroup().getY() + 50,
+				bool: true,
+				drawScene: function () {
+					layer.draw();
+				}
 			});
 			yesButton.getGroup().setScale({x: 0.5, y: 0.5});
+			yesButton.lock(false);
 			agentPickGroup.add(yesButton.getGroup());
 			var noButton = new MW.Button({
 				x: button.getGroup().getX() + 30,
-				y: button.getGroup().getY() + 30,
-				bool: false
+				y: button.getGroup().getY() + 50,
+				bool: false,
+				drawScene: function () {
+					layer.draw();
+				}
 			});
 			noButton.getGroup().setScale({x: 0.5, y: 0.5});
+			noButton.lock(false);
 			agentPickGroup.add(noButton.getGroup());
 		}
 		
@@ -315,8 +318,6 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		 * @param {Boolean} vars.tooLow - the chosen number was too low
 		 */
 		view.on(MW.Event.MG_LADDER_PICKED, function (vars) {
-			bird.showNumber(false);
-			
 			/* Zoom out to tree */
 			layer.transitionTo({
 				x: 0,
@@ -325,10 +326,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 				duration: second * 1
 			});
 			
-			if (!(vars.agent === undefined || !vars.agent)) {
-				agentPickNumber(vars.number, vars.agentConfidence);
-			}
-			
+			bird.showNumber(false);
 			bird.walk(true);
 			moveBirdToElevator(function () {
 			moveBirdElevatorPeak(true, function () {
@@ -393,6 +391,25 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 					view.tell('ROUND_DONE');
 				}
 			});
+		});
+		
+		/**
+		 * Agent has made his choice.
+		 * @param {Hash} vars
+		 * @param {Number} vars.number - the chosen number
+		 * @param {Number} vars.confidence - how sure the agent is
+		 */
+		view.on(MW.Event.MG_ELEVATOR_AGENT_CHOICE, function (vars) {
+			agentPickGroup.setListening(true);
+			agentPickNumber(vars.number, vars.confidence);
+		});
+		
+		/**
+		 * Player corrected agent.
+		 */
+		view.on(MW.Event.MG_ELEVATOR_CORRECT_AGENT, function () {
+			agentPickGroup.setListening(false);
+			/* Play sound that agent wants help */
 		});
 		
 		
