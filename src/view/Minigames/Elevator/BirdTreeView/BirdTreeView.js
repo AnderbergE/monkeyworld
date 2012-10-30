@@ -412,6 +412,23 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			/* Play sound that agent wants help */
 		});
 		
+		/**
+		 * The game finished!
+		 */
+		view.on(MW.Event.MG_LADDER_CHEER, function () {
+			var i = 0;
+			for (i; i < tree.getBranches().length - 1; i++) {
+				tree.getBranches()[i].getNest().celebrate(true);
+			}
+			layer.transitionTo({
+				x: layer.getX(),
+				duration: second * 5,
+				callback: function () {
+					view.tell('QUIT');
+				}
+			});
+		});
+		
 		
 		this.addTearDown(function () {
 			stage.remove(layer);

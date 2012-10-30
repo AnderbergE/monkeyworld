@@ -68,7 +68,7 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 				roundsLost = 0;
 				elevator.tell(MW.Event.MG_LADDER_START_AGENT);
 			} else {
-				elevator.tell(MW.Event.MG_LADDER_CHEER, elevator.quit);
+				elevator.tell(MW.Event.MG_LADDER_CHEER);
 			}
 		}
 		
@@ -177,6 +177,10 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 		/* This is needed to start the game */
 		this.on(MW.Event.INTRODUCE_AGENT, function (callback) {
 			callback();
+		});
+		
+		this.on('QUIT', function () {
+			elevator.quit();
 		});
 	}
 });
