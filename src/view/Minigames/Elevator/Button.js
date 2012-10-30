@@ -1,24 +1,27 @@
 /**
  * Creates a button.
+ * @extends {MW.GlobalObject}
  * @param {Hash} config:
  * 		{Number} x - x position, default 0
  * 		{Number} y - y position, default 0
- * 		{Number} number - number of the button, default 0
+ * 		{Number} number - number of the button, default undefined
+ * 		{Number} bool - yes = true, no = false, default true
  *		{Function} drawScene - function that redraws the scene, default empty.
- * @return The button as a Kinetic.group.
  */
 MW.Button = MW.GlobalObject.extend(
-/** @lends {MW.Agent.prototype} */
+/** @lends {MW.Button.prototype} */
 {
 	/** @constructs */
-	init: function (config) {
-		this._super("Button");
+	init: function (config, tag) {
+		this._super(tag === undefined ? "Button" : tag);
 		if (config.x === undefined) config.x = 0;
 		if (config.y === undefined) config.y = 0;
-		if (config.number === undefined) config.number = 0;
+		if (config.bool === undefined) config.bool = true;
 		if (config.drawScene === undefined) config.drawScene = function () {};
 		var button = this,
 			group,
+			image,
+			imageDown,
 			graphics;
 		
 		
@@ -29,38 +32,45 @@ MW.Button = MW.GlobalObject.extend(
 		group.setScale(0.75, 0.75);
 		
 		/* Add button */
+		if (config.number === undefined) {
+			image = eval("MW.Images.ELEVATORGAME_BUTTON_" +
+				(config.bool ? "YES" : "NO"));
+			imageDown = eval("MW.Images.ELEVATORGAME_BUTTON_DOWN_" +
+				(config.bool ? "YES" : "NO"));
+		} else {
+			image = eval("MW.Images.ELEVATORGAME_BUTTON_FINGERS_" +
+				config.number);
+			imageDown = eval("MW.Images.ELEVATORGAME_BUTTON_FINGERS_DOWN_" +
+				config.number);
+		}
 		graphics = new Kinetic.Image({
-			image: eval("MW.Images.ELEVATORGAME_BUTTON_FINGERS_" +
-				config.number)
+			image: image
 		});
 		group.add(graphics);
 		
 		
 		/* Mouse events */	
 		graphics.on('mouseover', function () {
-			config.drawScene();
 			document.body.style.cursor = "pointer";
 		});
 
 		graphics.on('mouseout', function () {
-			config.drawScene();
 			document.body.style.cursor = "default";
 		});
 
 		graphics.on('mousedown', function () {
-			graphics.clearImageBuffer();
-			var image = eval("MW.Images.ELEVATORGAME_BUTTON_FINGERS_DOWN_" +
-					config.number);
-			MW.SetImage(graphics, image, 0, graphics.getY() + 5)
+			MW.SetImage(graphics, imageDown, 0, graphics.getY() + 5);
 			config.drawScene();
 		});
 
 		graphics.on('mouseup', function () {
-			var image = eval("MW.Images.ELEVATORGAME_BUTTON_FINGERS_" +
-					config.number);
-			MW.SetImage(graphics, image, 0, 0)
+			MW.SetImage(graphics, image, 0, 0);
 			config.drawScene();
-			button.tell('BUTTON_PUSHED', { number: config.number });
+			if (config.number === undefined) {
+				button.tell('BUTTON_PUSHED', { bool: config.bool });
+			} else {
+				button.tell('BUTTON_PUSHED', { number: config.number });
+			}
 		});
 	
 		/**
@@ -71,6 +81,7 @@ MW.Button = MW.GlobalObject.extend(
 			group.setListening(!lock);
 			config.drawScene();
 		});
+		
 		
 		/**
 		 * @public

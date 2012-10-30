@@ -69,6 +69,10 @@ MW.ImageSources = {
 /** @const */ ELEVATORGAME_BUTTON_FINGERS_DOWN_8:	"minigames/elevatorgame/button8c.png",
 /** @const */ ELEVATORGAME_BUTTON_FINGERS_DOWN_9:	"minigames/elevatorgame/button9c.png",
 /** @const */ ELEVATORGAME_BUTTON_FINGERS_DOWN_10:	"minigames/elevatorgame/button10c.png",
+/** @const */ ELEVATORGAME_BUTTON_YES:				"minigames/elevatorgame/buttonYes.png",
+/** @const */ ELEVATORGAME_BUTTON_NO:				"minigames/elevatorgame/buttonYesc.png",
+/** @const */ ELEVATORGAME_BUTTON_DOWN_YES:			"minigames/elevatorgame/button1c.png",
+/** @const */ ELEVATORGAME_BUTTON_DOWN_NO:			"minigames/elevatorgame/buttonNoc.png",
 
 /** @const */ ELEVATORGAME_CHICK_1:				"minigames/elevatorgame/ChickOrange1_1.png",
 /** @const */ ELEVATORGAME_CHICK_2:				"minigames/elevatorgame/ChickPurple2_1.png",

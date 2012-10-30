@@ -273,6 +273,20 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			button.getGroup().setScale({x: 0.5, y: 0.5});
 			button.getGroup().setListening(false);
 			agentPickGroup.add(button.getGroup());
+			var yesButton = new MW.Button({
+				x: button.getGroup().getX() - 30,
+				y: button.getGroup().getY() + 30,
+				bool: true
+			});
+			yesButton.getGroup().setScale({x: 0.5, y: 0.5});
+			agentPickGroup.add(yesButton.getGroup());
+			var noButton = new MW.Button({
+				x: button.getGroup().getX() + 30,
+				y: button.getGroup().getY() + 30,
+				bool: false
+			});
+			noButton.getGroup().setScale({x: 0.5, y: 0.5});
+			agentPickGroup.add(noButton.getGroup());
 		}
 		
 		

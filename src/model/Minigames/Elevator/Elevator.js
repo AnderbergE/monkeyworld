@@ -132,7 +132,11 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 		 * Listen to button pushes.
 		 */
 		this.on('BUTTON_PUSHED', function (vars) {
-			playerPickNumber(vars.number);
+			if (vars.number === undefined) {
+				
+			} else {
+				playerPickNumber(vars.number);
+			}
 		});
 		
 		/**
