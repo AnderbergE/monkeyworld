@@ -363,7 +363,10 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		view.on(MW.Event.MG_LADDER_INTRODUCE_AGENT, function () {
 			agent = new MW.PandaAgentView({
 				x: coordinates.agentStartX,
-				y: coordinates.agentStartY
+				y: coordinates.agentStartY,
+				drawScene: function () {
+					layer.draw();
+				}
 			});
 			layer.add(agent.getGraphics());
 			agent.walk(true);
@@ -377,6 +380,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 					agent.wave(true);
 					setTimeout(function () {
 						agent.wave(false);
+						agent.followCursor(true);
 					}, second * 1 * 1000);
 					view.tell('ROUND_DONE');
 				}
@@ -387,6 +391,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		 * Agent starts acting.
 		 */
 		view.on(MW.Event.MG_LADDER_START_AGENT, function () {
+			agent.followCursor(false);
 			agent.transitionTo({
 				x: 225,
 				y: 425,
@@ -426,8 +431,11 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 				tree.getBranches()[i].getNest().celebrate(true);
 			}
 			agent.wave(true);
+			numpanelLayer.transitionTo({
+				opacity: 0,
+				duration: second * 1
+			});
 			layer.transitionTo({
-				x: layer.getX(),
 				opacity: 0,
 				duration: second * 5,
 				callback: function () {

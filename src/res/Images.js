@@ -155,7 +155,9 @@ MW.ImageSources = {
 /** @const */ ELEVATORGAME_NEST_MOTHER_FLAP_9:	"minigames/elevatorgame/nest/MotherPink9_2.png",
 /** @const */ ELEVATORGAME_NEST_MOTHER_FLAP_10:	"minigames/elevatorgame/nest/MotherTurkos10_2.png",
 
-/** @const */ ELEVATORGAME_AGENT_PANDA:				"minigames/elevatorgame/agent/pandaStandard.png",
+/** @const */ ELEVATORGAME_AGENT_PANDA:				"minigames/elevatorgame/agent/pandaNoEyes2Standard.png",
+/** @const */ ELEVATORGAME_AGENT_PANDA_EYE:			"minigames/elevatorgame/agent/pandaIrisAndPupil.png",
+/** @const */ ELEVATORGAME_AGENT_PANDA_EYE_FLARE:	"minigames/elevatorgame/agent/pandaPupilsFlare.png",
 /** @const */ ELEVATORGAME_AGENT_PANDA_WALK_LEFT:	"minigames/elevatorgame/agent/pandaWalking1.png",
 /** @const */ ELEVATORGAME_AGENT_PANDA_WALK_RIGHT:	"minigames/elevatorgame/agent/pandaWalking2.png",
 /** @const */ ELEVATORGAME_AGENT_PANDA_WAVE:		"minigames/elevatorgame/agent/pandaWaving.png",

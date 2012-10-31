@@ -11,9 +11,16 @@ MW.PandaAgentView = MW.GlobalObject.extend(
 		this._super('PandaAgentView');
 		if (config.x === undefined) config.x = 0;
 		if (config.y === undefined) config.y = 0;
+		if (config.drawScene === undefined) config.drawScene = function () {};
 		var group,
 			panda,
-			animation;
+			leftEye,
+			rightEye,
+			animation,
+			coordinates = {
+				leftEye: {x: 141, y: 151},
+				rightEye: {x: 336, y: 156}
+			};
 		
 		group = new Kinetic.Group({
 			x: config.x,
@@ -21,10 +28,37 @@ MW.PandaAgentView = MW.GlobalObject.extend(
 			scale: {x: 0.25, y: 0.25}
 		});
 		
+		/* Add body */
 		panda = new Kinetic.Image({
 			image: MW.Images.ELEVATORGAME_AGENT_PANDA
 		});
-		group.add(panda)
+		group.add(panda);
+		
+		/* Add eyes */
+		leftEye = new Kinetic.Image({
+			x: coordinates.leftEye.x,
+			y: coordinates.leftEye.y,
+			image: MW.Images.ELEVATORGAME_AGENT_PANDA_EYE
+		});
+		group.add(leftEye);
+		rightEye = new Kinetic.Image({
+			x: coordinates.rightEye.x,
+			y: coordinates.rightEye.y,
+			image: MW.Images.ELEVATORGAME_AGENT_PANDA_EYE
+		});
+		group.add(rightEye);
+		
+		/* Add eye flares */
+		group.add(new Kinetic.Image({
+			x: coordinates.leftEye.x + 19,
+			y: coordinates.leftEye.y + 14,
+			image: MW.Images.ELEVATORGAME_AGENT_PANDA_EYE_FLARE
+		}));
+		group.add(new Kinetic.Image({
+			x: coordinates.rightEye.x + 19,
+			y: coordinates.rightEye.y + 14,
+			image: MW.Images.ELEVATORGAME_AGENT_PANDA_EYE_FLARE
+		}));
 		
 		
 		/**
@@ -63,6 +97,35 @@ MW.PandaAgentView = MW.GlobalObject.extend(
 			animation = setTimeout(waveUp, 150);
 		}
 		
+		/**
+		 * Set eye location in socket depending on mouse cursor position.
+		 * @private
+		 * @param {Kinetic.Image} eye - The eye to set.
+		 * @param {Number} offset - The offset from the body to the eye.
+		 */
+		function setEye(eye, offset) {
+			/* This is not 100 %, but good enough perhaps */
+			var w = eye.getWidth();
+			var h = eye.getHeight();
+			var eyePos = eye.getAbsolutePosition();
+			var dx = event.pageX - (eyePos.x + w / 2);
+			var dy = event.pageY - (eyePos.y + h / 2);
+			var r = (dx*dx/w+dy*dy/h<1) ?
+				1 : Math.sqrt(w*h / (dx*dx*h+dy*dy*w));
+			eye.setX((r*dx)/2+offset.x);
+			eye.setY((r*dy)/2+offset.y);
+		}
+		
+		/**
+		 * Direct gaze towards mouse cursor position.
+		 * @private
+		 */
+		function eyesFollowCursor () {
+			setEye(leftEye, coordinates.leftEye);
+			setEye(rightEye, coordinates.rightEye);
+			config.drawScene();
+		}
+		
 		
 		/**
 		 * @public
@@ -82,7 +145,7 @@ MW.PandaAgentView = MW.GlobalObject.extend(
 		
 		/**
 		 * @public
-		 * @param {Boolean} walk - true if the bird should walk.
+		 * @param {Boolean} walk - true if the panda should walk.
 		 */
 		this.walk = function (walk) {
 			clearTimeout(animation);
@@ -95,7 +158,7 @@ MW.PandaAgentView = MW.GlobalObject.extend(
 		
 		/**
 		 * @public
-		 * @param {Boolean} wave - true if the bird should wave.
+		 * @param {Boolean} wave - true if the panda should wave.
 		 */
 		this.wave = function (wave) {
 			clearTimeout(animation);
@@ -103,6 +166,23 @@ MW.PandaAgentView = MW.GlobalObject.extend(
 				waveUp();
 			} else {
 				MW.SetImage(panda, MW.Images.ELEVATORGAME_AGENT_PANDA);
+			}
+		}
+		
+		/**
+		 * @public
+		 * @param {Boolean} follow - true if the panda should follow the cursor.
+		 * @param {Function} drawScene - function to draw the scene.
+		 */
+		this.followCursor = function (follow) {
+			if (follow) {
+				document.onmousemove = eyesFollowCursor;
+			} else {
+				document.onmousemove = null;
+				leftEye.setX(coordinates.leftEye.x);
+				leftEye.setY(coordinates.leftEye.y);
+				rightEye.setX(coordinates.rightEye.x);
+				rightEye.setY(coordinates.rightEye.y);
 			}
 		}
 	}
