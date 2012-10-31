@@ -10,19 +10,31 @@ MW.AgentKnowledge = MW.GlobalObject.extend(
 	init: function () {
 		this._super("AgentKnowledge");
 		var knowledge = {},
-			guessPower = 0.2,
-			guessArray,
-			lastTarget = -1;
-		
-		
-		function fillArray (maxNumber) {
-			var i;
+			biggestMiss = 1,
 			guessArray = new Array();
-			for (i = 1; i <= maxNumber; i++) {
+		
+		
+		/**
+		 * Fill an array with numbers to guess between.
+		 * @private
+		 * @param {Number} targetNumber - the target of the round.
+		 * @param {Number} maxNumber - the biggest number.
+		 */
+		function fillArray (targetNumber, maxNumber) {
+			var i = targetNumber - biggestMiss;
+			if (i < 1) {
+				i = 1;
+			}
+			var max = targetNumber + biggestMiss;
+			if (max > maxNumber) {
+				max = maxNumber;
+			}
+			
+			for (i; i <= max; i++) {
 				guessArray.push(i);
 			}
-		}		
-
+		}
+		
 		
 		/**
 		 * An answer was picked.
@@ -39,16 +51,8 @@ MW.AgentKnowledge = MW.GlobalObject.extend(
 			}
 			knowledge[correctNumber][chosenNumber]++;
 			
-			if (chosenNumber == correctNumber) {
-				guessPower *= 1.5;
-				if (guessPower > 1) {
-					guessPower = 1;
-				}
-			} else {
-				guessPower *= 0.8;
-				if (guessPower < 0.1) {
-					guessPower = 0.1;
-				}
+			if (biggestMiss < Math.abs(chosenNumber - correctNumber)) {
+				biggestMiss = Math.abs(chosenNumber - correctNumber);
 			}
 		}
 		
@@ -62,16 +66,16 @@ MW.AgentKnowledge = MW.GlobalObject.extend(
 		 * @return {Number} {Hash}.confidence - how sure the agent is
 		 */
 		this.pickNumber = function (targetNumber, maxNumber) {
-			if (guessArray === undefined) {
-				fillArray(maxNumber);
-			}
 			if (knowledge[targetNumber] === undefined) {
+				if (guessArray.length == 0) {
+					fillArray(targetNumber, maxNumber);
+				}
 				var guess = Math.floor(Math.random() * guessArray.length);
-				/* splice return an array of removed elements */
+				/* splice returns an array of removed elements, we remove one */
 				guess = guessArray.splice(guess, 1)[0];
 				/* if guess was correct, reset guess array */
 				if (guess == targetNumber) {
-					fillArray(maxNumber);
+					guessArray = new Array();
 				}
 				return {
 					guess: guess,
@@ -88,11 +92,16 @@ MW.AgentKnowledge = MW.GlobalObject.extend(
 				}
 				if (targetNumber != guess) {
 					/* The agent learns when it picks the wrong number. */
-					/* TODO: Maybe put this somewhere else? */
 					knowledge[targetNumber][guess]--;
+				} else if (Math.random() > 0.90) {
+					if (targetNumber == maxNumber) {
+						guess--;
+					} else if (targetNumber == 0) {
+						guess++;
+					} else {
+						guess += Math.random() > 0.50 ? 1 : -1;
+					}
 				}
-				/* TODO: Should agent be able to pick wrong even though the
-					player never has? */
 				return {
 					guess: guess,
 					confidence: bestSoFar / total

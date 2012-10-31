@@ -83,7 +83,7 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 				tooHigh: number > targetNumber,
 				tooLow: number < targetNumber
 			});
-			if (elevator.modeIsAgentSee()) {
+			if (elevator.modeIsAgentSee() || elevator.modeIsAgentDo()) {
 				agent.watchAnswer(number, targetNumber);
 			}
 		}
