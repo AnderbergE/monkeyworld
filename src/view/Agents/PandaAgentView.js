@@ -100,16 +100,19 @@ MW.PandaAgentView = MW.GlobalObject.extend(
 		/**
 		 * Set eye location in socket depending on mouse cursor position.
 		 * @private
-		 * @param {Kinetic.Image} eye - The eye to set.
-		 * @param {Number} offset - The offset from the body to the eye.
+		 * @param {Kinetic.Image} eye - the eye to rotate
+		 * @param {Number} offset - the offset from the body to the eye
+		 * @param {Hash} mousePos - the mouse coordinates
+		 * 		{Number} mousePos.x - the mouse x coordinate
+		 * 		{Number} mousePos.y - the mouse y coordinate
 		 */
-		function setEye(eye, offset) {
+		function setEye(eye, offset, mousePos) {
 			/* This is not 100 %, but good enough perhaps */
 			var w = eye.getWidth();
 			var h = eye.getHeight();
 			var eyePos = eye.getAbsolutePosition();
-			var dx = event.pageX - (eyePos.x + w / 2);
-			var dy = event.pageY - (eyePos.y + h / 2);
+			var dx = mousePos.x - (eyePos.x + w / 2);
+			var dy = mousePos.y - (eyePos.y + h / 2);
 			var r = (dx*dx/w+dy*dy/h<1) ?
 				1 : Math.sqrt(w*h / (dx*dx*h+dy*dy*w));
 			eye.setX((r*dx)/2+offset.x);
@@ -119,10 +122,26 @@ MW.PandaAgentView = MW.GlobalObject.extend(
 		/**
 		 * Direct gaze towards mouse cursor position.
 		 * @private
+		 * @param {event} e - the event
 		 */
-		function eyesFollowCursor () {
-			setEye(leftEye, coordinates.leftEye);
-			setEye(rightEye, coordinates.rightEye);
+		function eyesFollowCursor (e) {
+			/* check that we got a good event */
+			if (!e) {
+				e = window.event;
+			}
+			/* get mouse position (browsers differ) */
+			if (e.pageX || e.pageY) {
+				mousePos = {x: e.pageX, y: e.pageY};
+			} else if (e.clientX || e.clientY) {
+				mousePos = {
+					x: e.clientX + document.body.scrollLeft +
+						document.documentElement.scrollLeft,
+					y: e.clientY + document.body.scrollTop +
+						document.documentElement.scrollTop
+				};
+			}
+			setEye(leftEye, coordinates.leftEye, mousePos);
+			setEye(rightEye, coordinates.rightEye, mousePos);
 			config.drawScene();
 		}
 		
@@ -176,9 +195,10 @@ MW.PandaAgentView = MW.GlobalObject.extend(
 		 */
 		this.followCursor = function (follow) {
 			if (follow) {
-				document.onmousemove = eyesFollowCursor;
+				/* This might not work in all browsers, ses attachEvent. */
+				document.addEventListener ("mousemove", eyesFollowCursor);
 			} else {
-				document.onmousemove = null;
+				document.removeEventListener ("mousemove", eyesFollowCursor);
 				leftEye.setX(coordinates.leftEye.x);
 				leftEye.setY(coordinates.leftEye.y);
 				rightEye.setX(coordinates.rightEye.x);
