@@ -4,6 +4,8 @@
  * @param {Hash} config:
  * 		{Number} x - x position, default 0
  * 		{Number} y - y position, default 0
+ * 		{Number} width - the width of the button, default 0
+ * 		{Number} height - the height of the button, default 0
  * 		{Number} number - number of the button, default undefined
  * 		{Number} bool - yes = true, no = false, default true
  *		{Function} drawScene - function that redraws the scene, default empty.
@@ -16,6 +18,8 @@ MW.Button = MW.GlobalObject.extend(
 		this._super(tag === undefined ? "Button" : tag);
 		if (config.x === undefined) config.x = 0;
 		if (config.y === undefined) config.y = 0;
+		if (config.width === undefined) config.width = 0;
+		if (config.height === undefined) config.height = 0;
 		if (config.bool === undefined) config.bool = true;
 		if (config.drawScene === undefined) config.drawScene = function () {};
 		var button = this,
@@ -23,13 +27,6 @@ MW.Button = MW.GlobalObject.extend(
 			image,
 			imageDown,
 			graphics;
-		
-		
-		group = new Kinetic.Group({
-				x: config.x,
-				y: config.y
-		});
-		group.setScale(0.75, 0.75);
 		
 		/* Add button */
 		if (config.number === undefined) {
@@ -45,6 +42,15 @@ MW.Button = MW.GlobalObject.extend(
 		}
 		graphics = new Kinetic.Image({
 			image: image
+		});
+		
+		group = new Kinetic.Group({
+				x: config.x,
+				y: config.y,
+				scale: {
+					x: config.width / image.width,
+					y: config.height / image.height
+				}
 		});
 		group.add(graphics);
 		group.setListening(false);

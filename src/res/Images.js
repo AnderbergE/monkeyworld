@@ -35,6 +35,9 @@ MW.ImageSources = {
 /** @const */ PITCHER_BOTTOM: "vattenkanna-botten.png",
 
 /** @const */ ELEVATORGAME_BACKGROUND:			"minigames/elevatorgame/background.png",
+/** @const */ ELEVATORGAME_BACKGROUND_CLOUDY:	"minigames/elevatorgame/cloudy.png",
+/** @const */ ELEVATORGAME_BACKGROUND_RAIN_1:	"minigames/elevatorgame/Rain1.png",
+/** @const */ ELEVATORGAME_BACKGROUND_RAIN_2:	"minigames/elevatorgame/Rain2.png",
 
 /** @const */ ELEVATORGAME_TREE_BOLE:			"minigames/elevatorgame/mWorldTreeBole.png",
 /** @const */ ELEVATORGAME_TREE_TOP:			"minigames/elevatorgame/TreeTop.png",
@@ -161,6 +164,7 @@ MW.ImageSources = {
 /** @const */ ELEVATORGAME_AGENT_PANDA_WALK_LEFT:	"minigames/elevatorgame/agent/pandaWalking1.png",
 /** @const */ ELEVATORGAME_AGENT_PANDA_WALK_RIGHT:	"minigames/elevatorgame/agent/pandaWalking2.png",
 /** @const */ ELEVATORGAME_AGENT_PANDA_WAVE:		"minigames/elevatorgame/agent/pandaWaving.png",
+/** @const */ ELEVATORGAME_THOUGHT_BUBBLE:			"minigames/elevatorgame/agent/thoughtbubble.png",
 
 /** @const */ AGENT_MOUSE_SPRITE:      "agents/mouse/body-sprite.png",
 /** @const */ AGENT_MOUSE_FACIALS_SPRITE:      "agents/mouse/facials-sprite.png",

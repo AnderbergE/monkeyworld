@@ -14,8 +14,9 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		var view = this,
 			layer,
 			tree,
-			numpanelLayer,
+			panelLayer,
 			numpanel,
+			boolpanel,
 			elevator,
 			elevatorOrigin,
 			bird,
@@ -24,8 +25,8 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			second = 0.75,
 			coordinates = {
 				treeX: 700, treeY: 10,
-				numpadHeight: 100, numpadYOffset: 30,
-				bgZoomX: -50, bgZoomY: -810, bgZoomScale: {x: 2.25, y: 2.25},
+				numpadHeight: 100, numpadYOffset: -10,
+				bgZoomX: -50, bgZoomY: -790, bgZoomScale: {x: 2.25, y: 2.25},
 				birdStartX: -100, birdStartY: 600,
 				birdShowX: 50, birdShowY: 500,
 				agentStartX: 200, agentStartY: 800,
@@ -33,7 +34,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			};
 		
 		layer = new Kinetic.Layer();
-		numpanelLayer = new Kinetic.Layer();
+		panelLayer = new Kinetic.Layer();
 		
 		/* Add background */
 		layer.add(new Kinetic.Image({
@@ -72,22 +73,56 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		
 		/* Add the panel with buttons in its own layer so it is always shown */
 		numpanel = new MW.Numpanel({
-			height: coordinates.numpadHeight,
+			width: stage.getWidth() - 50,
+			buttonWidth: 86,
+			buttonHeight: 84,
 			nbrOfButtons: elevatorMinigame.getNumberOfBranches(),
-			buttonScale: 0.9,
 			drawScene: function () {
-				numpanelLayer.draw();
+				panelLayer.draw();
 			}
 		});
-		numpanel.setX((stage.getWidth() / 2) - (numpanel.getWidth() / 2));
-		numpanel.setY(stage.getHeight() - numpanel.getHeight() -
+		numpanel.getGroup().setX((stage.getWidth() / 2) -
+			(numpanel.getWidth() / 2));
+		numpanel.getGroup().setY(stage.getHeight() - numpanel.getHeight() +
 			coordinates.numpadYOffset);
-		numpanelLayer.add(numpanel);
+		numpanel.getGroup().setOpacity(0);
+		panelLayer.add(numpanel.getGroup());
+		
+		boolpanel = new MW.Boolpanel({
+			width: stage.getWidth() / 4,
+			buttonWidth: 60,
+			buttonHeight: 84,
+			drawScene: function () {
+				panelLayer.draw();
+			}
+		});
+		boolpanel.getGroup().setX((stage.getWidth() / 2) -
+			(boolpanel.getWidth() / 2));
+		boolpanel.getGroup().setY(stage.getHeight() - boolpanel.getHeight() +
+			coordinates.numpadYOffset);
+		boolpanel.getGroup().setOpacity(0);
+		panelLayer.add(boolpanel.getGroup());
 		
 		/* Add the layers */
 		stage.add(layer);
-		stage.add(numpanelLayer);
+		stage.add(panelLayer);
+		numpanel.getGroup().setListening(false);
+		boolpanel.getGroup().setListening(false);
 		
+		
+		function showPanel (panel, show, callback) {
+			panel.getGroup().setListening(show);
+			if (panel.getGroup().getOpacity() == (show ? 1 : 0)) {
+				if (!(callback === undefined)) callback();
+				return;
+			}
+			panel.getGroup().transitionTo({
+				opacity: show ? 1 : 0,
+				duration: 1,
+				easing: 'ease-out',
+				callback: callback
+			});
+		}
 		
 		/**
 		 * Turn the bird around.
@@ -260,36 +295,35 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		 */
 		function agentPickNumber (number, confidence) {
 			agentPickGroup.removeChildren();
-			var button = new MW.Button({
-				x: coordinates.agentStopX - 150,
-				y: coordinates.agentStopY - 20,
-				number: number
+			var thought = new Kinetic.Image({
+				x: coordinates.agentStopX - 100,
+				y: coordinates.agentStopY - 30,
+				scale: {x: 0.1, y: 0.1},
+				image: MW.Images.ELEVATORGAME_THOUGHT_BUBBLE,
 			});
-			button.getGroup().setScale({x: 0.5, y: 0.5});
-			button.lock(true);
-			agentPickGroup.add(button.getGroup());
-			var yesButton = new MW.Button({
-				x: button.getGroup().getX() - 30,
-				y: button.getGroup().getY() + 50,
-				bool: true,
-				drawScene: function () {
-					layer.draw();
+			agentPickGroup.add(thought);
+			thought.transitionTo({
+				x: thought.getX() - 100,
+				y: thought.getY() - 30,
+				scale: {x: 0.6, y: 0.6},
+				duration: 2,
+				easing: 'elastic-ease-out',
+				callback: function () {
+					var button = new MW.Button({
+						x: thought.getX() +
+							(thought.getWidth() * thought.getScale().x) / 3,
+						y: thought.getY() +
+							(thought.getHeight() * thought.getScale().y) / 3,
+						number: number
+					});
+					button.getGroup().setScale({x: 0.5, y: 0.5});
+					button.lock(true);
+					agentPickGroup.add(button.getGroup());
+					showPanel(boolpanel, true, function () {
+						boolpanel.lock(false);
+					});
 				}
 			});
-			yesButton.getGroup().setScale({x: 0.5, y: 0.5});
-			yesButton.lock(false);
-			agentPickGroup.add(yesButton.getGroup());
-			var noButton = new MW.Button({
-				x: button.getGroup().getX() + 30,
-				y: button.getGroup().getY() + 50,
-				bool: false,
-				drawScene: function () {
-					layer.draw();
-				}
-			});
-			noButton.getGroup().setScale({x: 0.5, y: 0.5});
-			noButton.lock(false);
-			agentPickGroup.add(noButton.getGroup());
 		}
 		
 		
@@ -357,6 +391,10 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			});
 		});
 		
+		view.on(MW.Event.MG_ELEVATOR_START_GAME, function () {
+			showPanel(numpanel, true);
+		});
+		
 		/**
 		 * Introduce the agent to the playing field.
 		 */
@@ -391,16 +429,9 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		 * Agent starts acting.
 		 */
 		view.on(MW.Event.MG_LADDER_START_AGENT, function () {
+			showPanel(numpanel, false);
 			agent.followCursor(false);
-			agent.transitionTo({
-				x: 225,
-				y: 425,
-				duration: second * 1,
-				easing: 'ease-out',
-				callback: function () {
-					view.tell('ROUND_DONE');
-				}
-			});
+			view.tell('ROUND_DONE');
 		});
 		
 		/**
@@ -410,6 +441,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		 * @param {Number} vars.confidence - how sure the agent is
 		 */
 		view.on(MW.Event.MG_ELEVATOR_AGENT_CHOICE, function (vars) {
+			showPanel(numpanel, false);
 			agentPickGroup.setListening(true);
 			agentPickNumber(vars.number, vars.confidence);
 		});
@@ -418,6 +450,9 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		 * Player corrected agent.
 		 */
 		view.on(MW.Event.MG_ELEVATOR_CORRECT_AGENT, function () {
+			showPanel(boolpanel, false, function () {
+				showPanel(numpanel, true);
+			});
 			agentPickGroup.setListening(false);
 			/* Play sound that agent wants help */
 		});
@@ -431,7 +466,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 				tree.getBranches()[i].getNest().celebrate(true);
 			}
 			agent.wave(true);
-			numpanelLayer.transitionTo({
+			panelLayer.transitionTo({
 				opacity: 0,
 				duration: second * 1
 			});

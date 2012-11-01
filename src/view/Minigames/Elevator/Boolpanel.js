@@ -8,13 +8,13 @@
  * 		{Number} width - width of the panel, default 100
  * 		{Number} buttonWidth - width of a button, default 30
  * 		{Number} buttonHeight - height of a button, default 30
- * 		{Number} nbrOfButtons - number of buttons, default 2
  *		{Function} drawScene - function that redraws the scene, default empty
  */
-MW.Numpanel = MW.Buttonpanel.extend(
-/** @lends {MW.Numpanel.prototype} */
+MW.Boolpanel = MW.Buttonpanel.extend(
+/** @lends {MW.Boolpanel.prototype} */
 {
 	init: function (config) {
+		config.nbrOfButtons = 2;
 		this._super(config);
 		
 		/* Add the buttons */
@@ -29,7 +29,7 @@ MW.Numpanel = MW.Buttonpanel.extend(
 					this.config.buttonHeight,
 				width: this.config.buttonWidth,
 				height: this.config.buttonHeight,
-				number: button,
+				bool: (button % 2 == 0) ? false : true,
 				drawScene: config.drawScene
 			}).getGroup());
 		}
