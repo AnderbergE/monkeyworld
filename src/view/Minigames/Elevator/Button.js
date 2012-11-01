@@ -1,5 +1,7 @@
 /**
  * Creates a button.
+ * Note: It would have been nice to have a superclass with two different
+ * ones for number and boolean, but I did not figure out how. Yet.
  * @extends {MW.GlobalObject}
  * @param {Hash} config:
  * 		{Number} x - x position, default 0
@@ -28,7 +30,7 @@ MW.Button = MW.GlobalObject.extend(
 			imageDown,
 			graphics;
 		
-		/* Add button */
+		/* Add button depending on button type */
 		if (config.number === undefined) {
 			image = eval("MW.Images.ELEVATORGAME_BUTTON_" +
 				(config.bool ? "YES" : "NO"));
@@ -48,6 +50,7 @@ MW.Button = MW.GlobalObject.extend(
 				x: config.x,
 				y: config.y,
 				scale: {
+					/* I was unable to set image size, so set scale instead */
 					x: config.width / image.width,
 					y: config.height / image.height
 				}

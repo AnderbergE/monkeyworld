@@ -52,7 +52,7 @@ MW.Bird = function (config) {
 	
 	/**
 	 * @public
-	 * @returns {Number} The width of the bird tree nest.
+	 * @returns {Number} The width of the bird.
 	 */
 	group.getWidth = function () {
 		return bird.getWidth();
@@ -60,7 +60,7 @@ MW.Bird = function (config) {
 	
 	/**
 	 * @public
-	 * @returns {Number} The height of the bird tree nest.
+	 * @returns {Number} The height of the bird.
 	 */
 	group.getHeight = function () {
 		return bird.getHeight();

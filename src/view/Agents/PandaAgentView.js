@@ -4,6 +4,7 @@
  * @param {Hash} config:
  * 		{Number} x - x position, default 0
  * 		{Number} y - y position, default 0
+ *		{Function} drawScene - function that redraws the scene, default empty.
  */
 MW.PandaAgentView = MW.GlobalObject.extend(
 {

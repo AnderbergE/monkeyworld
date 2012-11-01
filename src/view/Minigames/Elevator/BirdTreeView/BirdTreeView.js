@@ -88,6 +88,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		numpanel.getGroup().setOpacity(0);
 		panelLayer.add(numpanel.getGroup());
 		
+		/* Add the panel with the yes and no buttons */
 		boolpanel = new MW.Boolpanel({
 			width: stage.getWidth() / 4,
 			buttonWidth: 60,
@@ -110,10 +111,22 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		boolpanel.getGroup().setListening(false);
 		
 		
+		/**
+		 * Show/hide a panel.
+		 * @private
+		 * @param {MW.Buttonpanel} panel - the panel to show/hide
+		 * @param {Boolean} show - true to show, false to hide
+		 * @param {Function} callback - function to call when done
+		 */
 		function showPanel (panel, show, callback) {
+			/* Never listen to events when panel is not shown */
 			panel.getGroup().setListening(show);
+			/* If opacity is already correct, no need to run transition */
 			if (panel.getGroup().getOpacity() == (show ? 1 : 0)) {
-				if (!(callback === undefined)) callback();
+				/* Don't forget to call this anyway */
+				if (!(callback === undefined)) {
+					callback();
+				}
 				return;
 			}
 			panel.getGroup().transitionTo({
@@ -232,21 +245,29 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 					duration: second * 1,
 					easing: 'ease-out',
 					callback: function () {
-						/* Did our bird get to the correct nest? */
 						var animationTime = 2; 
 						if (isCorrect) {
+							/* The bird found home, celebrate! */
 							elevator.removePassenger(bird);
 							nest.addChick();
 							nest.celebrate(true);
+							if (!(agent === undefined)) {
+								agent.wave(true);
+							}
 							setTimeout(function () {
 								nest.celebrate(false);
+								if (!(agent === undefined)) {
+									agent.wave(false);
+								}
 							}, second * animationTime * 1000);
 						} else {
+							/* The bird did not find home, scare away! */
 							nest.scare(true);
 							setTimeout(function () {
 								nest.scare(false);
 							}, second * animationTime * 1000);
 						}
+						/* This is a placeholder so the animations will run */
 						layer.transitionTo({
 							x: layer.getX(),
 							duration: second * animationTime,
