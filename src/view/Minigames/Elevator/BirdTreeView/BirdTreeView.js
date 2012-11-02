@@ -129,7 +129,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			height: stage.getHeight()
 		}));
 		introGroup.add(new Kinetic.Image({
-			image: MW.Images.ELEVATORGAME_BACKGROUND_RAIN_1,
+			image: MW.Images.ELEVATORGAME_BACKGROUND_RAIN,
 			width: stage.getWidth(),
 			height: stage.getHeight()
 		}));
