@@ -73,7 +73,7 @@ MW.MinigameView = MW.ViewModule.extend(
 			        });
 			        faceImageObj.hideBody();*/
 					view.on(MW.Event.INTRODUCE_MODE, function (callback) {
-						MW.Sound.play(MW.Sounds.SYSTEM_FIRST_YOU_PLAY);
+						//MW.Sound.play(MW.Sounds.SYSTEM_FIRST_YOU_PLAY);
 						setTimeout(callback, 2000);
 					});
 				} else if (minigame.modeIsAgentSee()) {

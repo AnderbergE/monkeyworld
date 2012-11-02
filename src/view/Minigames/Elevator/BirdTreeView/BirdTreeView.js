@@ -115,9 +115,9 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		var introNest = tree.getBranches()[introBranch].getNest();
 		var introBird = new MW.Bird({
 			x: tree.getX() + tree.getBranches()[introBranch].getX() +
-				introNest.getX() + introNest.getWidth(),
+				introNest.getX() + introNest.getWidth() - 20,
 			y: tree.getY() + tree.getBranches()[introBranch].getY() +
-				introNest.getY() + 12,
+				introNest.getY() + 15,
 			scale: {x: 0.1, y: 0.1},
 			number: introNest.getNumber()
 		});
@@ -288,7 +288,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 					duration: second * 1,
 					easing: 'ease-out',
 					callback: function () {
-						var animationTime = 2; 
+						var animationTime = second * 2; 
 						if (isCorrect) {
 							/* The bird found home, celebrate! */
 							elevator.removePassenger(bird);
@@ -302,18 +302,18 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 								if (!(agent === undefined)) {
 									agent.wave(false);
 								}
-							}, second * animationTime * 1000);
+							}, animationTime * 1000);
 						} else {
 							/* The bird did not find home, scare away! */
 							nest.scare(true);
 							setTimeout(function () {
 								nest.scare(false);
-							}, second * animationTime * 1000);
+							}, animationTime * 1000);
 						}
-						/* This is a placeholder so the animations will run */
+						/* This will draw the celebration correctly */
 						layer.transitionTo({
 							x: layer.getX(),
-							duration: second * animationTime,
+							duration: animationTime,
 							callback: callback
 						});
 					}
@@ -506,7 +506,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			agent.transitionTo({
 				x: coordinates.agentStopX,
 				y: coordinates.agentStopY,
-				duration: second * 1,
+				duration: second * 3,
 				easing: 'ease-out',
 				callback: function () {
 					agent.wave(true);
