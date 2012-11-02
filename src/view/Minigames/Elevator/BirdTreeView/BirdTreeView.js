@@ -27,7 +27,6 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			coordinates = {
 				treeX: 700, treeY: 10,
 				numpadHeight: 100, numpadYOffset: -10,
-				bgStartX: -2500, bgStartY: -200, bgStartScale: {x: 5, y: 5}, 
 				bgZoomX: -50, bgZoomY: -790, bgZoomScale: {x: 2.25, y: 2.25},
 				birdStartX: -100, birdStartY: 600,
 				birdShowX: 50, birdShowY: 500,
@@ -35,11 +34,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 				agentStopX: 290, agentStopY: 400,
 			};
 		
-		layer = new Kinetic.Layer({
-			x: coordinates.bgStartX,
-			y: coordinates.bgStartY,
-			scale: coordinates.bgStartScale
-		});
+		layer = new Kinetic.Layer();
 		panelLayer = new Kinetic.Layer();
 		
 		/* Add background */
@@ -108,38 +103,9 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		boolpanel.getGroup().setOpacity(0);
 		panelLayer.add(boolpanel.getGroup());
 		
-		/* */
+		/* Add intro group that will be used during intro animation */
 		introGroup = new Kinetic.Group();
 		layer.add(introGroup);
-		var introBranch = tree.getBranches().length - 2;
-		var introNest = tree.getBranches()[introBranch].getNest();
-		var introBird = new MW.Bird({
-			x: tree.getX() + tree.getBranches()[introBranch].getX() +
-				introNest.getX() + introNest.getWidth() - 20,
-			y: tree.getY() + tree.getBranches()[introBranch].getY() +
-				introNest.getY() + 15,
-			scale: {x: 0.1, y: 0.1},
-			number: introNest.getNumber()
-		});
-		introGroup.add(introBird);
-		introBird.turn();
-		introGroup.add(new Kinetic.Image({
-			image: MW.Images.ELEVATORGAME_BACKGROUND_CLOUDY,
-			width: stage.getWidth(),
-			height: stage.getHeight()
-		}));
-		introGroup.add(new Kinetic.Image({
-			image: MW.Images.ELEVATORGAME_BACKGROUND_RAIN,
-			width: stage.getWidth(),
-			height: stage.getHeight()
-		}));
-		var introAnimation = setInterval(function () {
-			var image = introGroup.getChildren()
-				[introGroup.getChildren().length - 1];
-			MW.SetImage(image, MW.Images.ELEVATORGAME_BACKGROUND_RAIN,
-				Math.random()*30, Math.random()*30);
-			layer.draw();
-		}, 50);
 		
 		/* Add the layers */
 		stage.add(layer);
@@ -330,7 +296,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 				y: targetFloor == 0 ? elevatorOrigin :
 					tree.getY() + tree.getBranches()[nextFloor-1].getY() +
 					tree.getBranches()[nextFloor-1].getNest().getY() + 12,
-				duration: second * 1,
+				duration: second * 1.5,
 				easing: 'ease-in-out',
 				callback: function () {
 					if (nextFloor < targetFloor) {
@@ -453,34 +419,94 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		 * Start the game, play introduction
 		 */
 		view.on(MW.Event.MG_ELEVATOR_START_GAME, function () {
-			introNest.scare(true);
-			introBird.transitionTo({
-				x: introBird.getX() - 300,
-				y: introBird.getY() + 50,
-				rotation: 20,
-				duration: second * 4,
-				callback: function () {
-					introGroup.transitionTo({
-						opacity: 0,
-						duration: second * 2,
-						callback: function () {
-							introNest.scare(false);
-							clearInterval(introAnimation);
-							layer.remove(introGroup);
-						}
-					});
-					layer.transitionTo({
-						x: 0,
-						y: 0,
-						scale: {x: 1, y: 1},
-						duration: second * 4,
-						callback: function () {
-							showPanel(numpanel, true);
-							view.tell('ROUND_DONE');
-						}
-					});
-				}
+			var i;
+			for (i = 0; i < tree.getBranches().length - 1; i++) {
+				tree.getBranches()[i].getNest().addChick();
+				tree.getBranches()[i].getNest().celebrate(true);
+			}
+			var introClouds = new Kinetic.Image({
+				image: MW.Images.ELEVATORGAME_BACKGROUND_CLOUDY,
+				width: stage.getWidth(),
+				height: stage.getHeight(),
+				opacity: 0
 			});
+			introGroup.add(introClouds);
+			var introRain = new Kinetic.Image({
+				image: MW.Images.ELEVATORGAME_BACKGROUND_RAIN,
+				width: stage.getWidth(),
+				height: stage.getHeight(),
+				opacity: 0
+			});
+			introGroup.add(introRain);
+			var introAnimation = setInterval(function () {
+				introRain.setX(Math.random()*30);
+				introRain.setY(Math.random()*30);
+				layer.draw();
+			}, 50);
+			
+			setTimeout(function () {
+				introClouds.transitionTo({
+					opacity: 1,
+					duration: second * 1,
+					callback: function () {
+						for (i = 0; i < tree.getBranches().length - 1; i++) {
+							tree.getBranches()[i].getNest().celebrate(false);
+						}
+					}
+				});
+				introRain.transitionTo({
+					opacity: 1,
+					duration: second * 2,
+					callback: function () {
+						var animationTime = 4;
+						for (i = 0; i < tree.getBranches().length - 1; i++) {
+							tree.getBranches()[i].getNest().removeChicks();
+							var introNest = tree.getBranches()[i].getNest();
+							var introBird = new MW.Bird({
+								x: tree.getX() +
+									tree.getBranches()[i].getX() +
+									introNest.getX() +
+									(introNest.getDirection() ?
+										introNest.getWidth() - 20 : 20),
+								y: tree.getY() +
+									tree.getBranches()[i].getY() +
+									introNest.getY() + 15,
+								scale: {x: 0.1, y: 0.1},
+								number: introNest.getNumber()
+							});
+							introGroup.add(introBird);
+							introBird.setZIndex(0);
+							introNest.getDirection() ? introBird.turn() : null;
+							introBird.transitionTo({
+								x: -50,
+								y: stage.getHeight() - 100,
+								rotation: Math.random() * 40 + 5,
+								duration: second * animationTime
+							});
+							introNest.scare(true);
+						}
+						/* Start this animation after the birds have fallen */
+						setTimeout(function () {
+							introGroup.transitionTo({
+								opacity: 0,
+								duration: second * 2,
+								callback: function () {
+									for (i = 0; i < tree.getBranches().length - 1; i++) {
+										tree.getBranches()[i].getNest().scare(false);
+									}
+									clearInterval(introAnimation);
+									layer.remove(introGroup);
+									/* Short break */
+									setTimeout(function () {
+										showPanel(numpanel, true);
+										view.tell('ROUND_DONE');
+									}, second * 1 * 1000);
+								}
+							});
+						}, second * animationTime * 1000);
+					}
+				});
+			}, second * 2 * 1000);
 		});
 		
 		/**

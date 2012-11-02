@@ -98,8 +98,16 @@ MW.BirdTreeNest = function (config) {
 	* @returns {Number} The number of the bird tree nest.
 	*/
 	group.getNumber = function () {
-		/* This is not the exact height, but approximately correct */
 		return config.number;
+	};
+	
+	/**
+	* @public
+	* @returns {Number} The direction of the bird tree nest.
+	*	true if facing right, false if left.
+	*/
+	group.getDirection = function () {
+		return config.facingRight;
 	};
 	
 	/**
@@ -128,6 +136,14 @@ MW.BirdTreeNest = function (config) {
 			/* it looks better with this chick behind the other one */
 			chickGroup.getChildren()[0].moveUp();
 		} /* Do not add more birds than two. */
+	}
+	
+	/**
+	 * Remove all chicks from the nest.
+	 * @public
+	 */
+	group.removeChicks = function () {
+		chickGroup.removeChildren();
 	}
 	
 	/**
