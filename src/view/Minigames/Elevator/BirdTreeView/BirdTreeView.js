@@ -240,11 +240,14 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			/* Left is -1, right is 1 */
 			var direction = x > bird.getX() ? 1 : -1;
 			x = x + (direction > 0 ? -bird.getWidth() * bird.getScale().x :
-				nest.getWidth())
+				nest.getWidth() - 10)
 			turnBird(direction, function () {
 				bird.transitionTo({
 					x: x - (direction < 0 ?
 						(bird.getWidth() * bird.getScale().x) : 0),
+					y: - elevator.getY() + tree.getY() +
+						tree.getBranches()[branch - 1].getY() +
+						nest.getY() + 15,
 					duration: second * 1,
 					easing: 'ease-out',
 					callback: function () {
@@ -295,8 +298,8 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			elevator.transitionTo({
 				y: targetFloor == 0 ? elevatorOrigin :
 					tree.getY() + tree.getBranches()[nextFloor-1].getY() +
-					tree.getBranches()[nextFloor-1].getNest().getY() + 12,
-				duration: second * 1.5,
+					tree.getBranches()[nextFloor-1].getNest().getY() + 20,
+				duration: second * 1,
 				easing: 'ease-in-out',
 				callback: function () {
 					if (nextFloor < targetFloor) {
@@ -444,7 +447,9 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 				layer.draw();
 			}, 50);
 			
+			/* Take some time before the storm starts */
 			setTimeout(function () {
+				/* Bring in clouds, birds stop being happy */
 				introClouds.transitionTo({
 					opacity: 1,
 					duration: second * 1,
@@ -454,6 +459,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 						}
 					}
 				});
+				/* Bring in rain, after birds are blown out of nest */
 				introRain.transitionTo({
 					opacity: 1,
 					duration: second * 2,
