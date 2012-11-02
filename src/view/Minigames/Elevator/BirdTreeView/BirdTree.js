@@ -44,10 +44,19 @@ MW.BirdTree = function (config) {
 	
 	/**
 	* @public
-	* @returns {Number}
+	* @returns {Number} - the number of branches in the tree
 	*/
-	group.getBranches = function () {
-		return group.getChildren();
+	group.getNbrOfBranches = function () {
+		return config.nbrOfBranches;
+	};
+	
+	/**
+	* @public
+	* @param {Number} number - the branch number
+	* @returns {Kinetic.Group} - the branch is returned
+	*/
+	group.getBranch = function (number) {
+		return group.getChildren()[config.nbrOfBranches - number];
 	};
 	
 	
@@ -58,8 +67,7 @@ MW.BirdTree = function (config) {
  * Builds a tree.
  * @private
  * @param {Hash} config:
- *		{Number} x - x position, default 0
- *		{Number} y - y position, default 0
+ *		{Number} offsetFromTop - the offset from the top of the tree, default 0.
  *		{Number} height - height that the branches will take up, default 500.
  *		{Number} branches - branches on the tree, default 5.
  * @returns {Kinetic.Group} The group with all the branches.
@@ -80,7 +88,7 @@ function buildTree (group, config) {
 	});
 	/* Branch that goes left is put to the left. */
 	branch.setX(-branch.getWidth());
-	branchList.push(branch);
+	group.add(branch);
 	
 	/* Create the branches. */
 	for (var i = 1; i < config.branches; i++) {
@@ -90,14 +98,7 @@ function buildTree (group, config) {
 			isRight: i % 2 != 0 ? true : false 
 		});
 		branch.setX(i % 2 != 0 ? 0 : -branch.getWidth());
-		branchList.push(branch);
-	}
-	
-	/* Put the branches in branch number order. */
-	for (var i = branchList.length - 1; i >= 0; i--) {
-		group.add(branchList[i]);
-		/* set Z so branches does not cover each other */
-		branchList[i].setZIndex(0);
+		group.add(branch);
 	}
 	
 	return group;

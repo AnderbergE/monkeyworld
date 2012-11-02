@@ -233,9 +233,9 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		 * @param {Function} callback - function to call when done
 		 */
 		function moveBirdToNest (branch, isCorrect, callback) {
-			var nest = tree.getBranches()[branch - 1].getNest();
+			var nest = tree.getBranch(branch).getNest();
 			var x = - elevator.getX() + (tree.getX() +
-					tree.getBranches()[branch - 1].getX() +
+					tree.getBranch(branch).getX() +
 					nest.getX());
 			/* Left is -1, right is 1 */
 			var direction = x > bird.getX() ? 1 : -1;
@@ -246,7 +246,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 					x: x - (direction < 0 ?
 						(bird.getWidth() * bird.getScale().x) : 0),
 					y: - elevator.getY() + tree.getY() +
-						tree.getBranches()[branch - 1].getY() +
+						tree.getBranch(branch).getY() +
 						nest.getY() + 15,
 					duration: second * 1,
 					easing: 'ease-out',
@@ -297,8 +297,8 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			 * No stops when going to bottom. */
 			elevator.transitionTo({
 				y: targetFloor == 0 ? elevatorOrigin :
-					tree.getY() + tree.getBranches()[nextFloor-1].getY() +
-					tree.getBranches()[nextFloor-1].getNest().getY() + 20,
+					tree.getY() + tree.getBranch(nextFloor).getY() +
+					tree.getBranch(nextFloor).getNest().getY() + 20,
 				duration: second * 1,
 				easing: 'ease-in-out',
 				callback: function () {
@@ -423,9 +423,9 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		 */
 		view.on(MW.Event.MG_ELEVATOR_START_GAME, function () {
 			var i;
-			for (i = 0; i < tree.getBranches().length - 1; i++) {
-				tree.getBranches()[i].getNest().addChick();
-				tree.getBranches()[i].getNest().celebrate(true);
+			for (i = 1; i <= tree.getNbrOfBranches(); i++) {
+				tree.getBranch(i).getNest().addChick();
+				tree.getBranch(i).getNest().celebrate(true);
 			}
 			var introClouds = new Kinetic.Image({
 				image: MW.Images.ELEVATORGAME_BACKGROUND_CLOUDY,
@@ -454,8 +454,8 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 					opacity: 1,
 					duration: second * 1,
 					callback: function () {
-						for (i = 0; i < tree.getBranches().length - 1; i++) {
-							tree.getBranches()[i].getNest().celebrate(false);
+						for (i = 1; i <= tree.getNbrOfBranches(); i++) {
+							tree.getBranch(i).getNest().celebrate(false);
 						}
 					}
 				});
@@ -465,17 +465,17 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 					duration: second * 2,
 					callback: function () {
 						var animationTime = 4;
-						for (i = 0; i < tree.getBranches().length - 1; i++) {
-							tree.getBranches()[i].getNest().removeChicks();
-							var introNest = tree.getBranches()[i].getNest();
+						for (i = 1; i <= tree.getNbrOfBranches(); i++) {
+							tree.getBranch(i).getNest().removeChicks();
+							var introNest = tree.getBranch(i).getNest();
 							var introBird = new MW.Bird({
 								x: tree.getX() +
-									tree.getBranches()[i].getX() +
+									tree.getBranch(i).getX() +
 									introNest.getX() +
 									(introNest.getDirection() ?
 										introNest.getWidth() - 20 : 20),
 								y: tree.getY() +
-									tree.getBranches()[i].getY() +
+									tree.getBranch(i).getY() +
 									introNest.getY() + 15,
 								scale: {x: 0.1, y: 0.1},
 								number: introNest.getNumber()
@@ -497,8 +497,8 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 								opacity: 0,
 								duration: second * 2,
 								callback: function () {
-									for (i = 0; i < tree.getBranches().length - 1; i++) {
-										tree.getBranches()[i].getNest().scare(false);
+									for (i = 1; i <= tree.getNbrOfBranches(); i++) {
+										tree.getBranch(i).getNest().scare(false);
 									}
 									clearInterval(introAnimation);
 									layer.remove(introGroup);
@@ -581,9 +581,9 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		 * The game finished!
 		 */
 		view.on(MW.Event.MG_LADDER_CHEER, function () {
-			var i = 0;
-			for (i; i < tree.getBranches().length - 1; i++) {
-				tree.getBranches()[i].getNest().celebrate(true);
+			var i;
+			for (i = 1; i <= tree.getNbrOfBranches(); i++) {
+				tree.getBranch(i).getNest().celebrate(true);
 			}
 			agent.wave(true);
 			panelLayer.transitionTo({
