@@ -136,14 +136,8 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		var introAnimation = setInterval(function () {
 			var image = introGroup.getChildren()
 				[introGroup.getChildren().length - 1];
-			if (image.getImage().src ==
-				MW.Images.ELEVATORGAME_BACKGROUND_RAIN_1.src) {
-				MW.SetImage(image, MW.Images.ELEVATORGAME_BACKGROUND_RAIN_2,
-					Math.random()*30, Math.random()*30);
-			} else {
-				MW.SetImage(image, MW.Images.ELEVATORGAME_BACKGROUND_RAIN_1,
-					Math.random()*30, Math.random()*30);
-			}
+			MW.SetImage(image, MW.Images.ELEVATORGAME_BACKGROUND_RAIN,
+				Math.random()*30, Math.random()*30);
 			layer.draw();
 		}, 50);
 		

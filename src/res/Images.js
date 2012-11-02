@@ -36,8 +36,7 @@ MW.ImageSources = {
 
 /** @const */ ELEVATORGAME_BACKGROUND:			"minigames/elevatorgame/background.png",
 /** @const */ ELEVATORGAME_BACKGROUND_CLOUDY:	"minigames/elevatorgame/cloudy.png",
-/** @const */ ELEVATORGAME_BACKGROUND_RAIN_1:	"minigames/elevatorgame/Rain1.png",
-/** @const */ ELEVATORGAME_BACKGROUND_RAIN_2:	"minigames/elevatorgame/Rain2.png",
+/** @const */ ELEVATORGAME_BACKGROUND_RAIN:		"minigames/elevatorgame/Rain1.png",
 
 /** @const */ ELEVATORGAME_TREE_BOLE:			"minigames/elevatorgame/mWorldTreeBole.png",
 /** @const */ ELEVATORGAME_TREE_TOP:			"minigames/elevatorgame/TreeTop.png",
