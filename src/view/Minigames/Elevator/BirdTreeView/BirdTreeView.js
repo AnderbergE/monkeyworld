@@ -89,7 +89,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		
 		/* Add the panel with the yes and no buttons */
 		boolpanel = new MW.Boolpanel({
-			width: stage.getWidth() / 4,
+			width: 180,
 			buttonWidth: 60,
 			buttonHeight: 84,
 			drawScene: function () {
@@ -443,7 +443,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			introGroup.add(introRain);
 			var introAnimation = setInterval(function () {
 				introRain.setX(Math.random()*30);
-				introRain.setY(Math.random()*30);
+				introRain.setY(-50 + Math.random()*50);
 				layer.draw();
 			}, 50);
 			
