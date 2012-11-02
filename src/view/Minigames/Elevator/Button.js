@@ -6,8 +6,8 @@
  * @param {Hash} config:
  * 		{Number} x - x position, default 0
  * 		{Number} y - y position, default 0
- * 		{Number} width - the width of the button, default 0
- * 		{Number} height - the height of the button, default 0
+ * 		{Number} width - the width of the button, default 80
+ * 		{Number} height - the height of the button, default 80
  * 		{Number} number - number of the button, default undefined
  * 		{Number} bool - yes = true, no = false, default true
  *		{Function} drawScene - function that redraws the scene, default empty.
@@ -20,8 +20,8 @@ MW.Button = MW.GlobalObject.extend(
 		this._super(tag === undefined ? "Button" : tag);
 		if (config.x === undefined) config.x = 0;
 		if (config.y === undefined) config.y = 0;
-		if (config.width === undefined) config.width = 0;
-		if (config.height === undefined) config.height = 0;
+		if (config.width === undefined) config.width = 80;
+		if (config.height === undefined) config.height = 80;
 		if (config.bool === undefined) config.bool = true;
 		if (config.drawScene === undefined) config.drawScene = function () {};
 		var button = this,

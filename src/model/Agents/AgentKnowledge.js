@@ -21,6 +21,7 @@ MW.AgentKnowledge = MW.GlobalObject.extend(
 		 * @param {Number} maxNumber - the biggest number.
 		 */
 		function fillArray (targetNumber, maxNumber) {
+			guessArray = new Array();
 			var i = targetNumber - biggestMiss;
 			if (i < 1) {
 				i = 1;
@@ -66,23 +67,19 @@ MW.AgentKnowledge = MW.GlobalObject.extend(
 		 * @return {Number} {Hash}.confidence - how sure the agent is
 		 */
 		this.pickNumber = function (targetNumber, maxNumber) {
-			if (knowledge[targetNumber] === undefined) {
-				if (guessArray.length == 0) {
+			var guess = confidence = 1;
+			if (knowledge[targetNumber] === undefined ||
+				knowledge[targetNumber].length == 0) {
+				if (guessArray.indexOf(targetNumber) < 0) {
 					fillArray(targetNumber, maxNumber);
 				}
-				var guess = Math.floor(Math.random() * guessArray.length);
+				confidence = 1 / guessArray.length;
+				guess = Math.floor(Math.random() * guessArray.length);
 				/* splice returns an array of removed elements, we remove one */
 				guess = guessArray.splice(guess, 1)[0];
-				/* if guess was correct, reset guess array */
-				if (guess == targetNumber) {
-					guessArray = new Array();
-				}
-				return {
-					guess: guess,
-					confidence: 1 / guessArray.length
-				};
 			} else {
-				var guess, bestSoFar = 0, total = 0;
+				var bestSoFar = total = 0;
+				/* calculate which one the player has chosen most often */
 				for (var i in knowledge[targetNumber]) {
 					if (knowledge[targetNumber][i] > bestSoFar) {
 						guess = i;
@@ -90,23 +87,28 @@ MW.AgentKnowledge = MW.GlobalObject.extend(
 					}
 					total += knowledge[targetNumber][i];
 				}
-				if (targetNumber != guess) {
-					/* The agent learns when it picks the wrong number. */
-					knowledge[targetNumber][guess]--;
-				} else if (Math.random() > 0.80) {
+				if (Math.random() > 0.8) {
 					if (guess == maxNumber) {
 						guess--;
 					} else if (guess == 0) {
 						guess++;
 					} else {
-						guess += Math.random() > 0.50 ? 1 : -1;
+						if (Math.random() > 0.50) {
+							guess++;
+						} else {
+							guess--;
+						}
 					}
+				} else if (targetNumber != guess) {
+					/* The agent learns when it picks the wrong number. */
+					knowledge[targetNumber][guess]--;
 				}
-				return {
-					guess: guess,
-					confidence: bestSoFar / total
-				};
+				confidence = bestSoFar / total;
 			}
+			return {
+				guess: guess,
+				confidence: confidence
+			};
 		}
 	}
 });
