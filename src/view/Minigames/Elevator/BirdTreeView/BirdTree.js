@@ -96,6 +96,8 @@ function buildTree (group, config) {
 	/* Put the branches in branch number order. */
 	for (var i = branchList.length - 1; i >= 0; i--) {
 		group.add(branchList[i]);
+		/* set Z so branches does not cover each other */
+		branchList[i].setZIndex(0);
 	}
 	
 	return group;
