@@ -93,10 +93,10 @@ MW.AgentKnowledge = MW.GlobalObject.extend(
 				if (targetNumber != guess) {
 					/* The agent learns when it picks the wrong number. */
 					knowledge[targetNumber][guess]--;
-				} else if (Math.random() > 0.90) {
-					if (targetNumber == maxNumber) {
+				} else if (Math.random() > 0.80) {
+					if (guess == maxNumber) {
 						guess--;
-					} else if (targetNumber == 0) {
+					} else if (guess == 0) {
 						guess++;
 					} else {
 						guess += Math.random() > 0.50 ? 1 : -1;
