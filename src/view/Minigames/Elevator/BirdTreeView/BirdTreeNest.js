@@ -94,6 +94,15 @@ MW.BirdTreeNest = function (config) {
 	};
 	
 	/**
+	* @public
+	* @returns {Number} The number of the bird tree nest.
+	*/
+	group.getNumber = function () {
+		/* This is not the exact height, but approximately correct */
+		return config.number;
+	};
+	
+	/**
 	 * Add a chick beside the mother in the nest.
 	 * @public
 	 */

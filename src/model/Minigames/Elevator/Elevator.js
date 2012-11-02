@@ -115,7 +115,6 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 		 */
 		this.addStart(function () {
 			elevator.tell(MW.Event.MG_ELEVATOR_START_GAME);
-			nextRound();
 		});
 
 		/**

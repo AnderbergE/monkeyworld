@@ -13,6 +13,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		this._super(elevatorMinigame, stage, agentView, "BirdTreeView");
 		var view = this,
 			layer,
+			introGroup,
 			tree,
 			panelLayer,
 			numpanel,
@@ -22,10 +23,11 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			bird,
 			agent,
 			agentPickGroup,
-			second = 0.75,
+			second = 1,
 			coordinates = {
 				treeX: 700, treeY: 10,
 				numpadHeight: 100, numpadYOffset: -10,
+				bgStartX: -2500, bgStartY: -200, bgStartScale: {x: 5, y: 5}, 
 				bgZoomX: -50, bgZoomY: -790, bgZoomScale: {x: 2.25, y: 2.25},
 				birdStartX: -100, birdStartY: 600,
 				birdShowX: 50, birdShowY: 500,
@@ -33,13 +35,15 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 				agentStopX: 290, agentStopY: 400,
 			};
 		
-		layer = new Kinetic.Layer();
+		layer = new Kinetic.Layer({
+			x: coordinates.bgStartX,
+			y: coordinates.bgStartY,
+			scale: coordinates.bgStartScale
+		});
 		panelLayer = new Kinetic.Layer();
 		
 		/* Add background */
 		layer.add(new Kinetic.Image({
-			x: 0,
-			y: 0,
 			image: MW.Images.ELEVATORGAME_BACKGROUND,
 			width: stage.getWidth(),
 			height: stage.getHeight()
@@ -104,6 +108,45 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		boolpanel.getGroup().setOpacity(0);
 		panelLayer.add(boolpanel.getGroup());
 		
+		/* */
+		introGroup = new Kinetic.Group();
+		layer.add(introGroup);
+		var introBranch = tree.getBranches().length - 2;
+		var introNest = tree.getBranches()[introBranch].getNest();
+		var introBird = new MW.Bird({
+			x: tree.getX() + tree.getBranches()[introBranch].getX() +
+				introNest.getX() + introNest.getWidth(),
+			y: tree.getY() + tree.getBranches()[introBranch].getY() +
+				introNest.getY() + 12,
+			scale: {x: 0.1, y: 0.1},
+			number: introNest.getNumber()
+		});
+		introGroup.add(introBird);
+		introBird.turn();
+		introGroup.add(new Kinetic.Image({
+			image: MW.Images.ELEVATORGAME_BACKGROUND_CLOUDY,
+			width: stage.getWidth(),
+			height: stage.getHeight()
+		}));
+		introGroup.add(new Kinetic.Image({
+			image: MW.Images.ELEVATORGAME_BACKGROUND_RAIN_1,
+			width: stage.getWidth(),
+			height: stage.getHeight()
+		}));
+		var introAnimation = setInterval(function () {
+			var image = introGroup.getChildren()
+				[introGroup.getChildren().length - 1];
+			if (image.getImage().src ==
+				MW.Images.ELEVATORGAME_BACKGROUND_RAIN_1.src) {
+				MW.SetImage(image, MW.Images.ELEVATORGAME_BACKGROUND_RAIN_2,
+					Math.random()*30, Math.random()*30);
+			} else {
+				MW.SetImage(image, MW.Images.ELEVATORGAME_BACKGROUND_RAIN_1,
+					Math.random()*30, Math.random()*30);
+			}
+			layer.draw();
+		}, 50);
+		
 		/* Add the layers */
 		stage.add(layer);
 		stage.add(panelLayer);
@@ -131,7 +174,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			}
 			panel.getGroup().transitionTo({
 				opacity: show ? 1 : 0,
-				duration: 1,
+				duration: second * 1,
 				easing: 'ease-out',
 				callback: callback
 			});
@@ -162,7 +205,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 				x: coordinates.bgZoomX,
 				y: coordinates.bgZoomY,
 				scale: coordinates.bgZoomScale,
-				duration: second * 1
+				duration: second * 2
 			});
 			
 			var x = - elevator.getX() + coordinates.birdShowX;
@@ -327,7 +370,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 				x: thought.getX() - 100,
 				y: thought.getY() - 30,
 				scale: {x: 0.6, y: 0.6},
-				duration: 2,
+				duration: second * 2,
 				easing: 'elastic-ease-out',
 				callback: function () {
 					var button = new MW.Button({
@@ -412,8 +455,38 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			});
 		});
 		
+		/**
+		 * Start the game, play introduction
+		 */
 		view.on(MW.Event.MG_ELEVATOR_START_GAME, function () {
-			showPanel(numpanel, true);
+			introNest.scare(true);
+			introBird.transitionTo({
+				x: introBird.getX() - 300,
+				y: introBird.getY() + 50,
+				rotation: 20,
+				duration: second * 4,
+				callback: function () {
+					introGroup.transitionTo({
+						opacity: 0,
+						duration: second * 2,
+						callback: function () {
+							introNest.scare(false);
+							clearInterval(introAnimation);
+							layer.remove(introGroup);
+						}
+					});
+					layer.transitionTo({
+						x: 0,
+						y: 0,
+						scale: {x: 1, y: 1},
+						duration: second * 4,
+						callback: function () {
+							showPanel(numpanel, true);
+							view.tell('ROUND_DONE');
+						}
+					});
+				}
+			});
 		});
 		
 		/**
