@@ -1,4 +1,0 @@
-MW.MonkeyAgent = function () {
-
-};
-

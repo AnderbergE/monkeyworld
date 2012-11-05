@@ -95,9 +95,9 @@ MW.Button = MW.GlobalObject.extend(
 			MW.SetImage(graphics, image, 0, 0);
 			config.drawScene();
 			if (config.number === undefined) {
-				button.tell('BUTTON_PUSHED', { bool: config.bool });
+				button.tell(MW.Event.BUTTON_PUSH_BOOL, config.bool);
 			} else {
-				button.tell('BUTTON_PUSHED', { number: config.number });
+				button.tell(MW.Event.BUTTON_PUSH_NUMBER, config.number);
 			}
 		});
 	
@@ -105,7 +105,7 @@ MW.Button = MW.GlobalObject.extend(
 		 * @public
 		 * @param {Boolean} lock - true if the buttons should not be pushable.
 		 */
-		button.on(MW.Event.MG_ELEVATOR_LOCK, function (lock) {
+		button.on(MW.Event.LOCK_BUTTONS, function (lock) {
 			button.lock(lock);
 		});
 	}

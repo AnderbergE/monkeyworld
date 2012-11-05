@@ -183,7 +183,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 						turnBird(1, function () {
 							bird.showNumber(true);
 						});
-						view.tell(MW.Event.MG_ELEVATOR_TARGET_IS_PLACED);
+						view.tell(MW.Event.TARGET_IS_PLACED);
 					}
 				});
 			});
@@ -359,7 +359,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		 * @param {Hash} vars
 		 * @param {Number} vars.targetNumber - the target of the bird
 		 */
-		view.on(MW.Event.MG_LADDER_PLACE_TARGET, function (vars) {
+		view.on(MW.Event.PLACE_TARGET, function (vars) {
 			bird = new MW.Bird({
 				x: - elevator.getY() + coordinates.birdStartX,
 				y: - elevator.getY() + coordinates.birdStartY,
@@ -378,7 +378,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		 * @param {Boolean} vars.tooHigh - the chosen number was too high
 		 * @param {Boolean} vars.tooLow - the chosen number was too low
 		 */
-		view.on(MW.Event.MG_LADDER_PICKED, function (vars) {
+		view.on(MW.Event.PICKED_TARGET, function (vars) {
 			/* Zoom out to tree */
 			layer.transitionTo({
 				x: 0,
@@ -408,7 +408,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 					});
 				} else {
 					moveElevator(0, 0, function () {
-						view.tell('ROUND_DONE');
+						view.tell(MW.Event.ROUND_DONE);
 					});
 				}
 			});
@@ -421,7 +421,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		/**
 		 * Start the game, play introduction
 		 */
-		view.on(MW.Event.MG_ELEVATOR_START_GAME, function () {
+		view.on(MW.Event.START_MINIGAME, function () {
 			var i;
 			for (i = 1; i <= tree.getNbrOfBranches(); i++) {
 				tree.getBranch(i).getNest().addChick();
@@ -505,7 +505,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 									/* Short break */
 									setTimeout(function () {
 										showPanel(numpanel, true);
-										view.tell('ROUND_DONE');
+										view.tell(MW.Event.ROUND_DONE);
 									}, second * 1 * 1000);
 								}
 							});
@@ -518,7 +518,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		/**
 		 * Introduce the agent to the playing field.
 		 */
-		view.on(MW.Event.MG_LADDER_INTRODUCE_AGENT, function () {
+		view.on(MW.Event.INTRODUCE_AGENT, function () {
 			agent = new MW.PandaAgentView({
 				x: coordinates.agentStartX,
 				y: coordinates.agentStartY,
@@ -540,7 +540,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 						agent.wave(false);
 						agent.followCursor(true);
 					}, second * 1 * 1000);
-					view.tell('ROUND_DONE');
+					view.tell(MW.Event.ROUND_DONE);
 				}
 			});
 		});
@@ -548,10 +548,10 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		/**
 		 * Agent starts acting.
 		 */
-		view.on(MW.Event.MG_LADDER_START_AGENT, function () {
+		view.on(MW.Event.START_AGENT, function () {
 			showPanel(numpanel, false);
 			agent.followCursor(false);
-			view.tell('ROUND_DONE');
+			view.tell(MW.Event.ROUND_DONE);
 		});
 		
 		/**
@@ -560,7 +560,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		 * @param {Number} vars.number - the chosen number
 		 * @param {Number} vars.confidence - how sure the agent is
 		 */
-		view.on(MW.Event.MG_ELEVATOR_AGENT_CHOICE, function (vars) {
+		view.on(MW.Event.AGENT_CHOICE, function (vars) {
 			showPanel(numpanel, false);
 			agentPickGroup.setListening(true);
 			agentPickNumber(vars.number, vars.confidence);
@@ -569,7 +569,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		/**
 		 * Player corrected agent.
 		 */
-		view.on(MW.Event.MG_ELEVATOR_CORRECT_AGENT, function () {
+		view.on(MW.Event.CORRECT_AGENT, function () {
 			showPanel(boolpanel, false, function () {
 				showPanel(numpanel, true);
 			});
@@ -580,7 +580,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		/**
 		 * The game finished!
 		 */
-		view.on(MW.Event.MG_LADDER_CHEER, function () {
+		view.on(MW.Event.END_MINIGAME, function () {
 			var i;
 			for (i = 1; i <= tree.getNbrOfBranches(); i++) {
 				tree.getBranch(i).getNest().celebrate(true);
@@ -594,7 +594,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 				opacity: 0,
 				duration: second * 5,
 				callback: function () {
-					view.tell('QUIT');
+					view.tell(MW.Event.MINIGAME_ENDED);
 				}
 			});
 		});
@@ -602,6 +602,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		
 		this.addTearDown(function () {
 			stage.remove(layer);
+			stage.remove(panelLayer);
 		});
 	}
 });

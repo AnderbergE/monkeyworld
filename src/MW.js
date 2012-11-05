@@ -1,6 +1,5 @@
 var MW = {};
 
-Kinetic.MW = {};
 MW.resPath = "../res"
 
 /** @enum {string} */
@@ -14,13 +13,13 @@ MW.Language = {
  */
 MW.GameMode = {
 	CHILD_PLAY: "Child Play",
-	AGENT_SEE: "Monkey See",
-	AGENT_DO: "Monkey Do"
+	AGENT_WATCH: "Agent Watch",
+	AGENT_ACT: "Agent Act"
 };
 
 MW.GlobalSettings = {
-	/** @type {MW.Language} */ language: MW.Language.ENGLISH,
-	/** @type {boolean}     */ debug:    true,
+	/** @type {MW.Language} */ language: MW.Language.SWEDISH,
+	/** @type {boolean}     */ debug:    false,
     /** @type {boolean}     */ testing:  false
 };
 

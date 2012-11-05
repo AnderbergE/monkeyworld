@@ -5,35 +5,6 @@
  * @enum {string}
  */
 MW.ImageSources = {
-/** @const */ BALLOONS: "balloons.png",
-
-/** @const */ BUTTON_NO_SPRITE: "yesno/no-sprite.png",
-/** @const */ BUTTON_YES_SPRITE: "yesno/yes-sprite.png",
-
-/** @const */ JUNGLEBG: "Jungle_Bkg.png",
-/** @const */ GARDEN_BG: "bg-garden.png",
-/** @const */ GARDEN_SAD_BG: "bg-sadgarden.png",
-/** @const */ TREEGAME_BACKGROUND:   "minigames/treegame/background.png",
-/** @const */ TREEGAME_TREEDOTS:   "minigames/treegame/treedots.png",
-/** @const */ TREEGAME_COVER:        "minigames/treegame/lizard_cover.png",
-/** @const */ TREEGAME_LIZARD_SPRITE: "minigames/treegame/lizard/lizard-sprite.png",
-/** @const */ TREEGAME_LIZARD_TONGUE_SPRITE: "minigames/treegame/lizard/tongue-sprite.png",
-/** @const */ NUMPAD_WOOD:     "minigames/treegame/nrpad.png",
-/** @const */ PARCEL_1:       "minigames/treegame/paket-1.png",
-/** @const */ PARCEL_2:       "minigames/treegame/paket-2.png",
-/** @const */ PARCEL_3:       "minigames/treegame/paket-3.png",
-/** @const */ BUTTON_WOOD: "buttons/wood.png",
-/** @const */ BUTTON_WOOD_SELECTED: "buttons/wood-selected.png",
-/** @const */ DOTS_1: "numbers/dots/prick-1.png",
-/** @const */ DOTS_2: "numbers/dots/prick-2.png",
-/** @const */ DOTS_3: "numbers/dots/prick-3.png",
-/** @const */ DOTS_4: "numbers/dots/prick-4.png",
-/** @const */ DOTS_5: "numbers/dots/prick-5.png",
-/** @const */ DOTS_6: "numbers/dots/prick-6.png",
-/** @const */ WATERDROP: "vattendroppe.png",
-/** @const */ PITCHER: "vattenkanna.png",
-/** @const */ PITCHER_BOTTOM: "vattenkanna-botten.png",
-
 /** @const */ ELEVATORGAME_BACKGROUND:			"minigames/elevatorgame/background.png",
 /** @const */ ELEVATORGAME_BACKGROUND_CLOUDY:	"minigames/elevatorgame/cloudy.png",
 /** @const */ ELEVATORGAME_BACKGROUND_RAIN:		"minigames/elevatorgame/Rain1.png",
@@ -124,7 +95,6 @@ MW.ImageSources = {
 /** @const */ ELEVATORGAME_CHICK_9:				"minigames/elevatorgame/ChickPink9_1.png",
 /** @const */ ELEVATORGAME_CHICK_10:			"minigames/elevatorgame/ChickTurkos10_1.png",
 
-
 /** @const */ ELEVATORGAME_NEST:				"minigames/elevatorgame/nest/nest.png",
 /** @const */ ELEVATORGAME_NEST_CHICK_1:		"minigames/elevatorgame/nest/chickOrange1.png",
 /** @const */ ELEVATORGAME_NEST_CHICK_2:		"minigames/elevatorgame/nest/chickPurple2.png",
@@ -157,18 +127,13 @@ MW.ImageSources = {
 /** @const */ ELEVATORGAME_NEST_MOTHER_FLAP_9:	"minigames/elevatorgame/nest/MotherPink9_2.png",
 /** @const */ ELEVATORGAME_NEST_MOTHER_FLAP_10:	"minigames/elevatorgame/nest/MotherTurkos10_2.png",
 
-/** @const */ ELEVATORGAME_AGENT_PANDA:				"minigames/elevatorgame/agent/pandaNoEyes2Standard.png",
-/** @const */ ELEVATORGAME_AGENT_PANDA_EYE:			"minigames/elevatorgame/agent/pandaIrisAndPupil.png",
-/** @const */ ELEVATORGAME_AGENT_PANDA_EYE_FLARE:	"minigames/elevatorgame/agent/pandaPupilsFlare.png",
-/** @const */ ELEVATORGAME_AGENT_PANDA_WALK_LEFT:	"minigames/elevatorgame/agent/pandaWalking1.png",
-/** @const */ ELEVATORGAME_AGENT_PANDA_WALK_RIGHT:	"minigames/elevatorgame/agent/pandaWalking2.png",
-/** @const */ ELEVATORGAME_AGENT_PANDA_WAVE:		"minigames/elevatorgame/agent/pandaWaving.png",
-/** @const */ ELEVATORGAME_THOUGHT_BUBBLE:			"minigames/elevatorgame/agent/thoughtbubble.png",
-
-/** @const */ AGENT_MOUSE_SPRITE:      "agents/mouse/body-sprite.png",
-/** @const */ AGENT_MOUSE_FACIALS_SPRITE:      "agents/mouse/facials-sprite.png",
-/** @const */ AGENT_MOUSE_BLINK_SPRITE:      "agents/mouse/blink-sprite.png",
-/** @const */ AGENT_MOUSE_POINT_AT_SPRITE:      "agents/mouse/pointat-sprite.png"
+/** @const */ ELEVATORGAME_AGENT_PANDA:				"agents/panda/pandaNoEyes2Standard.png",
+/** @const */ ELEVATORGAME_AGENT_PANDA_EYE:			"agents/panda/pandaIrisAndPupil.png",
+/** @const */ ELEVATORGAME_AGENT_PANDA_EYE_FLARE:	"agents/panda/pandaPupilsFlare.png",
+/** @const */ ELEVATORGAME_AGENT_PANDA_WALK_LEFT:	"agents/panda/pandaWalking1.png",
+/** @const */ ELEVATORGAME_AGENT_PANDA_WALK_RIGHT:	"agents/panda/pandaWalking2.png",
+/** @const */ ELEVATORGAME_AGENT_PANDA_WAVE:		"agents/panda/pandaWaving.png",
+/** @const */ ELEVATORGAME_THOUGHT_BUBBLE:			"thoughtbubble.png"
 };
 
 MW.Images = {};
@@ -184,7 +149,9 @@ MW.ImageHandler = (function() {
 	    _img_total++;
 	}
 	
-	imageHandler.getProgress = function() { return _img_progress; };
+	imageHandler.getProgress = function () {
+		return _img_progress;
+	};
 	
 	imageHandler.loadImages = function(callback) {
 		var loadedImages = 0;
@@ -192,19 +159,20 @@ MW.ImageHandler = (function() {
 		for (var src in MW.ImageSources) {
 			var str = MW.ImageSources[src];
 			MW.Images[src] = new Image();
-	        MW.Images[src].onload = function(){
-	            if (++loadedImages >= numImages) {
-	            	callback();
-	            }
-	            _img_progress = loadedImages / _img_total;
-	        };
-	        if (MW.resPath !== undefined) {
-			MW.Images[src].src = MW.resPath + "/img/" + str;
-		} else {
-			MW.Images[src].src = "../res/img/" + str;
-		}
+			MW.Images[src].onload = function () {
+				if (++loadedImages >= numImages) {
+					callback();
+				}
+				_img_progress = loadedImages / _img_total;
+			};
+			if (MW.resPath !== undefined) {
+				MW.Images[src].src = MW.resPath + "/img/" + str;
+			} else {
+				MW.Images[src].src = "../res/img/" + str;
+			}
 	    }
 	};
+	
 	return imageHandler;
 })();
 

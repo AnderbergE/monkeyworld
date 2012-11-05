@@ -73,10 +73,6 @@ MW.GlobalObject = Class.extend(
 		return that.sendable_(true, event, var_args);
 	},
 	
-	wevm: function() {
-		console.log(this.evm.wevm());
-	},
-	
 	/**
 	 * @param {string} tag
 	 */
@@ -92,97 +88,3 @@ MW.GlobalObject = Class.extend(
 		return this._tag;
 	}
 });
-
-/*MW.GlobalObject.prototype.evm  = null;
-MW.GlobalObject.prototype.stage = null;
-MW.GlobalObject.prototype.game = null;
-*/
-/**
- * @constructor
- */
-MW.MiniGameResult = function() {
-	
-	/**
-	 * @type {Array.<MW.MiniGameRoundResult>}
-	 */
-	var results = new Array();
-	
-	/**
-	 * @param {MW.MiniGameRoundResult} roundResult
-	 */
-	this.pushResult = function(roundResult) {
-		results.push(roundResult);
-	};
-	
-	/**
-	 * Get the results of specified round 
-	 * @param {number} round
-	 */
-	this.getResult = function(round) {
-		var index = round - 1;
-		if (index < 0 || index >= results.length) {
-			throw "MonkeyWorld.NoSuchRoundException ("+round+")";
-		}
-		return results[index];
-	};
-};
-
-/**
- * @constructor
- */
-MW.MiniGameRoundResult = function() {
-	/**
-	 * @type {boolean}
-	 */
-	var madeMistake = false;
-	
-	/**
-	 * @type {Array.<*>}
-	 */
-	var actions = new Array();
-	
-	/**
-	 * Report that a mistake has been made.
-	 */ 
-	this.reportMistake = function() {
-		console.log("Mistake reported");
-		madeMistake = true;
-	};
-	
-	/**
-	 * Returns true if a mistake has been made.
-	 * @returns {boolean}
-	 */
-	this.madeMistake = function() { return madeMistake; };
-	
-	/**
-	 * @param {*} action
-	 */
-	this.pushAction = function(action) {
-		actions.push(action);
-	};
-	
-	this.popAction = function() {
-		actions.splice(actions.length - 1);
-	};
-	
-	/**
-	 * @return {Array.<*>}
-	 */
-	this.getActions = function() {
-		return actions;
-	};
-};
-
-/**
- * @extends {MW.MiniGameResult}
- * @constructor
- */
-MW.NoMiniGameResult = function() {
-	this.pushResult = function() {
-		throw "MonkeyWorld.NoMiniGameResultException";
-	};
-	this.getResult = function() {
-		throw "MonkeyWorld.NoMiniGameResultException";
-	};
-};

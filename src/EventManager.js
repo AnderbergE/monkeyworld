@@ -4,10 +4,6 @@ MW.EventManager = new (/** @constructor */function() {
 	 * @type {Object.<string, Array>}
 	 */
 	var listeners = {};
-	var toForget = [];
-	var telling = 0;
-
-	this.wevm = function() { return "GameEventManager"; };
 
 	/**
 	 * @param {string} type
@@ -60,15 +56,10 @@ MW.EventManager = new (/** @constructor */function() {
 	};
 
 	/**
+	 * Forget all listenings from a certain listener.
 	 * @param {string} name
 	 */
 	this.forget = function(name) {
-		/*if (telling > 0) {
-		    console.log("TELLING");
-			toForget.push(name);
-			return;
-		}*/
-		var sum = 0;
 		for (var key in listeners) {
 			var total = listeners[key].length;
 			for (var i = 0; i < total; i++) {
@@ -76,7 +67,6 @@ MW.EventManager = new (/** @constructor */function() {
 					listeners[key].splice(i, 1);
 					i--;
 					total--;
-					sum++;
 				}
 			}
 			if (listeners[key].length == 0) {
@@ -91,7 +81,6 @@ MW.EventManager = new (/** @constructor */function() {
 	 * @param {boolean=} debug
 	 */
 	this.tell = function(type, message, debug) {
-		telling++;
 		var bucket = listeners[type];
 		if (bucket != undefined) {
 			for (var i = 0; i < bucket.length; i++) {
@@ -101,18 +90,10 @@ MW.EventManager = new (/** @constructor */function() {
 				callback(message);
 			}
 		}
-		telling--;
-		if (telling == 0 && toForget.length > 0) {
-			for (var i = 0; i < toForget.length; i++) {
-				this.forget(toForget[i]);
-			}
-			toForget = [];
-		}
 	};
 
 	this.tellArguments = function (next, wait, type, args) {
 		var debug = true;
-		telling++;
 		var bucket = listeners[type];
 		if (bucket != undefined) {
 			for (var i = 0; i < bucket.length; i++) {
@@ -124,7 +105,6 @@ MW.EventManager = new (/** @constructor */function() {
 					next();
 			}
 		}
-		telling--;
 	};
 
 	this.tellWait = function (type, callback, message) {

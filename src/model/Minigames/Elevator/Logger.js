@@ -17,15 +17,20 @@ MW.Logger = MW.GlobalObject.extend(
 		/**
 		 * Listen to button pushes.
 		 */
-		this.on('BUTTON_PUSHED', function (vars) {
-			if (vars.number === undefined) {
-				/* agent was correct/incorrect */
-				if (vars.bool) {
-				} else {
-				}
-			} else {
-			}
+		this.on(MW.Event.BUTTON_PUSH_BOOL, function (number) {
+			
 		});
+		
+		/**
+		 * Listen to button pushes.
+		 */
+		this.on(MW.Event.BUTTON_PUSH_BOOL, function (bool) {
+			if (bool) {
+				
+			} else {
+				
+			}
+		}
 		
 		/**
 		 * Player or agent has picked a number.
@@ -41,18 +46,14 @@ MW.Logger = MW.GlobalObject.extend(
 		/**
 		 * Start new round.
 		 */
-		this.on('ROUND_DONE', function (vars) {
-			nextRound();
+		this.on(MW.Event.ROUND_DONE, function (vars) {
+			
 		});
 		
 		/**
 		 * Start new round.
 		 */
 		this.on(MW.Event.MG_ELEVATOR_TARGET_IS_PLACED, function () {
-			
-		});
-		
-		this.on('QUIT', function () {
 			
 		});
 	}

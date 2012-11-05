@@ -55,6 +55,7 @@ MW.MonkeyWorldView = MW.ViewModule.extend(
 							rect.setFill("yellow");
 							callback(game);
 						});
+						/* add to button array */
 						buttons.push(button);
 						layer.add(button);
 					})();}
@@ -132,12 +133,12 @@ MW.MonkeyWorldView = MW.ViewModule.extend(
 			});
 
 			view.on("Game.loadingSounds", function(msg) {
-				loadingText.setText(MW.Strings.get("INIT_LOADING_SOUNDS"));
+				loadingText.setText("Loading sounds");
 				layer.draw();
 			});
 
 			view.on("Game.loadingImages", function(msg) {
-				loadingText.setText(MW.Strings.get("INIT_LOADING_IMAGES"));
+				loadingText.setText("Loading images");
 				layer.draw();
 			});
 

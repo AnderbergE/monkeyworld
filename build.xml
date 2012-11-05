@@ -34,48 +34,24 @@
 			<file name="Module.js" />
 			<!-- utils -->
 			<file name="utils/Utils.js" />
-			<file name="utils/kineticjs/Plugins.js" />
 			
 			<!-- res -->
 			<file name="res/Images.js" />
-			<file name="res/Strings.js" />
 			<file name="res/Sounds.js" />
 			
 			<!-- model -->
 			<file name="model/Agents/Agent.js" />
 			<file name="model/Agents/AgentKnowledge.js" />
-			<file name="model/Agents/MonkeyAgent.js" />
-			<file name="model/Agents/MouseAgent.js" />
-			<file name="model/Game/AgentChooser.js" />
 			<file name="model/Game/Game.js" />
-			<file name="model/LearningTrack/LearningTrack.js" />
-			<file name="model/LearningTrack/FastLearningTrack.js" />
-			<file name="model/LearningTrack/MediumLearningTrack.js" />
-			<file name="model/LearningTrack/RegularLearningTrack.js" />
-			<file name="model/LearningTrack/NoLearningTrack.js" />
-			<file name="model/Players/Player.js" />
-			<file name="model/Players/AgentPlayer.js" />
-			<file name="model/Players/GamerPlayer.js" />
 			
 			<!-- model/Minigames -->
 			<file name="model/Minigames/Minigame.js" />
 			<file name="model/Minigames/Elevator/Elevator.js" />
-			<file name="model/Minigames/Ladder/Ladder.js" />
 			
 			<!-- view -->
 			<file name="view/ViewModule.js" />
 			<file name="view/Agents/PandaAgentView.js" />
-			<file name="view/Agents/AgentView.js" />
-			<file name="view/Agents/MouseAgentView.js" />
-			<file name="view/Game/AgentChooserView.js" />
-			<file name="view/Game/GardenView.js" />
-			<file name="view/Game/IntroductionView.js" />
-			<file name="view/Game/MinigameHandlerView.js" />
 			<file name="view/Game/MonkeyWorldView.js" />
-			<file name="view/KineticJS/NoButton.js" />
-			<file name="view/KineticJS/YesButton.js" />
-			<file name="view/KineticJS/Lizard.js" />
-			<file name="view/KineticJS/Parcel.js" />
 			
 			<!-- view/Minigames -->
 			<file name="view/Minigames/MinigameView.js" />
@@ -90,10 +66,6 @@
 			<file name="view/Minigames/Elevator/Numpanel.js" />
 			<file name="view/Minigames/Elevator/Boolpanel.js" />
 			<file name="view/Minigames/Elevator/Button.js" />
-			<file name="view/Minigames/Ladder/LadderView.js" />
-			<file name="view/Minigames/Ladder/MountainView.js" />
-			<file name="view/Minigames/Ladder/TreeView/TreeNumpad.js" />
-			<file name="view/Minigames/Ladder/TreeView/TreeView.js" />
 			
 			<!-- core -->
 			<file name="MinigameConfigurations.js" />
@@ -126,48 +98,24 @@
 				<file name="Module.js" />
 				<!-- utils -->
 				<file name="utils/Utils.js" />
-				<file name="utils/kineticjs/Plugins.js" />
 				
 				<!-- res -->
 				<file name="res/Images.js" />
-				<file name="res/Strings.js" />
 				<file name="res/Sounds.js" />
 				
 				<!-- model -->
 				<file name="model/Agents/Agent.js" />
 				<file name="model/Agents/AgentKnowledge.js" />
-				<file name="model/Agents/MonkeyAgent.js" />
-				<file name="model/Agents/MouseAgent.js" />
-				<file name="model/Game/AgentChooser.js" />
 				<file name="model/Game/Game.js" />
-				<file name="model/LearningTrack/LearningTrack.js" />
-				<file name="model/LearningTrack/FastLearningTrack.js" />
-				<file name="model/LearningTrack/MediumLearningTrack.js" />
-				<file name="model/LearningTrack/RegularLearningTrack.js" />
-				<file name="model/LearningTrack/NoLearningTrack.js" />
-				<file name="model/Players/Player.js" />
-				<file name="model/Players/AgentPlayer.js" />
-				<file name="model/Players/GamerPlayer.js" />
 				
 				<!-- model/Minigames -->
 				<file name="model/Minigames/Minigame.js" />
 				<file name="model/Minigames/Elevator/Elevator.js" />
-				<file name="model/Minigames/Ladder/Ladder.js" />
 				
 				<!-- view -->
 				<file name="view/ViewModule.js" />
 				<file name="view/Agents/PandaAgentView.js" />
-				<file name="view/Agents/AgentView.js" />
-    			<file name="view/Agents/MouseAgentView.js" />
-				<file name="view/Game/AgentChooserView.js" />
-				<file name="view/Game/GardenView.js" />
-				<file name="view/Game/IntroductionView.js" />
-				<file name="view/Game/MinigameHandlerView.js" />
 				<file name="view/Game/MonkeyWorldView.js" />
-				<file name="view/KineticJS/NoButton.js" />
-				<file name="view/KineticJS/YesButton.js" />
-				<file name="view/KineticJS/Lizard.js" />
-				<file name="view/KineticJS/Parcel.js" />
 				
 				<!-- view/Minigames -->
 				<file name="view/Minigames/MinigameView.js" />
@@ -182,10 +130,6 @@
 				<file name="view/Minigames/Elevator/Numpanel.js" />
 				<file name="view/Minigames/Elevator/Boolpanel.js" />
 				<file name="view/Minigames/Elevator/Button.js" />
-				<file name="view/Minigames/Ladder/LadderView.js" />
-				<file name="view/Minigames/Ladder/MountainView.js" />
-				<file name="view/Minigames/Ladder/TreeView/TreeNumpad.js" />
-				<file name="view/Minigames/Ladder/TreeView/TreeView.js" />
 				
 				<!-- core -->
 				<file name="MinigameConfigurations.js" />
@@ -214,47 +158,24 @@
 			<file name="Module.js" />
 			<!-- utils -->
 			<file name="utils/Utils.js" />
-			<file name="utils/kineticjs/Plugins.js" />
 			
 			<!-- res -->
 			<file name="res/Images.js" />
-			<file name="res/Strings.js" />
 			<file name="res/Sounds.js" />
 			
 			<!-- model -->
 			<file name="model/Agents/Agent.js" />
 			<file name="model/Agents/AgentKnowledge.js" />
-			<file name="model/Agents/MouseAgent.js" />
-			<file name="model/Game/AgentChooser.js" />
 			<file name="model/Game/Game.js" />
-			<file name="model/LearningTrack/LearningTrack.js" />
-			<file name="model/LearningTrack/FastLearningTrack.js" />
-			<file name="model/LearningTrack/MediumLearningTrack.js" />
-			<file name="model/LearningTrack/RegularLearningTrack.js" />
-			<file name="model/LearningTrack/NoLearningTrack.js" />
-			<file name="model/Players/Player.js" />
-			<file name="model/Players/AgentPlayer.js" />
-			<file name="model/Players/GamerPlayer.js" />
 			
 			<!-- model/Minigames -->
 			<file name="model/Minigames/Minigame.js" />
 			<file name="model/Minigames/Elevator/Elevator.js" />
-			<file name="model/Minigames/Ladder/Ladder.js" />
 			
 			<!-- view -->
 			<file name="view/ViewModule.js" />
 			<file name="view/Agents/PandaAgentView.js" />
-			<file name="view/Agents/AgentView.js" />
-			<file name="view/Agents/MouseAgentView.js" />
-			<file name="view/Game/AgentChooserView.js" />
-			<file name="view/Game/GardenView.js" />
-			<file name="view/Game/IntroductionView.js" />
-			<file name="view/Game/MinigameHandlerView.js" />
 			<file name="view/Game/MonkeyWorldView.js" />
-			<file name="view/KineticJS/NoButton.js" />
-			<file name="view/KineticJS/YesButton.js" />
-			<file name="view/KineticJS/Lizard.js" />
-			<file name="view/KineticJS/Parcel.js" />
 			
 			<!-- view/Minigames -->
 			<file name="view/Minigames/MinigameView.js" />
@@ -269,10 +190,6 @@
 			<file name="view/Minigames/Elevator/Numpanel.js" />
 			<file name="view/Minigames/Elevator/Boolpanel.js" />
 			<file name="view/Minigames/Elevator/Button.js" />
-			<file name="view/Minigames/Ladder/LadderView.js" />
-			<file name="view/Minigames/Ladder/MountainView.js" />
-			<file name="view/Minigames/Ladder/TreeView/TreeNumpad.js" />
-			<file name="view/Minigames/Ladder/TreeView/TreeView.js" />
 			
 			<!-- core -->
 			<file name="MinigameConfigurations.js" />

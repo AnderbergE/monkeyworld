@@ -31,9 +31,8 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 		function newBird () {
 			/* Randomize where it should go and send event */
 			targetNumber = 1 + Math.floor(Math.random() * numberOfBranches);
-			elevator.tell(MW.Event.MG_LADDER_PLACE_TARGET, {
-				targetNumber: targetNumber,
-				agentDo: elevator.modeIsAgentDo()
+			elevator.tell(MW.Event.PLACE_TARGET, {
+				targetNumber: targetNumber
 			});
 		}
 		
@@ -57,18 +56,19 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 		 */
 		function nextMode () {
 			if (elevator.modeIsChild()) {
-				elevator.setMode(MW.GameMode.AGENT_SEE);
+				elevator.setMode(MW.GameMode.AGENT_WATCH);
 				agent = new MW.Agent();
 				roundsWon = 0;
 				roundsLost = 0;
-				elevator.tell(MW.Event.MG_LADDER_INTRODUCE_AGENT);
+				elevator.tell(MW.Event.INTRODUCE_AGENT);
 			} else if (elevator.modeIsAgentSee()) {
-				elevator.setMode(MW.GameMode.AGENT_DO);
+				elevator.setMode(MW.GameMode.AGENT_ACT);
 				roundsWon = 0;
 				roundsLost = 0;
-				elevator.tell(MW.Event.MG_LADDER_START_AGENT);
+				elevator.tell(MW.Event.START_AGENT);
 			} else {
-				elevator.tell(MW.Event.MG_LADDER_CHEER);
+				elevator.setMode(MW.GameMode.CHILD_PLAY);
+				elevator.tell(MW.Event.END_MINIGAME);
 			}
 		}
 		
@@ -78,7 +78,7 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 		 * @param pickedNumber - The number that was picked
 		 */
 		function playerPickNumber(number) {
-			elevator.tell(MW.Event.MG_LADDER_PICKED, {
+			elevator.tell(MW.Event.PICKED_TARGET, {
 				number: number,
 				tooHigh: number > targetNumber,
 				tooLow: number < targetNumber
@@ -94,7 +94,7 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 		 */
 		function agentPickNumber () {
 			agentPick = agent.pickNumber(targetNumber, numberOfBranches);
-			elevator.tell(MW.Event.MG_ELEVATOR_AGENT_CHOICE, {
+			elevator.tell(MW.Event.AGENT_CHOICE, {
 				number: agentPick.guess,
 				confidence: agentPick.confidence
 			});
@@ -115,32 +115,35 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 		 * Functions to run when starting.
 		 */
 		this.addStart(function () {
-			elevator.tell(MW.Event.MG_ELEVATOR_START_GAME);
+			elevator.tell(MW.Event.START_MINIGAME);
 		});
 
 		/**
 		 * Functions to run when stopping.
 		 */
-		this.addStop(function () {
-			elevator.tell("Game.roundDone");
-		});
+		/*this.addStop(function () {
+			
+		});*/
 		
 		
 		/**
 		 * Listen to button pushes.
 		 */
-		this.on('BUTTON_PUSHED', function (vars) {
-			elevator.tell(MW.Event.MG_ELEVATOR_LOCK, true);
-			if (vars.number === undefined) {
-				/* agent was correct/incorrect */
-				if (vars.bool) {
-					playerPickNumber(agentPick.guess);
-				} else {
-					elevator.tell(MW.Event.MG_ELEVATOR_CORRECT_AGENT);
-					elevator.tell(MW.Event.MG_ELEVATOR_LOCK, false);
-				}
+		this.on(MW.Event.BUTTON_PUSH_NUMBER, function (number) {
+			elevator.tell(MW.Event.LOCK_BUTTONS, true);
+			playerPickNumber(number);
+		});
+		
+		/**
+		 * Listen to button pushes.
+		 */
+		this.on(MW.Event.BUTTON_PUSH_BOOL, function (bool) {
+			if (bool) {
+				elevator.tell(MW.Event.LOCK_BUTTONS, true);
+				playerPickNumber(agentPick.guess);
 			} else {
-				playerPickNumber(vars.number);
+				elevator.tell(MW.Event.CORRECT_AGENT);
+				elevator.tell(MW.Event.LOCK_BUTTONS, false);
 			}
 		});
 		
@@ -149,7 +152,7 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 		 * @param {Hash} vars
 		 * @param {Number} vars.number - the chosen number
 		 */
-		this.on(MW.Event.MG_LADDER_PICKED, function (vars) {
+		this.on(MW.Event.PICKED_TARGET, function (vars) {
 			if (vars.number == targetNumber) {
 				roundsWon++;
 			} else {
@@ -160,28 +163,19 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 		/**
 		 * Start new round.
 		 */
-		this.on('ROUND_DONE', function (vars) {
+		this.on(MW.Event.ROUND_DONE, function (vars) {
 			nextRound();
 		});
 		
 		/**
 		 * Start new round.
 		 */
-		this.on(MW.Event.MG_ELEVATOR_TARGET_IS_PLACED, function () {
+		this.on(MW.Event.TARGET_IS_PLACED, function () {
 			if (elevator.modeIsAgentDo()) {
 				agentPickNumber();
 			} else {
-				elevator.tell(MW.Event.MG_ELEVATOR_LOCK, false);
+				elevator.tell(MW.Event.LOCK_BUTTONS, false);
 			}
-		});
-		
-		/* This is needed to start the game */
-		this.on(MW.Event.INTRODUCE_AGENT, function (callback) {
-			callback();
-		});
-		
-		this.on('QUIT', function () {
-			elevator.quit();
 		});
 	}
 });

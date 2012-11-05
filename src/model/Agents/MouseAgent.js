@@ -1,4 +1,0 @@
-MW.MouseAgent = function () {
-
-};
-
