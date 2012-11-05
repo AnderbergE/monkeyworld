@@ -102,7 +102,7 @@ MW.GameEngineStarter = function () {
 	 * Init game resources
 	 */
 	console.log("Showing welcome screen");
-	evm.tell("Game.showLoadingScreen", { time: 0 });
+	evm.tell("Game.showLoadingScreen", { time: 1 });
 	evm.tell("Game.loadingSounds");
 
 	console.log("Downloading sound files");
