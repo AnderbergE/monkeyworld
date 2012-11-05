@@ -64,8 +64,9 @@ MW.Game = MW.GlobalObject.extend(
 						miniGameStarter = function() {
 							that.tell("Game.hideMiniGameChooser");
 							/* TODO: Add parameters to game */
-							miniGame = new choice.game(that);
-							miniGameView = choice.view;					
+							miniGame = new choice.game(that,
+								choice.difficulty, choice.useAgent);
+							miniGameView = choice.view;
 						};
 						startMiniGame();
 					},

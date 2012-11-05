@@ -145,7 +145,7 @@ MW.ImageHandler = (function() {
 
 	var _img_total = 0;
 	var _img_progress = 0;
-	for (var src in MW.Images) {
+	for (var src in MW.ImageSources) {
 	    _img_total++;
 	}
 	

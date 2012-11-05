@@ -9,17 +9,17 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 	 * @constructs
 	 * @param {MW.Game} parent
 	 */
-	init: function (parent) {
+	init: function (parent, difficulty, useAgent) {
 		"use strict";
 		this._super(parent, "Elevator");
 		var
 			elevator = this,
-			numberOfBranches = 10,
+			numberOfBranches = difficulty,
 			targetNumber,
 			roundsWon = 0,
 			roundsLost = 0,
-			winsToProgress = 3,
-			maxTries = 6,
+			winsToProgress = 3 * (useAgent ? 1 : 3),
+			maxTries = 6 * (useAgent ? 1 : 3),
 			agent,
 			agentPick;
 		
@@ -55,16 +55,18 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 		 * @private
 		 */
 		function nextMode () {
-			if (elevator.modeIsChild()) {
+			if (!useAgent) {
+				elevator.tell(MW.Event.END_MINIGAME);
+			} else if (elevator.modeIsChild()) {
+				roundsWon = 0;
+				roundsLost = 0;
 				elevator.setMode(MW.GameMode.AGENT_WATCH);
 				agent = new MW.Agent();
-				roundsWon = 0;
-				roundsLost = 0;
 				elevator.tell(MW.Event.INTRODUCE_AGENT);
 			} else if (elevator.modeIsAgentSee()) {
-				elevator.setMode(MW.GameMode.AGENT_ACT);
 				roundsWon = 0;
 				roundsLost = 0;
+				elevator.setMode(MW.GameMode.AGENT_ACT);
 				elevator.tell(MW.Event.START_AGENT);
 			} else {
 				elevator.setMode(MW.GameMode.CHILD_PLAY);

@@ -585,7 +585,9 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			for (i = 1; i <= tree.getNbrOfBranches(); i++) {
 				tree.getBranch(i).getNest().celebrate(true);
 			}
-			agent.wave(true);
+			if (agent !== undefined) {
+				agent.wave(true);
+			}
 			panelLayer.transitionTo({
 				opacity: 0,
 				duration: second * 1
