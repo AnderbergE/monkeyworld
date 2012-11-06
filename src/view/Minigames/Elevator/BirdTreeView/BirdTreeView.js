@@ -279,9 +279,9 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 							}, animationTime * 1000);
 						} else {
 							/* The bird did not find home, scare away! */
-							nest.scare(true);
+							nest.confused(true);
 							setTimeout(function () {
-								nest.scare(false);
+								nest.confused(false);
 							}, animationTime * 1000);
 						}
 						/* This will draw the celebration correctly */

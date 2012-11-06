@@ -17,7 +17,9 @@ MW.BirdTreeNest = function (config) {
 		chickGroup,
 		chickAnimation,
 		motherCelebrate,
-		nest;
+		nest,
+		confused,
+		confusedAnimation;
 	
 	group = new Kinetic.Group({
 			x: config.x,
@@ -58,6 +60,20 @@ MW.BirdTreeNest = function (config) {
 	});
 	group.add(nest);
 	
+	/* Add confused animation */
+	confused = new Kinetic.Image({
+		x: mother.getX() + 5,
+		y: mother.getY() - MW.Images.ELEVATORGAME_CONFUSED.height - 5,
+		image: MW.Images.ELEVATORGAME_CONFUSED,
+		opacity: 0
+	});
+	confusedAnimation = new Kinetic.Animation({
+		func: function (frame) {
+			confused.setY(confused.getY() +
+				0.75 * Math.sin(frame.time * 2 * Math.PI / 300));
+		}
+	});
+	group.add(confused);
 	
 	/**
 	 * @private
@@ -173,6 +189,25 @@ MW.BirdTreeNest = function (config) {
 		flap(scare);
 	}
 	
+	/**
+	 * @public
+	 * @param {Boolean} confused - true if the mother should be confused.
+	 */
+	group.confused = function (confuse) {
+		if (confuse) {
+			confused.transitionTo({
+				opacity: 1,
+				duration: 0.2
+			});
+			confusedAnimation.start();
+		} else {
+			confused.transitionTo({
+				opacity: 0,
+				duration: 0.2
+			});
+			confusedAnimation.stop();
+		}
+	}
 	
 	return group;
 };
