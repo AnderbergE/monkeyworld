@@ -23,6 +23,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			bird,
 			agent,
 			agentPickGroup,
+			exitFade,
 			second = 1,
 			coordinates = {
 				treeX: 700, treeY: 10,
@@ -106,6 +107,15 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		/* Add intro group that will be used during intro animation */
 		introGroup = new Kinetic.Group();
 		layer.add(introGroup);
+		
+		/* This is used when the game ends */
+		exitFade = new Kinetic.Rect({
+			fill: 'white', 
+			width: stage.getWidth(),
+			height: stage.getHeight(),
+			opacity: 0
+		})
+		layer.add(exitFade);
 		
 		/* Add the layers */
 		stage.add(layer);
@@ -214,6 +224,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			var scale = 0.1;
 			/* Left is -1, right is 1 */
 			var direction = x > bird.getX() ? 1 : -1;
+			showPanel(boolpanel, false);
 			turnBird(direction, function () {
 				bird.transitionTo({
 					x: x + (direction < 0 ? (bird.getWidth() * scale) : 0),
@@ -592,8 +603,8 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 				opacity: 0,
 				duration: second * 1
 			});
-			layer.transitionTo({
-				opacity: 0,
+			exitFade.transitionTo({
+				opacity: 1,
 				duration: second * 5,
 				callback: function () {
 					view.tell(MW.Event.MINIGAME_ENDED);
