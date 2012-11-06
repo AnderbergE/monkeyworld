@@ -76,6 +76,11 @@ MW.BirdTreeElevator = function (config) {
 	 */
 	group.setFloor = function (number) {
 		floorText.setText(number.toString());
+		if (number == 10) {
+			floorText.setX(elevator.getWidth() / 2 - 11);
+		} else {
+			floorText.setX(elevator.getWidth() / 2 - 5);
+		}
 	};
 	
 	/**
