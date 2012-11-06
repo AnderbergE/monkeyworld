@@ -19,8 +19,8 @@ MW.PandaAgentView = MW.GlobalObject.extend(
 			rightEye,
 			animation,
 			coordinates = {
-				leftEye: {x: 141, y: 151},
-				rightEye: {x: 336, y: 156}
+				leftEye: {x: 146, y: 156},
+				rightEye: {x: 341, y: 161}
 			};
 		
 		group = new Kinetic.Group({
@@ -116,8 +116,8 @@ MW.PandaAgentView = MW.GlobalObject.extend(
 			var dy = mousePos.y - (eyePos.y + h / 2);
 			var r = (dx*dx/w+dy*dy/h<1) ?
 				1 : Math.sqrt(w*h / (dx*dx*h+dy*dy*w));
-			eye.setX((r*dx)/2+offset.x);
-			eye.setY((r*dy)/2+offset.y);
+			eye.setX((r*dx)+offset.x);
+			eye.setY((r*dy)+offset.y);
 		}
 		
 		/**
