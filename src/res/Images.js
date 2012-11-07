@@ -134,6 +134,7 @@ MW.ImageSources = {
 /** @const */ ELEVATORGAME_AGENT_PANDA:				"agents/panda/pandaNoEyes2Standard.png",
 /** @const */ ELEVATORGAME_AGENT_PANDA_WALK_LEFT:	"agents/panda/pandaNoEyes2Walking1.png",
 /** @const */ ELEVATORGAME_AGENT_PANDA_WALK_RIGHT:	"agents/panda/pandaNoEyes2Walking2.png",
+/** @const */ ELEVATORGAME_AGENT_PANDA_TALK:		"agents/panda/pandaTalk.png",
 /** @const */ ELEVATORGAME_AGENT_PANDA_WAVE:		"agents/panda/pandaNoEyes2Waving.png",
 /** @const */ ELEVATORGAME_AGENT_PANDA_EYE:			"agents/panda/pandaIrisAndPupil.png",
 /** @const */ ELEVATORGAME_AGENT_PANDA_EYE_FLARE:	"agents/panda/pandaPupilsFlare.png",

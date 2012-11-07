@@ -13,7 +13,8 @@ MW.PandaAgentView = MW.GlobalObject.extend(
 		if (config.x === undefined) config.x = 0;
 		if (config.y === undefined) config.y = 0;
 		if (config.drawScene === undefined) config.drawScene = function () {};
-		var group,
+		var that = this,
+			group,
 			panda,
 			leftEye,
 			rightEye,
@@ -99,6 +100,24 @@ MW.PandaAgentView = MW.GlobalObject.extend(
 		}
 		
 		/**
+		 * Open mouth.
+		 * @private
+		 */
+		function mouthOpen () {
+			MW.SetImage(panda, MW.Images.ELEVATORGAME_AGENT_PANDA_TALK);
+			animation = setTimeout(mouthClosed, 150);
+		}
+		
+		/**
+		 * Close mouth.
+		 * @private
+		 */
+		function mouthClosed () {
+			MW.SetImage(panda, MW.Images.ELEVATORGAME_AGENT_PANDA);
+			animation = setTimeout(mouthOpen, 150);
+		}
+		
+		/**
 		 * Set eye location in socket depending on mouse cursor position.
 		 * @private
 		 * @param {Kinetic.Image} eye - the eye to rotate
@@ -174,6 +193,33 @@ MW.PandaAgentView = MW.GlobalObject.extend(
 			} else {
 				MW.SetImage(panda, MW.Images.ELEVATORGAME_AGENT_PANDA);
 			}
+		}
+		
+		/**
+		 * @public
+		 * @param {Boolean} talk - true if the panda should talk.
+		 */
+		this.talk = function (talk) {
+			clearTimeout(animation);
+			if (talk) {
+				mouthOpen();
+			} else {
+				MW.SetImage(panda, MW.Images.ELEVATORGAME_AGENT_PANDA);
+			}
+		}
+		
+		/**
+		 * TODO: This should be made in a super class, along with bird stuff.
+		 * @public
+		 * @param {MW.SoundEntry} sound - the sound to play
+		 * @param {Number} time - time to talk (seconds)
+		 */
+		this.say = function (sound, time) {
+			MW.Sound.play(sound);
+			that.talk(true);
+			setTimeout(function () {
+				that.talk(false);
+			}, time * 1000);
 		}
 		
 		/**

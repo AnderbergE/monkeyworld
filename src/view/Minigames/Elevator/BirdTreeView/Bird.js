@@ -49,6 +49,26 @@ MW.Bird = function (config) {
 		animation = setTimeout(walkLeft, 150);
 	}
 	
+	/**
+	 * Open mouth.
+	 * @private
+	 */
+	function mouthOpen () {
+		MW.SetImage(bird, 
+			eval("MW.Images.ELEVATORGAME_CHICK_TALK_" + config.number));
+		animation = setTimeout(mouthClosed, 150);
+	}
+	
+	/**
+	 * Close mouth.
+	 * @private
+	 */
+	function mouthClosed () {
+		MW.SetImage(bird, 
+			eval("MW.Images.ELEVATORGAME_CHICK_" + config.number));
+		animation = setTimeout(mouthOpen, 150);
+	}
+	
 	
 	/**
 	 * @public
@@ -87,13 +107,41 @@ MW.Bird = function (config) {
 	 * @param {Boolean} walk - true if the bird should walk.
 	 */
 	group.walk = function (walk) {
+		clearTimeout(animation);
 		if (walk) {
 			walkLeft();
 		} else {
-			clearTimeout(animation);
 			MW.SetImage(bird,
 				eval("MW.Images.ELEVATORGAME_CHICK_" + config.number));
 		}
+	}
+	
+	/**
+	 * @public
+	 * @param {Boolean} talk - true if the bird should talk.
+	 */
+	group.talk = function (talk) {
+		clearTimeout(animation);
+		if (talk) {
+			mouthOpen();
+		} else {
+			MW.SetImage(bird,
+				eval("MW.Images.ELEVATORGAME_CHICK_" + config.number));
+		}
+	}
+	
+	/**
+	 * TODO: This should be made in a super class, along with panda stuff.
+	 * @public
+	 * @param {MW.SoundEntry} sound - the sound to play
+	 * @param {Number} time - time to talk (seconds)
+	 */
+	group.say = function (sound, time) {
+		MW.Sound.play(sound);
+		group.talk(true);
+		setTimeout(function () {
+			group.talk(false);
+		}, time * 1000);
 	}
 	
 	/**

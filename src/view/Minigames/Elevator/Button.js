@@ -92,6 +92,7 @@ MW.Button = MW.GlobalObject.extend(
 		});
 
 		graphics.on('mouseup', function () {
+			MW.Sound.play(MW.Sounds.CLICK);
 			MW.SetImage(graphics, image, 0, 0);
 			config.drawScene();
 			if (config.number === undefined) {
