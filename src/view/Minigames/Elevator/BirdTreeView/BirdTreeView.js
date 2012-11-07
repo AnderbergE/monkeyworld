@@ -398,15 +398,14 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		
 		/**
 		 * A target has been chosen, introduce baby bird.
-		 * @param {Hash} vars
-		 * @param {Number} vars.targetNumber - the target of the bird
+		 * @param {Number} number - the target of the bird
 		 */
-		view.on(MW.Event.PLACE_TARGET, function (vars) {
+		view.on(MW.Event.PLACE_TARGET, function (number) {
 			bird = new MW.Bird({
 				x: - elevator.getY() + coordinates.birdStartX,
 				y: - elevator.getY() + coordinates.birdStartY,
 				scale: {x: 0.3, y: 0.3},
-				number: vars.targetNumber
+				number: number
 			});
 			bird.walk(true);
 			elevator.addPassenger(bird);

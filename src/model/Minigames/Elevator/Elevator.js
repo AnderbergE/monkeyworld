@@ -31,9 +31,7 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 		function newBird () {
 			/* Randomize where it should go and send event */
 			targetNumber = 1 + Math.floor(Math.random() * numberOfBranches);
-			elevator.tell(MW.Event.PLACE_TARGET, {
-				targetNumber: targetNumber
-			});
+			elevator.tell(MW.Event.PLACE_TARGET, targetNumber);
 		}
 		
 		/**
@@ -124,7 +122,6 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 		 * Functions to run when stopping.
 		 */
 		/*this.addStop(function () {
-			
 		});*/
 		
 		
