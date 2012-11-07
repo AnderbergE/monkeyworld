@@ -6,10 +6,10 @@ MW.Event = {
 	MINIGAME_STARTED:	"miniGameStarted",
 	MINIGAME_ENDED:		"miniGameDone",
 	
-	/* {Number} */
 	START_MINIGAME:		"START_MINIGAME",
 	END_MINIGAME:		"END_MINIGAME",
 	
+	/* {Number} */
 	PLACE_TARGET:		"PLACE_TARGET",
 	TARGET_IS_PLACED:	"TARGET_IS_PLACED",
 	/* {number: {Number}, tooHigh: {Boolean}, tooLow: {Boolean}} */
@@ -29,6 +29,6 @@ MW.Event = {
 	AGENT_CHOICE:		"AGENT_CHOICE",
 	CORRECT_AGENT:		"CORRECT_AGENT",
 	
-	
+	PRINT_LOG:			"PRINT_LOG",
 	TRIGGER_FPS:		"TRIGGER_FPS"
 };

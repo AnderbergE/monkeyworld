@@ -47,6 +47,7 @@
 			<!-- model/Minigames -->
 			<file name="model/Minigames/Minigame.js" />
 			<file name="model/Minigames/Elevator/Elevator.js" />
+			<file name="model/Minigames/Elevator/Logger.js" />
 			
 			<!-- view -->
 			<file name="view/ViewModule.js" />
@@ -111,6 +112,7 @@
 				<!-- model/Minigames -->
 				<file name="model/Minigames/Minigame.js" />
 				<file name="model/Minigames/Elevator/Elevator.js" />
+				<file name="model/Minigames/Elevator/Logger.js" />
 				
 				<!-- view -->
 				<file name="view/ViewModule.js" />
@@ -171,6 +173,7 @@
 			<!-- model/Minigames -->
 			<file name="model/Minigames/Minigame.js" />
 			<file name="model/Minigames/Elevator/Elevator.js" />
+			<file name="model/Minigames/Elevator/Logger.js" />
 			
 			<!-- view -->
 			<file name="view/ViewModule.js" />

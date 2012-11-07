@@ -13,6 +13,7 @@ MW.MonkeyWorldView = MW.ViewModule.extend(
 	init: function (stage) {
 		this._super(stage, "MonkeyWorldView");
 		var layer = stage.getDynamicLayer();
+		var that = this;
 		/**
 		 * Show a menu in which the user can choose a mini game to play.
 		 * 
@@ -20,8 +21,19 @@ MW.MonkeyWorldView = MW.ViewModule.extend(
 		 */
 		(function(view) {
 			var buttons = [];
+			var log;
 			view.on("Game.showMiniGameChooser", function(msg) {
 			
+				log = new Kinetic.Text({
+					text: "log",
+					textFill: "black",
+					fontSize: 20
+				});
+				log.on("mousedown touchstart", function() {
+					that.tell(MW.Event.PRINT_LOG);
+				});
+				layer.add(log);
+				
 				var callback = msg.callback;
 				var games = msg.games;
 				var grid = Utils.gridizer(200, 200, 300, 100, 2);
@@ -63,6 +75,7 @@ MW.MonkeyWorldView = MW.ViewModule.extend(
 			});
 		
 			view.on("Game.hideMiniGameChooser", function(msg) {
+				layer.remove(log);
 				for (var i = 0; i < buttons.length; i++) {
 					layer.remove(buttons[i]);
 				}

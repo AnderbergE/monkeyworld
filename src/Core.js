@@ -52,6 +52,7 @@ MW.GameEngineStarter = function () {
 	};
 
 	console.log("Setting up game engine");
+	new MW.Logger();
 	var monkeyWorld = new MW.Game(stage, true);
 	var evm = monkeyWorld.evm;
 	
