@@ -23,6 +23,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			bird,
 			agent,
 			agentPickGroup,
+			bgMusic,
 			exitFade,
 			second = 1,
 			coordinates = {
@@ -190,11 +191,11 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 					duration: second * 2,
 					easing: 'ease-out',
 					callback: function () {
+						bird.walk(false);
 						/* Turn bird right */
 						turnBird(1, function () {
 							/* Bird talk */
-							/* TODO: Change sound */
-							bird.say(MW.Sounds.CLICK, second * 0.9);
+							bird.say(MW.Sounds.BIRD_THIS_LEVEL);
 							layer.transitionTo({
 								x: layer.getX(),
 								duration: second * 1,
@@ -272,14 +273,15 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 					duration: second * 1,
 					easing: 'ease-out',
 					callback: function () {
-						var animationTime = second * 2; 
+						bird.walk(false);
+						var animationTime = second *
+							MW.Sounds.BIRD_THANK.getLength();
 						if (isCorrect) {
 							/* The bird found home, celebrate! */
 							elevator.removePassenger(bird);
 							nest.addChick();
 							nest.celebrate(true);
-							/* TODO: Change sound */
-							MW.Sound.play(MW.Sounds.CLICK);
+							MW.Sound.play(MW.Sounds.BIRD_THANK);
 							if (!(agent === undefined)) {
 								agent.wave(true);
 							}
@@ -292,8 +294,6 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 						} else {
 							/* The bird did not find home, scare away! */
 							nest.confused(true);
-							/* TODO: Change sound */
-							MW.Sound.play(MW.Sounds.CLICK);
 							setTimeout(function () {
 								nest.confused(false);
 							}, animationTime * 1000);
@@ -302,7 +302,10 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 						layer.transitionTo({
 							x: layer.getX(),
 							duration: animationTime,
-							callback: callback
+							callback: function () {
+								agentPickGroup.removeChildren();
+								callback();
+							}
 						});
 					}
 				});
@@ -328,8 +331,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 				easing: 'ease-in-out',
 				callback: function () {
 					if (targetFloor != 0) {
-						/* TODO: Change sound */
-						MW.Sound.play(MW.Sounds.CLICK);
+						MW.Sound.play(MW.Sounds.LIFT);
 					}
 					if (nextFloor < targetFloor) {
 						elevator.setFloor(nextFloor);
@@ -350,7 +352,6 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		 * @param {Number} confidence - how sure the agent is
 		 */
 		function agentPickNumber (number, confidence) {
-			agentPickGroup.removeChildren();
 			var thought = new Kinetic.Image({
 				x: coordinates.agentStopX - 100,
 				y: coordinates.agentStopY - 30,
@@ -359,8 +360,6 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			});
 			agentPickGroup.add(thought);
 			
-			/* TODO: Change sound */
-			MW.Sound.play(MW.Sounds.CLICK);
 			thought.transitionTo({
 				x: thought.getX() - 100,
 				y: thought.getY() - 30,
@@ -376,14 +375,11 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 						number: number
 					});
 					if (confidence >= 0.8) {
-						/* TODO: Change sound */
-						agent.say(MW.Sounds.CLICK, 0.5);
+						agent.say(MW.Sounds.AGENT_PICK_CONFIDENCE_HIGH);
 					} else if (confidence >= 0.5) {
-						/* TODO: Change sound */
-						agent.say(MW.Sounds.CLICK, 0.5);
+						agent.say(MW.Sounds.AGENT_PICK_CONFIDENCE_MEDIUM);
 					} else {
-						/* TODO: Change sound */
-						agent.say(MW.Sounds.CLICK, 0.5);
+						agent.say(MW.Sounds.AGENT_PICK_CONFIDENCE_LOW);
 					}
 					button.getGroup().setScale({x: 0.5, y: 0.5});
 					button.lock(true);
@@ -430,12 +426,10 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			
 			var sound, soundTime
 			if (vars.tooHigh) {
-				/* TODO: Change sound */
-				sound = MW.Sounds.CLICK;
+				sound = MW.Sounds.BIRD_WRONG_LOWER;
 				soundTime = second * 1;
 			} else if (vars.tooLow) {
-				/* TODO: Change sound */
-				sound = MW.Sounds.CLICK;
+				sound = MW.Sounds.BIRD_WRONG_HIGHER;
 				soundTime = second * 1;
 			} 
 			
@@ -450,8 +444,8 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 				if (vars.tooHigh || vars.tooLow) {
 					/* If picked wrong, bird goes back */
 					bird.say(sound, soundTime);
-					bird.walk(true);
 					setTimeout(function () {
+						bird.walk(true);
 						moveBirdToElevator(function () {
 						moveBirdElevatorPeak(true, function () {
 						moveElevator(0, 0, function () {
@@ -503,12 +497,16 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 				layer.draw();
 			}, 50);
 			
+			/* Game begins, cue intro sound */
+			MW.Sound.play(MW.Sounds.INTRO);
+			/* Play background sounds after that */
+			bgMusic = setInterval(function () {
+				MW.Sound.play(MW.Sounds.BG);
+			}, MW.Sounds.BG.getLength() * 1000);
+			
 			/* Take some time before the storm starts */
 			setTimeout(function () {
 				/* Bring in clouds, birds stop being happy */
-				
-				/* TODO: Change sound */
-				MW.Sound.play(MW.Sounds.CLICK);
 				introClouds.transitionTo({
 					opacity: 1,
 					duration: second * 1,
@@ -521,7 +519,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 				/* Bring in rain, after birds are blown out of nest */
 				introRain.transitionTo({
 					opacity: 1,
-					duration: second * 2,
+					duration: second * 2.5,
 					callback: function () {
 						var animationTime = 4;
 						for (i = 1; i <= tree.getNbrOfBranches(); i++) {
@@ -571,7 +569,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 						}, second * animationTime * 1000);
 					}
 				});
-			}, second * 2 * 1000);
+			}, second * 2.2 * 1000);
 		});
 		
 		/**
@@ -594,15 +592,15 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 				duration: second * 3,
 				easing: 'ease-out',
 				callback: function () {
-					/* TODO: Change sound */
-					var soundTime = 1;
-					agent.say(MW.Sounds.CLICK, soundTime);
-					agent.wave(true);
+					/* TODO: can not wave and talk */
+					agent.say(MW.Sounds.AGENT_HELLO);
+					//agent.wave(true);
 					setTimeout(function () {
-						agent.wave(false);
+						//agent.wave(false);
 						agent.followCursor(true);
-					}, second * (soundTime + 0.1) * 1000);
-					view.tell(MW.Event.ROUND_DONE);
+						view.tell(MW.Event.ROUND_DONE);
+					}, second *
+						(MW.Sounds.AGENT_HELLO.getLength() + 0.1) * 1000);
 				}
 			});
 		});
@@ -613,9 +611,10 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		view.on(MW.Event.START_AGENT, function () {
 			showPanel(numpanel, false);
 			agent.followCursor(false);
-			/* TODO: Change sound */
-			agent.say(MW.Sounds.CLICK, 0.5);
-			view.tell(MW.Event.ROUND_DONE);
+			agent.say(MW.Sounds.AGENT_I_TRY);
+			setTimeout(function () {
+				view.tell(MW.Event.ROUND_DONE);
+			}, MW.Sounds.AGENT_I_TRY.getLength() * 1000);
 		});
 		
 		/**
@@ -626,8 +625,10 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		 */
 		view.on(MW.Event.AGENT_CHOICE, function (vars) {
 			showPanel(numpanel, false);
-			agentPickGroup.setListening(true);
-			agentPickNumber(vars.number, vars.confidence);
+			/* Otherwise the bird will not have finished speaking. */ 
+			setTimeout(function () {
+				agentPickNumber(vars.number, vars.confidence);
+			}, second * 2.5 * 1000);
 		});
 		
 		/**
@@ -637,10 +638,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			showPanel(boolpanel, false, function () {
 				showPanel(numpanel, true);
 			});
-			agentPickGroup.setListening(false);
-			/* Play sound that agent wants help */
-			/* TODO: Change sound */
-			agent.say(MW.Sounds.CLICK, 0.5);
+			agent.say(MW.Sounds.AGENT_HELPED_OK);
 		});
 		
 		/**
@@ -651,11 +649,10 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			for (i = 1; i <= tree.getNbrOfBranches(); i++) {
 				tree.getBranch(i).getNest().celebrate(true);
 			}
+			MW.Sound.play(MW.Sounds.BIRD_SCREAM);
 			if (agent !== undefined) {
 				agent.wave(true);
 			}
-			/* TODO: Change sound */
-			agent.say(MW.Sounds.CLICK, 0.5);
 			panelLayer.transitionTo({
 				opacity: 0,
 				duration: second * 1
@@ -664,6 +661,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 				opacity: 1,
 				duration: second * 5,
 				callback: function () {
+					clearInterval(bgMusic);
 					view.tell(MW.Event.MINIGAME_ENDED);
 				}
 			});

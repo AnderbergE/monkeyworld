@@ -134,14 +134,13 @@ MW.Bird = function (config) {
 	 * TODO: This should be made in a super class, along with panda stuff.
 	 * @public
 	 * @param {MW.SoundEntry} sound - the sound to play
-	 * @param {Number} time - time to talk (seconds)
 	 */
-	group.say = function (sound, time) {
+	group.say = function (sound) {
 		MW.Sound.play(sound);
 		group.talk(true);
 		setTimeout(function () {
 			group.talk(false);
-		}, time * 1000);
+		}, sound.getLength() * 1000);
 	}
 	
 	/**

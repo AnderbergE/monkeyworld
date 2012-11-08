@@ -105,7 +105,8 @@ MW.PandaAgentView = MW.GlobalObject.extend(
 		 */
 		function mouthOpen () {
 			MW.SetImage(panda, MW.Images.ELEVATORGAME_AGENT_PANDA_TALK);
-			animation = setTimeout(mouthClosed, 150);
+			animation = setTimeout(mouthClosed, 200);
+			config.drawScene();
 		}
 		
 		/**
@@ -114,7 +115,8 @@ MW.PandaAgentView = MW.GlobalObject.extend(
 		 */
 		function mouthClosed () {
 			MW.SetImage(panda, MW.Images.ELEVATORGAME_AGENT_PANDA);
-			animation = setTimeout(mouthOpen, 150);
+			animation = setTimeout(mouthOpen, 200);
+			config.drawScene();
 		}
 		
 		/**
@@ -212,14 +214,13 @@ MW.PandaAgentView = MW.GlobalObject.extend(
 		 * TODO: This should be made in a super class, along with bird stuff.
 		 * @public
 		 * @param {MW.SoundEntry} sound - the sound to play
-		 * @param {Number} time - time to talk (seconds)
 		 */
-		this.say = function (sound, time) {
+		this.say = function (sound) {
 			MW.Sound.play(sound);
 			that.talk(true);
 			setTimeout(function () {
 				that.talk(false);
-			}, time * 1000);
+			}, sound.getLength() * 1000);
 		}
 		
 		/**
