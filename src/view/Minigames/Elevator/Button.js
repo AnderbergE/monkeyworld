@@ -36,6 +36,9 @@ MW.Button = MW.GlobalObject.extend(
 				(config.bool ? "YES" : "NO"));
 			imageDown = eval("MW.Images.ELEVATORGAME_BUTTON_DOWN_" +
 				(config.bool ? "YES" : "NO"));
+		} else if (config.number == 0) {
+			image = MW.Images.ELEVATORGAME_BUTTON_QUESTION;
+			imageDown = MW.Images.ELEVATORGAME_BUTTON_DOWN_QUESTION;
 		} else {
 			image = eval("MW.Images.ELEVATORGAME_BUTTON_FINGERS_" +
 				config.number);
@@ -97,6 +100,8 @@ MW.Button = MW.GlobalObject.extend(
 			config.drawScene();
 			if (config.number === undefined) {
 				button.tell(MW.Event.BUTTON_PUSH_BOOL, config.bool);
+			} else if (config.number == 0) {
+				button.tell(MW.Event.BUTTON_PUSH_HELP);
 			} else {
 				button.tell(MW.Event.BUTTON_PUSH_NUMBER, config.number);
 			}

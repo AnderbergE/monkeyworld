@@ -34,10 +34,13 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 				birdShowX: 50, birdShowY: 500,
 				agentStartX: 200, agentStartY: 800,
 				agentStopX: 290, agentStopY: 400,
+				helpButtonX: 10, helpButtonY: 10,
 			};
 		
 		layer = new Kinetic.Layer();
-		panelLayer = new Kinetic.Layer();
+		panelLayer = new Kinetic.Layer({
+			opacity: 0
+		});
 		
 		/* Add background */
 		layer.add(new Kinetic.Image({
@@ -117,6 +120,18 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			opacity: 0
 		})
 		layer.add(exitFade);
+		
+		/* Add help button */
+		panelLayer.add(new MW.Button({
+			x: coordinates.helpButtonX,
+			y: coordinates.helpButtonY,
+			width: 60,
+			height: 80,
+			number: 0,
+			drawScene: function () {
+				panelLayer.draw();
+			}
+		}).getGroup());
 		
 		/* Add the layers */
 		stage.add(layer);
@@ -451,6 +466,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 						moveElevator(0, 0, function () {
 						moveBirdElevatorPeak(false, function () {
 						moveBirdToStartPosition();
+						/* If agent, say oops. */
 						});
 						});
 						});
@@ -561,6 +577,10 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 									layer.remove(introGroup);
 									/* Short break */
 									setTimeout(function () {
+										panelLayer.transitionTo({
+											opacity: 1,
+											duration: second * 0.25
+										});
 										showPanel(numpanel, true);
 										view.tell(MW.Event.ROUND_DONE);
 									}, second * 1 * 1000);
@@ -665,6 +685,13 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 					view.tell(MW.Event.MINIGAME_ENDED);
 				}
 			});
+		});
+		
+		/**
+		 * User wants help!
+		 */
+		view.on(MW.Event.BUTTON_PUSH_HELP, function () {
+			MW.Sound.play(MW.Sounds.BIRD_HELP_US_HOME);
 		});
 		
 		

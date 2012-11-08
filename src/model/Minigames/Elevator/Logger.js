@@ -45,6 +45,10 @@ MW.Logger = MW.GlobalObject.extend(
 			addLog(MW.Event.BUTTON_PUSH_BOOL, bool ? "yes" : "no");
 		});
 		
+		this.on(MW.Event.BUTTON_PUSH_HELP, function () {
+			addLog(MW.Event.BUTTON_PUSH_HELP);
+		});
+		
 		
 		this.on(MW.Event.PLACE_TARGET, function (number) {
 			addLog(MW.Event.PLACE_TARGET, number);
