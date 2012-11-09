@@ -393,11 +393,8 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 						agent.say(MW.Sounds.AGENT_PICK_CONFIDENCE_LOW);
 					}
 					button.getGroup().setScale({x: 0.5, y: 0.5});
-					button.lock(true);
 					agentPickGroup.add(button.getGroup());
-					showPanel(boolpanel, true, function () {
-						boolpanel.lock(false);
-					});
+					showPanel(boolpanel, true);
 				}
 			});
 		}
