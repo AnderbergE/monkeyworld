@@ -16,7 +16,15 @@ MW.Bird = function (config) {
 	if (config.drawScene === undefined) config.drawScene = function () {};
 	var group,
 		bird,
-		animation;
+		feet,
+		walkAnimation,
+		beak,
+		talkAnimation,
+		coordinates = {
+			feetX: 122, feetY: 203,
+			feetWalkX: 113, feetWalkY: 203,
+			beakX: 172, beakY: 46,
+		};
 	
 	group = new Kinetic.Group({
 			x: config.x,
@@ -25,55 +33,22 @@ MW.Bird = function (config) {
 	});
 	
 	/* Add bird */
+	feet = new Kinetic.Image({
+		x: coordinates.feetX,
+		y: coordinates.feetY,
+		image: MW.Images.ELEVATORGAME_CHICK_FEET_LIGHT_1
+	});
+	group.add(feet);
 	bird = new Kinetic.Image({
 		image: eval("MW.Images.ELEVATORGAME_CHICK_" + config.number)
 	});
 	group.add(bird);
-	
-	
-	/**
-	 * Walk with left foot.
-	 * @private
-	 */
-	function walkLeft() {
-		MW.SetImage(bird,
-			eval("MW.Images.ELEVATORGAME_CHICK_WALK_LEFT_" + config.number));
-		animation = setTimeout(walkRight, 150);
-		config.drawScene();
-	}
-	
-	/**
-	 * Walk with right foot.
-	 * @private
-	 */
-	function walkRight() {
-		MW.SetImage(bird,
-			eval("MW.Images.ELEVATORGAME_CHICK_WALK_RIGHT_" + config.number));
-		animation = setTimeout(walkLeft, 150);
-		config.drawScene();
-	}
-	
-	/**
-	 * Open mouth.
-	 * @private
-	 */
-	function mouthOpen () {
-		MW.SetImage(bird, 
-			eval("MW.Images.ELEVATORGAME_CHICK_TALK_" + config.number));
-		animation = setTimeout(mouthClosed, 150);
-		config.drawScene();
-	}
-	
-	/**
-	 * Close mouth.
-	 * @private
-	 */
-	function mouthClosed () {
-		MW.SetImage(bird, 
-			eval("MW.Images.ELEVATORGAME_CHICK_" + config.number));
-		animation = setTimeout(mouthOpen, 150);
-		config.drawScene();
-	}
+	beak = new Kinetic.Image({
+		x: coordinates.beakX,
+		y: coordinates.beakY,
+		image: MW.Images.ELEVATORGAME_CHICK_BEAK_OPEN_LIGHT
+	});
+	group.add(beak);
 	
 	
 	/**
@@ -97,8 +72,6 @@ MW.Bird = function (config) {
 	 * @param {Boolean} show - true if the bird should show its wings.
 	 */
 	group.showNumber = function (show) {
-		/* Change width and height to avoid stretch/squeeze */
-		clearTimeout(animation);
 		if (show) {
 			MW.SetImage(bird, 
 				eval("MW.Images.ELEVATORGAME_CHICK_SHOW_" + config.number));
@@ -115,12 +88,23 @@ MW.Bird = function (config) {
 	 * @param {Boolean} walk - true if the bird should walk.
 	 */
 	group.walk = function (walk) {
-		clearTimeout(animation);
 		if (walk) {
-			walkLeft();
+			var leftLeg = true;
+			walkAnimation = setInterval(function () {
+				if (leftLeg) {
+					MW.SetImage(feet, MW.Images.ELEVATORGAME_CHICK_WALK_LIGHT_1,
+						coordinates.feetWalkX, coordinates.feetWalkY);
+				} else {
+					MW.SetImage(feet, MW.Images.ELEVATORGAME_CHICK_WALK_LIGHT_2);
+					config.drawScene();
+				}
+				config.drawScene();
+				leftLeg = !leftLeg;
+			}, 150);
 		} else {
-			MW.SetImage(bird,
-				eval("MW.Images.ELEVATORGAME_CHICK_" + config.number));
+			clearInterval(walkAnimation);
+			MW.SetImage(feet, MW.Images.ELEVATORGAME_CHICK_FEET_LIGHT_1,
+				coordinates.feetX, coordinates.feetY);
 			config.drawScene();
 		}
 	}
@@ -130,12 +114,20 @@ MW.Bird = function (config) {
 	 * @param {Boolean} talk - true if the bird should talk.
 	 */
 	group.talk = function (talk) {
-		clearTimeout(animation);
 		if (talk) {
-			mouthOpen();
+			var mouthOpen = true;
+			talkAnimation = setInterval(function () {
+				if (mouthOpen) {
+					MW.SetImage(beak, MW.Images.ELEVATORGAME_CHICK_BEAK_OPEN_LIGHT);
+				} else {
+					MW.SetImage(beak, MW.Images.ELEVATORGAME_CHICK_BEAK_CLOSED_DARK);
+				}
+				config.drawScene();
+				mouthOpen = !mouthOpen;
+			}, 150);
 		} else {
-			MW.SetImage(bird,
-				eval("MW.Images.ELEVATORGAME_CHICK_" + config.number));
+			clearInterval(talkAnimation);
+			MW.SetImage(beak, MW.Images.ELEVATORGAME_CHICK_BEAK_OPEN_LIGHT);
 			config.drawScene();
 		}
 	}
