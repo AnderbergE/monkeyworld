@@ -22,7 +22,7 @@ MW.Sounds = {
 	CORRECT: new MW.SoundEntry("effects/correct", 2.22, 4),
 	LIFT: new MW.SoundEntry("effects/lift", 0.91, 4),
 	INTRO: new MW.SoundEntry("effects/intro", 18.94, 1),
-	BG: new MW.SoundEntry("effects/loop", 18.94, 1),
+	BG: new MW.SoundEntry("effects/loop", 18.94, 2),
 	
 	BIRD_HELP_US_HOME: new MW.SoundEntry("chick/help_us_home", 4.70, 1),
 	BIRD_SCREAM: new MW.SoundEntry("chick/scream", 6.19, 1),
