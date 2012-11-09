@@ -170,10 +170,9 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 		 * Start new round.
 		 */
 		this.on(MW.Event.TARGET_IS_PLACED, function () {
+			elevator.tell(MW.Event.LOCK_BUTTONS, false);
 			if (elevator.modeIsAgentDo()) {
 				agentPickNumber();
-			} else {
-				elevator.tell(MW.Event.LOCK_BUTTONS, false);
 			}
 		});
 	}
