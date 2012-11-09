@@ -23,6 +23,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			bird,
 			agent,
 			agentPickGroup,
+			first = {pick: true, agentPick: true},
 			bgMusic,
 			exitFade,
 			second = 1,
@@ -128,8 +129,8 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		panelLayer.add(new MW.Button({
 			x: coordinates.helpButtonX,
 			y: coordinates.helpButtonY,
-			width: 60,
-			height: 80,
+			width: 45,
+			height: 60,
 			number: 0,
 			drawScene: function () {
 				panelLayer.draw();
@@ -156,7 +157,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			/* If opacity is already correct, no need to run transition */
 			if (panel.getGroup().getOpacity() == (show ? 1 : 0)) {
 				/* Don't forget to call this anyway */
-				if (!(callback === undefined)) {
+				if (callback !== undefined) {
 					callback();
 				}
 				return;
@@ -213,11 +214,20 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 						/* Turn bird right */
 						turnBird(1, function () {
 							/* Bird talk */
-							bird.say(MW.Sounds.BIRD_THIS_LEVEL);
+							var timeout = 0;
+							if (first.pick) {
+								bird.say(MW.Sounds.BIRD_INSTRUCTION_1);
+								timeout =
+									MW.Sounds.BIRD_INSTRUCTION_1.getLength() + 0.5;
+								first.pick = false;
+							}
 							setTimeout(function () {
-								bird.showNumber(true);
-								view.tell(MW.Event.TARGET_IS_PLACED);
-							}, second * 1 * 1000);
+								bird.say(MW.Sounds.BIRD_THIS_LEVEL);
+								setTimeout(function () {
+									bird.showNumber(true);
+									view.tell(MW.Event.TARGET_IS_PLACED);
+								}, second * 1 * 1000);
+							}, second * timeout * 1000);
 						});
 					}
 				});
@@ -342,14 +352,15 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 				duration: second * 1,
 				easing: 'ease-in-out',
 				callback: function () {
-					if (targetFloor != 0) {
-						MW.Sound.play(MW.Sounds.LIFT);
-					}
 					elevator.setFloor(nextFloor);
 					if (nextFloor < targetFloor) {
 						/* Recursive call if we have not reached our dest */
+						MW.Sound.play(MW.Sounds.LIFT);
 						moveElevator(targetFloor, nextFloor + 1, callback);
 					} else {
+						if (targetFloor != 0) {
+							MW.Sound.play(MW.Sounds.LIFT_STOP);
+						}
 						callback();
 					}
 				}
@@ -371,6 +382,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			});
 			agentPickGroup.add(thought);
 			
+			agent.say(MW.Sounds.AGENT_HMM);
 			thought.transitionTo({
 				x: thought.getX() - 100,
 				y: thought.getY() - 30,
@@ -385,16 +397,29 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 							(thought.getHeight() * thought.getScale().y) / 3,
 						number: number
 					});
-					if (confidence >= 0.8) {
-						agent.say(MW.Sounds.AGENT_PICK_CONFIDENCE_HIGH);
-					} else if (confidence >= 0.5) {
-						agent.say(MW.Sounds.AGENT_PICK_CONFIDENCE_MEDIUM);
-					} else {
-						agent.say(MW.Sounds.AGENT_PICK_CONFIDENCE_LOW);
-					}
 					button.getGroup().setScale({x: 0.5, y: 0.5});
 					agentPickGroup.add(button.getGroup());
 					showPanel(boolpanel, true);
+					
+					var timeout = 0;
+					if (first.agentPick) {
+						bird.say(MW.Sounds.BIRD_INSTRUCTION_2);
+						timeout = MW.Sounds.BIRD_INSTRUCTION_2.getLength() + 0.5;
+						boolpanel.getGroup().setListening(false);
+						panelLayer.draw();
+						first.agentPick = false;
+					}
+					setTimeout(function () {
+						if (confidence >= 0.8) {
+							agent.say(MW.Sounds.AGENT_PICK_CONFIDENCE_HIGH);
+						} else if (confidence >= 0.5) {
+							agent.say(MW.Sounds.AGENT_PICK_CONFIDENCE_MEDIUM);
+						} else {
+							agent.say(MW.Sounds.AGENT_PICK_CONFIDENCE_LOW);
+						}
+						boolpanel.getGroup().setListening(true);
+						panelLayer.draw();
+					}, second * timeout * 1000);
 				}
 			});
 		}
@@ -460,7 +485,9 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 						moveElevator(0, 0, function () {
 						moveBirdElevatorPeak(false, function () {
 						moveBirdToStartPosition();
-						/* If agent, say oops. */
+						if (!first.agentPick) {
+							agent.say(MW.Sounds.AGENT_TRY_AGAIN);
+						}
 						});
 						});
 						});
@@ -512,7 +539,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			/* Play background sounds after that */
 			bgMusic = setInterval(function () {
 				MW.Sound.play(MW.Sounds.BG);
-			}, MW.Sounds.BG.getLength() * 1000);
+			}, (MW.Sounds.BG.getLength() - 0.1) * 1000);
 			
 			/* Take some time before the storm starts */
 			setTimeout(function () {
@@ -646,10 +673,20 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		 * Player corrected agent.
 		 */
 		view.on(MW.Event.CORRECT_AGENT, function () {
-			showPanel(boolpanel, false, function () {
-				showPanel(numpanel, true);
+			var cross = new Kinetic.Image({
+				x: agentPickGroup.getChildren()[1].getX() - 2,
+				y: agentPickGroup.getChildren()[1].getY() - 2,
+				scale: agentPickGroup.getChildren()[1].getScale(),
+				image: MW.Images.ELEVATORGAME_CROSS
 			});
-			agent.say(MW.Sounds.AGENT_HELPED_OK);
+			agentPickGroup.add(cross);
+			layer.draw();
+			showPanel(boolpanel, false, function () {
+				agent.say(MW.Sounds.AGENT_HELPED);
+				setTimeout(function () {
+					showPanel(numpanel, true);
+				}, MW.Sounds.AGENT_HELPED.getLength());
+			});
 		});
 		
 		/**
@@ -670,7 +707,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			});
 			exitFade.transitionTo({
 				opacity: 1,
-				duration: second * 5,
+				duration: second * 7,
 				callback: function () {
 					clearInterval(bgMusic);
 					view.tell(MW.Event.MINIGAME_ENDED);
@@ -682,7 +719,11 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		 * User wants help!
 		 */
 		view.on(MW.Event.BUTTON_PUSH_HELP, function () {
-			MW.Sound.play(MW.Sounds.BIRD_HELP_US_HOME);
+			if (!first.agentPick) {
+				MW.Sound.play(MW.Sounds.BIRD_INSTRUCTION_2);
+			} else {
+				MW.Sound.play(MW.Sounds.BIRD_INSTRUCTION_1);
+			}
 		});
 		
 		

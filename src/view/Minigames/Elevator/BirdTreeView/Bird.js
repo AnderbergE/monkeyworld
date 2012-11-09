@@ -16,7 +16,6 @@ MW.Bird = function (config) {
 	if (config.drawScene === undefined) config.drawScene = function () {};
 	var group,
 		bird,
-		hue = "LIGHT",
 		feet,
 		walkAnimation,
 		beak,
@@ -34,14 +33,10 @@ MW.Bird = function (config) {
 	});
 	
 	/* Add bird */
-	if (config.number < 5) {
-		/* Bird 1,2,3,4 have dark feet and beak */
-		hue = "DARK";
-	}
 	feet = new Kinetic.Image({
 		x: coordinates.feetX,
 		y: coordinates.feetY,
-		image: eval("MW.Images.ELEVATORGAME_CHICK_FEET_" + hue)
+		image: MW.Images.ELEVATORGAME_CHICK_FEET
 	});
 	group.add(feet);
 	bird = new Kinetic.Image({
@@ -51,7 +46,7 @@ MW.Bird = function (config) {
 	beak = new Kinetic.Image({
 		x: coordinates.beakX,
 		y: coordinates.beakY,
-		image: eval("MW.Images.ELEVATORGAME_CHICK_BEAK_OPEN_" + hue)
+		image: MW.Images.ELEVATORGAME_CHICK_BEAK_OPEN
 	});
 	group.add(beak);
 	
@@ -97,12 +92,10 @@ MW.Bird = function (config) {
 			var leftLeg = true;
 			walkAnimation = setInterval(function () {
 				if (leftLeg) {
-					MW.SetImage(feet,
-						eval("MW.Images.ELEVATORGAME_CHICK_WALK_" + hue + "_1"),
+					MW.SetImage(feet, MW.Images.ELEVATORGAME_CHICK_WALK_1,
 						coordinates.feetWalkX, coordinates.feetWalkY);
 				} else {
-					MW.SetImage(feet,
-						eval("MW.Images.ELEVATORGAME_CHICK_WALK_" + hue + "_2"));
+					MW.SetImage(feet, MW.Images.ELEVATORGAME_CHICK_WALK_2);
 					config.drawScene();
 				}
 				config.drawScene();
@@ -110,7 +103,7 @@ MW.Bird = function (config) {
 			}, 150);
 		} else {
 			clearInterval(walkAnimation);
-			MW.SetImage(feet, eval("MW.Images.ELEVATORGAME_CHICK_FEET_" + hue),
+			MW.SetImage(feet, MW.Images.ELEVATORGAME_CHICK_FEET,
 				coordinates.feetX, coordinates.feetY);
 			config.drawScene();
 		}
@@ -125,19 +118,16 @@ MW.Bird = function (config) {
 			var mouthOpen = true;
 			talkAnimation = setInterval(function () {
 				if (mouthOpen) {
-					MW.SetImage(beak,
-						eval("MW.Images.ELEVATORGAME_CHICK_BEAK_OPEN_" + hue));
+					MW.SetImage(beak, MW.Images.ELEVATORGAME_CHICK_BEAK_OPEN);
 				} else {
-					MW.SetImage(beak,
-						eval("MW.Images.ELEVATORGAME_CHICK_BEAK_CLOSED_" + hue));
+					MW.SetImage(beak, MW.Images.ELEVATORGAME_CHICK_BEAK_CLOSED);
 				}
 				config.drawScene();
 				mouthOpen = !mouthOpen;
 			}, 150);
 		} else {
 			clearInterval(talkAnimation);
-			MW.SetImage(beak,
-				eval("MW.Images.ELEVATORGAME_CHICK_BEAK_OPEN_" + hue));
+			MW.SetImage(beak, MW.Images.ELEVATORGAME_CHICK_BEAK_OPEN);
 			config.drawScene();
 		}
 	}
