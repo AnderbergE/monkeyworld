@@ -5,6 +5,7 @@
  * 		{Number} y - y position, default 0
  * 		{Number} scale - scale of bird, default 0
  * 		{Number} number - number of the bird, default 0
+ *		{Function} drawScene - function that redraws the scene, default empty.
  * @return The bird as a Kinetic.group.
  */
 MW.Bird = function (config) {
@@ -12,6 +13,7 @@ MW.Bird = function (config) {
 	if (config.y === undefined) config.y = 0;
 	if (config.scale === undefined) config.scale = 1;
 	if (config.number === undefined) config.number = 0;
+	if (config.drawScene === undefined) config.drawScene = function () {};
 	var group,
 		bird,
 		animation;
@@ -37,6 +39,7 @@ MW.Bird = function (config) {
 		MW.SetImage(bird,
 			eval("MW.Images.ELEVATORGAME_CHICK_WALK_LEFT_" + config.number));
 		animation = setTimeout(walkRight, 150);
+		config.drawScene();
 	}
 	
 	/**
@@ -47,6 +50,7 @@ MW.Bird = function (config) {
 		MW.SetImage(bird,
 			eval("MW.Images.ELEVATORGAME_CHICK_WALK_RIGHT_" + config.number));
 		animation = setTimeout(walkLeft, 150);
+		config.drawScene();
 	}
 	
 	/**
@@ -57,6 +61,7 @@ MW.Bird = function (config) {
 		MW.SetImage(bird, 
 			eval("MW.Images.ELEVATORGAME_CHICK_TALK_" + config.number));
 		animation = setTimeout(mouthClosed, 150);
+		config.drawScene();
 	}
 	
 	/**
@@ -67,6 +72,7 @@ MW.Bird = function (config) {
 		MW.SetImage(bird, 
 			eval("MW.Images.ELEVATORGAME_CHICK_" + config.number));
 		animation = setTimeout(mouthOpen, 150);
+		config.drawScene();
 	}
 	
 	
@@ -96,9 +102,11 @@ MW.Bird = function (config) {
 		if (show) {
 			MW.SetImage(bird, 
 				eval("MW.Images.ELEVATORGAME_CHICK_SHOW_" + config.number));
+			config.drawScene();
 		} else {
 			MW.SetImage(bird, 
 				eval("MW.Images.ELEVATORGAME_CHICK_" + config.number));
+			config.drawScene();
 		}
 	}
 	
@@ -113,6 +121,7 @@ MW.Bird = function (config) {
 		} else {
 			MW.SetImage(bird,
 				eval("MW.Images.ELEVATORGAME_CHICK_" + config.number));
+			config.drawScene();
 		}
 	}
 	
@@ -127,6 +136,7 @@ MW.Bird = function (config) {
 		} else {
 			MW.SetImage(bird,
 				eval("MW.Images.ELEVATORGAME_CHICK_" + config.number));
+			config.drawScene();
 		}
 	}
 	

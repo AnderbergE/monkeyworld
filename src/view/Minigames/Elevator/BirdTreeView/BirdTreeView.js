@@ -53,7 +53,10 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		tree = new MW.BirdTree({
 			x: coordinates.treeX,
 			y: coordinates.treeY,
-			nbrOfBranches: elevatorMinigame.getNumberOfBranches()
+			nbrOfBranches: elevatorMinigame.getNumberOfBranches(),
+			drawScene: function () {
+				layer.draw();
+			}
 		});
 		layer.add(tree);
 		
@@ -211,14 +214,10 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 						turnBird(1, function () {
 							/* Bird talk */
 							bird.say(MW.Sounds.BIRD_THIS_LEVEL);
-							layer.transitionTo({
-								x: layer.getX(),
-								duration: second * 1,
-								callback: function () {
-									bird.showNumber(true);
-									view.tell(MW.Event.TARGET_IS_PLACED);
-								}
-							});
+							setTimeout(function () {
+								bird.showNumber(true);
+								view.tell(MW.Event.TARGET_IS_PLACED);
+							}, second * 1 * 1000);
 						});
 					}
 				});
@@ -291,20 +290,26 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 						bird.walk(false);
 						var animationTime = second *
 							MW.Sounds.BIRD_THANK.getLength();
+						/* Call after bird reacts to mother */
+						var endFunction = function () {
+							agentPickGroup.removeChildren();
+							callback();
+						}
 						if (isCorrect) {
 							/* The bird found home, celebrate! */
 							elevator.removePassenger(bird);
 							nest.addChick();
 							nest.celebrate(true);
 							MW.Sound.play(MW.Sounds.BIRD_THANK);
-							if (!(agent === undefined)) {
+							if (agent !== undefined) {
 								agent.wave(true);
 							}
 							setTimeout(function () {
 								nest.celebrate(false);
-								if (!(agent === undefined)) {
+								if (agent !== undefined) {
 									agent.wave(false);
 								}
+								endFunction();
 							}, animationTime * 1000);
 						} else {
 							/* The bird did not find home, scare away! */
@@ -312,16 +317,8 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 							setTimeout(function () {
 								nest.confused(false);
 							}, animationTime * 1000);
+							endFunction();
 						}
-						/* This will draw the celebration correctly */
-						layer.transitionTo({
-							x: layer.getX(),
-							duration: animationTime,
-							callback: function () {
-								agentPickGroup.removeChildren();
-								callback();
-							}
-						});
 					}
 				});
 			});
@@ -348,12 +345,11 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 					if (targetFloor != 0) {
 						MW.Sound.play(MW.Sounds.LIFT);
 					}
+					elevator.setFloor(nextFloor);
 					if (nextFloor < targetFloor) {
-						elevator.setFloor(nextFloor);
 						/* Recursive call if we have not reached our dest */
 						moveElevator(targetFloor, nextFloor + 1, callback);
 					} else {
-						elevator.setFloor(nextFloor);
 						callback();
 					}
 				}
@@ -416,7 +412,10 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 				x: - elevator.getY() + coordinates.birdStartX,
 				y: - elevator.getY() + coordinates.birdStartY,
 				scale: {x: 0.3, y: 0.3},
-				number: number
+				number: number,
+				drawScene: function () {
+					layer.draw();
+				}
 			});
 			bird.walk(true);
 			elevator.addPassenger(bird);
@@ -442,10 +441,8 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			var sound, soundTime
 			if (vars.tooHigh) {
 				sound = MW.Sounds.BIRD_WRONG_LOWER;
-				soundTime = second * 1;
 			} else if (vars.tooLow) {
 				sound = MW.Sounds.BIRD_WRONG_HIGHER;
-				soundTime = second * 1;
 			} 
 			
 			bird.showNumber(false);
@@ -458,7 +455,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 				function () {
 				if (vars.tooHigh || vars.tooLow) {
 					/* If picked wrong, bird goes back */
-					bird.say(sound, soundTime);
+					bird.say(sound);
 					setTimeout(function () {
 						bird.walk(true);
 						moveBirdToElevator(function () {
@@ -471,7 +468,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 						});
 						});
 						});
-					}, (soundTime + 0.1) * 1000);
+					}, (sound.getLength() + 0.1) * 1000);
 				} else {
 					moveElevator(0, 0, function () {
 						view.tell(MW.Event.ROUND_DONE);
@@ -612,11 +609,8 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 				duration: second * 3,
 				easing: 'ease-out',
 				callback: function () {
-					/* TODO: can not wave and talk */
 					agent.say(MW.Sounds.AGENT_HELLO);
-					//agent.wave(true);
 					setTimeout(function () {
-						//agent.wave(false);
 						agent.followCursor(true);
 						view.tell(MW.Event.ROUND_DONE);
 					}, second *

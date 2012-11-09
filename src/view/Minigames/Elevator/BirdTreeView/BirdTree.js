@@ -5,12 +5,14 @@
  * 		{Number} x - x position, default 0
  * 		{Number} y - y position, default 0
  * 		{Number} nbrOfBranches - the number of branches, default 5
+ *		{Function} drawScene - function that redraws the scene, default empty.
  * @return The bird tree as a Kinetic.group.
  */
 MW.BirdTree = function (config) {
 	if (config.x === undefined) config.x = 0;
 	if (config.y === undefined) config.y = 0;
 	if (config.nbrOfBranches === undefined) config.nbrOfBranches = 5;
+	if (config.drawScene === undefined) config.drawScene = function () {};
 	var group, 
 		bole;
 	
@@ -23,7 +25,8 @@ MW.BirdTree = function (config) {
 	buildTree(group, {
 			offsetFromTop: 100,
 			height: MW.Images.ELEVATORGAME_TREE_BOLE.height - 200,
-			branches: config.nbrOfBranches
+			branches: config.nbrOfBranches,
+			drawScene: config.drawScene
 	});
 	
 	/* Add the tree bole */
@@ -70,6 +73,7 @@ MW.BirdTree = function (config) {
  *		{Number} offsetFromTop - the offset from the top of the tree, default 0.
  *		{Number} height - height that the branches will take up, default 500.
  *		{Number} branches - branches on the tree, default 5.
+ *		{Function} drawScene - function that redraws the scene, default empty.
  * @returns {Kinetic.Group} The group with all the branches.
  */
 function buildTree (group, config) {
@@ -84,7 +88,8 @@ function buildTree (group, config) {
 	branch = new MW.BirdTreeBranch({
 			y: config.offsetFromTop,
 			number: config.branches,
-			isRight: false
+			isRight: false,
+			drawScene: config.drawScene
 	});
 	/* Branch that goes left is put to the left. */
 	branch.setX(-branch.getWidth());
@@ -95,7 +100,8 @@ function buildTree (group, config) {
 		branch = new MW.BirdTreeBranch({
 			y: branch.getY() + config.height / config.branches,
 			number: config.branches - i,
-			isRight: i % 2 != 0 ? true : false 
+			isRight: i % 2 != 0 ? true : false ,
+			drawScene: config.drawScene
 		});
 		branch.setX(i % 2 != 0 ? 0 : -branch.getWidth());
 		group.add(branch);

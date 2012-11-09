@@ -5,6 +5,7 @@
  * 		{Number} y - y position, default 0
  * 		{Number} number - the branches number, default 0
  *		{Boolean} isRight - if the branch should sprout right, default true
+ *		{Function} drawScene - function that redraws the scene, default empty.
  * @return The bird tree branch as a Kinetic.group.
  */
 MW.BirdTreeBranch = function (config) {
@@ -12,6 +13,7 @@ MW.BirdTreeBranch = function (config) {
 	if (config.y === undefined) config.y = 0;
 	if (config.number === undefined) config.number = 0;
 	if (config.isRight === undefined) config.isRight = true;
+	if (config.drawScene === undefined) config.drawScene = function () {};
 	var group,
 		branch,
 		nest;
@@ -33,7 +35,8 @@ MW.BirdTreeBranch = function (config) {
 	nest = new MW.BirdTreeNest({
 		x: (config.isRight ? 60 : 40) + Math.floor(Math.random()*20),
 		number: config.number,
-		facingRight: !config.isRight
+		facingRight: !config.isRight,
+		drawScene: config.drawScene
 	});
 	nest.setY(branch.getHeight() / 2 - nest.getHeight() +
 		(branchVariant == 2 ? 10 : 0));

@@ -5,6 +5,7 @@
  * 		{Number} y - y position, default 0
  * 		{Number} number - number of the branch, default 0
  *		{Boolean} facingRight - if the bird should face right, default true
+ *		{Function} drawScene - function that redraws the scene, default empty.
  * @return The bird tree nest as a Kinetic.group.
  */
 MW.BirdTreeNest = function (config) {
@@ -12,6 +13,7 @@ MW.BirdTreeNest = function (config) {
 	if (config.y === undefined) config.y = 0;
 	if (config.number === undefined) config.number = 0;
 	if (config.facingRight === undefined) config.facingRight = true;
+	if (config.drawScene === undefined) config.drawScene = function () {};
 	var group,
 		mother,
 		chickGroup,
@@ -47,6 +49,7 @@ MW.BirdTreeNest = function (config) {
 						0.75 * Math.sin(-frame.time * 2 * Math.PI / 300));
 				}
 			}
+			config.drawScene();
 		}
 	});
 	group.add(chickGroup);
@@ -71,6 +74,7 @@ MW.BirdTreeNest = function (config) {
 		func: function (frame) {
 			confused.setY(confused.getY() +
 				0.75 * Math.sin(frame.time * 2 * Math.PI / 300));
+			config.drawScene();
 		}
 	});
 	group.add(confused);
@@ -84,10 +88,12 @@ MW.BirdTreeNest = function (config) {
 			MW.SetImage(mother,
 				eval("MW.Images.ELEVATORGAME_NEST_MOTHER_FLAP_" +
 					config.number));
+			config.drawScene();
 		} else {
 			MW.SetImage(mother,
 				eval("MW.Images.ELEVATORGAME_NEST_MOTHER_" +
 					config.number));
+			config.drawScene();
 		}
 	}
 	

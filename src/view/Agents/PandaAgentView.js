@@ -70,6 +70,7 @@ MW.PandaAgentView = MW.GlobalObject.extend(
 		function walkLeft () {
 			MW.SetImage(panda, MW.Images.ELEVATORGAME_AGENT_PANDA_WALK_LEFT);
 			animation = setTimeout(walkRight, 150);
+			config.drawScene();
 		}
 		
 		/**
@@ -79,6 +80,7 @@ MW.PandaAgentView = MW.GlobalObject.extend(
 		function walkRight () {
 			MW.SetImage(panda, MW.Images.ELEVATORGAME_AGENT_PANDA_WALK_RIGHT);
 			animation = setTimeout(walkLeft, 150);
+			config.drawScene();
 		}
 		
 		/**
@@ -88,6 +90,7 @@ MW.PandaAgentView = MW.GlobalObject.extend(
 		function waveUp () {
 			MW.SetImage(panda, MW.Images.ELEVATORGAME_AGENT_PANDA_WAVE);
 			animation = setTimeout(waveDown, 150);
+			config.drawScene();
 		}
 		
 		/**
@@ -97,6 +100,7 @@ MW.PandaAgentView = MW.GlobalObject.extend(
 		function waveDown () {
 			MW.SetImage(panda, MW.Images.ELEVATORGAME_AGENT_PANDA);
 			animation = setTimeout(waveUp, 150);
+			config.drawScene();
 		}
 		
 		/**
@@ -194,6 +198,7 @@ MW.PandaAgentView = MW.GlobalObject.extend(
 				walkLeft();
 			} else {
 				MW.SetImage(panda, MW.Images.ELEVATORGAME_AGENT_PANDA);
+				config.drawScene();
 			}
 		}
 		
@@ -207,6 +212,7 @@ MW.PandaAgentView = MW.GlobalObject.extend(
 				mouthOpen();
 			} else {
 				MW.SetImage(panda, MW.Images.ELEVATORGAME_AGENT_PANDA);
+				config.drawScene();
 			}
 		}
 		
@@ -233,6 +239,7 @@ MW.PandaAgentView = MW.GlobalObject.extend(
 				waveUp();
 			} else {
 				MW.SetImage(panda, MW.Images.ELEVATORGAME_AGENT_PANDA);
+				config.drawScene();
 			}
 		}
 		
