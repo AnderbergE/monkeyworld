@@ -90,7 +90,7 @@ MW.AgentKnowledge = MW.GlobalObject.extend(
 				if (Math.random() > 0.8) {
 					if (guess == maxNumber) {
 						guess--;
-					} else if (guess == 0) {
+					} else if (guess == 1) {
 						guess++;
 					} else {
 						if (Math.random() > 0.50) {
