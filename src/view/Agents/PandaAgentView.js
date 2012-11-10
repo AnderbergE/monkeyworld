@@ -19,10 +19,28 @@ MW.PandaAgentView = MW.GlobalObject.extend(
 			leftEye,
 			rightEye,
 			animation,
+			followObject,
+			followAnimation,
+			EYE_MAX = 12,
+			EYE_DISTANCE = 1,
 			coordinates = {
 				leftEye: {x: 146, y: 156},
 				rightEye: {x: 341, y: 161}
 			};
+			
+		var followAnimation = new Kinetic.Animation({
+			func: function (frame) {
+				setEye(leftEye, coordinates.leftEye, {
+					x: followObject.getAbsolutePosition().x,
+					y: followObject.getAbsolutePosition().y
+				});
+				setEye(rightEye, coordinates.rightEye, {
+					x: followObject.getAbsolutePosition().x,
+					y: followObject.getAbsolutePosition().y
+				});
+				config.drawScene();
+			}
+		});
 		
 		group = new Kinetic.Group({
 			x: config.x,
@@ -127,22 +145,22 @@ MW.PandaAgentView = MW.GlobalObject.extend(
 		 * Set eye location in socket depending on mouse cursor position.
 		 * @private
 		 * @param {Kinetic.Image} eye - the eye to rotate
-		 * @param {Number} offset - the offset from the body to the eye
-		 * @param {Hash} mousePos - the mouse coordinates
-		 * 		{Number} mousePos.x - the mouse x coordinate
-		 * 		{Number} mousePos.y - the mouse y coordinate
+		 * @param {Hash} offset - the offset from the body to the eye
+		 * 		{Number} offset.x - the eyes offset x coordinate
+		 * 		{Number} offset.y - the eyes offset y coordinate
+		 * @param {Hash} objectPos - the objects coordinates
+		 * 		{Number} objectPos.x - the objects x coordinate
+		 * 		{Number} objectPos.y - the objects y coordinate
 		 */
-		function setEye(eye, offset, mousePos) {
-			/* This is not 100 %, but good enough perhaps */
-			var w = eye.getWidth();
-			var h = eye.getHeight();
+		function setEye(eye, offset, objectPos) {
 			var eyePos = eye.getAbsolutePosition();
-			var dx = mousePos.x - (eyePos.x + w / 2);
-			var dy = mousePos.y - (eyePos.y + h / 2);
-			var r = (dx*dx/w+dy*dy/h<1) ?
-				1 : Math.sqrt(w*h / (dx*dx*h+dy*dy*w));
-			eye.setX((r*dx)+offset.x);
-			eye.setY((r*dy)+offset.y);
+			var dx = objectPos.x - (eyePos.x + eye.getWidth() / 2 - EYE_MAX);
+			var dy = objectPos.y - (eyePos.y + eye.getHeight() / 2 - EYE_MAX);
+			var r = Math.min(Math.max(Math.sqrt(dx * dx + dy * dy) /
+				EYE_DISTANCE, 0), EYE_MAX);
+			var a = Math.atan2(dy, dx);
+			eye.setX(Math.cos(a) * r + offset.x);
+			eye.setY(Math.sin(a) * r + offset.y);
 		}
 		
 		/**
@@ -166,6 +184,8 @@ MW.PandaAgentView = MW.GlobalObject.extend(
 						document.documentElement.scrollTop
 				};
 			}
+			mousePos.x = mousePos.x +
+				(MW.GlobalSettings.width - window.innerWidth) / 2;
 			setEye(leftEye, coordinates.leftEye, mousePos);
 			setEye(rightEye, coordinates.rightEye, mousePos);
 			config.drawScene();
@@ -246,14 +266,35 @@ MW.PandaAgentView = MW.GlobalObject.extend(
 		/**
 		 * @public
 		 * @param {Boolean} follow - true if the panda should follow the cursor.
-		 * @param {Function} drawScene - function to draw the scene.
 		 */
 		this.followCursor = function (follow) {
+			followObject = null;
+			followAnimation.stop();
 			if (follow) {
 				/* This might not work in all browsers, ses attachEvent. */
 				document.addEventListener ("mousemove", eyesFollowCursor);
 			} else {
 				document.removeEventListener ("mousemove", eyesFollowCursor);
+				leftEye.setX(coordinates.leftEye.x);
+				leftEye.setY(coordinates.leftEye.y);
+				rightEye.setX(coordinates.rightEye.x);
+				rightEye.setY(coordinates.rightEye.y);
+			}
+		}
+		
+		/**
+		 * @public
+		 * @param {Boolean} obj - the object to follow.
+		 */
+		this.followObject = function (obj) {
+			document.removeEventListener ("mousemove", eyesFollowCursor);
+			if (obj !== undefined && obj != null &&
+				obj.getAbsolutePosition !== undefined) {
+				followObject = obj;
+				followAnimation.start();
+			} else {
+				followObject = null;
+				followAnimation.stop();
 				leftEye.setX(coordinates.leftEye.x);
 				leftEye.setY(coordinates.leftEye.y);
 				rightEye.setX(coordinates.rightEye.x);

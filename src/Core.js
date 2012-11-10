@@ -24,8 +24,8 @@ MW.GameEngineStarter = function () {
 	console.log("Creating KineticJS stage");
 	var stage = new Kinetic.Stage({
 		container: 'container',
-		width: 1024,
-		height: 768
+		width: MW.GlobalSettings.width,
+		height: MW.GlobalSettings.height
 	});
 
 	console.log("Creating basic KineticJS layers");

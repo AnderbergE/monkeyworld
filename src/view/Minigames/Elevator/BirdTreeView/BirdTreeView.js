@@ -508,12 +508,21 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 				duration: second * 1
 			});
 			
-			var sound, soundTime
+			var sound;
 			if (vars.tooHigh) {
 				sound = MW.Sounds.BIRD_WRONG_LOWER;
 			} else if (vars.tooLow) {
 				sound = MW.Sounds.BIRD_WRONG_HIGHER;
-			} 
+			}
+			
+			var agentFunc = function () {};
+			if (agent !== undefined) {
+				agentFunc = function () {
+					agent.followObject();
+					agent.followCursor(true);
+				}
+				agent.followObject(bird);
+			}
 			
 			bird.showNumber(false);
 			bird.walk(true);
@@ -533,6 +542,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 						moveElevator(0, 0, function () {
 						moveBirdElevatorPeak(false, function () {
 						moveBirdToStartPosition();
+						agentFunc();
 						if (!first.agentPick) {
 							agent.say(MW.Sounds.AGENT_TRY_AGAIN);
 						}
@@ -543,6 +553,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 					}, (sound.getLength() + 0.1) * 1000);
 				} else {
 					moveElevator(0, 0, function () {
+						agentFunc();
 						view.tell(MW.Event.ROUND_DONE);
 					});
 				}
@@ -699,6 +710,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			agent.followCursor(false);
 			agent.say(MW.Sounds.AGENT_I_TRY);
 			setTimeout(function () {
+				agent.followCursor(true);
 				view.tell(MW.Event.ROUND_DONE);
 			}, MW.Sounds.AGENT_I_TRY.getLength() * 1000);
 		});

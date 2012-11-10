@@ -18,9 +18,11 @@ MW.GameMode = {
 };
 
 MW.GlobalSettings = {
-	/** @type {MW.Language} */ language: MW.Language.SWEDISH,
-	/** @type {boolean}     */ debug:    false,
-    /** @type {boolean}     */ testing:  false
+	/** @type {MW.Language} */ language:	MW.Language.SWEDISH,
+	/** @type {boolean}     */ debug:		false,
+    /** @type {boolean}     */ testing:		false,
+	/** @type {Number}		*/ width:		1024,
+	/** @type {Number}		*/ height:		760
 };
 
 /**
