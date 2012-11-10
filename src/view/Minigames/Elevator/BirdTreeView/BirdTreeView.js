@@ -345,6 +345,9 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		function moveElevator (targetFloor, nextFloor, callback) {
 			/* Anonymous function to stop at each elevator floor when going up.
 			 * No stops when going to bottom. */
+			if (targetFloor == 0) {
+				MW.Sound.play(MW.Sounds.LIFT_SLIDE_DOWN);
+			}
 			elevator.transitionTo({
 				y: targetFloor == 0 ? elevatorOrigin :
 					tree.getY() + tree.getBranch(nextFloor).getY() +
@@ -679,10 +682,10 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 				scale: agentPickGroup.getChildren()[1].getScale(),
 				image: MW.Images.ELEVATORGAME_CROSS
 			});
+			agent.say(MW.Sounds.AGENT_HELPED);
 			agentPickGroup.add(cross);
 			layer.draw();
 			showPanel(boolpanel, false, function () {
-				agent.say(MW.Sounds.AGENT_HELPED);
 				setTimeout(function () {
 					showPanel(numpanel, true);
 				}, MW.Sounds.AGENT_HELPED.getLength());
@@ -720,9 +723,9 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		 */
 		view.on(MW.Event.BUTTON_PUSH_HELP, function () {
 			if (!first.agentPick) {
-				MW.Sound.play(MW.Sounds.BIRD_INSTRUCTION_2);
+				bird.say(MW.Sounds.BIRD_INSTRUCTION_2);
 			} else {
-				MW.Sound.play(MW.Sounds.BIRD_INSTRUCTION_1);
+				bird.say(MW.Sounds.BIRD_INSTRUCTION_1);
 			}
 		});
 		
