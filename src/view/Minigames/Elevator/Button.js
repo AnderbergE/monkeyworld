@@ -74,11 +74,16 @@ MW.Button = MW.GlobalObject.extend(
 		 * @public
 		 * @param {Boolean} lock - true if button is locked, otherwise false.
 		 */
-		this.lock = function (lock) {
+		group.lock = function (lock) {
 			group.setListening(!lock);
 			if (!lock) {
 				MW.SetImage(graphics, image, 0, 0);
 			}
+			config.drawScene();
+		}
+		
+		group.lightUp = function (light) {
+			graphics.setStroke(light ? 'gold' : null);
 			config.drawScene();
 		}
 		
@@ -119,7 +124,7 @@ MW.Button = MW.GlobalObject.extend(
 		 * @param {Boolean} lock - true if the buttons should not be pushable.
 		 */
 		button.on(MW.Event.LOCK_BUTTONS, function (lock) {
-			button.lock(lock);
+			group.lock(lock);
 		});
 	}
 });

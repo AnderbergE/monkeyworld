@@ -144,6 +144,55 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		boolpanel.getGroup().setListening(false);
 		
 		
+		this.instruction1 = function (shows) {
+			var numListen = numpanel.getGroup().getListening();
+			var boolListen = boolpanel.getGroup().getListening();
+			if (!numListen && !boolListen) return;
+			numpanel.getGroup().setListening(false);
+			boolpanel.getGroup().setListening(false);
+			bird.say(MW.Sounds.BIRD_INSTRUCTION_1);
+			bird.showNumber(false);
+			setTimeout(function () {
+				bird.showNumber(true);
+				setTimeout(function () {
+					numpanel.lightUp(true);
+					setTimeout(function () {
+						if (!shows) {
+							bird.showNumber(false);
+						}
+						numpanel.lightUp(false);
+						numpanel.getGroup().setListening(numListen);
+						boolpanel.getGroup().setListening(boolListen);
+						panelLayer.draw();
+					}, second * 3 * 1000);
+				}, second * 3 * 1000);
+			}, second * 5 * 1000);
+			return MW.Sounds.BIRD_INSTRUCTION_1.getLength() + 0.5;
+		}
+		
+		this.instruction2 = function () {
+			var numListen = numpanel.getGroup().getListening();
+			var boolListen = boolpanel.getGroup().getListening();
+			if (!numListen && !boolListen) return;
+			numpanel.getGroup().setListening(false);
+			boolpanel.getGroup().setListening(false);
+			bird.say(MW.Sounds.BIRD_INSTRUCTION_2);
+			setTimeout(function () {
+				boolpanel.getGroup().getChildren()[0].lightUp(true);
+				setTimeout(function () {
+					boolpanel.getGroup().getChildren()[0].lightUp(false);
+					boolpanel.getGroup().getChildren()[1].lightUp(true);
+					setTimeout(function () {
+						boolpanel.getGroup().getChildren()[1].lightUp(false);
+						numpanel.getGroup().setListening(numListen);
+						boolpanel.getGroup().setListening(boolListen);
+						panelLayer.draw();
+					}, second * 1.5 * 1000);
+				}, second * 3.5 * 1000);
+			}, second * 1.5 * 1000);
+			return MW.Sounds.BIRD_INSTRUCTION_2.getLength() + 0.5;
+		}
+		
 		/**
 		 * Show/hide a panel.
 		 * @private
@@ -203,6 +252,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			/* Left is -1, right is 1 */
 			var direction = x > bird.getX() ? 1 : -1;
 			turnBird(direction, function () {
+				/* Move to start position */
 				bird.transitionTo({
 					x: x + (direction < 0 ? (bird.getWidth() * scale) : 0),
 					y: - elevator.getY() + coordinates.birdShowY,
@@ -213,14 +263,13 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 						bird.walk(false);
 						/* Turn bird right */
 						turnBird(1, function () {
-							/* Bird talk */
+							/* First time is introduction, highlight mechanics */
 							var timeout = 0;
 							if (first.pick) {
-								bird.say(MW.Sounds.BIRD_INSTRUCTION_1);
-								timeout =
-									MW.Sounds.BIRD_INSTRUCTION_1.getLength() + 0.5;
 								first.pick = false;
+								timeout = view.instruction1(false);
 							}
+							/* Bird say where it belongs */
 							setTimeout(function () {
 								bird.say(MW.Sounds.BIRD_THIS_LEVEL);
 								setTimeout(function () {
@@ -288,6 +337,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			x = x + (direction > 0 ? -bird.getWidth() * bird.getScale().x :
 				nest.getWidth() - 10)
 			turnBird(direction, function () {
+				/* Move bird to nest */
 				bird.transitionTo({
 					x: x - (direction < 0 ?
 						(bird.getWidth() * bird.getScale().x) : 0),
@@ -300,7 +350,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 						bird.walk(false);
 						var animationTime = second *
 							MW.Sounds.BIRD_THANK.getLength();
-						/* Call after bird reacts to mother */
+						/* This is called after bird reacts to mother */
 						var endFunction = function () {
 							agentPickGroup.removeChildren();
 							callback();
@@ -322,7 +372,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 								endFunction();
 							}, animationTime * 1000);
 						} else {
-							/* The bird did not find home, scare away! */
+							/* The bird did not find home, its confusing! */
 							nest.confused(true);
 							setTimeout(function () {
 								nest.confused(false);
@@ -406,11 +456,8 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 					
 					var timeout = 0;
 					if (first.agentPick) {
-						bird.say(MW.Sounds.BIRD_INSTRUCTION_2);
-						timeout = MW.Sounds.BIRD_INSTRUCTION_2.getLength() + 0.5;
-						boolpanel.getGroup().setListening(false);
-						panelLayer.draw();
 						first.agentPick = false;
+						timeout = view.instruction2();
 					}
 					setTimeout(function () {
 						if (confidence >= 0.8) {
@@ -420,8 +467,6 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 						} else {
 							agent.say(MW.Sounds.AGENT_PICK_CONFIDENCE_LOW);
 						}
-						boolpanel.getGroup().setListening(true);
-						panelLayer.draw();
 					}, second * timeout * 1000);
 				}
 			});
@@ -723,9 +768,9 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		 */
 		view.on(MW.Event.BUTTON_PUSH_HELP, function () {
 			if (!first.agentPick) {
-				bird.say(MW.Sounds.BIRD_INSTRUCTION_2);
+				view.instruction2();
 			} else {
-				bird.say(MW.Sounds.BIRD_INSTRUCTION_1);
+				view.instruction1(true);
 			}
 		});
 		

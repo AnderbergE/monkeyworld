@@ -70,7 +70,15 @@ MW.Buttonpanel = Class.extend(
 	lock: function (lock) {
 		var i = 0;
 		for (i; i < this.group.getChildren().length; i++) {
-			this.group.getChildren()[i].setListening(!lock);
+			this.group.getChildren()[i].lock(lock);
+		}
+		this.config.drawScene();
+	},
+	
+	lightUp: function (light) {
+		var i = 0;
+		for (i; i < this.group.getChildren().length; i++) {
+			this.group.getChildren()[i].lightUp(light);
 		}
 		this.config.drawScene();
 	}
