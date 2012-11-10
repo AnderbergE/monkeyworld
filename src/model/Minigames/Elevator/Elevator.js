@@ -15,6 +15,7 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 		var
 			elevator = this,
 			numberOfBranches = difficulty,
+			targets = new Array(),
 			targetNumber,
 			roundsWon = 0,
 			roundsLost = 0,
@@ -25,12 +26,37 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 		
 		
 		/**
+		 * Randomize trials.
+		 * @private
+		 */
+		function randomizeTargets () {
+			targets = new Array();
+			var i, r;
+			/* This is a special case where branches are less than rounds */
+			if (winsToProgress > numberOfBranches) {
+				for (i = 0; i < numberOfBranches; i++) {
+					targets.push(i);
+				}
+				return;
+			}
+			while (targets.length < winsToProgress) {
+				r = 1 + Math.floor(Math.random() * numberOfBranches);
+				if (targets.indexOf(r) < 0) {
+					targets.push(r);
+				}
+			}
+		}
+		
+		/**
 		 * Introduce a new bird.
 		 * @private
 		 */
 		function newBird () {
 			/* Randomize where it should go and send event */
-			targetNumber = 1 + Math.floor(Math.random() * numberOfBranches);
+			if (targets.length <= 0) {
+				randomizeTargets();
+			}
+			targetNumber = targets.splice(0, 1)[0]
 			elevator.tell(MW.Event.PLACE_TARGET, targetNumber);
 		}
 		
