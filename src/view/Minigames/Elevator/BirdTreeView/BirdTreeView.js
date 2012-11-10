@@ -274,8 +274,10 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 								bird.say(MW.Sounds.BIRD_THIS_LEVEL);
 								setTimeout(function () {
 									bird.showNumber(true);
-									view.tell(MW.Event.TARGET_IS_PLACED);
 								}, second * 1 * 1000);
+								setTimeout(function () {
+									view.tell(MW.Event.TARGET_IS_PLACED);
+								}, second * MW.Sounds.BIRD_THIS_LEVEL.getLength() * 1000);
 							}, second * timeout * 1000);
 						});
 					}
