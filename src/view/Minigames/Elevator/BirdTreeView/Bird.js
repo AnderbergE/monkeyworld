@@ -75,12 +75,11 @@ MW.Bird = function (config) {
 		if (show) {
 			MW.SetImage(bird, 
 				eval("MW.Images.ELEVATORGAME_CHICK_SHOW_" + config.number));
-			config.drawScene();
 		} else {
 			MW.SetImage(bird, 
 				eval("MW.Images.ELEVATORGAME_CHICK_" + config.number));
-			config.drawScene();
 		}
+		config.drawScene();
 	}
 	
 	/**
