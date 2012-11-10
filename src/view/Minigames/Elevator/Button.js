@@ -76,6 +76,9 @@ MW.Button = MW.GlobalObject.extend(
 		 */
 		this.lock = function (lock) {
 			group.setListening(!lock);
+			if (!lock) {
+				MW.SetImage(graphics, image, 0, 0);
+			}
 			config.drawScene();
 		}
 		
@@ -86,6 +89,10 @@ MW.Button = MW.GlobalObject.extend(
 		});
 
 		graphics.on('mouseout', function () {
+			if (group.getListening()) {
+				MW.SetImage(graphics, image, 0, 0);
+				config.drawScene();
+			}
 			document.body.style.cursor = "default";
 		});
 
@@ -96,7 +103,7 @@ MW.Button = MW.GlobalObject.extend(
 
 		graphics.on('mouseup', function () {
 			MW.Sound.play(MW.Sounds.CLICK);
-			MW.SetImage(graphics, image, 0, 0);
+			MW.SetImage(graphics, imageDown, 0, graphics.getY());
 			config.drawScene();
 			if (config.number === undefined) {
 				button.tell(MW.Event.BUTTON_PUSH_BOOL, config.bool);
