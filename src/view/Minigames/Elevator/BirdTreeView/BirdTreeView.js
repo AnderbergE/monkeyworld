@@ -725,10 +725,7 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		 */
 		view.on(MW.Event.AGENT_CHOICE, function (vars) {
 			showPanel(numpanel, false);
-			/* Otherwise the bird will not have finished speaking. */ 
-			setTimeout(function () {
-				agentPickNumber(vars.number, vars.confidence);
-			}, second * 2.5 * 1000);
+			agentPickNumber(vars.number, vars.confidence);
 		});
 		
 		/**
