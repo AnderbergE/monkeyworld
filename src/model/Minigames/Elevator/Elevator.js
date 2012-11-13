@@ -26,24 +26,14 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 		
 		
 		/**
-		 * Randomize trials.
+		 * Fill target array, so that 
 		 * @private
 		 */
-		function randomizeTargets () {
-			targets = new Array();
-			var i, r;
-			/* This is a special case where branches are less than rounds */
-			if (winsToProgress > numberOfBranches) {
-				for (i = 0; i < numberOfBranches; i++) {
-					targets.push(i);
-				}
-				return;
-			}
-			while (targets.length < winsToProgress) {
-				r = 1 + Math.floor(Math.random() * numberOfBranches);
-				if (targets.indexOf(r) < 0) {
-					targets.push(r);
-				}
+		function fillTargets () {
+			var i;
+			targets.length = 0;
+			for (i = 1; i <= numberOfBranches; i++) {
+				targets.push(i);
 			}
 		}
 		
@@ -54,9 +44,10 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 		function newBird () {
 			/* Randomize where it should go and send event */
 			if (targets.length <= 0) {
-				randomizeTargets();
+				fillTargets();
 			}
-			targetNumber = targets.splice(0, 1)[0]
+			var r = Math.floor(Math.random() * targets.length);
+			targetNumber = targets.splice(r, 1)[0]
 			elevator.tell(MW.Event.PLACE_TARGET, targetNumber);
 		}
 		
@@ -96,6 +87,8 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 				elevator.setMode(MW.GameMode.CHILD_PLAY);
 				elevator.tell(MW.Event.END_MINIGAME);
 			}
+			/* This is so that a new mode will reinitilize targets */
+			fillTargets();
 		}
 		
 		/**
