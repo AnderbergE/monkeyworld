@@ -102,7 +102,7 @@ MW.Button = MW.GlobalObject.extend(
 		});
 
 		graphics.on('mousedown', function () {
-			MW.SetImage(graphics, imageDown, 0, graphics.getY() + 5);
+			MW.SetImage(graphics, imageDown, 0, graphics.getY());
 			config.drawScene();
 		});
 
