@@ -47,7 +47,7 @@ MW.ElevatorMinigame = MW.Minigame.extend(
 				fillTargets();
 			}
 			var r = Math.floor(Math.random() * targets.length);
-			targetNumber = targets.splice(r, 1)[0]
+			targetNumber = targets.splice(r, 1)[0];
 			elevator.tell(MW.Event.PLACE_TARGET, targetNumber);
 		}
 		
