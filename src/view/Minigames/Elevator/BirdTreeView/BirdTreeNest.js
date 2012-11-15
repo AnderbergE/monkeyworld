@@ -30,6 +30,10 @@ MW.BirdTreeNest = function (config) {
 	
 	/* Add the mother */
 	mother = new Kinetic.Image({
+		x: config.facingRight ?
+			eval("MW.Images.ELEVATORGAME_NEST_MOTHER_" + config.number).width :
+			0,
+		scale: {x: config.facingRight ? -1 : 1, y: 1},
 		image: eval("MW.Images.ELEVATORGAME_NEST_MOTHER_" + config.number)
 	});
 	group.add(mother);
