@@ -141,7 +141,8 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 		/* Add instruction arrow */
 		instructionArrow = new Kinetic.Image({
 			image: MW.Images.ELEVATORGAME_ARROW,
-			opacity: 0
+			opacity: 0,
+			scale: 0.6
 		});
 		panelLayer.add(instructionArrow);
 		
@@ -165,50 +166,52 @@ MW.BirdTreeView = MW.ElevatorView.extend(
 			bird.showNumber(false);
 			setTimeout(function () {
 				bird.showNumber(true);
-				setTimeout(function () {
-					instructionArrow.setOpacity(1);
-					var i = 0;
-					var birdPos = bird.getAbsolutePosition();
-					/* Arrow that helps instructions */
-					var arrowAnimation = setInterval(function() {
-						instructionArrow.rotateDeg(bird.featherPos[i].r);
-						instructionArrow.setX(birdPos.x +
-							bird.featherPos[i].x *
-							bird.getScale().x * layer.getScale().x);
-						instructionArrow.setY(birdPos.y +
-							bird.featherPos[i].y *
-							bird.getScale().y * layer.getScale().y +
-							/* The arrow rotates "over x" when it goes 180% */
-							(instructionArrow.getRotation() < 2 ?
-							-instructionArrow.getImage().height / 2 : 
-							instructionArrow.getImage().height / 2));
-						panelLayer.draw();
-						i++;
-						if (i >= max) {
-							clearInterval(arrowAnimation);
-							setTimeout(function () {
-								instructionArrow.setOpacity(0);
-								instructionArrow.setRotation(0);
-								panelLayer.draw();
-							}, second * (2 * arrowTime) * 1000)
-						}
-					}, second * arrowTime * 1000);
-					setTimeout(function () {
-						bird.say(MW.Sounds.BIRD_INSTRUCTION_1B);
-						numpanel.lightUp(true);
+				instructionArrow.setOpacity(1);
+				var i = 0;
+				var birdPos = bird.getAbsolutePosition();
+				
+				/* Arrow that helps instructions */
+				var arrowAnimation = setInterval(function() {
+					instructionArrow.rotateDeg(bird.featherPos[i].r);
+					instructionArrow.setX(birdPos.x +
+						bird.featherPos[i].x *
+						bird.getScale().x * layer.getScale().x);
+					instructionArrow.setY(birdPos.y +
+						bird.featherPos[i].y *
+						bird.getScale().y * layer.getScale().y +
+						/* The arrow rotates "over x" when it goes 180% */
+						(instructionArrow.getRotation() < 2 ?
+						-instructionArrow.getImage().height / 2 : 
+						instructionArrow.getImage().height / 2) *
+						instructionArrow.getScale().y);
+					panelLayer.draw();
+					i++;
+					if (i >= max) {
+						clearInterval(arrowAnimation);
 						setTimeout(function () {
-							if (!shows) {
-								bird.showNumber(false);
-							}
-							numpanel.lightUp(false);
-							numpanel.getGroup().setListening(numListen);
-							boolpanel.getGroup().setListening(boolListen);
+							instructionArrow.setOpacity(0);
+							instructionArrow.setRotation(0);
 							panelLayer.draw();
-						}, second * MW.Sounds.BIRD_INSTRUCTION_1B.getLength() * 1000);
-					}, second * ((max + 3) * arrowTime) * 1000);
-				}, second * 1.5 * 1000);
+						}, second * (2 * arrowTime) * 1000)
+					}
+				}, second * arrowTime * 1000);
+				
+				setTimeout(function () {
+					bird.say(MW.Sounds.BIRD_INSTRUCTION_1B);
+					numpanel.lightUp(true);
+					setTimeout(function () {
+						if (!shows) {
+							bird.showNumber(false);
+						}
+						numpanel.lightUp(false);
+						numpanel.getGroup().setListening(numListen);
+						boolpanel.getGroup().setListening(boolListen);
+						panelLayer.draw();
+					}, second * MW.Sounds.BIRD_INSTRUCTION_1B.getLength() * 1000);
+				}, second * ((max + 3) * arrowTime) * 1000);
+				
 			}, second * 5 * 1000);
-			return MW.Sounds.BIRD_INSTRUCTION_1A.getLength() +
+			return 5 + // Before seeing feathers
 				((max + 3) * arrowTime) + // Arrowtime
 				MW.Sounds.BIRD_INSTRUCTION_1B.getLength() + 0.5;
 		}
