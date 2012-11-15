@@ -25,7 +25,8 @@ MW.Sounds = {
 	INTRO: new MW.SoundEntry("effects/intro", 18.91, 1),
 	BG: new MW.SoundEntry("effects/loop", 18.91, 2),
 	
-	BIRD_INSTRUCTION_1: new MW.SoundEntry("chick/instruction_1", 10.61, 1),
+	BIRD_INSTRUCTION_1A: new MW.SoundEntry("chick/instruction_1a", 7.44, 1),
+	BIRD_INSTRUCTION_1B: new MW.SoundEntry("chick/instruction_1b", 2.95, 1),
 	BIRD_INSTRUCTION_2: new MW.SoundEntry("chick/instruction_2", 6.37, 1),
 	BIRD_SCREAM: new MW.SoundEntry("chick/happy_ending", 5.90, 1),
 	BIRD_THANK: new MW.SoundEntry("chick/correct_twitter", 3.89, 1),
