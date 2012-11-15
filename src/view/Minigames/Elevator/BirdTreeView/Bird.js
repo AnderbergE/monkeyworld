@@ -50,6 +50,19 @@ MW.Bird = function (config) {
 	});
 	group.add(beak);
 	
+	group.featherPos = [
+		{x: 310, y: 65, r: 0},		// 1
+		{x: 310, y: 100, r: 0},	// 2 
+		{x: 305, y: 115, r: 0},	// 3
+		{x: 295, y: 130, r: 0},	// 4
+		{x: 275, y: 145, r: 0},	// 5
+		{x: 26, y: 88, r: 180},		// 6
+		{x: 30, y: 119, r: 0},	// 7
+		{x: 36, y: 139, r: 0},	// 8
+		{x: 50, y: 151, r: 0},	// 9
+		{x: 69, y: 161, r: 0}		// 10
+	]
+	
 	
 	/**
 	 * @public
@@ -65,6 +78,14 @@ MW.Bird = function (config) {
 	 */
 	group.getHeight = function () {
 		return bird.getHeight();
+	};
+	
+	/**
+	 * @public
+	 * @returns {Number} The number of the bird.
+	 */
+	group.getNumber = function () {
+		return config.number;
 	};
 	
 	/**

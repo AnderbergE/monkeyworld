@@ -115,6 +115,7 @@ MW.ImageSources = {
 /** @const */ ELEVATORGAME_AGENT_PANDA_EYE_FLARE:	"agents/panda/pandaPupilsFlare.png",
 /** @const */ ELEVATORGAME_THOUGHT_BUBBLE:			"thoughtbubble.png",
 /** @const */ ELEVATORGAME_CROSS:					"buttonCross.png",
+/** @const */ ELEVATORGAME_ARROW:					"arrow.png",
 };
 
 MW.Images = {};
