@@ -150,7 +150,7 @@
 			build_path="${build.uncompiled.dir}"
 			src_path="${source.dir}"
 			lib_path="lib"
-			title="MWorld"
+			title="Bird Hero"
 		>
 		<sources>
 			<file name="MW.js" />
